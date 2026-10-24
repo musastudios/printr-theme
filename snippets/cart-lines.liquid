@@ -3,6 +3,7 @@
   @example
   {% render 'cart-lines' %}
 {% enddoc %}
+{%- assign has_design = false -%}
 <ul class="cart-lines" role="list">
   {%- for item in cart.items -%}
     <li class="cart-line">
@@ -13,6 +14,13 @@
         <a href="{{ item.url }}" class="cart-line__title">{{ item.product.title | escape }}</a>
         {%- unless item.product.has_only_default_variant -%}<p class="cart-line__meta">{{ item.variant.title }}</p>{%- endunless -%}
         {%- if item.properties._for != blank -%}<p class="cart-line__meta">{{ 'artwork.qa_for' | t }}: {{ item.properties._for | escape }}</p>{%- endif -%}
+        {%- assign is_design = false -%}
+        {%- if item.properties._parent_key != blank and item.properties['Design tier'] != blank -%}
+          {%- assign is_design = true -%}
+          {%- assign has_design = true -%}
+          {%- assign change_url = item.properties._parent_url | default: item.url -%}
+          <p class="cart-line__meta"><a href="{{ change_url | escape }}" class="link">{{ 'design_service.change' | t }}<span class="visually-hidden"> {{ item.properties['Design tier'] | escape }}</span></a></p>
+        {%- endif -%}
         {%- for p in item.properties -%}
           {%- assign first_char = p.first | slice: 0 -%}
           {%- if p.last != blank and first_char != '_' -%}<p class="cart-line__meta">{{ p.first }}: {{ p.last }}</p>{%- endif -%}
@@ -21,12 +29,16 @@
         {%- if item.unit_price_measurement -%}<p class="cart-line__meta"><span class="visually-hidden">{{ 'products.product.unit_price' | t }}</span>{{ item.unit_price | money }}/{%- if item.unit_price_measurement.reference_value != 1 -%}{{ item.unit_price_measurement.reference_value }}{%- endif -%}{{ item.unit_price_measurement.reference_unit }}</p>{%- endif -%}
         {%- if item.selling_plan_allocation -%}<p class="cart-line__meta">{{ item.selling_plan_allocation.selling_plan.name }}</p>{%- endif -%}
         <div class="cart-line__row">
+          {%- if is_design or item.properties._artwork_fee != blank -%}
+            <p class="cart-line__meta">{{ 'products.product.quantity' | t }}: {{ item.quantity }}</p>
+          {%- else -%}
           <quantity-input class="qty">
             <button type="button" name="minus">−<span class="visually-hidden">{{ 'products.product.decrease' | t }}</span></button>
             <label class="visually-hidden" for="Line-{{ item.key }}">{{ 'products.product.quantity' | t }}</label>
             <input id="Line-{{ item.key }}" type="number" value="{{ item.quantity }}" min="0" data-line-qty data-line="{{ forloop.index }}">
             <button type="button" name="plus">+<span class="visually-hidden">{{ 'products.product.increase' | t }}</span></button>
           </quantity-input>
+          {%- endif -%}
           <a href="{{ item.url_to_remove }}" class="link-button" data-line-remove="{{ forloop.index }}">{{ 'sections.cart.remove' | t: title: '' }}<span class="visually-hidden">{{ item.product.title | escape }}</span></a>
         </div>
       </div>
@@ -38,12 +50,14 @@
     </li>
   {%- endfor -%}
 </ul>
+{%- if has_design -%}<p class="cart-lines__note">{{ 'design_service.cart_note' | t }}</p>{%- endif -%}
 {% stylesheet %}
   .cart-lines { list-style: none; padding: 0; margin: 0; display: grid; gap: 2rem; }
   .cart-line { display: grid; grid-template-columns: 8rem 1fr auto; gap: 1.6rem; align-items: start; }
   .cart-line__title { font-weight: 700; text-decoration: none; }
   .cart-line__meta { margin: .2rem 0; font-size: 1.3rem; opacity: .75; }
   .cart-line__row { display: flex; gap: 1.6rem; align-items: center; margin-top: 1rem; }
+  .cart-lines__note { margin: 1.6rem 0 0; padding: 1rem 1.2rem; border: 2px solid #000; border-radius: 12px; background: #FFF915; color: #000; font-size: 1.3rem; }
   .cart-line__price { text-align: right; display: grid; }
   .cart-line__price s { opacity: .6; font-size: 1.3rem; }
 {% endstylesheet %}

@@ -54,6 +54,8 @@
             <div id="BuyBlock-{{ section.id }}" {{ block.shopify_attributes }}>{% render 'product-buy', variant: variant, section_id: section.id, show_artwork: block.settings.show_artwork, show_dynamic_checkout: block.settings.show_dynamic_checkout %}</div>
           {%- when 'artwork_uploader' -%}
             <div {{ block.shopify_attributes }}>{% render 'artwork-uploader', product: product, section_id: section.id, block: block %}</div>
+          {%- when 'design_service' -%}
+            <div {{ block.shopify_attributes }}>{% render 'design-service', product: product, section_id: section.id, block: block %}</div>
           {%- when 'turnaround' -%}
             <p class="product__turnaround" {{ block.shopify_attributes }}>{% render 'icon', name: 'clock' %}<span><strong>{{ 'products.product.turnaround' | t }}:</strong> {{ product.metafields.custom.turnaround | default: block.settings.text }}</span></p>
           {%- when 'description' -%}
@@ -163,6 +165,12 @@
       { "type": "select", "id": "safe_in", "label": "Safe margin", "options": [{ "value": "0", "label": "0\"" }, { "value": "0.0625", "label": "1/16\"" }, { "value": "0.125", "label": "1/8\" (0.125)" }, { "value": "0.25", "label": "1/4\"" }], "default": "0.125" },
       { "type": "range", "id": "max_mb", "label": "Max file size", "min": 1, "max": 20, "step": 1, "unit": "MB", "default": 20, "info": "Shopify's native line item file upload rejects files over 20 MB." },
       { "type": "product", "id": "qa_product", "label": "Pre-flight & QA fee product", "info": "Hidden $5 product added alongside the item when the customer opts in. Leave empty to hide the option." }
+    ] },
+    { "type": "design_service", "name": "Design service", "limit": 1, "settings": [
+      { "type": "paragraph", "content": "Place directly above Buy buttons. Tiers come from the hidden Design Service product's variants (SKUs DS-TOUCHUP, DS-REFRESH, DS-FRESH, else first 3 variants in order). Hidden on gift cards and on the Design Service product itself." },
+      { "type": "product", "id": "ds_product", "label": "Design Service product", "info": "Hidden product with 3 tier variants. Leave empty to hide the callout." },
+      { "type": "checkbox", "id": "hide_qa", "label": "Hide QA fee with a paid tier", "default": true, "info": "Recommended: Touch-Up and above include pre-flight QA, so the $5 Pre-flight & QA add-on is hidden and not added." },
+      { "type": "text", "id": "quote_url", "label": "Quote link", "default": "/pages/design-services", "info": "[Unconfirmed] Page with the quote form; ?product=<handle>#quote is appended." }
     ] },
     { "type": "description", "name": "Description", "limit": 1 },
     { "type": "pickup", "name": "Pickup availability", "limit": 1 },

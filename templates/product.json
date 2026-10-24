@@ -51,6 +51,13 @@
         "tabs": {
           "type": "tabs",
           "settings": {}
+        },
+        "ds": {
+          "type": "design_service",
+          "settings": {
+            "hide_qa": true,
+            "quote_url": "/pages/design-services"
+          }
         }
       },
       "block_order": [
@@ -59,6 +66,7 @@
         "picker",
         "tiers",
         "turn",
+        "ds",
         "buy",
         "pickup",
         "actions",
@@ -120,6 +128,3 @@
     "recent"
   ]
 }
-
-
-

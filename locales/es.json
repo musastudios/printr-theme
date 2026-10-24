@@ -421,7 +421,9 @@
     "email_required": "Confirma que enviarás tus archivos con tu número de orden.",
     "qa_recommended": "Recomendamos añadir Pre-flight y revisión por diseñador si envías los archivos después.",
     "pages_mismatch": "El PDF tiene {pages} páginas; este producto espera {expected}.",
-    "fold_label": "Línea de doblez"
+    "fold_label": "Línea de doblez",
+    "brief_help": "Escogiste {tier}: no tienes que subir nada ahora. Después de pagar te enviaremos por email un enlace para enviar tu archivo actual (si tienes) y una breve descripción: logo, texto, colores, referencias y fecha límite.",
+    "brief_qa_included": "El pre-flight QA está incluido con tu servicio de diseño."
   },
   "artwork_dropoff": {
     "subject_prefix": "Order",
@@ -439,5 +441,25 @@
     "col_template": "Plantilla",
     "download": "Descargar",
     "mail_body": "Hola PRINTR, adjunto el arte para la orden {order}.\n\nProducto(s):\nNotas:\n"
+  },
+  "design_service": {
+    "legend": "Ayuda de diseño (opcional)",
+    "hook": "¿No tienes arte? Te ayudamos.",
+    "sub": "Añade ayuda de diseño de nuestro equipo.",
+    "none_name": "Listo para imprimir",
+    "none_line": "Tengo mi arte listo para imprimir. Lo subo después de pagar.",
+    "touchup_name": "Retoque",
+    "touchup_line": "Arreglamos tu archivo: tamaño, sangrado, colores y errores.",
+    "refresh_name": "Renovación",
+    "refresh_line": "Mejoramos y actualizamos tu diseño actual.",
+    "fresh_name": "Diseño Nuevo",
+    "fresh_line": "Un diseño completamente nuevo desde cero.",
+    "quote": "¿No sabes cuál? Te cotizamos →",
+    "confirm": "✓ {tier} añadido. Después de pagar recibirás un enlace para enviar tu archivo y una breve descripción.",
+    "upsell": "¿Lo quieres más moderno? Renovación es solo {diff} más.",
+    "subtotal": "{product} {price} + {tier} {tier_price}",
+    "error": "No pudimos añadir el servicio de diseño, intenta de nuevo. Tu impresión sí se añadió.",
+    "change": "Cambiar",
+    "cart_note": "Servicio de diseño añadido. Después de pagar te enviaremos por email un enlace para subir tu archivo e instrucciones. La impresión comienza cuando apruebes tu prueba."
   }
 }

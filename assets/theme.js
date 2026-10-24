@@ -107,16 +107,25 @@ class CartItems extends HTMLElement {
 }
 customElements.define('cart-items', CartItems);
 
-/* Artwork QA fee lines (properties._artwork_fee) follow their parent (matching _artwork_link); orphans are removed. */
+/* Linked add-on lines follow their parent; orphans are removed.
+ * - Artwork QA fee: child has _artwork_fee, linked by _artwork_link.
+ * - Design Service: child has "Design tier", linked by _parent_key. */
+const isDesignChild = (i) => i.properties && i.properties._parent_key && i.properties['Design tier'];
+const isFeeChild = (i) => i.properties && i.properties._artwork_fee;
 let feeCheck = null;
 async function removeOrphanFees(cart) {
   if (feeCheck) return feeCheck;
   feeCheck = (async () => {
     try {
       const c = cart && cart.items ? cart : await (await fetch(`${window.routes.cart_url}.js`)).json();
-      const parents = new Set(c.items.filter((i) => i.properties && i.properties._artwork_link && !i.properties._artwork_fee).map((i) => i.properties._artwork_link));
+      const parents = new Set(c.items.filter((i) => i.properties && i.properties._artwork_link && !isFeeChild(i)).map((i) => i.properties._artwork_link));
+      const dsParents = new Set(c.items.filter((i) => i.properties && i.properties._parent_key && !isDesignChild(i)).map((i) => i.properties._parent_key));
       const updates = {};
-      c.items.forEach((i) => { if (i.properties && i.properties._artwork_fee && !parents.has(i.properties._artwork_link)) updates[i.key] = 0; });
+      c.items.forEach((i) => {
+        if (isFeeChild(i) && !parents.has(i.properties._artwork_link)) updates[i.key] = 0;
+        else if (isDesignChild(i) && !dsParents.has(i.properties._parent_key)) updates[i.key] = 0;
+        else if (isDesignChild(i) && i.quantity !== 1) updates[i.key] = 1; // design line is always qty 1
+      });
       if (!Object.keys(updates).length) return;
       const res = await fetch(`${window.routes.cart_url}/update.js`, { method: 'POST', headers: { 'Content-Type': 'application/json', Accept: 'application/json' }, body: JSON.stringify({ updates, sections: sectionIdsOnPage() }) });
       const data = await res.json();
@@ -139,12 +148,19 @@ class ProductForm extends HTMLElement {
     const btn = this.form.querySelector('[type="submit"]');
     const err = this.querySelector('[data-form-error]');
     btn.setAttribute('aria-busy', 'true'); btn.disabled = true;
-    const fd = new FormData(this.form);
+    let fd = new FormData(this.form);
     fd.append('sections', sectionIdsOnPage().join(','));
     fd.append('sections_url', window.location.pathname);
+    const post = (body) => fetch(`${window.routes.cart_add_url}.js`, { method: 'POST', headers: { Accept: 'application/json', 'X-Requested-With': 'XMLHttpRequest' }, body });
     try {
-      const res = await fetch(`${window.routes.cart_add_url}.js`, { method: 'POST', headers: { Accept: 'application/json', 'X-Requested-With': 'XMLHttpRequest' }, body: fd });
-      const data = await res.json();
+      let res = await post(fd);
+      let data = await res.json();
+      // Design Service add failed: keep the print item, drop the design line + its markers, and flag the selector.
+      if (data.status && [...fd.keys()].some((k) => k.endsWith('[properties][Design tier]'))) {
+        const retry = withoutDesign(fd);
+        res = await post(retry); data = await res.json();
+        if (!data.status) document.dispatchEvent(new CustomEvent('design:add-failed', { detail: { formId: this.form.id } }));
+      }
       if (data.status) { if (err) { err.textContent = data.description || data.message; err.hidden = false; } return; }
       if (err) err.hidden = true;
       renderCartSections(data.sections); refreshCount();
@@ -155,6 +171,22 @@ class ProductForm extends HTMLElement {
   }
 }
 customElements.define('product-form', ProductForm);
+
+/** Copy an items[] FormData without the Design Service line and its parent markers. */
+function withoutDesign(fd) {
+  const drop = new Set();
+  for (const [k] of fd.entries()) { const m = k.match(/^items\[(\d+)\]\[properties\]\[Design tier\]$/); if (m) drop.add(m[1]); }
+  const out = new FormData(); const map = {}; let next = 0;
+  for (const [k, v] of fd.entries()) {
+    const m = k.match(/^items\[(\d+)\](.*)$/);
+    if (!m) { out.append(k, v); continue; }
+    if (drop.has(m[1])) continue;
+    if (m[1] === '0' && /\[properties\]\[(_parent_key|_design_tier|Design Service)\]$/.test(m[2])) continue;
+    if (!(m[1] in map)) map[m[1]] = next++;
+    out.append(`items[${map[m[1]]}]${m[2]}`, v);
+  }
+  return out;
+}
 
 /* Variant picker: re-renders the product section via Section Rendering API */
 class VariantPicker extends HTMLElement {

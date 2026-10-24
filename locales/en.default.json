@@ -421,7 +421,9 @@
     "email_required": "Confirm you'll email your files with your order number.",
     "qa_recommended": "We recommend adding Pre-flight & designer QA when sending files later.",
     "pages_mismatch": "PDF has {pages} pages; this product expects {expected}.",
-    "fold_label": "Fold line"
+    "fold_label": "Fold line",
+    "brief_help": "You chose {tier}: no upload needed now. After checkout we'll email you a link to send your current file (if any) and a short brief: logo, text, colors, references and deadline.",
+    "brief_qa_included": "Pre-flight QA is included with your design service."
   },
   "artwork_dropoff": {
     "subject_prefix": "Order",
@@ -439,5 +441,25 @@
     "col_template": "Template",
     "download": "Download",
     "mail_body": "Hi PRINTR, attached is the artwork for order {order}.\n\nProduct(s):\nNotes:\n"
+  },
+  "design_service": {
+    "legend": "Design help (optional)",
+    "hook": "No artwork? We've got you.",
+    "sub": "Add design help from our in-house team.",
+    "none_name": "Print-Ready",
+    "none_line": "I have print-ready artwork. Upload it after checkout.",
+    "touchup_name": "Touch-Up",
+    "touchup_line": "We fix your file: size, bleed, colors, typos.",
+    "refresh_name": "Refresh",
+    "refresh_line": "We improve and modernize your existing design.",
+    "fresh_name": "Fresh Look",
+    "fresh_line": "A brand-new design from scratch.",
+    "quote": "Not sure which one? We'll quote it →",
+    "confirm": "✓ {tier} added. After checkout you'll get a link to send your file and a short brief.",
+    "upsell": "Want it to look newer? Refresh is just {diff} more.",
+    "subtotal": "{product} {price} + {tier} {tier_price}",
+    "error": "Couldn't add design service, try again. Your print item was added.",
+    "change": "Change",
+    "cart_note": "Design service added. After checkout we'll email you a link to upload your file and brief. Printing starts after you approve your proof."
   }
 }

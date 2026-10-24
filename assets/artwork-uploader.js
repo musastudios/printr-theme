@@ -12,6 +12,22 @@ let pdfjsPromise;
 const loadPdfjs = () => (pdfjsPromise ||= import(PDFJS).then((m) => { m.GlobalWorkerOptions.workerSrc = PDFJS_WORKER; return m; }));
 const fmt = (s, vars = {}) => String(s || '').replace(/\{(\w+)\}/g, (_, k) => (k in vars ? vars[k] : `{${k}}`));
 const r2 = (n) => Math.round(n * 100) / 100;
+/** Convert flat product FormData into items[0][..] once (shared shape with design-service.js); return next free index. */
+function toItems(fd) {
+  if (!fd.has('items[0][id]')) {
+    const entries = [...fd.entries()];
+    entries.forEach(([k]) => fd.delete(k));
+    entries.forEach(([k, v]) => {
+      if (k === 'id' || k === 'quantity' || k === 'selling_plan') fd.append(`items[0][${k}]`, v);
+      else if (k.startsWith('properties[')) fd.append(`items[0]${k}`, v);
+      else fd.append(k, v);
+    });
+    if (!fd.has('items[0][quantity]')) fd.append('items[0][quantity]', '1');
+  }
+  let n = 0; while (fd.has(`items[${n}][id]`)) n++;
+  return n;
+}
+const BRIEF_PROP = 'Brief after checkout (Design Service)';
 
 /** Parse a size option like 2" x 3.5", 2 x 3.5 in, 8.5x11, 24 x 36" into inches. */
 export function parseSize(str) {
@@ -160,7 +176,10 @@ class ArtworkUploader extends HTMLElement {
     this.querySelector('[data-au-email-confirm]').addEventListener('change', () => this.update());
     this.querySelector('[data-au-qa]')?.addEventListener('change', () => this.update());
     // Rewrite the product form payload into an items[] array so the QA fee joins the same /cart/add call.
-    this.form?.addEventListener('formdata', (e) => this.onFormData(e.formData));
+    // formdata does not bubble; capture at document so the hook survives the buy form being re-rendered on variant change.
+    document.addEventListener('formdata', (e) => { if (e.target.id === this.dataset.formId) this.onFormData(e.formData); }, true);
+    // Design Service selector: a paid tier means the customer sends a brief after checkout (no upload gate) and QA is included.
+    document.addEventListener('design:change', (e) => { if (e.detail.formId === this.dataset.formId) { this.design = e.detail; this.update(); } });
     q('[data-au-tab]').forEach((b) => b.addEventListener('click', () => this.tab(b.dataset.auTab)));
     q('[data-au-act]').forEach((b) => b.addEventListener('click', () => this.act(b.dataset.auAct, b)));
     const scale = this.querySelector('[data-au-scale]');
@@ -197,25 +216,20 @@ class ArtworkUploader extends HTMLElement {
     });
     window.addEventListener('resize', () => this.dialog.open && this.draw());
   }
-  get qa() { return !!this.querySelector('[data-au-qa]')?.checked && !!this.dataset.feeVariant; }
+  get qa() { return !this.qaHidden && !!this.querySelector('[data-au-qa]')?.checked && !!this.dataset.feeVariant; }
+  get brief() { return !!(this.design && this.design.paid); }
+  get qaHidden() { return this.brief && this.design.hideQa; }
   onFormData(fd) {
     if (!this.qa) return;
     const link = `au${Date.now().toString(36)}${Math.random().toString(36).slice(2, 7)}`;
-    const entries = [...fd.entries()];
-    entries.forEach(([k]) => fd.delete(k));
-    entries.forEach(([k, v]) => {
-      if (k === 'id' || k === 'quantity' || k === 'selling_plan') fd.append(`items[0][${k}]`, v);
-      else if (k.startsWith('properties[')) fd.append(`items[0]${k}`, v);
-      else fd.append(k, v);
-    });
-    if (!fd.has('items[0][quantity]')) fd.append('items[0][quantity]', '1');
+    const n = toItems(fd);
     fd.append('items[0][properties][_artwork_link]', link);
     fd.append('items[0][properties][Pre-flight QA]', 'Yes');
-    fd.append('items[1][id]', this.dataset.feeVariant);
-    fd.append('items[1][quantity]', '1');
-    fd.append('items[1][properties][_for]', this.dataset.productTitle || '');
-    fd.append('items[1][properties][_artwork_link]', link);
-    fd.append('items[1][properties][_artwork_fee]', '1');
+    fd.append(`items[${n}][id]`, this.dataset.feeVariant);
+    fd.append(`items[${n}][quantity]`, '1');
+    fd.append(`items[${n}][properties][_for]`, this.dataset.productTitle || '');
+    fd.append(`items[${n}][properties][_artwork_link]`, link);
+    fd.append(`items[${n}][properties][_artwork_fee]`, '1');
   }
   openStudio() { if (!this.dialog.open) this.dialog.showModal(); requestAnimationFrame(() => this.draw()); }
   input(side) { return this.querySelector(`[data-au-input="${side}"]`); }
@@ -328,7 +342,7 @@ class ArtworkUploader extends HTMLElement {
   }
   allIssues() {
     const list = [];
-    if (this.mode === 'later') return list;
+    if (this.mode === 'later' || this.brief) return list;
     const needed = this.cfg.sides === 2 ? ['front', 'back'] : ['front'];
     needed.forEach((k) => {
       const s = this.state[k];
@@ -338,6 +352,7 @@ class ArtworkUploader extends HTMLElement {
     return list;
   }
   blocked() {
+    if (this.brief) return false;
     if (this.mode === 'later') return this.querySelector('[data-au-email-confirm]').checked ? false : 'email_required';
     const issues = this.allIssues();
     if (issues.some((i) => i.level === 'error')) return 'blocked';
@@ -382,11 +397,15 @@ class ArtworkUploader extends HTMLElement {
     });
     this.querySelector('[data-au-scale]').value = Math.round(this.side.scale * 100);
     this.drop.hidden = !!this.side.source;
-    const later = this.mode === 'later';
-    this.querySelector('[data-au-later]').hidden = !later;
+    const brief = this.brief; const later = this.mode === 'later' || brief;
+    this.querySelector('[data-au-choice]').hidden = brief;
+    this.querySelector('[data-au-brief]').hidden = !brief;
+    if (brief) this.querySelector('[data-au-brief-text]').textContent = fmt(this.t.brief_help, { tier: this.design.name });
+    this.querySelector('[data-au-later]').hidden = !(this.mode === 'later') || brief;
     this.querySelector('[data-au-upload-ui]').hidden = later;
-    this.querySelector('[data-au-later-prop]').disabled = !later;
+    const lp = this.querySelector('[data-au-later-prop]'); lp.disabled = !later; lp.value = brief ? BRIEF_PROP : 'Will send after checkout';
     this.querySelectorAll('[data-au-input]').forEach((i) => { i.disabled = later; });
+    const qaRow = this.querySelector('[data-au-qa-row]'); if (qaRow) { qaRow.hidden = this.qaHidden; this.querySelector('[data-au-qa]').disabled = this.qaHidden; }
     const badge = this.querySelector('[data-au-qa-badge]'); if (badge) badge.hidden = !later;
     this.writeProps(issues);
     if (later) this.querySelectorAll('[data-au-prop]').forEach((el) => { el.disabled = true; });

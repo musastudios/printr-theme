@@ -1,0 +1,130 @@
+{% doc %}
+  Design Service callout/selector. Adds the chosen tier variant of a hidden "Design Service"
+  product as a linked cart line (properties _parent_key, _for, Design tier) in the same
+  /cart/add call as the print item, and marks the print line with "Design Service: <tier>".
+  Variants are matched to tiers by SKU (DS-TOUCHUP / DS-REFRESH / DS-FRESH), else by position.
+  @param {product} product - Product being configured
+  @param {string} section_id - Section id (targets ProductForm-<section_id>)
+  @param {object} block - Block with design service settings
+  @example
+  {% render 'design-service', product: product, section_id: section.id, block: block %}
+{% enddoc %}
+{%- liquid
+  assign ds = block.settings.ds_product
+  assign skip = false
+  if ds == blank or product.gift_card? or product.handle == ds.handle or product.handle == 'design-service'
+    assign skip = true
+  endif
+  assign form_id = 'ProductForm-' | append: section_id
+  assign uid = 'DS-' | append: section_id
+  assign variant = product.selected_or_first_available_variant
+-%}
+{%- unless skip -%}
+  <design-service
+    class="ds"
+    data-form-id="{{ form_id }}"
+    data-section="{{ section_id }}"
+    data-hide-qa="{{ block.settings.hide_qa }}"
+    data-product-title="{{ product.title | escape }}"
+    data-product-handle="{{ product.handle }}"
+    data-variant="{{ variant.id }}"
+  >
+    <script type="application/json" data-ds-data>
+      {
+        "money": {{ shop.money_format | json }},
+        "variants": [{%- for v in product.variants -%}{"id":{{ v.id }},"title":{{ v.title | json }},"price":{{ v.price }}}{%- unless forloop.last -%},{%- endunless -%}{%- endfor -%}],
+        "strings": {
+          "confirm": {{ 'design_service.confirm' | t | json }},
+          "upsell": {{ 'design_service.upsell' | t | json }},
+          "subtotal": {{ 'design_service.subtotal' | t | json }}
+        }
+      }
+    </script>
+    <div class="ds__card">
+      <div class="ds__head">
+        {{ 'design-service-icon.png' | asset_url | image_tag: alt: '', width: 56, height: 56, loading: 'lazy', class: 'ds__icon' }}
+        <div>
+          <p class="ds__hook">{{ 'design_service.hook' | t }}</p>
+          <p class="ds__sub">{{ 'design_service.sub' | t }}</p>
+        </div>
+      </div>
+      <fieldset class="ds__options">
+        <legend class="visually-hidden">{{ 'design_service.legend' | t }}</legend>
+        <label class="ds__opt">
+          <input type="radio" name="{{ uid }}-tier" value="" data-ds-tier="none" checked>
+          <span class="ds__text"><span class="ds__name">{{ 'design_service.none_name' | t }}</span> <span class="ds__line">{{ 'design_service.none_line' | t }}</span></span>
+          <span class="ds__price">{{ 0 | money_without_trailing_zeros }}</span>
+        </label>
+        {%- for v in ds.variants limit: 3 -%}
+          {%- liquid
+            assign sku = v.sku | upcase
+            case sku
+              when 'DS-TOUCHUP'
+                assign key = 'touchup'
+              when 'DS-REFRESH'
+                assign key = 'refresh'
+              when 'DS-FRESH'
+                assign key = 'fresh'
+              else
+                case forloop.index
+                  when 1
+                    assign key = 'touchup'
+                  when 2
+                    assign key = 'refresh'
+                  else
+                    assign key = 'fresh'
+                endcase
+            endcase
+            assign name_key = 'design_service.' | append: key | append: '_name'
+            assign line_key = 'design_service.' | append: key | append: '_line'
+          -%}
+          <label class="ds__opt">
+            <input
+              type="radio"
+              name="{{ uid }}-tier"
+              value="{{ v.id }}"
+              data-ds-tier="{{ key }}"
+              data-ds-name="{{ name_key | t | escape }}"
+              data-ds-price="{{ v.price }}"
+              {% unless v.available %}disabled{% endunless %}
+            >
+            <span class="ds__text"><span class="ds__name">{{ name_key | t }}</span> <span class="ds__line">{{ line_key | t }}</span></span>
+            <span class="ds__price">{{ v.price | money_without_trailing_zeros }}</span>
+          </label>
+        {%- endfor -%}
+      </fieldset>
+      <a class="ds__quote" href="{{ block.settings.quote_url | default: '/pages/design-services' }}?product={{ product.handle | url_encode }}#quote">{{ 'design_service.quote' | t }}</a>
+      <div class="ds__live" aria-live="polite">
+        <p class="ds__banner" data-ds-banner hidden></p>
+        <p class="ds__subtotal" data-ds-subtotal hidden></p>
+      </div>
+      <p class="ds__error" role="alert" data-ds-error hidden>{{ 'design_service.error' | t }}</p>
+    </div>
+  </design-service>
+  <script src="{{ 'design-service.js' | asset_url }}" type="module" defer="defer"></script>
+{%- endunless -%}
+{% stylesheet %}
+  .ds { display: block; margin-bottom: 1.6rem; color: #000; }
+  .ds__card { background: #fff; border: 3px solid #000; border-radius: 16px; box-shadow: 6px 6px 0 #F962DD; padding: 1.6rem; display: grid; gap: 1.2rem; }
+  .ds__head { display: flex; gap: 1.2rem; align-items: center; }
+  .ds__icon { width: 56px; height: 56px; flex: none; }
+  .ds__hook { font-size: 19px; font-weight: 800; margin: 0; line-height: 1.2; }
+  .ds__sub { font-size: 14px; margin: .2rem 0 0; }
+  .ds__options { border: 0; padding: 0; margin: 0; display: grid; gap: .8rem; }
+  .ds__opt { display: flex; align-items: center; gap: 1rem; min-height: 56px; padding: .8rem 1.2rem; border: 2px solid #000; border-radius: 12px; cursor: pointer; font-size: 14px; background: #fff; }
+  .ds__opt input { width: 2rem; height: 2rem; flex: none; accent-color: #000; margin: 0; }
+  .ds__opt input:focus-visible { outline: 3px solid #000; outline-offset: 2px; }
+  .ds__opt:hover, .ds__opt:focus-within { outline: 3px solid #27D6FF; outline-offset: 0; }
+  .ds__opt:has(input:checked) { outline: 3px solid #27D6FF; background: #E5F9FF; }
+  .ds__opt:has(input:disabled) { opacity: .5; cursor: not-allowed; }
+  .ds__text { flex: 1; }
+  .ds__name { font-weight: 800; }
+  .ds__price { flex: none; background: #FFF915; border: 2px solid #000; border-radius: 999px; padding: .2rem 1rem; font-weight: 800; }
+  .ds__quote { display: inline-flex; align-items: center; min-height: 44px; color: #000; font-weight: 700; font-size: 14px; }
+  .ds__quote:focus-visible { outline: 3px solid #000; outline-offset: 2px; }
+  .ds__banner { margin: 0; background: #FFF915; border: 2px solid #000; border-radius: 12px; padding: 1rem 1.2rem; font-size: 14px; }
+  .ds__subtotal { margin: .8rem 0 0; font-size: 14px; font-weight: 700; }
+  .ds__error { margin: 0; font-size: 14px; font-weight: 700; border-left: 4px solid #000; padding-left: .8rem; }
+  .ds [hidden] { display: none; }
+  @media (prefers-reduced-motion: reduce) { .ds * { transition: none !important; animation: none !important; } }
+{% endstylesheet %}

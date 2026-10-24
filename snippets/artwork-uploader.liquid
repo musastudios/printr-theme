@@ -89,24 +89,29 @@
       "qa_recommended": {{ 'artwork.qa_recommended' | t | json }},
       "pages_mismatch": {{ 'artwork.pages_mismatch' | t | json }},
       "fold_label": {{ 'artwork.fold_label' | t | json }},
-      "confirm_needed": {{ 'artwork.confirm_needed' | t | json }}
+      "confirm_needed": {{ 'artwork.confirm_needed' | t | json }},
+      "brief_help": {{ 'artwork.brief_help' | t | json }}
     }
   </script>
 
   <div class="au__summary">
     <p class="au__title h5">{{ 'artwork.title' | t }}</p>
-    <fieldset class="au__choice">
+    <fieldset class="au__choice" data-au-choice>
       <legend class="visually-hidden">{{ 'artwork.choice_legend' | t }}</legend>
       <label><input type="radio" name="au-mode-{{ section_id }}" value="upload" data-au-mode checked> {{ 'artwork.mode_upload' | t }}</label>
       <label><input type="radio" name="au-mode-{{ section_id }}" value="later" data-au-mode> {{ 'artwork.mode_later' | t }}</label>
     </fieldset>
+    <div class="au__later" data-au-brief hidden>
+      <p data-au-brief-text></p>
+      {%- if block.settings.qa_product != blank -%}<p data-au-brief-qa>{{ 'artwork.brief_qa_included' | t }}</p>{%- endif -%}
+    </div>
     <div class="au__later" data-au-later hidden>
       <p>{{ 'artwork.later_help' | t }}</p>
       <label class="au__confirm"><input type="checkbox" data-au-email-confirm> {{ 'artwork.later_confirm' | t }}</label>
       <input type="hidden" name="properties[Artwork]" value="Will send after checkout" form="{{ form_id }}" data-au-later-prop disabled>
     </div>
     {%- if block.settings.qa_product != blank -%}
-      <label class="au__qa">
+      <label class="au__qa" data-au-qa-row>
         <input type="checkbox" data-au-qa>
         <span><strong>{{ 'artwork.qa_label' | t }} (+{%- if block.settings.qa_product != blank -%}{{ block.settings.qa_product.price | money }}{%- endif -%})</strong> <span class="au__qa-badge" data-au-qa-badge hidden>{{ 'artwork.qa_recommended_badge' | t }}</span><br><small>{{ 'artwork.qa_help' | t }}</small></span>
       </label>
@@ -219,7 +224,7 @@
   .au__choice label, .au__qa { display: flex; gap: .8rem; align-items: flex-start; cursor: pointer; }
   .au__later { font-size: 1.4rem; display: grid; gap: .8rem; padding: 1rem; border-radius: var(--radius); background: rgba(0,0,0,.03); }
   .au__later p { margin: 0; }
-  .au__later[hidden], [data-au-upload-ui][hidden] { display: none; }
+  .au__later[hidden], .au__choice[hidden], .au__qa[hidden], [data-au-upload-ui][hidden] { display: none; }
   .au__qa { font-size: 1.4rem; border-top: 1px solid rgb(var(--color-border)); padding-top: .8rem; }
   .au__qa-badge { display: inline-block; padding: 0 .6rem; border-radius: 1rem; background: rgb(var(--color-accent)); color: #fff; font-size: 1.1rem; }
   .au__qa-badge[hidden] { display: none; }
