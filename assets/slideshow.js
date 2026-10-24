@@ -40,3 +40,4 @@
     if (idx > -1) host.swiper.slideToLoop(idx);
   });
 })();
+
