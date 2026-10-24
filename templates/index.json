@@ -36,8 +36,8 @@
         "hero_gym": {
           "type": "slide",
           "settings": {
-            "image": "shopify://shop_images/printr-hero-gym-desktop.jpg",
-            "image_mobile": "shopify://shop_images/printr-hero-gym-mobile.jpg",
+            "image": "shopify://shop_images/printr-hero-gym-desktop-v2.jpg",
+            "image_mobile": "shopify://shop_images/printr-hero-gym-mobile-v2.jpg",
             "color_scheme": "scheme-4",
             "style": "overlay",
             "position": "left",
@@ -91,8 +91,8 @@
         "hero_restaurant": {
           "type": "slide",
           "settings": {
-            "image": "shopify://shop_images/printr-hero-restaurant-desktop.jpg",
-            "image_mobile": "shopify://shop_images/printr-hero-restaurant-mobile.jpg",
+            "image": "shopify://shop_images/printr-hero-restaurant-desktop-v2.jpg",
+            "image_mobile": "shopify://shop_images/printr-hero-restaurant-mobile-v2.jpg",
             "color_scheme": "scheme-4",
             "style": "overlay",
             "position": "left",
@@ -146,8 +146,8 @@
         "hero_fastfood": {
           "type": "slide",
           "settings": {
-            "image": "shopify://shop_images/printr-hero-fastfood-desktop.jpg",
-            "image_mobile": "shopify://shop_images/printr-hero-fastfood-mobile.jpg",
+            "image": "shopify://shop_images/printr-hero-fastfood-desktop-v2.jpg",
+            "image_mobile": "shopify://shop_images/printr-hero-fastfood-mobile-v2.jpg",
             "color_scheme": "scheme-4",
             "style": "overlay",
             "position": "left",
@@ -158,7 +158,7 @@
               "type": "heading",
               "settings": {
                 "slug": "Fast food",
-                "heading": "Packaging & banners that sell",
+                "heading": "Banners & signs that sell",
                 "tag": "h2",
                 "size": "h1",
                 "alignment": "left"
@@ -167,7 +167,7 @@
             "t": {
               "type": "text",
               "settings": {
-                "text": "<p>Stickers, labels and banners that make every order pop.</p>",
+                "text": "<p>Feather flags, window banners and sidewalk signs that make every order pop.</p>",
                 "alignment": "left"
               }
             },
@@ -181,8 +181,8 @@
                 "b1": {
                   "type": "button",
                   "settings": {
-                    "label": "Shop stickers & labels",
-                    "link": "shopify://collections/stickers-labels",
+                    "label": "Shop banners",
+                    "link": "shopify://collections/banners",
                     "style": "primary"
                   }
                 }
@@ -201,8 +201,8 @@
         "hero_medical": {
           "type": "slide",
           "settings": {
-            "image": "shopify://shop_images/printr-hero-medical-desktop.jpg",
-            "image_mobile": "shopify://shop_images/printr-hero-medical-mobile.jpg",
+            "image": "shopify://shop_images/printr-hero-medical-desktop-v2.jpg",
+            "image_mobile": "shopify://shop_images/printr-hero-medical-mobile-v2.jpg",
             "color_scheme": "scheme-4",
             "style": "overlay",
             "position": "left",
@@ -256,8 +256,8 @@
         "hero_mix": {
           "type": "slide",
           "settings": {
-            "image": "shopify://shop_images/printr-hero-mix-desktop.jpg",
-            "image_mobile": "shopify://shop_images/printr-hero-mix-mobile.jpg",
+            "image": "shopify://shop_images/printr-hero-mix-desktop-v2.jpg",
+            "image_mobile": "shopify://shop_images/printr-hero-mix-mobile-v2.jpg",
             "color_scheme": "scheme-4",
             "style": "overlay",
             "position": "left",
