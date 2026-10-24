@@ -33,31 +33,197 @@
         "effect": "slide"
       },
       "blocks": {
-        "s1": {
+        "hero_gym": {
           "type": "slide",
           "settings": {
-            "image": "shopify://shop_images/printr-hero-cards.jpg",
+            "image": "shopify://shop_images/printr-hero-gym-desktop.jpg",
+            "image_mobile": "shopify://shop_images/printr-hero-gym-mobile.jpg",
             "color_scheme": "scheme-4",
             "style": "overlay",
-            "position": "center",
-            "overlay": 45
+            "position": "left",
+            "overlay": 35
           },
           "blocks": {
             "h": {
               "type": "heading",
               "settings": {
-                "slug": "Business cards",
-                "heading": "Cards that leave a mark",
+                "slug": "Gym & fitness",
+                "heading": "Gym merch & signage that pumps",
                 "tag": "h1",
                 "size": "h1",
-                "alignment": "center"
+                "alignment": "left"
               }
             },
             "t": {
               "type": "text",
               "settings": {
-                "text": "<p>Premium stocks, rounded or square corners, ready in as little as 48 hours.</p>",
-                "alignment": "center"
+                "text": "<p>Tees, banners and wall signs that keep your members fired up.</p>",
+                "alignment": "left"
+              }
+            },
+            "g": {
+              "type": "group",
+              "settings": {
+                "direction": "row",
+                "gap": 12
+              },
+              "blocks": {
+                "b1": {
+                  "type": "button",
+                  "settings": {
+                    "label": "Shop apparel",
+                    "link": "shopify://collections/apparel",
+                    "style": "primary"
+                  }
+                }
+              },
+              "block_order": [
+                "b1"
+              ]
+            }
+          },
+          "block_order": [
+            "h",
+            "t",
+            "g"
+          ]
+        },
+        "hero_restaurant": {
+          "type": "slide",
+          "settings": {
+            "image": "shopify://shop_images/printr-hero-restaurant-desktop.jpg",
+            "image_mobile": "shopify://shop_images/printr-hero-restaurant-mobile.jpg",
+            "color_scheme": "scheme-4",
+            "style": "overlay",
+            "position": "left",
+            "overlay": 35
+          },
+          "blocks": {
+            "h": {
+              "type": "heading",
+              "settings": {
+                "slug": "Restaurants",
+                "heading": "Menus worth savoring",
+                "tag": "h2",
+                "size": "h1",
+                "alignment": "left"
+              }
+            },
+            "t": {
+              "type": "text",
+              "settings": {
+                "text": "<p>Durable, beautiful menus and table tents your guests will remember.</p>",
+                "alignment": "left"
+              }
+            },
+            "g": {
+              "type": "group",
+              "settings": {
+                "direction": "row",
+                "gap": 12
+              },
+              "blocks": {
+                "b1": {
+                  "type": "button",
+                  "settings": {
+                    "label": "Shop brochures & menus",
+                    "link": "shopify://collections/brochures",
+                    "style": "primary"
+                  }
+                }
+              },
+              "block_order": [
+                "b1"
+              ]
+            }
+          },
+          "block_order": [
+            "h",
+            "t",
+            "g"
+          ]
+        },
+        "hero_fastfood": {
+          "type": "slide",
+          "settings": {
+            "image": "shopify://shop_images/printr-hero-fastfood-desktop.jpg",
+            "image_mobile": "shopify://shop_images/printr-hero-fastfood-mobile.jpg",
+            "color_scheme": "scheme-4",
+            "style": "overlay",
+            "position": "left",
+            "overlay": 35
+          },
+          "blocks": {
+            "h": {
+              "type": "heading",
+              "settings": {
+                "slug": "Fast food",
+                "heading": "Packaging & banners that sell",
+                "tag": "h2",
+                "size": "h1",
+                "alignment": "left"
+              }
+            },
+            "t": {
+              "type": "text",
+              "settings": {
+                "text": "<p>Stickers, labels and banners that make every order pop.</p>",
+                "alignment": "left"
+              }
+            },
+            "g": {
+              "type": "group",
+              "settings": {
+                "direction": "row",
+                "gap": 12
+              },
+              "blocks": {
+                "b1": {
+                  "type": "button",
+                  "settings": {
+                    "label": "Shop stickers & labels",
+                    "link": "shopify://collections/stickers-labels",
+                    "style": "primary"
+                  }
+                }
+              },
+              "block_order": [
+                "b1"
+              ]
+            }
+          },
+          "block_order": [
+            "h",
+            "t",
+            "g"
+          ]
+        },
+        "hero_medical": {
+          "type": "slide",
+          "settings": {
+            "image": "shopify://shop_images/printr-hero-medical-desktop.jpg",
+            "image_mobile": "shopify://shop_images/printr-hero-medical-mobile.jpg",
+            "color_scheme": "scheme-4",
+            "style": "overlay",
+            "position": "left",
+            "overlay": 35
+          },
+          "blocks": {
+            "h": {
+              "type": "heading",
+              "settings": {
+                "slug": "Medical & dental",
+                "heading": "Appointment cards patients keep",
+                "tag": "h2",
+                "size": "h1",
+                "alignment": "left"
+              }
+            },
+            "t": {
+              "type": "text",
+              "settings": {
+                "text": "<p>Clean, professional appointment and business cards for your practice.</p>",
+                "alignment": "left"
               }
             },
             "g": {
@@ -74,145 +240,65 @@
                     "link": "shopify://collections/business-cards",
                     "style": "primary"
                   }
-                },
-                "b2": {
+                }
+              },
+              "block_order": [
+                "b1"
+              ]
+            }
+          },
+          "block_order": [
+            "h",
+            "t",
+            "g"
+          ]
+        },
+        "hero_mix": {
+          "type": "slide",
+          "settings": {
+            "image": "shopify://shop_images/printr-hero-mix-desktop.jpg",
+            "image_mobile": "shopify://shop_images/printr-hero-mix-mobile.jpg",
+            "color_scheme": "scheme-4",
+            "style": "overlay",
+            "position": "left",
+            "overlay": 35
+          },
+          "blocks": {
+            "h": {
+              "type": "heading",
+              "settings": {
+                "slug": "One-stop print shop",
+                "heading": "Everything your brand prints",
+                "tag": "h2",
+                "size": "h1",
+                "alignment": "left"
+              }
+            },
+            "t": {
+              "type": "text",
+              "settings": {
+                "text": "<p>Cards, flyers, banners, signs and more, all in one place.</p>",
+                "alignment": "left"
+              }
+            },
+            "g": {
+              "type": "group",
+              "settings": {
+                "direction": "row",
+                "gap": 12
+              },
+              "blocks": {
+                "b1": {
                   "type": "button",
                   "settings": {
                     "label": "See all products",
                     "link": "shopify://collections/all-print-products",
-                    "style": "secondary"
-                  }
-                }
-              },
-              "block_order": [
-                "b1",
-                "b2"
-              ]
-            }
-          },
-          "block_order": [
-            "h",
-            "t",
-            "g"
-          ]
-        },
-        "s2": {
-          "type": "slide",
-          "settings": {
-            "image": "shopify://shop_images/printr-hero-large-format.jpg",
-            "color_scheme": "scheme-2",
-            "style": "overlay",
-            "position": "center",
-            "overlay": 45
-          },
-          "blocks": {
-            "h": {
-              "type": "heading",
-              "settings": {
-                "slug": "Large format",
-                "heading": "Go big with banners, flags and signs",
-                "tag": "h2",
-                "size": "h1",
-                "alignment": "center"
-              }
-            },
-            "t": {
-              "type": "text",
-              "settings": {
-                "text": "<p>Vivid, weather-ready prints for storefronts, trade shows and events.</p>",
-                "alignment": "center"
-              }
-            },
-            "g": {
-              "type": "group",
-              "settings": {
-                "direction": "row",
-                "gap": 12
-              },
-              "blocks": {
-                "b1": {
-                  "type": "button",
-                  "settings": {
-                    "label": "Shop large format",
-                    "link": "shopify://collections/banners",
                     "style": "primary"
                   }
-                },
-                "b2": {
-                  "type": "button",
-                  "settings": {
-                    "label": "Shop signs",
-                    "link": "shopify://collections/signs",
-                    "style": "secondary"
-                  }
                 }
               },
               "block_order": [
-                "b1",
-                "b2"
-              ]
-            }
-          },
-          "block_order": [
-            "h",
-            "t",
-            "g"
-          ]
-        },
-        "s3": {
-          "type": "slide",
-          "settings": {
-            "image": "shopify://shop_images/printr-hero-stickers.jpg",
-            "color_scheme": "scheme-4",
-            "style": "overlay",
-            "position": "center",
-            "overlay": 45
-          },
-          "blocks": {
-            "h": {
-              "type": "heading",
-              "settings": {
-                "slug": "Stickers & labels",
-                "heading": "Stick your brand everywhere",
-                "tag": "h2",
-                "size": "h1",
-                "alignment": "center"
-              }
-            },
-            "t": {
-              "type": "text",
-              "settings": {
-                "text": "<p>Custom die-cut stickers and roll labels in any shape and size.</p>",
-                "alignment": "center"
-              }
-            },
-            "g": {
-              "type": "group",
-              "settings": {
-                "direction": "row",
-                "gap": 12
-              },
-              "blocks": {
-                "b1": {
-                  "type": "button",
-                  "settings": {
-                    "label": "Shop stickers",
-                    "link": "shopify://collections/stickers-labels",
-                    "style": "primary"
-                  }
-                },
-                "b2": {
-                  "type": "button",
-                  "settings": {
-                    "label": "On sale",
-                    "link": "shopify://collections/sale",
-                    "style": "secondary"
-                  }
-                }
-              },
-              "block_order": [
-                "b1",
-                "b2"
+                "b1"
               ]
             }
           },
@@ -224,9 +310,11 @@
         }
       },
       "block_order": [
-        "s1",
-        "s2",
-        "s3"
+        "hero_gym",
+        "hero_restaurant",
+        "hero_fastfood",
+        "hero_medical",
+        "hero_mix"
       ]
     },
     "features": {
