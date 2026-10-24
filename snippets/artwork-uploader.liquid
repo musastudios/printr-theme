@@ -1,0 +1,227 @@
+{% doc %}
+  Artwork upload + client-side preflight studio. Files are attached to the line item
+  through native line item property file inputs associated with the product form.
+  @param {product} product - Product being configured
+  @param {string} section_id - Section id (used to target ProductForm-<section_id>)
+  @param {object} block - Block with uploader settings
+  @example
+  {% render 'artwork-uploader', product: product, section_id: section.id, block: block %}
+{% enddoc %}
+{%- liquid
+  assign form_id = 'ProductForm-' | append: section_id
+  assign uid = 'AU-' | append: section_id
+  assign mf = product.metafields.custom
+  assign sides = mf.sides.value | default: block.settings.sides | default: 1
+  assign sides = sides | plus: 0
+  assign bleed = mf.bleed_in.value | default: block.settings.bleed_in | default: 0.125
+  assign safe = mf.safe_in.value | default: block.settings.safe_in | default: 0.125
+  assign min_dpi = mf.min_dpi.value | default: 300
+  assign max_mb = block.settings.max_mb | default: 20
+  assign trim_w = mf.trim_width_in.value | default: 0
+  assign trim_h = mf.trim_height_in.value | default: 0
+  assign size_index = -1
+  for option in product.options_with_values
+    assign oname = option.name | downcase
+    if oname == 'size' or oname == 'tamaño' or oname == 'tamano'
+      assign size_index = forloop.index0
+    endif
+  endfor
+-%}
+<artwork-uploader
+  class="au"
+  data-form-id="{{ form_id }}"
+  data-sides="{{ sides }}"
+  data-bleed="{{ bleed }}"
+  data-safe="{{ safe }}"
+  data-min-dpi="{{ min_dpi }}"
+  data-max-mb="{{ max_mb }}"
+  data-trim-w="{{ trim_w }}"
+  data-trim-h="{{ trim_h }}"
+  data-size-index="{{ size_index }}"
+  data-variant="{{ product.selected_or_first_available_variant.id }}"
+>
+  <script type="application/json" data-au-variants>
+    [{%- for v in product.variants -%}{"id":{{ v.id }},"options":{{ v.options | json }}}{%- unless forloop.last -%},{%- endunless -%}{%- endfor -%}]
+  </script>
+  <script type="application/json" data-au-strings>
+    {
+      "files_uploaded": {{ 'artwork.files_uploaded' | t | json }},
+      "no_warnings": {{ 'artwork.no_warnings' | t | json }},
+      "missing_file": {{ 'artwork.missing_file' | t | json }},
+      "bad_format": {{ 'artwork.bad_format' | t | json }},
+      "too_large": {{ 'artwork.too_large' | t | json }},
+      "dpi_low": {{ 'artwork.dpi_low' | t | json }},
+      "dpi_too_low": {{ 'artwork.dpi_too_low' | t | json }},
+      "dpi_ok": {{ 'artwork.dpi_ok' | t | json }},
+      "orientation": {{ 'artwork.orientation' | t | json }},
+      "aspect": {{ 'artwork.aspect' | t | json }},
+      "cmyk": {{ 'artwork.cmyk' | t | json }},
+      "rgb": {{ 'artwork.rgb' | t | json }},
+      "pdf_size": {{ 'artwork.pdf_size' | t | json }},
+      "pdf_no_bleed": {{ 'artwork.pdf_no_bleed' | t | json }},
+      "pdf_ok": {{ 'artwork.pdf_ok' | t | json }},
+      "pdf_pages": {{ 'artwork.pdf_pages' | t | json }},
+      "pdf_failed": {{ 'artwork.pdf_failed' | t | json }},
+      "no_preview": {{ 'artwork.no_preview' | t | json }},
+      "no_template": {{ 'artwork.no_template' | t | json }},
+      "auto_rotate": {{ 'artwork.auto_rotate' | t | json }},
+      "front": {{ 'artwork.front' | t | json }},
+      "back": {{ 'artwork.back' | t | json }},
+      "template": {{ 'artwork.template' | t | json }},
+      "blocked": {{ 'artwork.blocked' | t | json }},
+      "confirm_needed": {{ 'artwork.confirm_needed' | t | json }}
+    }
+  </script>
+
+  <div class="au__summary">
+    <p class="au__title h5">{{ 'artwork.title' | t }}</p>
+    <p class="au__count" data-au-count></p>
+    <p class="au__template" data-au-template-label></p>
+    <button type="button" class="button au__open" data-au-open aria-haspopup="dialog" aria-controls="{{ uid }}-dialog">{{ 'artwork.open_studio' | t }}</button>
+    <p class="au__status" data-au-status aria-live="polite"></p>
+  </div>
+
+  <dialog class="au__dialog" id="{{ uid }}-dialog" aria-labelledby="{{ uid }}-heading">
+    <div class="au__head">
+      <h2 id="{{ uid }}-heading" class="h4">{{ 'artwork.studio_heading' | t }}</h2>
+      <button type="button" class="au__close" data-au-close aria-label="{{ 'artwork.close' | t }}">&times;</button>
+    </div>
+    <div class="au__grid">
+      {%- comment -%} Left: uploads {%- endcomment -%}
+      <section class="au__col au__uploads" aria-labelledby="{{ uid }}-uph">
+        <h3 id="{{ uid }}-uph" class="h6">{{ 'artwork.title' | t }}</h3>
+        <p class="au__count" data-au-count></p>
+        {%- for i in (1..2) -%}
+          {%- if i == 1 -%}{%- assign side = 'front' -%}{%- assign prop = 'Artwork Front' -%}{%- assign side_label = 'artwork.front' | t -%}{%- else -%}{%- assign side = 'back' -%}{%- assign prop = 'Artwork Back' -%}{%- assign side_label = 'artwork.back' | t -%}{%- endif -%}
+          <div class="au__tile" data-au-tile="{{ side }}" {% if i == 2 and sides < 2 %}hidden{% endif %}>
+            <label for="{{ uid }}-{{ side }}" class="au__tile-label">
+              <strong>{{ side_label }}</strong>
+              <span data-au-filename>{{ 'artwork.formats' | t }}</span>
+            </label>
+            <input
+              type="file"
+              id="{{ uid }}-{{ side }}"
+              class="au__file"
+              name="properties[{{ prop }}]"
+              form="{{ form_id }}"
+              accept=".pdf,.jpg,.jpeg,.png,.tif,.tiff,.eps,application/pdf,image/jpeg,image/png,image/tiff,application/postscript"
+              data-au-input="{{ side }}"
+            >
+            <button type="button" class="au__remove link" data-au-remove="{{ side }}" hidden>{{ 'artwork.remove' | t }}</button>
+          </div>
+        {%- endfor -%}
+        <input type="hidden" name="properties[Preflight]" form="{{ form_id }}" data-au-prop="summary" disabled>
+        <input type="hidden" name="properties[Artwork Fit]" form="{{ form_id }}" data-au-prop="fit" disabled>
+        <input type="hidden" name="properties[_preflight]" form="{{ form_id }}" data-au-prop="raw" disabled>
+      </section>
+
+      {%- comment -%} Center: toolbar + canvas {%- endcomment -%}
+      <section class="au__col au__stage" aria-label="{{ 'artwork.preview' | t }}">
+        <div class="au__toolbar" role="toolbar" aria-label="{{ 'artwork.tools' | t }}">
+          <button type="button" data-au-act="orientation">{{ 'artwork.tool_orientation' | t }}</button>
+          <button type="button" data-au-act="rotate">{{ 'artwork.tool_rotate' | t }}</button>
+          <button type="button" data-au-act="fit">{{ 'artwork.tool_fit' | t }}</button>
+          <label class="au__range">{{ 'artwork.tool_scale' | t }}
+            <input type="range" min="10" max="400" value="100" step="1" data-au-scale>
+          </label>
+          <button type="button" data-au-act="undo">{{ 'artwork.tool_undo' | t }}</button>
+          <button type="button" data-au-act="magnify" aria-pressed="false">{{ 'artwork.tool_magnifier' | t }}</button>
+          <label class="au__range">{{ 'artwork.tool_mask' | t }}
+            <input type="range" min="0" max="100" value="60" data-au-mask>
+          </label>
+          <button type="button" data-au-act="guides" aria-pressed="true">{{ 'artwork.tool_guides' | t }}</button>
+          <button type="button" data-au-act="cut" aria-pressed="true">{{ 'artwork.tool_cut' | t }}</button>
+          <button type="button" data-au-act="reset">{{ 'artwork.tool_reset' | t }}</button>
+        </div>
+        <div class="au__tabs" role="tablist">
+          <button type="button" role="tab" aria-selected="true" data-au-tab="front">{{ 'artwork.front' | t }}</button>
+          <button type="button" role="tab" aria-selected="false" data-au-tab="back" {% if sides < 2 %}hidden{% endif %}>{{ 'artwork.back' | t }}</button>
+          <button type="button" role="tab" aria-selected="false" data-au-tab="3d">{{ 'artwork.preview_3d' | t }}</button>
+        </div>
+        <ul class="au__legend">
+          <li><i class="au__sw au__sw--safe"></i>{{ 'artwork.legend_safe' | t }}</li>
+          <li><i class="au__sw au__sw--cut"></i>{{ 'artwork.legend_cut' | t }}</li>
+          <li><i class="au__sw au__sw--bleed"></i>{{ 'artwork.legend_bleed' | t }}</li>
+        </ul>
+        <div class="au__canvas-wrap" data-au-wrap>
+          <canvas class="au__canvas" data-au-canvas tabindex="0" role="img" aria-label="{{ 'artwork.canvas_label' | t }}"></canvas>
+          <div class="au__drop" data-au-drop>
+            <p>{{ 'artwork.drop_here' | t }}</p>
+            <button type="button" class="button button--secondary" data-au-browse>{{ 'artwork.browse' | t }}</button>
+          </div>
+        </div>
+        <div class="au__zoom">
+          <label>{{ 'artwork.zoom' | t }} <input type="range" min="50" max="300" value="100" data-au-zoom></label>
+          <output data-au-zoom-out>100%</output>
+        </div>
+        <p class="au__hint">{{ 'artwork.drag_hint' | t }}</p>
+      </section>
+
+      {%- comment -%} Right: preflight {%- endcomment -%}
+      <section class="au__col au__preflight" aria-labelledby="{{ uid }}-pfh">
+        <h3 id="{{ uid }}-pfh" class="h6">{{ 'artwork.preflight' | t }} <span class="au__badge" data-au-badge>0</span></h3>
+        <ul class="au__warnings" data-au-warnings aria-live="polite" aria-relevant="all"></ul>
+      </section>
+    </div>
+    <div class="au__foot">
+      <p>{{ 'artwork.production_note' | t }}</p>
+      <label class="au__confirm"><input type="checkbox" data-au-confirm> {{ 'artwork.print_as_is' | t }}</label>
+      <button type="button" class="button" data-au-close>{{ 'artwork.done' | t }}</button>
+    </div>
+  </dialog>
+</artwork-uploader>
+<script src="{{ 'artwork-uploader.js' | asset_url }}" type="module" defer="defer"></script>
+{% stylesheet %}
+  .au { display: block; margin-bottom: 1.6rem; }
+  .au__summary { border: 1px solid rgb(var(--color-border)); border-radius: var(--radius); padding: 1.6rem; display: grid; gap: .8rem; }
+  .au__title, .au__count, .au__template, .au__status { margin: 0; }
+  .au__count, .au__template { font-size: 1.4rem; opacity: .8; }
+  .au__status:empty { display: none; }
+  .au__status { font-size: 1.4rem; color: rgb(var(--color-sale)); }
+  .au__dialog { width: min(140rem, 100vw); max-width: 100vw; max-height: 100dvh; height: 100dvh; padding: 0; border: 0; background: rgb(var(--color-background)); color: rgb(var(--color-foreground)); }
+  .au__dialog::backdrop { background: rgba(0,0,0,.5); }
+  .au__head, .au__foot { display: flex; align-items: center; gap: 1.6rem; padding: 1.2rem 2rem; border-bottom: 1px solid rgb(var(--color-border)); }
+  .au__head h2 { margin: 0; flex: 1; }
+  .au__foot { border-bottom: 0; border-top: 1px solid rgb(var(--color-border)); flex-wrap: wrap; font-size: 1.4rem; }
+  .au__foot p { flex: 1 1 30rem; margin: 0; }
+  .au__close { background: none; border: 0; font-size: 2.8rem; line-height: 1; cursor: pointer; color: inherit; min-width: 4.4rem; min-height: 4.4rem; }
+  .au__grid { display: grid; grid-template-columns: 24rem 1fr 28rem; gap: 1.6rem; padding: 1.6rem 2rem; overflow: auto; height: calc(100dvh - 15rem); }
+  .au__col h3 { margin-top: 0; }
+  .au__tile { border: 2px dashed rgb(var(--color-border)); border-radius: var(--radius); padding: 1.2rem; margin-bottom: 1.2rem; position: relative; }
+  .au__tile.is-done { border-style: solid; border-color: rgb(var(--color-accent)); }
+  .au__tile-label { display: grid; gap: .4rem; cursor: pointer; font-size: 1.3rem; word-break: break-all; }
+  .au__file { width: 100%; margin-top: .8rem; font-size: 1.3rem; }
+  .au__file:focus-visible, .au button:focus-visible, .au__canvas:focus-visible { outline: 2px solid rgb(var(--color-accent)); outline-offset: 2px; }
+  .au__toolbar { display: flex; flex-wrap: wrap; gap: .6rem; margin-bottom: 1rem; }
+  .au__toolbar button, .au__tabs button { border: 1px solid rgb(var(--color-border)); background: rgb(var(--color-background)); color: inherit; border-radius: var(--radius-button); padding: .6rem 1rem; font-size: 1.3rem; cursor: pointer; min-height: 3.6rem; }
+  .au__toolbar button[aria-pressed="true"], .au__tabs button[aria-selected="true"] { background: rgb(var(--color-foreground)); color: rgb(var(--color-background)); }
+  .au__range { display: inline-flex; align-items: center; gap: .6rem; font-size: 1.3rem; }
+  .au__range input { width: 9rem; }
+  .au__tabs { display: flex; gap: .6rem; }
+  .au__legend { list-style: none; display: flex; flex-wrap: wrap; gap: 1.6rem; padding: 0; margin: 1rem 0; font-size: 1.3rem; }
+  .au__sw { display: inline-block; width: 1.6rem; height: 0; border-top: 2px dashed; vertical-align: middle; margin-right: .6rem; }
+  .au__sw--safe { border-color: #1e6bff; }
+  .au__sw--cut { border-color: #e0102b; border-top-style: solid; }
+  .au__sw--bleed { border-color: #000; }
+  .au__canvas-wrap { position: relative; background: repeating-conic-gradient(rgba(0,0,0,.05) 0 25%, transparent 0 50%) 0 0 / 20px 20px; border-radius: var(--radius); min-height: 32rem; display: grid; place-items: center; overflow: hidden; perspective: 1200px; }
+  .au__canvas { max-width: 100%; touch-action: none; cursor: grab; transition: transform .4s ease; }
+  .au__canvas-wrap.is-3d .au__canvas { transform: rotateX(18deg) rotateY(-24deg); box-shadow: 20px 30px 40px rgba(0,0,0,.25); }
+  .au__drop { position: absolute; inset: 0; display: grid; place-content: center; text-align: center; gap: 1rem; }
+  .au__drop[hidden] { display: none; }
+  .au__canvas-wrap.is-over { outline: 3px dashed rgb(var(--color-accent)); }
+  .au__zoom { display: flex; gap: 1rem; align-items: center; font-size: 1.3rem; margin-top: 1rem; }
+  .au__hint { font-size: 1.2rem; opacity: .7; }
+  .au__badge { display: inline-block; min-width: 2.4rem; padding: 0 .6rem; border-radius: 1.2rem; background: rgb(var(--color-sale)); color: #fff; text-align: center; font-size: 1.2rem; }
+  .au__warnings { list-style: none; padding: 0; margin: 0; display: grid; gap: .8rem; font-size: 1.3rem; }
+  .au__warnings li { padding: .8rem 1rem; border-left: 4px solid; border-radius: 4px; background: rgba(0,0,0,.03); }
+  .au__warnings .is-error { border-color: #e0102b; }
+  .au__warnings .is-warning { border-color: #f0a500; }
+  .au__warnings .is-info { border-color: #1e6bff; }
+  .au__warnings .is-ok { border-color: #1a9d55; }
+  .au__warnings button { margin-top: .6rem; font-size: 1.2rem; }
+  .au__confirm { display: inline-flex; gap: .8rem; align-items: center; font-weight: 600; }
+  @media (max-width: 989px) {
+    .au__grid { grid-template-columns: 1fr; height: auto; max-height: calc(100dvh - 18rem); }
+    .au__stage { order: -1; }
+  }
+{% endstylesheet %}

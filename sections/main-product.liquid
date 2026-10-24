@@ -52,6 +52,8 @@
             <div {{ block.shopify_attributes }}>{% render 'tier-pricing', product: product, variant: variant %}</div>
           {%- when 'buy_buttons' -%}
             <div id="BuyBlock-{{ section.id }}" {{ block.shopify_attributes }}>{% render 'product-buy', variant: variant, section_id: section.id, show_artwork: block.settings.show_artwork, show_dynamic_checkout: block.settings.show_dynamic_checkout %}</div>
+          {%- when 'artwork_uploader' -%}
+            <div {{ block.shopify_attributes }}>{% render 'artwork-uploader', product: product, section_id: section.id, block: block %}</div>
           {%- when 'turnaround' -%}
             <p class="product__turnaround" {{ block.shopify_attributes }}>{% render 'icon', name: 'clock' %}<span><strong>{{ 'products.product.turnaround' | t }}:</strong> {{ product.metafields.custom.turnaround | default: block.settings.text }}</span></p>
           {%- when 'description' -%}
@@ -153,6 +155,13 @@
     { "type": "buy_buttons", "name": "Buy buttons", "limit": 1, "settings": [
       { "type": "checkbox", "id": "show_artwork", "label": "Show artwork notes field", "default": true },
       { "type": "checkbox", "id": "show_dynamic_checkout", "label": "Show dynamic checkout buttons", "default": true }
+    ] },
+    { "type": "artwork_uploader", "name": "Artwork uploader", "limit": 1, "settings": [
+      { "type": "paragraph", "content": "Place above Buy buttons. Product metafields custom.trim_width_in, trim_height_in, bleed_in, safe_in, min_dpi and sides override these defaults; otherwise trim size is parsed from the variant Size option." },
+      { "type": "select", "id": "sides", "label": "Sides", "options": [{ "value": "1", "label": "1 (front only)" }, { "value": "2", "label": "2 (front and back)" }], "default": "1" },
+      { "type": "select", "id": "bleed_in", "label": "Bleed", "options": [{ "value": "0", "label": "0\"" }, { "value": "0.0625", "label": "1/16\"" }, { "value": "0.125", "label": "1/8\" (0.125)" }, { "value": "0.25", "label": "1/4\"" }], "default": "0.125" },
+      { "type": "select", "id": "safe_in", "label": "Safe margin", "options": [{ "value": "0", "label": "0\"" }, { "value": "0.0625", "label": "1/16\"" }, { "value": "0.125", "label": "1/8\" (0.125)" }, { "value": "0.25", "label": "1/4\"" }], "default": "0.125" },
+      { "type": "range", "id": "max_mb", "label": "Max file size", "min": 1, "max": 20, "step": 1, "unit": "MB", "default": 20, "info": "Shopify's native line item file upload rejects files over 20 MB." }
     ] },
     { "type": "description", "name": "Description", "limit": 1 },
     { "type": "pickup", "name": "Pickup availability", "limit": 1 },
