@@ -2,16 +2,50 @@
   "type": "header",
   "name": "Header group",
   "sections": {
-    "announcement": {
-      "type": "announcement-bar",
-      "blocks": {
-        "a1": { "type": "announcement", "settings": { "text": "Free shipping over $99 · 48-hour cards" } },
-        "a2": { "type": "announcement", "settings": { "text": "Volume pricing: the more you print, the less you pay" } }
-      },
-      "block_order": ["a1", "a2"],
-      "settings": { "color_scheme": "scheme-5", "show_localization": true }
+    "header": {
+      "type": "header",
+      "settings": {
+        "menu": "main-menu",
+        "sticky": true,
+        "color_scheme": "scheme-1",
+        "highlight_item": "On Sale",
+        "show_categories": true,
+        "search_placeholder": "What do you want to print?",
+        "store_link": "/pages/contact",
+        "store_label": "Find a store"
+      }
     },
-    "header": { "type": "header", "settings": { "menu": "main-menu", "sticky": true, "color_scheme": "scheme-1" } }
+    "topbar": {
+      "type": "topbar",
+      "blocks": {
+        "m1": {
+          "type": "message",
+          "settings": {
+            "text": "Free shipping over $99 · 48-hour business cards"
+          }
+        },
+        "m2": {
+          "type": "message",
+          "settings": {
+            "text": "Volume pricing: the more you print, the less you pay"
+          }
+        }
+      },
+      "block_order": [
+        "m1",
+        "m2"
+      ],
+      "settings": {
+        "menu": "footer",
+        "show_country": true,
+        "show_language": true,
+        "show_social": true,
+        "color_scheme": "scheme-5"
+      }
+    }
   },
-  "order": ["announcement", "header"]
+  "order": [
+    "topbar",
+    "header"
+  ]
 }

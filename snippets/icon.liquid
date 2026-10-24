@@ -1,6 +1,6 @@
 {% doc %}
   Inline SVG icon.
-  @param {string} name - Icon name: search, cart, account, menu, close, arrow-left, arrow-right, plus, minus, check, truck, print, clock, chat, heart, compare, grid, list, pin, store, eye, arrow-up, mail, lock, sparkle
+  @param {string} name - Icon name: search, cart, account, menu, close, arrow-left, arrow-right, chevron-down, facebook, instagram, tiktok, plus, minus, check, truck, print, clock, chat, heart, compare, grid, list, pin, store, eye, arrow-up, mail, lock, sparkle
   @example
   {% render 'icon', name: 'cart' %}
 {% enddoc %}
@@ -27,6 +27,10 @@
     {%- when 'pin' -%}<path d="M12 21s-6-5.7-6-11a6 6 0 0 1 12 0c0 5.3-6 11-6 11z"/><circle cx="12" cy="10" r="2"/>
     {%- when 'store' -%}<path d="M4 9l1.5-5h13L20 9M4 9h16v11H4zM9 20v-6h6v6"/>
     {%- when 'eye' -%}<path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/>
+    {%- when 'chevron-down' -%}<path d="m6 9 6 6 6-6"/>
+    {%- when 'facebook' -%}<path fill="currentColor" stroke="none" d="M13.5 21v-7.5h2.5l.4-3h-2.9V8.6c0-.9.3-1.5 1.5-1.5h1.5V4.4a20 20 0 0 0-2.2-.1c-2.2 0-3.7 1.3-3.7 3.8v2.4H8v3h2.6V21z"/>
+    {%- when 'instagram' -%}<rect x="3.5" y="3.5" width="17" height="17" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.2" cy="6.8" r="1" fill="currentColor" stroke="none"/>
+    {%- when 'tiktok' -%}<path fill="currentColor" stroke="none" d="M16.6 3c.3 2.2 1.6 3.6 3.9 3.8v2.6a7 7 0 0 1-3.9-1.2v6.1A5.7 5.7 0 1 1 11 8.7v2.7a3 3 0 1 0 2.1 2.9V3z"/>
     {%- when 'arrow-up' -%}<path d="M5 12l7-7 7 7M12 5v14"/>
     {%- when 'mail' -%}<rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/>
     {%- when 'lock' -%}<rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/>

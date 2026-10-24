@@ -231,6 +231,15 @@
     "lookbook": {
       "empty": "Add hotspots to tag products in this look.",
       "view": "View {{ title }}"
+    },
+    "header": {
+      "category": "Category",
+      "all_categories": "All Categories",
+      "sign_in": "Sign in / Register"
+    },
+    "category_circles": {
+      "heading": "Shop by category",
+      "sale": "Sale"
     }
   },
   "gift_cards": {

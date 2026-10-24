@@ -1,23 +1,45 @@
-<div class="slide color-{{ block.settings.color_scheme }}" {{ block.shopify_attributes }}>
+{%- liquid
+  assign img = block.settings.image
+  assign img_m = block.settings.image_mobile | default: img
+-%}
+<div class="slide swiper-slide slide--{{ block.settings.style }} slide--{{ block.settings.position }} color-{{ block.settings.color_scheme }}" style="--overlay: {{ block.settings.overlay | divided_by: 100.0 }};" {{ block.shopify_attributes }}>
   <div class="slide__media">
-    {%- if block.settings.image != blank -%}
-      {%- assign focal = block.settings.image.presentation.focal_point | prepend: 'object-position: ' -%}{{ block.settings.image | image_url: width: 2400 | image_tag: widths: '750, 1100, 1500, 2000, 2400', sizes: '100vw', loading: 'eager', fetchpriority: 'high', style: focal }}
+    {%- if img != blank -%}
+      {%- assign focal = img.presentation.focal_point | prepend: 'object-position: ' -%}
+      <picture>
+        {%- if block.settings.image_mobile != blank -%}<source media="(max-width: 749px)" srcset="{{ img_m | image_url: width: 750 }} 750w, {{ img_m | image_url: width: 1100 }} 1100w" sizes="100vw">{%- endif -%}
+        {{ img | image_url: width: 2400 | image_tag: widths: '750, 1100, 1500, 2000, 2400', sizes: '100vw', loading: 'eager', fetchpriority: 'high', style: focal, alt: img.alt | escape }}
+      </picture>
     {%- else -%}
       {{ 'hero-apparel-1' | placeholder_svg_tag: 'placeholder' }}
     {%- endif -%}
   </div>
   <div class="slide__content page-width">
-    <div class="slide__box crop">
+    <div class="slide__box">
       {% content_for 'blocks' %}
     </div>
   </div>
 </div>
 {% stylesheet %}
-  .slide { position: relative; min-height: clamp(48rem, 75vh, 82rem); display: grid; flex: 0 0 100%; scroll-snap-align: start; overflow: hidden; }
-  .slide__media { position: absolute; inset: 0; }
+  .slide { position: relative; min-height: clamp(42rem, var(--hero-h-mobile, 60vh), 80rem); display: grid; overflow: hidden; }
+  @media (min-width: 750px) { .slide { min-height: clamp(48rem, var(--hero-h, 70vh), 86rem); } }
+  .slide__media { position: absolute; inset: 0; z-index: 0; }
+  .slide__media picture { display: contents; }
   .slide__media img, .slide__media svg { width: 100%; height: 100%; object-fit: cover; }
-  .slide__content { position: relative; display: flex; align-items: flex-end; padding-block: 6rem; width: 100%; }
-  .slide__box { background: rgb(var(--color-background)); padding: clamp(2.4rem, 4vw, 4.8rem); border-radius: var(--radius); max-width: 64rem; display: flex; flex-direction: column; gap: 1.6rem; align-items: flex-start; }
+  .slide--overlay .slide__media::after { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(0,0,0,0) 30%, rgba(0,0,0,var(--overlay, .35))), rgba(0,0,0,calc(var(--overlay, .35) * .5)); }
+  .slide__content { position: relative; z-index: 1; display: flex; width: 100%; padding-block: clamp(4rem, 8vw, 9rem) clamp(7rem, 10vw, 10rem); }
+  .slide__box { display: flex; flex-direction: column; gap: 1.6rem; max-width: 72rem; }
+  .slide--center .slide__content { align-items: center; justify-content: center; }
+  .slide--center .slide__box { align-items: center; text-align: center; }
+  .slide--center .slide__box .block-heading { text-align: center !important; }
+  .slide--left .slide__content { align-items: flex-end; justify-content: flex-start; }
+  .slide--left .slide__box { align-items: flex-start; }
+  .slide--overlay .slide__box { background: none; color: #fff; text-shadow: 0 1px 12px rgba(0,0,0,.25); }
+  .slide--overlay .slide__box .slug { color: #fff; }
+  .slide--overlay .slide__box .button:not(.button--secondary) { background: #fff; color: #000; border-color: #fff; }
+  .slide--overlay .slide__box .button--secondary { color: #fff; border-color: #fff; }
+  .slide--card .slide__box { background: rgb(var(--color-background)); color: rgb(var(--color-foreground)); padding: clamp(2.4rem, 4vw, 4.8rem); border-radius: var(--radius); }
+  .slide .block-heading.h1 { font-size: clamp(3.4rem, 6vw, 7.2rem); line-height: 1.02; }
 {% endstylesheet %}
 {% schema %}
 {
@@ -25,8 +47,16 @@
   "blocks": [{ "type": "heading" }, { "type": "text" }, { "type": "button" }, { "type": "group" }],
   "settings": [
     { "type": "image_picker", "id": "image", "label": "Image" },
-    { "type": "color_scheme", "id": "color_scheme", "label": "Content box color scheme", "default": "scheme-1" }
+    { "type": "image_picker", "id": "image_mobile", "label": "Mobile image" },
+    { "type": "select", "id": "style", "label": "Content style", "options": [{ "value": "overlay", "label": "Text on image" }, { "value": "card", "label": "Colored card" }], "default": "overlay" },
+    { "type": "select", "id": "position", "label": "Content position", "options": [{ "value": "center", "label": "Center" }, { "value": "left", "label": "Bottom left" }], "default": "center" },
+    { "type": "range", "id": "overlay", "label": "Image overlay", "min": 0, "max": 80, "step": 5, "unit": "%", "default": 35 },
+    { "type": "color_scheme", "id": "color_scheme", "label": "Card color scheme", "default": "scheme-1" }
   ],
-  "presets": [{ "name": "Slide", "blocks": [{ "type": "heading" }, { "type": "text" }, { "type": "button" }] }]
+  "presets": [{ "name": "Slide", "blocks": [
+    { "type": "heading", "settings": { "slug": "Same-day printing", "heading": "Print that gets noticed", "tag": "h2", "size": "h1", "alignment": "center" } },
+    { "type": "text" },
+    { "type": "button", "settings": { "label": "Shop now" } }
+  ] }]
 }
 {% endschema %}

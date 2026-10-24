@@ -202,35 +202,7 @@ class PredictiveSearch extends HTMLElement {
 }
 customElements.define('predictive-search', PredictiveSearch);
 
-/* Slideshow (scroll-snap based) */
-class SlideShow extends HTMLElement {
-  connectedCallback() {
-    this.track = this.querySelector('[data-track]');
-    this.slides = [...this.track.children];
-    this.dots = [...this.querySelectorAll('[data-dot]')];
-    this.querySelector('[data-prev]')?.addEventListener('click', () => this.go(this.index - 1));
-    this.querySelector('[data-next]')?.addEventListener('click', () => this.go(this.index + 1));
-    this.dots.forEach((d, i) => d.addEventListener('click', () => this.go(i)));
-    this.index = 0;
-    this.track.addEventListener('scroll', () => {
-      const i = Math.round(this.track.scrollLeft / this.track.clientWidth);
-      if (i !== this.index) { this.index = i; this.sync(); }
-    }, { passive: true });
-    const delay = Number(this.dataset.autoplay);
-    if (delay && !matchMedia('(prefers-reduced-motion: reduce)').matches) {
-      this.timer = setInterval(() => { if (!this.matches(':hover, :focus-within')) this.go(this.index + 1); }, delay * 1000);
-    }
-    this.sync();
-  }
-  disconnectedCallback() { clearInterval(this.timer); }
-  go(i) {
-    const n = this.slides.length; this.index = (i + n) % n;
-    this.track.scrollTo({ left: this.slides[this.index].offsetLeft - this.track.offsetLeft, behavior: 'smooth' });
-    this.sync();
-  }
-  sync() { this.dots.forEach((d, i) => d.setAttribute('aria-current', i === this.index ? 'true' : 'false')); }
-}
-customElements.define('slide-show', SlideShow);
+/* Slideshow lives in assets/slideshow.js (Swiper) and loads only with the hero slider section. */
 
 /* Countdown timer */
 class CountdownTimer extends HTMLElement {

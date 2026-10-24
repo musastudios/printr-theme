@@ -1,39 +1,52 @@
-<slide-show class="slideshow" data-autoplay="{% if section.settings.autoplay %}{{ section.settings.speed }}{% endif %}" role="region" aria-roledescription="carousel" aria-label="{{ section.settings.label | escape }}">
-  <div class="slideshow__track" data-track>
-    {% content_for 'blocks' %}
-  </div>
-  {%- if section.blocks.size > 1 -%}
-    <div class="slideshow__controls page-width">
-      <button type="button" class="icon-button" data-prev>{% render 'icon', name: 'arrow-left' %}<span class="visually-hidden">{{ 'general.slider.previous' | t }}</span></button>
-      <div class="slideshow__dots">
-        {%- for block in section.blocks -%}
-          <button type="button" data-dot aria-label="{{ 'general.slider.go_to' | t: index: forloop.index }}"></button>
-        {%- endfor -%}
-      </div>
-      <button type="button" class="icon-button" data-next>{% render 'icon', name: 'arrow-right' %}<span class="visually-hidden">{{ 'general.slider.next' | t }}</span></button>
+{{ 'swiper-bundle.min.css' | asset_url | stylesheet_tag }}
+<script src="{{ 'swiper-bundle.min.js' | asset_url }}" defer="defer"></script>
+<script src="{{ 'slideshow.js' | asset_url }}" defer="defer"></script>
+<div class="hero-slider-wrap{% if section.settings.full_width %} is-full{% else %} page-width{% endif %}" style="--hero-h: {{ section.settings.height }}vh; --hero-h-mobile: {{ section.settings.height_mobile }}vh;">
+  <slide-show class="hero-slider swiper" data-autoplay="{% if section.settings.autoplay %}{{ section.settings.speed }}{% endif %}" data-effect="{{ section.settings.effect }}" role="region" aria-roledescription="carousel" aria-label="{{ section.settings.label | escape }}">
+    <div class="swiper-wrapper" data-track>
+      {% content_for 'blocks' %}
     </div>
-  {%- endif -%}
-</slide-show>
+    {%- if section.blocks.size > 1 -%}
+      <div class="hero-slider__controls">
+        <button type="button" class="hero-slider__arrow" data-prev>{% render 'icon', name: 'arrow-left' %}<span class="visually-hidden">{{ 'general.slider.previous' | t }}</span></button>
+        <div class="hero-slider__dots" data-pagination></div>
+        <button type="button" class="hero-slider__arrow" data-next>{% render 'icon', name: 'arrow-right' %}<span class="visually-hidden">{{ 'general.slider.next' | t }}</span></button>
+      </div>
+    {%- endif -%}
+  </slide-show>
+</div>
 {% stylesheet %}
-  .slideshow { display: block; position: relative; }
-  .slideshow__track { display: flex; overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none; }
-  .slideshow__track::-webkit-scrollbar { display: none; }
-  .slideshow__controls { position: absolute; bottom: 2rem; left: 0; right: 0; display: flex; justify-content: flex-end; align-items: center; gap: 1rem; color: #fff; pointer-events: none; }
-  .slideshow__controls > * { pointer-events: auto; }
-  .slideshow__dots { display: flex; gap: .8rem; }
-  .slideshow__dots button { width: 1.2rem; height: 1.2rem; border-radius: 50%; border: 2px solid #fff; background: transparent; padding: 0; cursor: pointer; }
-  .slideshow__dots button[aria-current=true] { background: var(--y); border-color: var(--y); }
+  .hero-slider-wrap { margin-block: clamp(1.2rem, 2vw, 2.4rem); }
+  .hero-slider-wrap.is-full { margin-block: 0; }
+  .hero-slider { position: relative; overflow: hidden; border-radius: calc(var(--radius, 12px) * 1.5); isolation: isolate; }
+  .hero-slider-wrap.is-full .hero-slider { border-radius: 0; }
+  .hero-slider .swiper-wrapper { display: flex; }
+  .hero-slider .swiper-wrapper > * { flex: 0 0 100%; width: 100%; min-width: 0; height: auto; }
+  .hero-slider .swiper-wrapper > * > .slide { height: 100%; }
+  .hero-slider:not(.swiper-initialized) .swiper-wrapper { overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none; }
+  .hero-slider:not(.swiper-initialized) .swiper-wrapper > * { scroll-snap-align: start; }
+  .hero-slider__controls { position: absolute; z-index: 3; left: 50%; bottom: clamp(1.6rem, 3vw, 2.8rem); transform: translateX(-50%); display: flex; align-items: center; gap: 1.2rem; color: #fff; }
+  .hero-slider__arrow { width: 3.6rem; height: 3.6rem; display: grid; place-items: center; border: 0; border-radius: 50%; background: transparent; color: inherit; cursor: pointer; transition: background .2s; }
+  .hero-slider__arrow:hover, .hero-slider__arrow:focus-visible { background: rgba(255,255,255,.2); }
+  .hero-slider__arrow .icon { width: 2rem; height: 2rem; filter: drop-shadow(0 1px 2px rgba(0,0,0,.4)); }
+  .hero-slider__dots { display: flex; align-items: center; gap: .8rem; }
+  .hero-slider__dots .swiper-pagination-bullet { width: .9rem; height: .9rem; margin: 0 !important; border-radius: 99px; background: #fff; opacity: .55; transition: width .3s, opacity .3s; box-shadow: 0 1px 3px rgba(0,0,0,.3); }
+  .hero-slider__dots .swiper-pagination-bullet-active { width: 4.4rem; opacity: 1; }
 {% endstylesheet %}
 {% schema %}
 {
-  "name": "Slideshow",
+  "name": "Hero slider",
   "blocks": [{ "type": "slide" }],
   "max_blocks": 6,
   "settings": [
     { "type": "text", "id": "label", "label": "Accessible label", "default": "Featured promotions" },
+    { "type": "checkbox", "id": "full_width", "label": "Full width (no rounded frame)", "default": false },
+    { "type": "range", "id": "height", "label": "Desktop height", "min": 40, "max": 90, "step": 5, "unit": "vh", "default": 70 },
+    { "type": "range", "id": "height_mobile", "label": "Mobile height", "min": 40, "max": 90, "step": 5, "unit": "vh", "default": 60 },
+    { "type": "select", "id": "effect", "label": "Transition", "options": [{ "value": "slide", "label": "Slide" }, { "value": "fade", "label": "Fade" }], "default": "slide" },
     { "type": "checkbox", "id": "autoplay", "label": "Autoplay", "default": true },
     { "type": "range", "id": "speed", "label": "Seconds per slide", "min": 3, "max": 10, "step": 1, "default": 6 }
   ],
-  "presets": [{ "name": "Slideshow", "blocks": [{ "type": "slide" }, { "type": "slide" }] }]
+  "presets": [{ "name": "Hero slider", "blocks": [{ "type": "slide" }, { "type": "slide" }] }]
 }
 {% endschema %}

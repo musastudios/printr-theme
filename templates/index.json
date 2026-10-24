@@ -6,7 +6,10 @@
         "s1": {
           "type": "slide",
           "settings": {
-            "color_scheme": "scheme-4"
+            "color_scheme": "scheme-4",
+            "style": "overlay",
+            "position": "center",
+            "overlay": 40
           },
           "blocks": {
             "h": {
@@ -15,7 +18,8 @@
                 "heading": "Cards that leave a mark",
                 "slug": "Business cards",
                 "tag": "h1",
-                "size": "h1"
+                "size": "h1",
+                "alignment": "center"
               }
             },
             "t": {
@@ -40,7 +44,10 @@
         "s2": {
           "type": "slide",
           "settings": {
-            "color_scheme": "scheme-2"
+            "color_scheme": "scheme-2",
+            "style": "overlay",
+            "position": "center",
+            "overlay": 40
           },
           "blocks": {
             "h": {
@@ -48,7 +55,8 @@
               "settings": {
                 "heading": "Flags & banners, full bleed",
                 "slug": "Large format",
-                "size": "h1"
+                "size": "h1",
+                "alignment": "center"
               }
             },
             "b": {
@@ -62,15 +70,50 @@
             "h",
             "b"
           ]
+        },
+        "s3": {
+          "type": "slide",
+          "settings": {
+            "style": "overlay",
+            "position": "center",
+            "overlay": 40
+          },
+          "blocks": {
+            "h": {
+              "type": "heading",
+              "settings": {
+                "slug": "Stickers & labels",
+                "heading": "Die-cut to any shape",
+                "tag": "h2",
+                "size": "h1",
+                "alignment": "center"
+              }
+            },
+            "b": {
+              "type": "button",
+              "settings": {
+                "label": "Shop stickers"
+              }
+            }
+          },
+          "block_order": [
+            "h",
+            "b"
+          ]
         }
       },
       "block_order": [
         "s1",
-        "s2"
+        "s2",
+        "s3"
       ],
       "settings": {
         "autoplay": true,
-        "speed": 6
+        "speed": 6,
+        "full_width": false,
+        "height": 70,
+        "height_mobile": 60,
+        "effect": "slide"
       }
     },
     "marquee": {
@@ -278,9 +321,21 @@
     "buttons_with_icon": {
       "type": "buttons-with-icon",
       "settings": {}
+    },
+    "circles": {
+      "type": "category-circles",
+      "settings": {
+        "heading": "",
+        "show_sale": true,
+        "sale_badge": "Sale",
+        "sale_label": "Sale items",
+        "sale_link": "/collections/all",
+        "color_scheme": "scheme-1"
+      }
     }
   },
   "order": [
+    "circles",
     "hero",
     "marquee",
     "collections",

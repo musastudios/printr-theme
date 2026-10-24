@@ -231,6 +231,15 @@
     "lookbook": {
       "empty": "Añade puntos para etiquetar productos en este look.",
       "view": "Ver {{ title }}"
+    },
+    "header": {
+      "category": "Categoría",
+      "all_categories": "Todas las categorías",
+      "sign_in": "Iniciar sesión / Registro"
+    },
+    "category_circles": {
+      "heading": "Compra por categoría",
+      "sale": "Oferta"
     }
   },
   "gift_cards": {
