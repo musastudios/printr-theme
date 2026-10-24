@@ -13,7 +13,8 @@
           "banners",
           "flags",
           "signs",
-          "apparel"
+          "apparel",
+          "all-print-products"
         ],
         "show_sale": true,
         "sale_badge": "Sale",
@@ -321,15 +322,18 @@
       "type": "multicolumn",
       "settings": {
         "heading": "",
-        "columns": 4,
+        "columns": 3,
         "compact": true,
-        "color_scheme": "scheme-1"
+        "color_scheme": "scheme-1",
+        "bg_image": "shopify://shop_images/printr-bg-halftone-cmyk.jpg",
+        "bg_overlay": 20
       },
       "blocks": {
         "f1": {
           "type": "icon-column",
           "settings": {
             "icon": "clock",
+            "image": "shopify://shop_images/printr-feat-fast-turnaround.jpg",
             "title": "Fast turnaround",
             "text": "<p>Most everyday print ready in 2 to 4 business days.</p>"
           }
@@ -338,6 +342,7 @@
           "type": "icon-column",
           "settings": {
             "icon": "print",
+            "image": "shopify://shop_images/printr-feat-premium-stocks.jpg",
             "title": "Premium stocks",
             "text": "<p>Silk, soft-touch, heavy cardstock and specialty finishes.</p>"
           }
@@ -346,15 +351,35 @@
           "type": "icon-column",
           "settings": {
             "icon": "check",
-            "title": "Free file check",
-            "text": "<p>We review every file for bleed, resolution and color.</p>"
+            "image": "shopify://shop_images/printr-feat-reprint-guarantee.jpg",
+            "title": "Reprint guarantee",
+            "text": "<p>If we make a print error, we reprint it at no cost.</p>"
           }
         },
         "f4": {
           "type": "icon-column",
           "settings": {
             "icon": "truck",
-            "title": "Volume pricing",
+            "image": "shopify://shop_images/printr-feat-free-shipping.jpg",
+            "title": "Free shipping",
+            "text": "<p>Free standard shipping on qualifying orders.</p>"
+          }
+        },
+        "f5": {
+          "type": "icon-column",
+          "settings": {
+            "icon": "chat",
+            "image": "shopify://shop_images/printr-feat-design-help.jpg",
+            "title": "Design help",
+            "text": "<p>Free file check on every order, plus design support when you need it.</p>"
+          }
+        },
+        "f6": {
+          "type": "icon-column",
+          "settings": {
+            "icon": "print",
+            "image": "shopify://shop_images/printr-feat-bulk-pricing.jpg",
+            "title": "Bulk pricing",
             "text": "<p>The more you print, the less you pay per piece.</p>"
           }
         }
@@ -363,7 +388,9 @@
         "f1",
         "f2",
         "f3",
-        "f4"
+        "f4",
+        "f5",
+        "f6"
       ]
     },
     "marquee": {
@@ -417,7 +444,7 @@
       "settings": {
         "heading": "Shop by product",
         "layout": "grid",
-        "columns": 4,
+        "columns": 5,
         "color_scheme": "scheme-1"
       },
       "blocks": {
@@ -468,6 +495,18 @@
           "settings": {
             "collection": "apparel"
           }
+        },
+        "c9": {
+          "type": "collection",
+          "settings": {
+            "collection": "flags"
+          }
+        },
+        "c10": {
+          "type": "collection",
+          "settings": {
+            "collection": "all-print-products"
+          }
         }
       },
       "block_order": [
@@ -478,7 +517,9 @@
         "c5",
         "c6",
         "c7",
-        "c8"
+        "c8",
+        "c9",
+        "c10"
       ]
     },
     "featured": {
@@ -499,7 +540,9 @@
         "heading": "Order more, save more on every print job",
         "button": "Shop deals",
         "link": "shopify://collections/sale",
-        "color_scheme": "scheme-3"
+        "color_scheme": "scheme-3",
+        "image": "shopify://shop_images/printr-promo-bulk.jpg",
+        "overlay": 75
       }
     },
     "featured_postcards": {
@@ -587,7 +630,7 @@
       ],
       "settings": {
         "color_scheme": "scheme-2",
-        "image": "shopify://shop_images/printr-promo.jpg"
+        "image": "shopify://shop_images/printr-editorial-process.jpg"
       }
     },
     "gallery": {
@@ -671,7 +714,9 @@
       "settings": {
         "heading": "Loved by local businesses",
         "columns": 3,
-        "color_scheme": "scheme-1"
+        "color_scheme": "scheme-1",
+        "bg_image": "shopify://shop_images/printr-bg-paper-texture.jpg",
+        "bg_overlay": 0
       },
       "blocks": {
         "q1": {
@@ -707,6 +752,105 @@
         "q2",
         "q3"
       ]
+    },
+    "promo_new": {
+      "type": "promo-banner",
+      "settings": {
+        "slug": "New customers",
+        "heading": "First order? Every job starts with a free digital proof",
+        "button": "Start printing",
+        "link": "shopify://collections/all-print-products",
+        "end_date": "",
+        "color_scheme": "scheme-1",
+        "image": "shopify://shop_images/printr-promo-new-customers.jpg",
+        "overlay": 60
+      }
+    },
+    "video_press": {
+      "type": "video-loop",
+      "settings": {
+        "video_desktop": "shopify://files/videos/printr-press-loop-1920x1080.mp4",
+        "video_mobile": "shopify://files/videos/printr-press-loop-1080x1350.mp4",
+        "poster_desktop": "shopify://shop_images/printr-press-loop-1920x1080-poster.jpg",
+        "poster_mobile": "shopify://shop_images/printr-press-loop-1080x1350-poster.jpg",
+        "alt": "Printing press running a CMYK job",
+        "ratio_desktop": "21 / 9",
+        "ratio_mobile": "4 / 5",
+        "full_width": false,
+        "slug": "On press",
+        "heading": "Printed in-house, checked sheet by sheet",
+        "text": "<p>Calibrated color and premium stocks on every run.</p>",
+        "button": "Shop all print",
+        "link": "shopify://collections/all-print-products",
+        "overlay": 55,
+        "color_scheme": "scheme-1"
+      }
+    },
+    "video_cards": {
+      "type": "video-loop",
+      "settings": {
+        "video_desktop": "shopify://files/videos/printr-cards-loop-1920x1080.mp4",
+        "video_mobile": "shopify://files/videos/printr-cards-loop-1080x1350.mp4",
+        "poster_desktop": "shopify://shop_images/printr-cards-loop-1920x1080-poster.jpg",
+        "poster_mobile": "shopify://shop_images/printr-cards-loop-1080x1350-poster.jpg",
+        "alt": "Stack of freshly printed business cards",
+        "ratio_desktop": "21 / 9",
+        "ratio_mobile": "4 / 5",
+        "full_width": false,
+        "slug": "Business cards",
+        "heading": "Cards that make the first impression",
+        "text": "<p>Matte, gloss and soft-touch, ready in days.</p>",
+        "button": "Shop business cards",
+        "link": "shopify://collections/business-cards",
+        "overlay": 55,
+        "color_scheme": "scheme-1"
+      }
+    },
+    "cta": {
+      "type": "rich-text",
+      "blocks": {
+        "h": {
+          "type": "heading",
+          "settings": {
+            "heading": "Ready when your deadline is",
+            "alignment": "center"
+          }
+        },
+        "t": {
+          "type": "text",
+          "settings": {
+            "text": "<p>Upload your files today and get a free proof before anything goes to press.</p>",
+            "alignment": "center"
+          }
+        },
+        "b": {
+          "type": "button",
+          "settings": {
+            "label": "Start your order",
+            "link": "shopify://collections/all-print-products"
+          }
+        }
+      },
+      "block_order": [
+        "h",
+        "t",
+        "b"
+      ],
+      "settings": {
+        "color_scheme": "scheme-5",
+        "bg_image": "shopify://shop_images/printr-bg-press-detail.jpg",
+        "bg_overlay": 35
+      }
+    },
+    "newsletter": {
+      "type": "newsletter",
+      "settings": {
+        "heading": "Get print deals in your inbox",
+        "text": "<p>New products, seasonal offers and file tips. No spam.</p>",
+        "color_scheme": "scheme-1",
+        "bg_image": "shopify://shop_images/printr-bg-ink-splash.jpg",
+        "bg_overlay": 25
+      }
     }
   },
   "order": [
@@ -717,10 +861,15 @@
     "collections",
     "featured",
     "promo",
+    "video_press",
     "featured_postcards",
     "tabs",
+    "promo_new",
     "iwt",
+    "video_cards",
     "gallery",
-    "testimonials"
+    "testimonials",
+    "cta",
+    "newsletter"
   ]
 }

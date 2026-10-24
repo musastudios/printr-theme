@@ -171,3 +171,9 @@ body:has(compare-bar:not([hidden])) .back-to-top{bottom:8rem}
 .brand-gradient .header__link.is-active{text-decoration:none;background-image:var(--brand-gradient);background-size:100% 3px;background-repeat:no-repeat;background-position:0 100%;padding-bottom:6px}
 .brand-gradient .button:not(.button--secondary):hover{box-shadow:0 0 0 2px rgb(var(--color-background)),0 0 0 4px var(--g2),4px 6px 0 4px var(--g3)}
 .brand-gradient .slideshow__dots button[aria-current=true]{background:var(--brand-gradient);border-color:transparent}
+
+/* Section background images */
+.has-bg { position: relative; isolation: isolate; overflow: hidden; }
+.section-bg { position: absolute; inset: 0; z-index: -1; pointer-events: none; }
+.section-bg__img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.section-bg__overlay { position: absolute; inset: 0; background: rgb(var(--color-background)); opacity: var(--overlay, .5); }

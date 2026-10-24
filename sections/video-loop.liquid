@@ -1,0 +1,145 @@
+{%- liquid
+  assign vd = section.settings.video_desktop
+  assign vm = section.settings.video_mobile | default: vd
+  assign pd = section.settings.poster_desktop | default: vd.preview_image
+  assign pm = section.settings.poster_mobile | default: vm.preview_image | default: pd
+  assign src_d = vd.sources | where: 'mime_type', 'video/mp4' | sort: 'height' | last
+  assign src_m = vm.sources | where: 'mime_type', 'video/mp4' | sort: 'height' | last
+  if section.index > 2
+    assign load = 'lazy'
+  else
+    assign load = 'eager'
+  endif
+-%}
+<div class="section video-loop-section color-{{ section.settings.color_scheme }}{% if section.settings.full_width %} video-loop-section--full{% endif %}">
+  <video-loop class="video-loop{% unless section.settings.full_width %} page-width{% endunless %}" data-src-desktop="{{ src_d.url }}" data-src-mobile="{{ src_m.url }}" data-poster-desktop="{% if pd %}{{ pd | image_url: width: 1920 }}{% endif %}" data-poster-mobile="{% if pm %}{{ pm | image_url: width: 1080 }}{% endif %}" style="--ratio-d: {{ section.settings.ratio_desktop }}; --ratio-m: {{ section.settings.ratio_mobile }}">
+    <div class="video-loop__frame">
+      {%- if pd != blank -%}
+        <picture class="video-loop__poster">
+          {%- if pm != blank -%}<source media="(max-width: 749px)" srcset="{{ pm | image_url: width: 540 }} 540w, {{ pm | image_url: width: 800 }} 800w, {{ pm | image_url: width: 1080 }} 1080w" sizes="100vw">{%- endif -%}
+          {{ pd | image_url: width: 1920 | image_tag: widths: '750, 1100, 1500, 1920', sizes: '100vw', loading: load, alt: section.settings.alt }}
+        </picture>
+      {%- endif -%}
+      {%- if src_d -%}
+        <video class="video-loop__video" muted loop playsinline preload="none" disablepictureinpicture aria-hidden="true" tabindex="-1"{% if pd %} poster="{{ pd | image_url: width: 1920 }}"{% endif %}></video>
+        <button type="button" class="video-loop__toggle" aria-pressed="false" aria-label="{{ 'general.video.pause' | t }}" data-label-pause="{{ 'general.video.pause' | t }}" data-label-play="{{ 'general.video.play' | t }}" hidden>
+          <svg class="video-loop__icon-pause" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path fill="currentColor" d="M6 4h4v16H6zM14 4h4v16h-4z"/></svg>
+          <svg class="video-loop__icon-play" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path fill="currentColor" d="M7 4l13 8-13 8z"/></svg>
+        </button>
+      {%- endif -%}
+      {%- if section.settings.heading != blank or section.settings.text != blank -%}
+        <div class="video-loop__content" style="--overlay: {{ section.settings.overlay | divided_by: 100.0 }}">
+          <div class="video-loop__inner">
+            {%- if section.settings.slug != blank -%}<span class="slug">{{ section.settings.slug | escape }}</span>{%- endif -%}
+            {%- if section.settings.heading != blank -%}<h2>{{ section.settings.heading | escape }}</h2>{%- endif -%}
+            {%- if section.settings.text != blank -%}<div class="rte">{{ section.settings.text }}</div>{%- endif -%}
+            {%- if section.settings.link != blank and section.settings.button != blank -%}<a class="button" href="{{ section.settings.link }}">{{ section.settings.button | escape }}</a>{%- endif -%}
+          </div>
+        </div>
+      {%- endif -%}
+    </div>
+  </video-loop>
+</div>
+{% stylesheet %}
+  .video-loop-section--full { padding-block: 0; }
+  .video-loop__frame { position: relative; overflow: hidden; aspect-ratio: var(--ratio-d, 16 / 9); background: rgb(var(--color-foreground)); border-radius: var(--radius); isolation: isolate; }
+  .video-loop-section--full .video-loop__frame { border-radius: 0; }
+  @media (max-width: 749px) { .video-loop__frame { aspect-ratio: var(--ratio-m, 4 / 5); } }
+  .video-loop__poster, .video-loop__poster img, .video-loop__video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; display: block; }
+  .video-loop__video { opacity: 0; transition: opacity .4s; }
+  .video-loop.is-playing .video-loop__video, .video-loop.is-paused .video-loop__video { opacity: 1; }
+  .video-loop__content { position: absolute; inset: 0; z-index: 1; display: flex; align-items: flex-end; padding: clamp(2rem, 5vw, 6rem); color: #fff; background: linear-gradient(0deg, rgba(0, 0, 0, var(--overlay, .5)) 0%, rgba(0, 0, 0, 0) 70%); }
+  .video-loop__inner { max-width: 60rem; display: grid; gap: 1.2rem; justify-items: start; }
+  .video-loop__inner h2 { margin: 0; color: inherit; }
+  .video-loop__inner .rte p { margin: 0; }
+  .video-loop__toggle { position: absolute; z-index: 2; right: 1.6rem; bottom: 1.6rem; width: 4.4rem; height: 4.4rem; display: grid; place-items: center; border: 0; border-radius: 50%; background: rgba(0, 0, 0, .55); color: #fff; cursor: pointer; }
+  .video-loop__toggle:focus-visible { outline: 2px solid #fff; outline-offset: 2px; }
+  .video-loop__toggle .video-loop__icon-play, .video-loop__toggle[aria-pressed="true"] .video-loop__icon-pause { display: none; }
+  .video-loop__toggle[aria-pressed="true"] .video-loop__icon-play { display: block; }
+{% endstylesheet %}
+{% javascript %}
+  if (!customElements.get('video-loop')) {
+    customElements.define('video-loop', class extends HTMLElement {
+      connectedCallback() {
+        this.video = this.querySelector('video');
+        this.toggle = this.querySelector('.video-loop__toggle');
+        if (!this.video) return;
+        this.mqMobile = window.matchMedia('(max-width: 749px)');
+        this.mqReduce = window.matchMedia('(prefers-reduced-motion: reduce)');
+        this.userPaused = false;
+        this.inView = false;
+        this.toggle.hidden = false;
+        this.toggle.addEventListener('click', () => {
+          this.userPaused = !this.userPaused;
+          if (this.userPaused) this.pause(); else this.play(true);
+        });
+        this.onReduce = () => { if (this.mqReduce.matches) { this.userPaused = true; this.pause(); } };
+        this.onSize = () => { if (this.video.src) { this.video.removeAttribute('src'); this.video.load(); this.update(); } };
+        this.mqReduce.addEventListener('change', this.onReduce);
+        this.mqMobile.addEventListener('change', this.onSize);
+        if (this.mqReduce.matches) { this.userPaused = true; this.setState(false); }
+        this.observer = new IntersectionObserver((entries) => {
+          this.inView = entries[0].isIntersecting;
+          this.update();
+        }, { rootMargin: '200px 0px' });
+        this.observer.observe(this);
+        document.addEventListener('visibilitychange', () => this.update());
+      }
+      disconnectedCallback() {
+        if (this.observer) this.observer.disconnect();
+        if (this.mqReduce) this.mqReduce.removeEventListener('change', this.onReduce);
+        if (this.mqMobile) this.mqMobile.removeEventListener('change', this.onSize);
+      }
+      source() {
+        const mobile = this.mqMobile.matches;
+        return { src: (mobile && this.dataset.srcMobile) || this.dataset.srcDesktop, poster: (mobile && this.dataset.posterMobile) || this.dataset.posterDesktop };
+      }
+      update() {
+        if (this.inView && !this.userPaused && !document.hidden) this.play(); else if (!this.userPaused) this.video.pause();
+      }
+      play(manual) {
+        const { src, poster } = this.source();
+        if (!src) return;
+        if (this.video.getAttribute('src') !== src) {
+          if (poster) this.video.poster = poster;
+          this.video.src = src;
+        }
+        this.video.muted = true;
+        const p = this.video.play();
+        if (p && p.then) p.then(() => this.setState(true)).catch(() => this.setState(false));
+        if (manual) this.setState(true);
+      }
+      pause() { this.video.pause(); this.setState(false); }
+      setState(playing) {
+        this.classList.toggle('is-playing', playing);
+        this.classList.toggle('is-paused', !playing && !!this.video.src);
+        this.toggle.setAttribute('aria-pressed', String(!playing));
+        this.toggle.setAttribute('aria-label', playing ? this.toggle.dataset.labelPause : this.toggle.dataset.labelPlay);
+      }
+    });
+  }
+{% endjavascript %}
+{% schema %}
+{
+  "name": "Video loop",
+  "settings": [
+    { "type": "video", "id": "video_desktop", "label": "Desktop video (16:9)" },
+    { "type": "video", "id": "video_mobile", "label": "Mobile video (4:5)", "info": "Optional. Falls back to the desktop video." },
+    { "type": "image_picker", "id": "poster_desktop", "label": "Desktop poster" },
+    { "type": "image_picker", "id": "poster_mobile", "label": "Mobile poster" },
+    { "type": "text", "id": "alt", "label": "Poster alt text", "default": "Printing in progress" },
+    { "type": "select", "id": "ratio_desktop", "label": "Desktop aspect ratio", "options": [{ "value": "16 / 9", "label": "16:9" }, { "value": "21 / 9", "label": "21:9" }, { "value": "2 / 1", "label": "2:1" }], "default": "16 / 9" },
+    { "type": "select", "id": "ratio_mobile", "label": "Mobile aspect ratio", "options": [{ "value": "4 / 5", "label": "4:5" }, { "value": "1 / 1", "label": "1:1" }, { "value": "9 / 16", "label": "9:16" }], "default": "4 / 5" },
+    { "type": "checkbox", "id": "full_width", "label": "Full width", "default": false },
+    { "type": "header", "content": "Text" },
+    { "type": "text", "id": "slug", "label": "Small label" },
+    { "type": "text", "id": "heading", "label": "Heading" },
+    { "type": "richtext", "id": "text", "label": "Text" },
+    { "type": "text", "id": "button", "label": "Button label" },
+    { "type": "url", "id": "link", "label": "Button link" },
+    { "type": "range", "id": "overlay", "label": "Text overlay", "min": 0, "max": 90, "step": 5, "unit": "%", "default": 55 },
+    { "type": "color_scheme", "id": "color_scheme", "label": "Color scheme", "default": "scheme-1" }
+  ],
+  "presets": [{ "name": "Video loop" }]
+}
+{% endschema %}

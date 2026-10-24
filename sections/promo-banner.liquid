@@ -1,4 +1,10 @@
-<div class="section color-{{ section.settings.color_scheme }}">
+<div class="section color-{{ section.settings.color_scheme }}{% if section.settings.image != blank %} has-bg promo-section--image{% endif %}">
+  {%- if section.settings.image != blank -%}
+    <div class="section-bg promo-bg" aria-hidden="true">
+      {{ section.settings.image | image_url: width: 2400 | image_tag: widths: '750, 1100, 1500, 1920, 2400', sizes: '100vw', loading: 'lazy', alt: '', class: 'section-bg__img' }}
+      {%- if section.settings.overlay > 0 -%}<span class="promo-bg__overlay" style="--overlay: {{ section.settings.overlay | divided_by: 100.0 }}"></span>{%- endif -%}
+    </div>
+  {%- endif -%}
   <div class="page-width promo crop" data-reveal>
     <div>
       <span class="slug">{{ section.settings.slug | escape }}</span>
@@ -20,6 +26,11 @@
   .countdown { display: flex; gap: 1.2rem; }
   .countdown span { display: grid; text-align: center; font-size: 1.2rem; text-transform: uppercase; letter-spacing: .1em; min-width: 7rem; padding: 1.4rem; border: 2px solid currentColor; border-radius: var(--radius); }
   .countdown b { font-family: var(--font-heading-family); font-size: 3.6rem; line-height: 1; }
+  .promo-section--image .promo { min-height: clamp(28rem, 33vw, 48rem); }
+  .promo-section--image .promo > div:first-child { max-width: 56rem; }
+  .promo-bg .section-bg__img { object-position: right center; }
+  .promo-bg__overlay { position: absolute; inset: 0; opacity: var(--overlay, .5); background: linear-gradient(90deg, rgb(var(--color-background)) 0%, rgba(var(--color-background), .85) 35%, rgba(var(--color-background), 0) 70%); }
+  @media (max-width: 749px) { .promo-bg__overlay { background: rgba(var(--color-background), .85); } }
 {% endstylesheet %}
 {% schema %}
 {
@@ -30,7 +41,9 @@
     { "type": "text", "id": "button", "label": "Button label", "default": "Start printing" },
     { "type": "url", "id": "link", "label": "Button link" },
     { "type": "text", "id": "end_date", "label": "Countdown end (YYYY-MM-DDTHH:MM)", "info": "Leave blank to hide the countdown" },
-    { "type": "color_scheme", "id": "color_scheme", "label": "Color scheme", "default": "scheme-3" }
+    { "type": "color_scheme", "id": "color_scheme", "label": "Color scheme", "default": "scheme-3" },
+    { "type": "image_picker", "id": "image", "label": "Background image", "info": "Wide art (3:1) with open space on the left for text." },
+    { "type": "range", "id": "overlay", "label": "Text-side overlay", "min": 0, "max": 100, "step": 5, "unit": "%", "default": 70 }
   ],
   "presets": [{ "name": "Promotion banner" }]
 }

@@ -1,4 +1,5 @@
-<div class="section color-{{ section.settings.color_scheme }}{% if section.settings.compact %} section--compact{% endif %}">
+<div class="section color-{{ section.settings.color_scheme }}{% if section.settings.bg_image != blank %} has-bg{% endif %}{% if section.settings.compact %} section--compact{% endif %}">
+  {%- render 'section-bg', image: section.settings.bg_image, overlay: section.settings.bg_overlay -%}
   <div class="page-width">
     {%- if section.settings.heading != blank -%}<h2 data-reveal>{{ section.settings.heading | escape }}</h2>{%- endif -%}
     <div class="grid multicolumn" style="--cols: {{ section.settings.columns }}; --cols-mobile: 1" data-reveal>
@@ -17,7 +18,10 @@
     { "type": "text", "id": "heading", "label": "Heading" },
     { "type": "range", "id": "columns", "label": "Columns", "min": 1, "max": 6, "step": 1, "default": 4 },
     { "type": "checkbox", "id": "compact", "label": "Compact spacing", "default": false },
-    { "type": "color_scheme", "id": "color_scheme", "label": "Color scheme", "default": "scheme-1" }
+    { "type": "color_scheme", "id": "color_scheme", "label": "Color scheme", "default": "scheme-1" },
+    { "type": "header", "content": "Background" },
+    { "type": "image_picker", "id": "bg_image", "label": "Background image" },
+    { "type": "range", "id": "bg_overlay", "label": "Overlay opacity", "min": 0, "max": 100, "step": 5, "unit": "%", "default": 60, "info": "Uses the color scheme background. Raise for text contrast." }
   ],
   "presets": [
     { "name": "Multicolumn", "blocks": [{ "type": "icon-column" }, { "type": "icon-column" }, { "type": "icon-column" }] },

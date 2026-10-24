@@ -1,0 +1,10 @@
+{%- comment -%}
+  Renders a lazy, responsive background image with an optional overlay.
+  Params: image (image object), overlay (0-100), sizes (string, optional)
+{%- endcomment -%}
+{%- if image != blank -%}
+  <div class="section-bg" aria-hidden="true">
+    {{ image | image_url: width: 2400 | image_tag: widths: '750, 1100, 1500, 1920, 2400', sizes: '100vw', loading: 'lazy', alt: '', class: 'section-bg__img' }}
+    {%- if overlay > 0 -%}<span class="section-bg__overlay" style="--overlay: {{ overlay | divided_by: 100.0 }}"></span>{%- endif -%}
+  </div>
+{%- endif -%}

@@ -1,3 +1,4 @@
+{%- if section.index > 2 -%}{%- assign circle_loading = 'lazy' -%}{%- else -%}{%- assign circle_loading = 'eager' -%}{%- endif -%}
 {%- liquid
   assign cols = section.settings.collections
 -%}
@@ -20,7 +21,7 @@
               <span class="circles__thumb">
                 {%- assign img = collection.featured_image | default: collection.products.first.featured_media.preview_image -%}
                 {%- if img != blank -%}
-                  {{ img | image_url: width: 240, height: 240, crop: 'center' | image_tag: loading: 'lazy', width: 120, height: 120, alt: '' }}
+                  {{ img | image_url: width: 240, height: 240, crop: 'center' | image_tag: loading: circle_loading, widths: '120, 240, 360', sizes: '120px', width: 120, height: 120, alt: '' }}
                 {%- else -%}
                   {%- assign n = forloop.index0 | modulo: 6 | plus: 1 -%}{{ 'collection-' | append: n | placeholder_svg_tag: 'placeholder' }}
                 {%- endif -%}

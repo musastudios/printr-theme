@@ -40,7 +40,11 @@
     },
     "yes": "Yes",
     "no": "No",
-    "remove": "Remove"
+    "remove": "Remove",
+    "video": {
+      "pause": "Pause video",
+      "play": "Play video"
+    }
   },
   "accessibility": {
     "skip_to_content": "Skip to content",
@@ -343,4 +347,3 @@
     }
   }
 }
-

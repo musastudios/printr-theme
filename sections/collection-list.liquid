@@ -1,3 +1,4 @@
+{%- assign cl_vw = 100 | divided_by: section.settings.columns -%}{%- capture cl_sizes -%}(min-width: 990px) {{ cl_vw }}vw, 50vw{%- endcapture -%}
 <div class="section color-{{ section.settings.color_scheme }}">
   <div class="page-width">
     <div class="section-head" data-reveal>
@@ -10,7 +11,7 @@
           <a href="{% if c != blank %}{{ c.url }}{% else %}#{% endif %}" class="collection-tile">
             <div class="media crop" style="--ratio: 1">
               {%- if c.featured_image -%}
-                {{ c.featured_image | image_url: width: 800 | image_tag: loading: 'lazy', widths: '300, 500, 800', sizes: '(min-width: 990px) 25vw, 50vw' }}
+                {{ c.featured_image | image_url: width: 800 | image_tag: loading: 'lazy', widths: '300, 500, 800', sizes: cl_sizes }}
               {%- else -%}
                 {{ 'collection-1' | placeholder_svg_tag: 'placeholder' }}
               {%- endif -%}
