@@ -306,7 +306,7 @@
         "type": "text",
         "id": "free_shipping_threshold",
         "label": "Free shipping threshold (store currency, 0 to hide)",
-        "default": "75"
+        "default": "0"
       },
       {
         "type": "checkbox",

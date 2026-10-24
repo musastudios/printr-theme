@@ -89,8 +89,8 @@
           "type": "icon-column",
           "settings": {
             "icon": "check",
-            "title": "Free file check",
-            "text": "<p>Every order proofed.</p>"
+            "title": "File setup help",
+            "text": "<p>Templates and tips for print-ready files.</p>"
           }
         }
       },
