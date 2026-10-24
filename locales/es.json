@@ -122,8 +122,8 @@
     "pickup": {
       "available_at": "Recogida disponible en {{ location }}",
       "unavailable_at": "Recogida no disponible por ahora en {{ location }}",
-      "ready": "Normalmente listo en 24 horas",
-      "not_ready": "Normalmente listo en 2–4 días",
+      "ready": "Normalmente listo en 4–5 días laborables",
+      "not_ready": "Normalmente listo en 5–8 días laborables",
       "check_other": "Ver otras tiendas"
     },
     "wishlist": {

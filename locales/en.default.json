@@ -122,8 +122,8 @@
     "pickup": {
       "available_at": "Pickup available at {{ location }}",
       "unavailable_at": "Pickup currently unavailable at {{ location }}",
-      "ready": "Usually ready in 24 hours",
-      "not_ready": "Usually ready in 2–4 days",
+      "ready": "Usually ready in 4–5 business days",
+      "not_ready": "Usually ready in 5–8 business days",
       "check_other": "Check other stores"
     },
     "wishlist": {
