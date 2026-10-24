@@ -17,6 +17,16 @@
         <small id="ArtworkHelp-{{ section_id }}">{{ 'products.product.upload.help' | t }}</small>
       </div>
     {%- endif -%}
+    {%- if variant.product.gift_card? -%}
+      <details class="gift-recipient">
+        <summary>{{ 'products.gift_card.send_to' | t }}</summary>
+        <input type="hidden" name="properties[__shopify_send_gift_card_to_recipient]" value="on">
+        <div class="field"><label for="GR-email-{{ section_id }}">{{ 'products.gift_card.email' | t }}</label><input type="email" id="GR-email-{{ section_id }}" name="properties[Recipient email]" value="{{ form.email }}" autocomplete="off"></div>
+        <div class="field"><label for="GR-name-{{ section_id }}">{{ 'products.gift_card.name' | t }}</label><input id="GR-name-{{ section_id }}" name="properties[Recipient name]" value="{{ form.name }}" autocomplete="off"></div>
+        <div class="field"><label for="GR-msg-{{ section_id }}">{{ 'products.gift_card.message' | t }}</label><textarea id="GR-msg-{{ section_id }}" name="properties[Message]" maxlength="200" rows="3">{{ form.message }}</textarea></div>
+        <div class="field"><label for="GR-date-{{ section_id }}">{{ 'products.gift_card.send_on' | t }}</label><input type="date" id="GR-date-{{ section_id }}" name="properties[Send on]" value="{{ form.send_on }}" pattern="\d{4}-\d{2}-\d{2}"></div>
+      </details>
+    {%- endif -%}
     <div class="product-buy__row">
       <quantity-input class="qty">
         <button type="button" name="minus">−<span class="visually-hidden">{{ 'products.product.decrease' | t }}</span></button>
@@ -35,6 +45,7 @@
       </button>
     </div>
     <p class="form-error" role="alert" data-form-error hidden></p>
+    <div class="product-buy__installments">{{ form | payment_terms }}</div>
     {%- if show_dynamic_checkout -%}
       {{ form | payment_button }}
     {%- endif -%}
@@ -43,6 +54,10 @@
 {% stylesheet %}
   .product-buy__row { display: flex; gap: 1rem; }
   .product-buy__submit { flex: 1; }
+  .product-buy__installments:empty { display: none; }
+  .product-buy__installments { margin-top: 1.2rem; font-size: 1.4rem; }
+  .gift-recipient { margin-bottom: 1.6rem; }
+  .gift-recipient summary { cursor: pointer; font-weight: 600; margin-bottom: 1.2rem; }
   .product-buy .shopify-payment-button { margin-top: 1rem; }
   .form-error { color: var(--color-sale); }
 {% endstylesheet %}

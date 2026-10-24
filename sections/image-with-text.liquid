@@ -2,7 +2,7 @@
   <div class="page-width iwt{% if section.settings.reverse %} iwt--reverse{% endif %}">
     <div class="media crop" style="--ratio: 1.1" data-reveal>
       {%- if section.settings.image != blank -%}
-        {{ section.settings.image | image_url: width: 1600 | image_tag: loading: 'lazy', widths: '500, 800, 1200, 1600', sizes: '(min-width: 990px) 50vw, 100vw' }}
+        {%- assign focal = section.settings.image.presentation.focal_point | prepend: 'object-position: ' -%}{{ section.settings.image | image_url: width: 1600 | image_tag: loading: 'lazy', widths: '500, 800, 1200, 1600', sizes: '(min-width: 990px) 50vw, 100vw', style: focal }}
       {%- else -%}
         {{ 'lifestyle-1' | placeholder_svg_tag: 'placeholder' }}
       {%- endif -%}

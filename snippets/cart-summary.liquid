@@ -28,15 +28,28 @@
       <textarea id="CartNote" name="note" form="CartForm" rows="3">{{ cart.note }}</textarea>
     </details>
   {%- endif -%}
+  {%- if cart.cart_level_discount_applications.size > 0 -%}
+    <ul class="cart-discounts" role="list">
+      {%- for discount in cart.cart_level_discount_applications -%}
+        <li>{% render 'icon', name: 'sparkle' %}<span>{{ discount.title | escape }}</span><span>-{{ discount.total_allocated_amount | money }}</span></li>
+      {%- endfor -%}
+    </ul>
+  {%- endif -%}
   <p class="cart-summary__total"><span>{{ 'sections.cart.subtotal' | t }}</span><strong>{{ cart.total_price | money_with_currency }}</strong></p>
-  <small>{{ 'sections.cart.taxes' | t }}</small>
+  <small>{%- if cart.taxes_included -%}{{ 'sections.cart.taxes_included' | t }}{%- else -%}{{ 'sections.cart.taxes' | t }}{%- endif -%}</small>
   <form action="{{ routes.cart_url }}" method="post" id="CartForm">
     <button type="submit" name="checkout" class="button button--full">{{ 'sections.cart.checkout' | t }}</button>
   </form>
+  {%- if additional_checkout_buttons and settings.cart_show_accelerated -%}
+    <div class="cart-summary__accelerated">{{ content_for_additional_checkout_buttons }}</div>
+  {%- endif -%}
   {%- if show_view_cart -%}<a class="link-button" href="{{ routes.cart_url }}">{{ 'sections.cart.view_cart' | t }}</a>{%- endif -%}
 </div>
 {% stylesheet %}
   .cart-summary { display: grid; gap: 1.2rem; }
+  .cart-discounts { list-style: none; margin: 0; padding: 0; display: grid; gap: .6rem; font-size: 1.4rem; }
+  .cart-discounts li { display: grid; grid-template-columns: auto 1fr auto; gap: .6rem; align-items: center; }
+  .cart-discounts .icon { width: 1.6rem; color: var(--m); }
   .ship-goal p { margin: 0 0 .6rem; font-size: 1.4rem; font-weight: 600; }
   .ship-goal__bar { height: .8rem; border-radius: 99px; background: rgba(var(--color-foreground), .1); overflow: hidden; }
   .ship-goal__bar span { display: block; height: 100%; background: linear-gradient(90deg, var(--c), var(--m), var(--y)); }

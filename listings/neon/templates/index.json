@@ -1,0 +1,299 @@
+{
+  "sections": {
+    "hero": {
+      "type": "slideshow",
+      "blocks": {
+        "s1": {
+          "type": "slide",
+          "settings": {
+            "color_scheme": "scheme-4"
+          },
+          "blocks": {
+            "h": {
+              "type": "heading",
+              "settings": {
+                "heading": "Cards that leave a mark",
+                "slug": "Business cards",
+                "tag": "h1",
+                "size": "h1"
+              }
+            },
+            "t": {
+              "type": "text",
+              "settings": {
+                "text": "<p>16pt premium stock, matte, gloss or soft-touch. From 100 to 10,000.</p>"
+              }
+            },
+            "b": {
+              "type": "button",
+              "settings": {
+                "label": "Design yours"
+              }
+            }
+          },
+          "block_order": [
+            "h",
+            "t",
+            "b"
+          ]
+        },
+        "s2": {
+          "type": "slide",
+          "settings": {
+            "color_scheme": "scheme-2"
+          },
+          "blocks": {
+            "h": {
+              "type": "heading",
+              "settings": {
+                "heading": "Flags & banners, full bleed",
+                "slug": "Large format",
+                "size": "h1"
+              }
+            },
+            "b": {
+              "type": "button",
+              "settings": {
+                "label": "Shop flags"
+              }
+            }
+          },
+          "block_order": [
+            "h",
+            "b"
+          ]
+        }
+      },
+      "block_order": [
+        "s1",
+        "s2"
+      ],
+      "settings": {
+        "autoplay": true,
+        "speed": 6
+      }
+    },
+    "marquee": {
+      "type": "marquee",
+      "blocks": {
+        "i1": {
+          "type": "item",
+          "settings": {
+            "text": "Business cards"
+          }
+        },
+        "i2": {
+          "type": "item",
+          "settings": {
+            "text": "Postcards"
+          }
+        },
+        "i3": {
+          "type": "item",
+          "settings": {
+            "text": "Flags"
+          }
+        },
+        "i4": {
+          "type": "item",
+          "settings": {
+            "text": "Flyers"
+          }
+        },
+        "i5": {
+          "type": "item",
+          "settings": {
+            "text": "Stickers"
+          }
+        }
+      },
+      "block_order": [
+        "i1",
+        "i2",
+        "i3",
+        "i4",
+        "i5"
+      ],
+      "settings": {
+        "color_scheme": "scheme-4",
+        "speed": 30
+      }
+    },
+    "collections": {
+      "type": "collection-list",
+      "blocks": {
+        "c1": {
+          "type": "collection"
+        },
+        "c2": {
+          "type": "collection"
+        },
+        "c3": {
+          "type": "collection"
+        },
+        "c4": {
+          "type": "collection"
+        }
+      },
+      "block_order": [
+        "c1",
+        "c2",
+        "c3",
+        "c4"
+      ],
+      "settings": {
+        "heading": "Shop by product",
+        "layout": "grid",
+        "columns": 4,
+        "color_scheme": "scheme-1"
+      }
+    },
+    "featured": {
+      "type": "featured-collection",
+      "settings": {
+        "slug": "Bestsellers",
+        "heading": "Most printed this week",
+        "limit": 8,
+        "columns": 4,
+        "color_scheme": "scheme-1"
+      }
+    },
+    "promo": {
+      "type": "promo-banner",
+      "settings": {
+        "color_scheme": "scheme-3"
+      }
+    },
+    "tabs": {
+      "type": "collection-tabs",
+      "blocks": {
+        "t1": {
+          "type": "tab",
+          "settings": {
+            "label": "Cards"
+          }
+        },
+        "t2": {
+          "type": "tab",
+          "settings": {
+            "label": "Large format"
+          }
+        }
+      },
+      "block_order": [
+        "t1",
+        "t2"
+      ],
+      "settings": {
+        "heading": "Explore our print range",
+        "color_scheme": "scheme-1"
+      }
+    },
+    "iwt": {
+      "type": "image-with-text",
+      "blocks": {
+        "h": {
+          "type": "heading",
+          "settings": {
+            "heading": "Proofed by humans, printed by pros",
+            "slug": "How it works"
+          }
+        },
+        "t": {
+          "type": "text",
+          "settings": {
+            "text": "<p>Upload your artwork, we check bleed, resolution and color, then send a free digital proof before anything hits the press.</p>"
+          }
+        },
+        "b": {
+          "type": "button",
+          "settings": {
+            "label": "Get a quote"
+          }
+        }
+      },
+      "block_order": [
+        "h",
+        "t",
+        "b"
+      ],
+      "settings": {
+        "color_scheme": "scheme-2"
+      }
+    },
+    "testimonials": {
+      "type": "multicolumn",
+      "blocks": {
+        "q1": {
+          "type": "testimonial"
+        },
+        "q2": {
+          "type": "testimonial",
+          "settings": {
+            "author": "Luis P.",
+            "role": "Realtor",
+            "quote": "<p>The quantity pricing made it easy to order 2,500 cards for the whole team.</p>"
+          }
+        },
+        "q3": {
+          "type": "testimonial",
+          "settings": {
+            "author": "Ana G.",
+            "role": "Event planner",
+            "quote": "<p>Our flags arrived vibrant and sturdy. Will order again.</p>"
+          }
+        }
+      },
+      "block_order": [
+        "q1",
+        "q2",
+        "q3"
+      ],
+      "settings": {
+        "heading": "Loved by local businesses",
+        "columns": 3,
+        "color_scheme": "scheme-1"
+      }
+    },
+    "spotlight_picks": {
+      "type": "spotlight-picks",
+      "settings": {}
+    },
+    "lookbook": {
+      "type": "lookbook",
+      "settings": {}
+    },
+    "favorite_products": {
+      "type": "favorite-products",
+      "settings": {}
+    },
+    "scrolling_gallery": {
+      "type": "scrolling-gallery",
+      "settings": {}
+    },
+    "comparison_table": {
+      "type": "comparison-table",
+      "settings": {}
+    },
+    "buttons_with_icon": {
+      "type": "buttons-with-icon",
+      "settings": {}
+    }
+  },
+  "order": [
+    "hero",
+    "marquee",
+    "collections",
+    "featured",
+    "promo",
+    "tabs",
+    "iwt",
+    "spotlight_picks",
+    "lookbook",
+    "favorite_products",
+    "scrolling_gallery",
+    "comparison_table",
+    "buttons_with_icon",
+    "testimonials"
+  ]
+}

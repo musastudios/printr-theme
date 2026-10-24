@@ -6,7 +6,7 @@
         <li {{ block.shopify_attributes }}>
           <a class="icon-pill" href="{{ block.settings.link | default: '#' }}">
             <span class="icon-pill__icon">
-              {%- if block.settings.image -%}{{ block.settings.image | image_url: width: 96 | image_tag: loading: 'lazy', alt: '' }}{%- else -%}{% render 'icon', name: block.settings.icon %}{%- endif -%}
+              {%- if block.settings.image -%}{%- assign focal = block.settings.image.presentation.focal_point | prepend: 'object-position: ' -%}{{ block.settings.image | image_url: width: 96 | image_tag: loading: 'lazy', alt: '', style: focal }}{%- else -%}{% render 'icon', name: block.settings.icon %}{%- endif -%}
             </span>
             {{ block.settings.label | escape }}
           </a>

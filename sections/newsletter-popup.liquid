@@ -5,7 +5,7 @@
       <dialog class="modal popup color-{{ section.settings.color_scheme }}" aria-labelledby="PopupTitle">
         <div class="popup__grid crop">
           {%- if section.settings.image -%}
-            <div class="popup__media">{{ section.settings.image | image_url: width: 900 | image_tag: loading: 'lazy', widths: '450, 900', sizes: '(min-width: 750px) 40rem, 0px', alt: '' }}</div>
+            <div class="popup__media">{%- assign focal = section.settings.image.presentation.focal_point | prepend: 'object-position: ' -%}{{ section.settings.image | image_url: width: 900 | image_tag: loading: 'lazy', widths: '450, 900', sizes: '(min-width: 750px) 40rem, 0px', alt: '', style: focal }}</div>
           {%- endif -%}
           <div class="popup__body">
             <button type="button" class="icon-button popup__close" data-close>{% render 'icon', name: 'close' %}<span class="visually-hidden">{{ 'general.close' | t }}</span></button>

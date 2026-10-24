@@ -58,9 +58,9 @@
         {% render 'icon', name: 'search' %}<span class="visually-hidden">{{ 'accessibility.search' | t }}</span>
       </button>
       {%- if shop.customer_accounts_enabled -%}
-        <a class="icon-button" href="{{ routes.account_url }}">
-          {% render 'icon', name: 'account' %}<span class="visually-hidden">{{ 'accessibility.account' | t }}</span>
-        </a>
+        <shopify-account class="header__account" menu="{{ section.settings.customer_account_menu }}">
+          <span slot="signed-out-avatar" class="icon-button">{% render 'icon', name: 'account' %}<span class="visually-hidden">{{ 'accessibility.account' | t }}</span></span>
+        </shopify-account>
       {%- endif -%}
       {%- if settings.enable_wishlist -%}
         <a class="icon-button" href="{{ settings.wishlist_page.url | default: '/pages/wishlist' }}">
@@ -137,7 +137,8 @@
   .header__link { font-weight: 600; text-decoration: none; cursor: pointer; list-style: none; padding: 2.4rem 0; display: block; }
   .header__link::-webkit-details-marker { display: none; }
   .header__link:hover, .header__link.is-active { text-decoration: underline; text-decoration-color: var(--m); text-decoration-thickness: 3px; text-underline-offset: 6px; }
-  .header__icons { display: flex; justify-content: flex-end; }
+  .header__icons { display: flex; justify-content: flex-end; align-items: center; }
+  .header__account { --shopify-account-signed-in-avatar-size: 32px; --shopify-account-signed-in-avatar-color-background: var(--m); display: inline-flex; min-width: 4.4rem; min-height: 4.4rem; align-items: center; justify-content: center; }
   .cart-bubble { position: absolute; top: 0; right: 0; min-width: 1.8rem; height: 1.8rem; border-radius: 99px; background: var(--color-cart-bubble); color: #fff; font-size: 1.1rem; display: grid; place-items: center; }
   .cart-bubble[hidden] { display: none; }
   .mega__panel { position: absolute; left: 0; right: 0; top: 100%; border-top: 1px solid rgb(var(--color-border)); box-shadow: 0 20px 40px rgba(0,0,0,.08); }
@@ -165,6 +166,7 @@
   "name": "Header",
   "class": "header-section",
   "settings": [
+    { "type": "link_list", "id": "customer_account_menu", "label": "Customer account menu", "default": "customer-account-main-menu" },
     { "type": "link_list", "id": "menu", "label": "Menu", "default": "main-menu" },
     { "type": "collection", "id": "mega_collection", "label": "Mega menu featured collection" },
     { "type": "checkbox", "id": "sticky", "label": "Sticky header", "default": true },

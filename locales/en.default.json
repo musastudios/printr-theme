@@ -92,7 +92,8 @@
       },
       "turnaround": "Production time",
       "quick_view": "Quick view {{ title }}",
-      "share": "Share"
+      "share": "Share",
+      "each": "each"
     },
     "compare": {
       "label": "Compare",
@@ -126,6 +127,13 @@
       "added": "Saved to wishlist",
       "removed": "Removed from wishlist",
       "empty": "Your wishlist is empty. Tap the heart on any product to save it here."
+    },
+    "gift_card": {
+      "send_to": "Send as a gift to a recipient",
+      "email": "Recipient email",
+      "name": "Recipient name",
+      "message": "Message (200 characters max)",
+      "send_on": "Send on"
     }
   },
   "collections": {
@@ -172,7 +180,8 @@
         "submit": "Calculate",
         "none": "No shipping rates for this address.",
         "free": "Free"
-      }
+      },
+      "taxes_included": "Taxes included. Shipping calculated at checkout."
     },
     "search": {
       "title": "Search results",
@@ -193,7 +202,13 @@
         "one": "{{ count }} comment",
         "other": "{{ count }} comments"
       },
-      "back": "Back to blog"
+      "back": "Back to blog",
+      "leave_comment": "Leave a comment",
+      "comment_moderated": "Thanks! Your comment will appear after it is approved.",
+      "comment_posted": "Thanks! Your comment was posted.",
+      "comment": "Comment",
+      "moderated_note": "Comments are reviewed before they are published.",
+      "post_comment": "Post comment"
     },
     "contact": {
       "name": "Name",
@@ -223,7 +238,11 @@
       "title": "Here's your gift card",
       "code": "Gift card code",
       "expired": "Expired",
-      "print": "Print"
+      "print": "Print",
+      "send_on": "Scheduled to send on {{ date }}",
+      "qr": "Gift card QR code",
+      "apple_wallet": "Add to Apple Wallet",
+      "shop_link": "Shop at {{ shop }}"
     }
   },
   "customer": {
@@ -271,7 +290,7 @@
     },
     "order": {
       "title": "Order {{ name }}",
-      "cancelled": "Cancelled on {{ date }}",
+      "cancelled": "Canceled on {{ date }}",
       "fulfilled": "Fulfilled {{ date }}",
       "track": "Track shipment",
       "product": "Product",

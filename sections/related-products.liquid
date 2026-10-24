@@ -7,7 +7,7 @@
       {%- endfor -%}
     </ul>
   {%- else -%}
-    <div data-recommendations="{{ routes.product_recommendations_url }}?section_id={{ section.id }}&product_id={{ product.id }}&limit=4&intent=related"></div>
+    <div data-recommendations="{{ routes.product_recommendations_url }}?section_id={{ section.id }}&product_id={{ product.id }}&limit=4&intent={{ section.settings.intent }}"></div>
     <script type="module">
       const el = document.querySelector('[data-recommendations]');
       if (el) fetch(el.dataset.recommendations).then((r) => r.text()).then((html) => {
@@ -20,6 +20,7 @@
 {% schema %}
 {
   "name": "Related products",
-  "settings": [{ "type": "text", "id": "heading", "label": "Heading", "default": "You may also like" }]
+  "settings": [
+    { "type": "select", "id": "intent", "label": "Recommendation type", "options": [{ "value": "related", "label": "Related products" }, { "value": "complementary", "label": "Complementary products" }], "default": "related", "info": "Complementary products are set with the Search and Discovery app." },{ "type": "text", "id": "heading", "label": "Heading", "default": "You may also like" }]
 }
 {% endschema %}

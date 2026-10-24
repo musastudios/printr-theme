@@ -6,11 +6,45 @@
     <div class="media crop" style="--ratio: {{ article.image.aspect_ratio }}">{{ article.image | image_url: width: 1800 | image_tag: widths: '600, 1200, 1800', sizes: '(min-width: 990px) 80rem, 100vw', fetchpriority: 'high' }}</div>
   {%- endif -%}
   <div class="rte article__body">{{ article.content }}</div>
+  {%- if blog.comments_enabled? -%}
+    <section class="article__comments" aria-labelledby="CommentsHeading">
+      <h2 id="CommentsHeading" class="h3">{{ 'sections.blog.comments' | t: count: article.comments_count }}</h2>
+      {%- paginate article.comments by 5 -%}
+        <ol class="comments" role="list">
+          {%- for comment in article.comments -%}
+            <li class="comment" id="{{ comment.id }}">
+              <div class="rte">{{ comment.content }}</div>
+              <p class="comment__meta"><strong>{{ comment.author }}</strong> · {{ comment.created_at | time_tag: format: 'date' }}</p>
+            </li>
+          {%- endfor -%}
+        </ol>
+        {% render 'pagination', paginate: paginate %}
+      {%- endpaginate -%}
+      {%- form 'new_comment', article -%}
+        <h3 class="h4">{{ 'sections.blog.leave_comment' | t }}</h3>
+        {%- if form.posted_successfully? -%}
+          <p class="form-success" role="status" tabindex="-1" autofocus>{% render 'icon', name: 'check' %}{%- if blog.moderated? -%}{{ 'sections.blog.comment_moderated' | t }}{%- else -%}{{ 'sections.blog.comment_posted' | t }}{%- endif -%}</p>
+        {%- endif -%}
+        {%- if form.errors -%}<div class="form-error" role="alert" tabindex="-1" autofocus>{{ form.errors | default_errors }}</div>{%- endif -%}
+        <div class="field-row">
+          <div class="field"><label for="CommentName">{{ 'sections.contact.name' | t }}</label><input id="CommentName" name="comment[author]" value="{{ form.author }}" autocomplete="name" required></div>
+          <div class="field"><label for="CommentEmail">{{ 'customer.login.email' | t }}</label><input type="email" id="CommentEmail" name="comment[email]" value="{{ form.email }}" autocomplete="email" required></div>
+        </div>
+        <div class="field"><label for="CommentBody">{{ 'sections.blog.comment' | t }}</label><textarea id="CommentBody" name="comment[body]" rows="5" required>{{ form.body }}</textarea></div>
+        {%- if blog.moderated? -%}<small>{{ 'sections.blog.moderated_note' | t }}</small>{%- endif -%}
+        <button class="button">{{ 'sections.blog.post_comment' | t }}</button>
+      {%- endform -%}
+    </section>
+  {%- endif -%}
   <a class="button button--secondary" href="{{ blog.url }}">{{ 'sections.blog.back' | t }}</a>
 </article>
 {% stylesheet %}
   .article { max-width: 84rem; }
   .article__body { margin-block: 4rem; font-size: 1.8rem; }
+  .article__comments { border-top: 1px solid rgb(var(--color-border)); padding-block: 4rem; }
+  .comments { list-style: none; padding: 0; display: grid; gap: 2rem; }
+  .comment { border-left: 3px solid var(--c); padding-left: 1.6rem; }
+  .comment__meta { font-size: 1.4rem; opacity: .75; }
 {% endstylesheet %}
 {% schema %}
 { "name": "Article", "settings": [] }

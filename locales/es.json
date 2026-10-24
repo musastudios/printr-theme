@@ -92,7 +92,8 @@
       },
       "turnaround": "Tiempo de producción",
       "quick_view": "Vista rápida de {{ title }}",
-      "share": "Compartir"
+      "share": "Compartir",
+      "each": "c/u"
     },
     "compare": {
       "label": "Comparar",
@@ -126,6 +127,13 @@
       "added": "Guardado en favoritos",
       "removed": "Quitado de favoritos",
       "empty": "Tu lista de favoritos está vacía. Toca el corazón de cualquier producto para guardarlo aquí."
+    },
+    "gift_card": {
+      "send_to": "Enviar como regalo a un destinatario",
+      "email": "Correo del destinatario",
+      "name": "Nombre del destinatario",
+      "message": "Mensaje (máx. 200 caracteres)",
+      "send_on": "Enviar el"
     }
   },
   "collections": {
@@ -172,7 +180,8 @@
         "submit": "Calcular",
         "none": "No hay tarifas de envío para esta dirección.",
         "free": "Gratis"
-      }
+      },
+      "taxes_included": "Impuestos incluidos. El envío se calcula al pagar."
     },
     "search": {
       "title": "Resultados de búsqueda",
@@ -193,7 +202,13 @@
         "one": "{{ count }} comentario",
         "other": "{{ count }} comentarios"
       },
-      "back": "Volver al blog"
+      "back": "Volver al blog",
+      "leave_comment": "Deja un comentario",
+      "comment_moderated": "¡Gracias! Tu comentario aparecerá cuando sea aprobado.",
+      "comment_posted": "¡Gracias! Tu comentario fue publicado.",
+      "comment": "Comentario",
+      "moderated_note": "Los comentarios se revisan antes de publicarse.",
+      "post_comment": "Publicar comentario"
     },
     "contact": {
       "name": "Nombre",
@@ -223,7 +238,11 @@
       "title": "Aquí está tu tarjeta de regalo",
       "code": "Código",
       "expired": "Vencida",
-      "print": "Imprimir"
+      "print": "Imprimir",
+      "send_on": "Programada para enviarse el {{ date }}",
+      "qr": "Código QR de la tarjeta de regalo",
+      "apple_wallet": "Añadir a Apple Wallet",
+      "shop_link": "Comprar en {{ shop }}"
     }
   },
   "customer": {

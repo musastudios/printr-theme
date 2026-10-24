@@ -8,7 +8,7 @@
     "theme_support_url": "https://kawascopy.com"
   },
   {
-    "name": "Logo & favicon",
+    "name": "Logo and favicon",
     "settings": [
       {
         "type": "image_picker",
@@ -299,6 +299,12 @@
         "id": "cart_show_note",
         "label": "Enable order notes (artwork instructions)",
         "default": true
+      },
+      {
+        "type": "checkbox",
+        "id": "cart_show_accelerated",
+        "label": "Show accelerated checkout buttons",
+        "default": true
       }
     ]
   },
@@ -309,8 +315,8 @@
         "type": "checkbox",
         "id": "enable_wishlist",
         "label": "Enable wishlist",
-        "info": "Saved in the shopper's browser. Create a page using the 'page.wishlist' template and link it in your menu.",
-        "default": true
+        "info": "Saved in the shopper's browser only. Create a page with the 'page.wishlist' template and link it in your main menu.",
+        "default": false
       },
       {
         "type": "page",

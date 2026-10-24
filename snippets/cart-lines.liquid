@@ -16,6 +16,8 @@
           {%- assign first_char = p.first | slice: 0 -%}
           {%- if p.last != blank and first_char != '_' -%}<p class="cart-line__meta">{{ p.first }}: {{ p.last }}</p>{%- endif -%}
         {%- endfor -%}
+        {%- for discount in item.line_level_discount_allocations -%}<p class="cart-line__meta cart-line__discount">{% render 'icon', name: 'sparkle' %}{{ discount.discount_application.title | escape }} (-{{ discount.amount | money }})</p>{%- endfor -%}
+        {%- if item.unit_price_measurement -%}<p class="cart-line__meta"><span class="visually-hidden">{{ 'products.product.unit_price' | t }}</span>{{ item.unit_price | money }}/{%- if item.unit_price_measurement.reference_value != 1 -%}{{ item.unit_price_measurement.reference_value }}{%- endif -%}{{ item.unit_price_measurement.reference_unit }}</p>{%- endif -%}
         {%- if item.selling_plan_allocation -%}<p class="cart-line__meta">{{ item.selling_plan_allocation.selling_plan.name }}</p>{%- endif -%}
         <div class="cart-line__row">
           <quantity-input class="qty">
@@ -30,6 +32,7 @@
       <div class="cart-line__price">
         {%- if item.original_line_price > item.final_line_price -%}<s>{{ item.original_line_price | money }}</s>{%- endif -%}
         <strong>{{ item.final_line_price | money }}</strong>
+        {%- if item.final_price != item.original_price -%}<small>{{ item.final_price | money }} / {{ 'products.product.each' | t }}</small>{%- endif -%}
       </div>
     </li>
   {%- endfor -%}

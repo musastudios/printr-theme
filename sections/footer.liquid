@@ -5,9 +5,9 @@
       <p class="footer__wordmark">{{ shop.name }}</p>
       {%- if section.settings.text != blank -%}<div class="rte">{{ section.settings.text }}</div>{%- endif -%}
       <ul class="footer__social" role="list">
-        {%- if settings.social_instagram_link != blank -%}<li><a href="{{ settings.social_instagram_link }}">{{ 'general.social.instagram' | t }}</a></li>{%- endif -%}
-        {%- if settings.social_facebook_link != blank -%}<li><a href="{{ settings.social_facebook_link }}">{{ 'general.social.facebook' | t }}</a></li>{%- endif -%}
-        {%- if settings.social_tiktok_link != blank -%}<li><a href="{{ settings.social_tiktok_link }}">{{ 'general.social.tiktok' | t }}</a></li>{%- endif -%}
+        {%- if settings.social_instagram_link != blank -%}<li><a href="{{ settings.social_instagram_link }}" class="footer__social-link"><svg aria-hidden="true" focusable="false" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor"/></svg><span class="visually-hidden">{{ 'general.social.instagram' | t }}</span></a></li>{%- endif -%}
+        {%- if settings.social_facebook_link != blank -%}<li><a href="{{ settings.social_facebook_link }}" class="footer__social-link"><svg aria-hidden="true" focusable="false" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 8h3V4h-3a4 4 0 0 0-4 4v3H7v4h3v6h4v-6h3l1-4h-4V8z"/></svg><span class="visually-hidden">{{ 'general.social.facebook' | t }}</span></a></li>{%- endif -%}
+        {%- if settings.social_tiktok_link != blank -%}<li><a href="{{ settings.social_tiktok_link }}" class="footer__social-link"><svg aria-hidden="true" focusable="false" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3v11a3.5 3.5 0 1 1-3-3.46M14 3c.5 2.5 2.5 4.5 5 5"/></svg><span class="visually-hidden">{{ 'general.social.tiktok' | t }}</span></a></li>{%- endif -%}
       </ul>
     </div>
     {%- for block in section.blocks -%}
@@ -42,7 +42,8 @@
     {%- endfor -%}
   </div>
   <div class="page-width footer__bottom">
-    <small>&copy; {{ 'now' | date: '%Y' }} {{ shop.name | link_to: routes.root_url }} · {{ powered_by_link }}</small>
+    {%- if section.settings.show_follow_on_shop -%}<div class="footer__follow">{{ shop | login_button: action: 'follow' }}</div>{%- endif -%}
+    <small>&copy; {{ 'now' | date: '%Y' }} {{ shop.name | link_to: routes.root_url }} · {{ powered_by_link | replace: '<a ', '<a rel="nofollow" ' }}</small>
     <ul class="footer__payments" role="list">
       {%- for type in shop.enabled_payment_types -%}
         <li>{{ type | payment_type_svg_tag: class: 'payment-icon' }}</li>
@@ -69,6 +70,7 @@
 {
   "name": "Footer",
   "settings": [
+    { "type": "checkbox", "id": "show_follow_on_shop", "label": "Show Follow on Shop", "info": "Customers can follow your store in the Shop app. Shop Pay must be enabled.", "default": true },
     { "type": "richtext", "id": "text", "label": "Brand text", "default": "<p>Print shop for business cards, flyers, flags and more.</p>" },
     { "type": "color_scheme", "id": "color_scheme", "label": "Color scheme", "default": "scheme-5" }
   ],

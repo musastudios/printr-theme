@@ -6,7 +6,7 @@
     <div class="lookbook lookbook--{{ section.settings.layout }}">
       <div class="lookbook__stage media crop" style="--ratio: {{ section.settings.image.aspect_ratio | default: 1.5 }}">
         {%- if section.settings.image -%}
-          {{ section.settings.image | image_url: width: 2000 | image_tag: loading: 'lazy', widths: '600, 900, 1200, 1600, 2000', sizes: '(min-width: 990px) 66vw, 100vw' }}
+          {%- assign focal = section.settings.image.presentation.focal_point | prepend: 'object-position: ' -%}{{ section.settings.image | image_url: width: 2000 | image_tag: loading: 'lazy', widths: '600, 900, 1200, 1600, 2000', sizes: '(min-width: 990px) 66vw, 100vw', style: focal }}
         {%- else -%}
           {{ 'lifestyle-1' | placeholder_svg_tag: 'placeholder' }}
         {%- endif -%}

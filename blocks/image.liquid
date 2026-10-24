@@ -1,6 +1,6 @@
 <div class="media crop" style="--ratio: {{ block.settings.ratio }}" {{ block.shopify_attributes }}>
   {%- if block.settings.image != blank -%}
-    {{ block.settings.image | image_url: width: 1600 | image_tag: loading: 'lazy', widths: '400, 800, 1200, 1600', sizes: '(min-width: 990px) 50vw, 100vw' }}
+    {%- assign focal = block.settings.image.presentation.focal_point | prepend: 'object-position: ' -%}{{ block.settings.image | image_url: width: 1600 | image_tag: loading: 'lazy', widths: '400, 800, 1200, 1600', sizes: '(min-width: 990px) 50vw, 100vw', style: focal }}
   {%- else -%}
     {{ 'image' | placeholder_svg_tag: 'placeholder' }}
   {%- endif -%}

@@ -1,7 +1,7 @@
 <div class="slide color-{{ block.settings.color_scheme }}" {{ block.shopify_attributes }}>
   <div class="slide__media">
     {%- if block.settings.image != blank -%}
-      {{ block.settings.image | image_url: width: 2400 | image_tag: widths: '750, 1100, 1500, 2000, 2400', sizes: '100vw', loading: 'eager', fetchpriority: 'high' }}
+      {%- assign focal = block.settings.image.presentation.focal_point | prepend: 'object-position: ' -%}{{ block.settings.image | image_url: width: 2400 | image_tag: widths: '750, 1100, 1500, 2000, 2400', sizes: '100vw', loading: 'eager', fetchpriority: 'high', style: focal }}
     {%- else -%}
       {{ 'hero-apparel-1' | placeholder_svg_tag: 'placeholder' }}
     {%- endif -%}

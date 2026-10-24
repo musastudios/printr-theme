@@ -7,7 +7,9 @@
     <div class="product__media" data-swap="media">
       {%- assign featured = variant.featured_media | default: product.featured_media -%}
       <div class="media crop product__main-media" style="--ratio: {{ featured.aspect_ratio | default: 1 }}">
-        {%- if featured -%}
+        {%- if featured and featured.media_type != 'image' -%}
+          {{ featured | media_tag: image_size: '1800x' }}
+        {%- elsif featured -%}
           {{ featured | image_url: width: 1800 | image_tag: widths: '600, 900, 1200, 1800', sizes: '(min-width: 990px) 55vw, 100vw', preload: true, fetchpriority: 'high' }}
         {%- else -%}
           {{ 'product-1' | placeholder_svg_tag: 'placeholder' }}
@@ -88,6 +90,8 @@
                 {%- endif -%}
               {%- endfor -%}
             </tabs-component>
+          {%- when 'custom_liquid' -%}
+            <div {{ block.shopify_attributes }}>{{ block.settings.custom_liquid }}</div>
           {%- when '@app' -%}
             {% render block %}
         {%- endcase -%}
@@ -152,7 +156,8 @@
     ] },
     { "type": "description", "name": "Description", "limit": 1 },
     { "type": "pickup", "name": "Pickup availability", "limit": 1 },
-    { "type": "actions", "name": "Wishlist, compare & share", "limit": 1 },
+    { "type": "custom_liquid", "name": "Custom Liquid", "settings": [{ "type": "liquid", "id": "custom_liquid", "label": "Custom Liquid", "info": "Add app snippets or other code." }] },
+    { "type": "actions", "name": "Compare and share", "limit": 1 },
     { "type": "tabs", "name": "Tabs", "settings": [
       { "type": "text", "id": "tab_1", "label": "Tab 1 heading", "default": "Details" },
       { "type": "checkbox", "id": "tab_1_use_description", "label": "Tab 1 uses product description", "default": true },

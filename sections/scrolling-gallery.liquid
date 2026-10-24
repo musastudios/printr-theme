@@ -8,7 +8,7 @@
             {%- if block.settings.link != blank and n == 1 -%}<a href="{{ block.settings.link }}">{%- endif -%}
             {%- if block.settings.image -%}
               {%- if n == 1 -%}{%- assign alt = block.settings.image.alt -%}{%- else -%}{%- assign alt = '' -%}{%- endif -%}
-              {{ block.settings.image | image_url: width: 800 | image_tag: loading: 'lazy', widths: '300, 500, 800', sizes: '30rem', alt: alt }}
+              {%- assign focal = block.settings.image.presentation.focal_point | prepend: 'object-position: ' -%}{{ block.settings.image | image_url: width: 800 | image_tag: loading: 'lazy', widths: '300, 500, 800', sizes: '30rem', alt: alt, style: focal }}
             {%- else -%}
               {{ 'image' | placeholder_svg_tag: 'placeholder' }}
             {%- endif -%}
