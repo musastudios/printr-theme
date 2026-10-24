@@ -41,6 +41,7 @@
 -%}
 <artwork-uploader
   class="au"
+  style="--au-ok: {{ settings.artwork_ok_color | default: '#0B7A3B' }}; --au-okbg: {{ settings.artwork_ok_bg | default: '#E3F3E8' }}; --au-warn: {{ settings.artwork_warn_color | default: '#8A5300' }}; --au-warnbg: {{ settings.artwork_warn_bg | default: '#FFF1D2' }};"
   data-form-id="{{ form_id }}"
   data-sides="{{ sides }}"
   data-bleed="{{ bleed }}"
@@ -124,31 +125,130 @@
       "policy_required": {{ 'artwork.policy_required' | t | json }},
       "art_required": {{ 'artwork.art_required' | t | json }},
       "gate_ok": {{ 'artwork.gate_ok' | t | json }},
-      "buy_now_error": {{ 'artwork.buy_now_error' | t | json }}
+      "buy_now_error": {{ 'artwork.buy_now_error' | t | json }},
+      "modal_title": {{ 'artwork.modal_title' | t | json }},
+      "files_heading": {{ 'artwork.files_heading' | t | json }},
+      "sides_count": {{ 'artwork.sides_count' | t | json }},
+      "drop_main": {{ 'artwork.drop_main' | t | json }},
+      "drop_canvas_front": {{ 'artwork.drop_canvas_front' | t | json }},
+      "drop_canvas_back": {{ 'artwork.drop_canvas_back' | t | json }},
+      "drop_formats": {{ 'artwork.drop_formats' | t | json }},
+      "choose_file": {{ 'artwork.choose_file' | t | json }},
+      "uploading": {{ 'artwork.uploading' | t | json }},
+      "cancel": {{ 'artwork.cancel' | t | json }},
+      "analyzing": {{ 'artwork.analyzing' | t | json }},
+      "analyzing_sub": {{ 'artwork.analyzing_sub' | t | json }},
+      "badge_needed": {{ 'artwork.badge_needed' | t | json }},
+      "badge_checking": {{ 'artwork.badge_checking' | t | json }},
+      "badge_ready": {{ 'artwork.badge_ready' | t | json }},
+      "badge_warn": {{ 'artwork.badge_warn' | t | json }},
+      "badge_warn_one": {{ 'artwork.badge_warn_one' | t | json }},
+      "badge_err": {{ 'artwork.badge_err' | t | json }},
+      "badge_err_one": {{ 'artwork.badge_err_one' | t | json }},
+      "sum_empty": {{ 'artwork.sum_empty' | t | json }},
+      "sum_pass": {{ 'artwork.sum_pass' | t | json }},
+      "sum_warn": {{ 'artwork.sum_warn' | t | json }},
+      "sum_warn_one": {{ 'artwork.sum_warn_one' | t | json }},
+      "sum_err": {{ 'artwork.sum_err' | t | json }},
+      "sum_err_one": {{ 'artwork.sum_err_one' | t | json }},
+      "preflight_heading": {{ 'artwork.preflight_heading' | t | json }},
+      "ck_size": {{ 'artwork.ck_size' | t | json }},
+      "ck_size_detail": {{ 'artwork.ck_size_detail' | t | json }},
+      "ck_dpi": {{ 'artwork.ck_dpi' | t | json }},
+      "ck_dpi_detail": {{ 'artwork.ck_dpi_detail' | t | json }},
+      "ck_dpi_vector": {{ 'artwork.ck_dpi_vector' | t | json }},
+      "ck_format": {{ 'artwork.ck_format' | t | json }},
+      "ck_ratio": {{ 'artwork.ck_ratio' | t | json }},
+      "ck_safe": {{ 'artwork.ck_safe' | t | json }},
+      "ck_safe_detail": {{ 'artwork.ck_safe_detail' | t | json }},
+      "ck_folds": {{ 'artwork.ck_folds' | t | json }},
+      "ck_contour": {{ 'artwork.ck_contour' | t | json }},
+      "ck_area": {{ 'artwork.ck_area' | t | json }},
+      "ck_area_warn": {{ 'artwork.ck_area_warn' | t | json }},
+      "ck_bg": {{ 'artwork.ck_bg' | t | json }},
+      "ck_sleeve": {{ 'artwork.ck_sleeve' | t | json }},
+      "notes": {{ 'artwork.notes' | t | json }},
+      "st_ok": {{ 'artwork.st_ok' | t | json }},
+      "st_warn": {{ 'artwork.st_warn' | t | json }},
+      "st_err": {{ 'artwork.st_err' | t | json }},
+      "st_wait": {{ 'artwork.st_wait' | t | json }},
+      "st_run": {{ 'artwork.st_run' | t | json }},
+      "st_review": {{ 'artwork.st_review' | t | json }},
+      "fix_fit": {{ 'artwork.fix_fit' | t | json }},
+      "fix_replace": {{ 'artwork.fix_replace' | t | json }},
+      "fix_move": {{ 'artwork.fix_move' | t | json }},
+      "ack": {{ 'artwork.ack' | t | json }},
+      "ack_one": {{ 'artwork.ack_one' | t | json }},
+      "ack_help": {{ 'artwork.ack_help' | t | json }},
+      "note": {{ 'artwork.note' | t | json }},
+      "hint": {{ 'artwork.hint' | t | json }},
+      "lg_bleed": {{ 'artwork.lg_bleed' | t | json }},
+      "lg_cut": {{ 'artwork.lg_cut' | t | json }},
+      "lg_safe": {{ 'artwork.lg_safe' | t | json }},
+      "lg_fold": {{ 'artwork.lg_fold' | t | json }},
+      "lg_contour": {{ 'artwork.lg_contour' | t | json }},
+      "lg_area": {{ 'artwork.lg_area' | t | json }},
+      "lg_sleeve": {{ 'artwork.lg_sleeve' | t | json }},
+      "scale_chip": {{ 'artwork.scale_chip' | t | json }},
+      "step_title": {{ 'artwork.step_title' | t | json }},
+      "needs_review": {{ 'artwork.needs_review' | t | json }},
+      "approve": {{ 'artwork.approve' | t | json }},
+      "send_later": {{ 'artwork.send_later' | t | json }},
+      "view_options": {{ 'artwork.view_options' | t | json }},
+      "zoom_in": {{ 'artwork.zoom_in' | t | json }},
+      "zoom_in_tip": {{ 'artwork.zoom_in_tip' | t | json }},
+      "zoom_out": {{ 'artwork.zoom_out' | t | json }},
+      "zoom_out_tip": {{ 'artwork.zoom_out_tip' | t | json }},
+      "close_tip": {{ 'artwork.close_tip' | t | json }},
+      "remove_front": {{ 'artwork.remove_front' | t | json }},
+      "remove_back": {{ 'artwork.remove_back' | t | json }},
+      "front_side": {{ 'artwork.front_side' | t | json }},
+      "back_side": {{ 'artwork.back_side' | t | json }},
+      "view_3d": {{ 'artwork.view_3d' | t | json }},
+      "open_preview": {{ 'artwork.open_preview' | t | json }},
+      "upload_artwork": {{ 'artwork.upload_artwork' | t | json }},
+      "replace_files": {{ 'artwork.replace_files' | t | json }},
+      "template_short": {{ 'artwork.template_short' | t | json }},
+      "landscape": {{ 'artwork.landscape' | t | json }},
+      "portrait": {{ 'artwork.portrait' | t | json }},
+      "show_guides": {{ 'artwork.show_guides' | t | json }},
+      "show_cut": {{ 'artwork.show_cut' | t | json }},
+      "reset_position": {{ 'artwork.reset_position' | t | json }},
+      "err_upload": {{ 'artwork.err_upload' | t | json }},
+      "err_toolarge": {{ 'artwork.err_toolarge' | t | json }},
+      "busy_close": {{ 'artwork.busy_close' | t | json }},
+      "approve_why": {{ 'artwork.approve_why' | t | json }}
     }
   </script>
 
-  <div class="au__summary">
+  <section class="au__summary" aria-labelledby="{{ uid }}-psh">
     <p class="au__step">{{ 'artwork.step_label' | t }}</p>
-    <p class="au__title h4">{{ 'artwork.title' | t }}</p>
+    <div class="au__ps-head">
+      <h2 class="au__title" id="{{ uid }}-psh">{{ 'artwork.step_title' | t }}</h2>
+      <span data-au-ps-badge></span>
+    </div>
     <div class="au__later" data-au-brief hidden>
       <p data-au-brief-text></p>
       {%- if block.settings.qa_product != blank -%}<p data-au-brief-qa>{{ 'artwork.brief_qa_included' | t }}</p>{%- endif -%}
     </div>
     <div class="au__upload" data-au-upload-ui>
+      <ul class="au__ps-list" data-au-ps-list></ul>
       <button type="button" class="au__cta" data-au-open aria-haspopup="dialog" aria-controls="{{ uid }}-dialog" aria-describedby="{{ uid }}-count">
-        <svg class="au__cta-icon" viewBox="0 0 24 24" width="32" height="32" aria-hidden="true" focusable="false"><path d="M12 16V4m0 0-5 5m5-5 5 5M4 16v3a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-3" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        <span class="au__cta-main">{{ 'artwork.cta' | t }}</span>
-        <span class="au__cta-sub">{{ 'artwork.cta_sub' | t }}</span>
+        <span class="au__cta-empty">{% render 'au-icon', name: 'upload', size: 28 %}<span class="au__cta-main">{{ 'artwork.cta' | t }}</span><span class="au__cta-sub">{{ 'artwork.cta_sub' | t }}</span></span>
+        <span class="au__cta-full">{% render 'au-icon', name: 'eye' %}{{ 'artwork.open_preview' | t }}</span>
       </button>
       <p class="au__count" id="{{ uid }}-count" data-au-count></p>
       <p class="au__template" data-au-template-label></p>
       <p class="au__guidance" data-au-guidance hidden></p>
-      <p class="au__template-link" data-au-template-link-row hidden><a href="#" data-au-template-link target="_blank" rel="noopener">{{ 'artwork.download_template' | t }}</a></p>
+      <div class="au__ps-links">
+        <button type="button" class="au-lnk" data-au-open-replace hidden>{% render 'au-icon', name: 'upload' %}{{ 'artwork.replace_files' | t }}</button>
+        <a class="au-lnk" href="#" data-au-template-link target="_blank" rel="noopener" data-au-template-link-row hidden>{% render 'au-icon', name: 'download' %}{{ 'artwork.template_short' | t }}</a>
+      </div>
     </div>
     {%- unless standalone -%}
       <label class="au__check" data-au-later-row>
         <input type="checkbox" data-au-later-toggle>
+        {% render 'au-icon', name: 'clock' %}
         <span>{{ 'artwork.later_toggle' | t }}</span>
       </label>
       <div class="au__later" data-au-later hidden>
@@ -168,172 +268,197 @@
     </label>
     <input type="hidden" name="properties[Artwork terms]" form="{{ form_id }}" data-au-policy-prop disabled>
     <p class="au__status" id="{{ uid }}-status" data-au-status aria-live="polite"></p>
-  </div>
+  </section>
 
-  <dialog class="au__dialog" id="{{ uid }}-dialog" aria-labelledby="{{ uid }}-heading">
-    <div class="au__head">
-      <h2 id="{{ uid }}-heading" class="h4">{{ 'artwork.studio_heading' | t }}</h2>
-      <button type="button" class="au__close" data-au-close aria-label="{{ 'artwork.close' | t }}">&times;</button>
-    </div>
+  <dialog class="au__dialog" id="{{ uid }}-dialog" aria-modal="true" aria-labelledby="{{ uid }}-heading">
+    <header class="au__head">
+      <div class="au__head-t">
+        <p class="au__eyebrow" data-au-eyebrow></p>
+        <h2 id="{{ uid }}-heading" class="au__h1">{{ 'artwork.modal_title' | t }}</h2>
+      </div>
+      <div class="au__head-r">
+        <a class="au-lnk au-hide-m" href="#" target="_blank" rel="noopener" data-au-template-link data-au-template-link-row hidden>{% render 'au-icon', name: 'download' %}{{ 'artwork.template_short' | t }}</a>
+        <span class="au-rel">
+          <button type="button" class="au-btn au-btn--outline au-btn--icon" data-au-close aria-label="{{ 'artwork.close' | t }}" aria-describedby="{{ uid }}-tip-close">{% render 'au-icon', name: 'x' %}</button>
+          <span class="au-tip au-tip--end" role="tooltip" id="{{ uid }}-tip-close">{{ 'artwork.close_tip' | t }}</span>
+        </span>
+      </div>
+    </header>
     <div class="au__grid">
-      {%- comment -%} Left: uploads {%- endcomment -%}
-      <section class="au__col au__uploads" aria-labelledby="{{ uid }}-uph">
-        <h3 id="{{ uid }}-uph" class="h6">{{ 'artwork.title' | t }}</h3>
-        <p class="au__count" data-au-count></p>
-        {%- for i in (1..2) -%}
-          {%- if i == 1 -%}{%- assign side = 'front' -%}{%- assign prop = 'Artwork Front' -%}{%- assign side_label = 'artwork.front' | t -%}{%- else -%}{%- assign side = 'back' -%}{%- assign prop = 'Artwork Back' -%}{%- assign side_label = 'artwork.back' | t -%}{%- endif -%}
-          <div class="au__tile" data-au-tile="{{ side }}" {% if i == 2 and sides < 2 %}hidden{% endif %}>
-            <label for="{{ uid }}-{{ side }}" class="au__tile-label">
-              <strong>{{ side_label }}</strong>
-              <span data-au-filename>{{ 'artwork.formats' | t }}</span>
+      <section class="au__files" aria-labelledby="{{ uid }}-uph">
+        <h3 id="{{ uid }}-uph" class="au__h2">{{ 'artwork.files_heading' | t }}</h3>
+        <p class="au__cnt" data-au-sides-count></p>
+        <div class="au__tiles">
+          <div class="au-fc" data-au-tile="front"{% if 1 == 2 and sides < 2 %} hidden{% endif %}>
+            <div class="au-fc__head"><strong>{{ 'artwork.front' | t }}</strong><span data-au-side-badge="front"></span></div>
+            <label class="au-dz" data-au-dz="front">
+              {% render 'au-icon', name: 'upload' %}
+              <span class="au-dz__main">{{ 'artwork.drop_main' | t }}</span>
+              <span class="au-dz__sub" data-au-formats>{{ 'artwork.formats' | t }}</span>
+              <input
+                type="file"
+                id="{{ uid }}-front"
+                class="au-sr"
+                name="properties[Artwork Front]"
+                form="{{ form_id }}"
+                accept=".pdf,.jpg,.jpeg,.png,.tif,.tiff,.eps,application/pdf,image/jpeg,image/png,image/tiff,application/postscript"
+                data-au-input="front"
+              >
             </label>
-            <input
-              type="file"
-              id="{{ uid }}-{{ side }}"
-              class="au__file"
-              name="properties[{{ prop }}]"
-              form="{{ form_id }}"
-              accept=".pdf,.jpg,.jpeg,.png,.tif,.tiff,.eps,application/pdf,image/jpeg,image/png,image/tiff,application/postscript"
-              data-au-input="{{ side }}"
-            >
-            <button type="button" class="au__remove link" data-au-remove="{{ side }}" hidden>{{ 'artwork.remove' | t }}</button>
+            <div class="au-fc__file" data-au-file="front" hidden>
+              <div class="au-fc__row">
+                <span class="au-thumb">{% render 'au-icon', name: 'file-image', size: 22 %}</span>
+                <span class="au-fc__meta"><span class="au-fc__name" data-au-filename></span><span data-au-filemeta></span><span class="au-bar au-bar--sm" data-au-filebar hidden><i></i></span></span>
+              </div>
+              <div class="au-fc__acts">
+                <button type="button" class="au-btn au-btn--ghost au-btn--sm" data-au-replace="front">{% render 'au-icon', name: 'replace' %}{{ 'artwork.fix_replace' | t }}</button>
+                <span class="au-rel">
+                  <button type="button" class="au-btn au-btn--ghost au-btn--icon" data-au-remove="front" aria-label="{{ 'artwork.remove_front' | t }}" aria-describedby="{{ uid }}-tip-rm-front">{% render 'au-icon', name: 'trash-2' %}</button>
+                  <span class="au-tip" role="tooltip" id="{{ uid }}-tip-rm-front">{{ 'artwork.remove' | t }}</span>
+                </span>
+              </div>
+            </div>
           </div>
-        {%- endfor -%}
+          <div class="au-fc" data-au-tile="back"{% if 2 == 2 and sides < 2 %} hidden{% endif %}>
+            <div class="au-fc__head"><strong>{{ 'artwork.back' | t }}</strong><span data-au-side-badge="back"></span></div>
+            <label class="au-dz" data-au-dz="back">
+              {% render 'au-icon', name: 'upload' %}
+              <span class="au-dz__main">{{ 'artwork.drop_main' | t }}</span>
+              <span class="au-dz__sub" data-au-formats>{{ 'artwork.formats' | t }}</span>
+              <input
+                type="file"
+                id="{{ uid }}-back"
+                class="au-sr"
+                name="properties[Artwork Back]"
+                form="{{ form_id }}"
+                accept=".pdf,.jpg,.jpeg,.png,.tif,.tiff,.eps,application/pdf,image/jpeg,image/png,image/tiff,application/postscript"
+                data-au-input="back"
+              >
+            </label>
+            <div class="au-fc__file" data-au-file="back" hidden>
+              <div class="au-fc__row">
+                <span class="au-thumb">{% render 'au-icon', name: 'file-image', size: 22 %}</span>
+                <span class="au-fc__meta"><span class="au-fc__name" data-au-filename></span><span data-au-filemeta></span><span class="au-bar au-bar--sm" data-au-filebar hidden><i></i></span></span>
+              </div>
+              <div class="au-fc__acts">
+                <button type="button" class="au-btn au-btn--ghost au-btn--sm" data-au-replace="back">{% render 'au-icon', name: 'replace' %}{{ 'artwork.fix_replace' | t }}</button>
+                <span class="au-rel">
+                  <button type="button" class="au-btn au-btn--ghost au-btn--icon" data-au-remove="back" aria-label="{{ 'artwork.remove_back' | t }}" aria-describedby="{{ uid }}-tip-rm-back">{% render 'au-icon', name: 'trash-2' %}</button>
+                  <span class="au-tip" role="tooltip" id="{{ uid }}-tip-rm-back">{{ 'artwork.remove' | t }}</span>
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
         <input type="hidden" name="properties[Preflight]" form="{{ form_id }}" data-au-prop="summary" disabled>
         <input type="hidden" name="properties[Artwork Fit]" form="{{ form_id }}" data-au-prop="fit" disabled>
         <input type="hidden" name="properties[_preflight]" form="{{ form_id }}" data-au-prop="raw" disabled>
       </section>
 
-      {%- comment -%} Center: toolbar + canvas {%- endcomment -%}
-      <section class="au__col au__stage" aria-label="{{ 'artwork.preview' | t }}">
-        <div class="au__toolbar" role="toolbar" aria-label="{{ 'artwork.tools' | t }}">
-          <button type="button" data-au-act="orientation">{{ 'artwork.tool_orientation' | t }}</button>
-          <button type="button" data-au-act="rotate">{{ 'artwork.tool_rotate' | t }}</button>
-          <button type="button" data-au-act="fit">{{ 'artwork.tool_fit' | t }}</button>
-          <label class="au__range">{{ 'artwork.tool_scale' | t }}
-            <input type="range" min="10" max="400" value="100" step="1" data-au-scale>
-          </label>
-          <button type="button" data-au-act="undo">{{ 'artwork.tool_undo' | t }}</button>
-          <button type="button" data-au-act="magnify" aria-pressed="false">{{ 'artwork.tool_magnifier' | t }}</button>
-          <label class="au__range">{{ 'artwork.tool_mask' | t }}
-            <input type="range" min="0" max="100" value="60" data-au-mask>
-          </label>
-          <button type="button" data-au-act="guides" aria-pressed="true">{{ 'artwork.tool_guides' | t }}</button>
-          <button type="button" data-au-act="cut" aria-pressed="true">{{ 'artwork.tool_cut' | t }}</button>
-          <button type="button" data-au-act="reset">{{ 'artwork.tool_reset' | t }}</button>
-        </div>
-        <div class="au__tabs" role="tablist">
-          <button type="button" role="tab" aria-selected="true" data-au-tab="front">{{ 'artwork.front' | t }}</button>
-          <button type="button" role="tab" aria-selected="false" data-au-tab="back" {% if sides < 2 %}hidden{% endif %}>{{ 'artwork.back' | t }}</button>
-          <button type="button" role="tab" aria-selected="false" data-au-tab="3d">{{ 'artwork.preview_3d' | t }}</button>
-        </div>
-        <ul class="au__legend">
-          <li><i class="au__sw au__sw--safe"></i>{{ 'artwork.legend_safe' | t }}</li>
-          <li><i class="au__sw au__sw--cut"></i>{{ 'artwork.legend_cut' | t }}</li>
-          <li><i class="au__sw au__sw--bleed"></i>{{ 'artwork.legend_bleed' | t }}</li>
-        </ul>
-        <div class="au__canvas-wrap" data-au-wrap>
-          <canvas class="au__canvas" data-au-canvas tabindex="0" role="img" aria-label="{{ 'artwork.canvas_label' | t }}"></canvas>
-          <div class="au__drop" data-au-drop>
-            <p>{{ 'artwork.drop_here' | t }}</p>
-            <button type="button" class="button button--secondary" data-au-browse>{{ 'artwork.browse' | t }}</button>
+      <section class="au__stage" aria-label="{{ 'artwork.preview' | t }}">
+        <div class="au__seg">
+          <div class="au__tabs" role="tablist" aria-label="{{ 'artwork.preview' | t }}">
+            <button type="button" role="tab" id="{{ uid }}-tab-front" aria-selected="true" aria-controls="{{ uid }}-panel" data-au-tab="front">{% render 'au-icon', name: 'flip-horizontal-2' %}<span class="au-sr">{{ 'artwork.front_side' | t }}</span><span aria-hidden="true">{{ 'artwork.front' | t }}</span><span data-au-tab-badge="front"></span></button>
+            <button type="button" role="tab" id="{{ uid }}-tab-back" aria-selected="false" aria-controls="{{ uid }}-panel" tabindex="-1" data-au-tab="back"{% if sides < 2 %} hidden{% endif %}>{% render 'au-icon', name: 'flip-horizontal-2' %}<span class="au-sr">{{ 'artwork.back_side' | t }}</span><span aria-hidden="true">{{ 'artwork.back' | t }}</span><span data-au-tab-badge="back"></span></button>
           </div>
+          <button type="button" class="au-btn au-btn--outline au__3d au-hide-m" data-au-act="3d" aria-pressed="false">{% render 'au-icon', name: 'box' %}{{ 'artwork.view_3d' | t }}</button>
         </div>
-        <div class="au__zoom">
-          <label>{{ 'artwork.zoom' | t }} <input type="range" min="50" max="300" value="100" data-au-zoom></label>
-          <output data-au-zoom-out>100%</output>
+        <div class="au__tb" role="toolbar" aria-label="{{ 'artwork.tools' | t }}" aria-controls="{{ uid }}-panel">
+          <button type="button" class="au-btn au-btn--tool" data-au-act="fit" aria-label="{{ 'artwork.fix_fit' | t }}">{% render 'au-icon', name: 'scan' %}<span aria-hidden="true">{{ 'artwork.tool_fit' | t | split: ' ' | first }}</span></button>
+          <button type="button" class="au-btn au-btn--tool" data-au-act="rotate" aria-label="{{ 'artwork.tool_rotate' | t }}" tabindex="-1">{% render 'au-icon', name: 'rotate-cw' %}<span aria-hidden="true">{{ 'artwork.tool_rotate' | t | split: ' ' | first }}</span></button>
+          <button type="button" class="au-btn au-btn--tool" data-au-act="undo" tabindex="-1">{% render 'au-icon', name: 'undo-2' %}{{ 'artwork.tool_undo' | t }}</button>
+          <span class="au__zoom">
+            <span class="au-rel">
+              <button type="button" class="au-btn au-btn--outline au-btn--icon" data-au-act="zoom-out" aria-label="{{ 'artwork.zoom_out' | t }}" aria-describedby="{{ uid }}-tip-zo" tabindex="-1">{% render 'au-icon', name: 'zoom-out' %}</button>
+              <span class="au-tip" role="tooltip" id="{{ uid }}-tip-zo">{{ 'artwork.zoom_out_tip' | t }}</span>
+            </span>
+            <output data-au-zoom-out>100%</output>
+            <span class="au-rel">
+              <button type="button" class="au-btn au-btn--outline au-btn--icon" data-au-act="zoom-in" aria-label="{{ 'artwork.zoom_in' | t }}" aria-describedby="{{ uid }}-tip-zi" tabindex="-1">{% render 'au-icon', name: 'zoom-in' %}</button>
+              <span class="au-tip" role="tooltip" id="{{ uid }}-tip-zi">{{ 'artwork.zoom_in_tip' | t }}</span>
+            </span>
+          </span>
+          <span class="au-rel au__vo">
+            <button type="button" class="au-btn au-btn--outline au__vo-btn" data-au-menu-btn aria-haspopup="menu" aria-expanded="false" aria-controls="{{ uid }}-menu" aria-label="{{ 'artwork.view_options' | t }}" tabindex="-1">{% render 'au-icon', name: 'sliders-horizontal' %}<span class="au-hide-m" aria-hidden="true">{{ 'artwork.view_options' | t }}</span>{% render 'au-icon', name: 'chevron-down', class: 'au-hide-m' %}</button>
+            <span class="au-tip au-tip--end au-show-m" role="tooltip">{{ 'artwork.view_options' | t }}</span>
+            <div class="au-menu" id="{{ uid }}-menu" role="menu" aria-label="{{ 'artwork.view_options' | t }}" data-au-menu hidden>
+              <button type="button" role="menuitem" tabindex="-1" data-au-act="orientation">{% render 'au-icon', name: 'rectangle-horizontal' %}{{ 'artwork.tool_orientation' | t }}<span class="au-menu__v" data-au-orient-val></span></button>
+              <button type="button" role="menuitemcheckbox" tabindex="-1" aria-checked="true" data-au-act="guides">{% render 'au-icon', name: 'ruler' %}{{ 'artwork.show_guides' | t }}<span class="au-sw"></span></button>
+              <button type="button" role="menuitemcheckbox" tabindex="-1" aria-checked="true" data-au-act="cut">{% render 'au-icon', name: 'scissors' %}{{ 'artwork.show_cut' | t }}<span class="au-sw"></span></button>
+              <button type="button" role="menuitemcheckbox" tabindex="-1" aria-checked="false" data-au-act="magnify">{% render 'au-icon', name: 'search' %}{{ 'artwork.tool_magnifier' | t }}<span class="au-sw"></span></button>
+              <button type="button" role="menuitemcheckbox" tabindex="-1" aria-checked="false" data-au-act="3d" class="au-show-m">{% render 'au-icon', name: 'box' %}{{ 'artwork.view_3d' | t }}<span class="au-sw"></span></button>
+              <label class="au-menu__r">{% render 'au-icon', name: 'blend' %}<span>{{ 'artwork.tool_mask' | t }}</span><input type="range" min="0" max="100" value="60" data-au-mask></label>
+              <label class="au-menu__r">{% render 'au-icon', name: 'scan' %}<span>{{ 'artwork.tool_scale' | t }}</span><input type="range" min="10" max="400" value="100" step="1" data-au-scale></label>
+              <hr>
+              <button type="button" role="menuitem" tabindex="-1" data-au-act="reset">{% render 'au-icon', name: 'rotate-ccw' %}{{ 'artwork.reset_position' | t }}</button>
+            </div>
+          </span>
         </div>
-        <p class="au__hint">{{ 'artwork.drag_hint' | t }}</p>
+        <div class="au__canvas-wrap" id="{{ uid }}-panel" role="tabpanel" aria-labelledby="{{ uid }}-tab-front" data-au-wrap>
+          <canvas class="au__canvas" data-au-canvas tabindex="0" role="img" aria-label="{{ 'artwork.canvas_label' | t }}"></canvas>
+          <span class="au__chip" data-au-scale-chip hidden>{% render 'au-icon', name: 'ruler', size: 16 %}<span></span></span>
+          <div class="au__drop" data-au-drop>
+            {% render 'au-icon', name: 'upload', size: 28 %}
+            <strong data-au-drop-title>{{ 'artwork.drop_canvas_front' | t }}</strong>
+            <span data-au-formats>{{ 'artwork.formats' | t }}</span>
+            <button type="button" class="au-btn au-btn--primary" data-au-browse>{% render 'au-icon', name: 'upload' %}{{ 'artwork.choose_file' | t }}</button>
+          </div>
+          <div class="au__ovl" data-au-ovl-up hidden>
+            <div class="au__ovc">
+              {% render 'au-icon', name: 'upload' %}
+              <span data-au-up-text></span>
+              <span class="au-bar" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" aria-labelledby="{{ uid }}-heading" data-au-up-bar><i></i></span>
+              <button type="button" class="au-btn au-btn--outline au-btn--sm" data-au-cancel>{{ 'artwork.cancel' | t }}</button>
+            </div>
+          </div>
+          <div class="au__ovl au__ovl--scan" data-au-ovl-an hidden>
+            <i class="au__scan" aria-hidden="true"></i>
+            <div class="au__ovc">{% render 'au-icon', name: 'loader-circle', class: 'au-spin' %}<strong>{{ 'artwork.analyzing' | t }}</strong><span>{{ 'artwork.analyzing_sub' | t }}</span></div>
+          </div>
+          <div class="au__errbar" data-au-errbar hidden>{% render 'au-icon', name: 'circle-x' %}<span data-au-errbar-text></span></div>
+        </div>
+        <ul class="au__legend" data-au-legend>
+          <li data-lg="bleed"><i class="au-lg au-lg--bleed"></i>{{ 'artwork.lg_bleed' | t }}</li>
+          <li data-lg="cut"><i class="au-lg au-lg--cut"></i>{{ 'artwork.lg_cut' | t }}</li>
+          <li data-lg="safe"><i class="au-lg au-lg--safe"></i>{{ 'artwork.lg_safe' | t }}</li>
+          <li data-lg="fold" hidden><i class="au-lg au-lg--fold"></i>{{ 'artwork.lg_fold' | t }}</li>
+          <li data-lg="contour" hidden><i class="au-lg au-lg--contour"></i>{{ 'artwork.lg_contour' | t }}</li>
+          <li data-lg="area" hidden><i class="au-lg au-lg--safe"></i>{{ 'artwork.lg_area' | t }}</li>
+          <li data-lg="sleeve" hidden><i class="au-lg au-lg--sleeve"></i>{{ 'artwork.lg_sleeve' | t }}</li>
+        </ul>
+        <p class="au__hint">{% render 'au-icon', name: 'move', size: 16 %}{{ 'artwork.hint' | t }}</p>
       </section>
 
-      {%- comment -%} Right: preflight {%- endcomment -%}
-      <section class="au__col au__preflight" aria-labelledby="{{ uid }}-pfh">
-        <h3 id="{{ uid }}-pfh" class="h6">{{ 'artwork.preflight' | t }} <span class="au__badge" data-au-badge>0</span></h3>
+      <section class="au__pre" aria-labelledby="{{ uid }}-pfh">
+        <div class="au__pre-h"><h3 id="{{ uid }}-pfh" class="au__h2">{{ 'artwork.preflight_heading' | t }}</h3><span data-au-badge></span></div>
+        <p class="au__sum" role="status" aria-live="polite" data-au-summary></p>
         <p class="au__guidance" data-au-guidance hidden></p>
-        <ul class="au__warnings" data-au-warnings aria-live="polite" aria-relevant="all"></ul>
+        <ul class="au__ck" data-au-checklist></ul>
+        <div class="au__notes" data-au-notes-wrap hidden>
+          <h4 class="au__h3">{{ 'artwork.notes' | t }}</h4>
+          <ul class="au__warnings" data-au-warnings></ul>
+        </div>
       </section>
+
+      <div class="au__mlinks au-show-m">
+        <a class="au-lnk" href="#" target="_blank" rel="noopener" data-au-template-link data-au-template-link-row hidden>{% render 'au-icon', name: 'download' %}{{ 'artwork.template_short' | t }}</a>
+        {%- unless standalone -%}<button type="button" class="au-lnk" data-au-send-later>{% render 'au-icon', name: 'clock' %}{{ 'artwork.send_later' | t }}</button>{%- endunless -%}
+      </div>
     </div>
-    <div class="au__foot">
-      <p>{{ 'artwork.production_note' | t }}</p>
-      <label class="au__confirm"><input type="checkbox" data-au-confirm> {{ 'artwork.print_as_is' | t }}</label>
-      <button type="button" class="button" data-au-close>{{ 'artwork.done' | t }}</button>
-    </div>
+    <p class="au-sr" role="alert" data-au-alert></p>
+    <footer class="au__foot">
+      <label class="au__ack" data-au-ack hidden>
+        <input type="checkbox" data-au-confirm aria-describedby="{{ uid }}-ackh">
+        <span><b data-au-ack-text></b><small id="{{ uid }}-ackh">{{ 'artwork.ack_help' | t }}</small></span>
+      </label>
+      <p class="au__note" data-au-note>{% render 'au-icon', name: 'info' %}{{ 'artwork.note' | t }}</p>
+      <div class="au__foot-b">
+        {%- unless standalone -%}<button type="button" class="au-btn au-btn--outline au-hide-m" data-au-send-later>{% render 'au-icon', name: 'clock' %}{{ 'artwork.send_later' | t }}</button>{%- endunless -%}
+        <button type="button" class="au-btn au-btn--primary au-btn--big" data-au-approve aria-describedby="{{ uid }}-why">{% render 'au-icon', name: 'check' %}{{ 'artwork.approve' | t }}</button>
+        <span class="au-sr" id="{{ uid }}-why" data-au-why></span>
+      </div>
+    </footer>
   </dialog>
 </artwork-uploader>
+{{ 'artwork-uploader.css' | asset_url | stylesheet_tag }}
 <script src="{{ 'artwork-uploader.js' | asset_url }}" type="module" defer="defer"></script>
-{% stylesheet %}
-  .au { display: block; margin-bottom: 1.6rem; }
-  .au__summary { border: 3px solid rgb(var(--color-foreground)); border-radius: var(--radius); padding: 1.6rem; display: grid; gap: 1rem; }
-  .au__step { margin: 0; font-size: 1.2rem; font-weight: 700; letter-spacing: .04em; text-transform: uppercase; color: var(--m); }
-  .au__cta { display: grid; justify-items: center; gap: .4rem; width: 100%; min-height: 12rem; padding: 2rem 1.6rem; border: 3px dashed rgb(var(--color-foreground)); border-radius: var(--radius-button); background: rgba(var(--color-accent), .08); color: inherit; font: inherit; text-align: center; cursor: pointer; transition: background .2s; }
-  .au__cta:hover, .au__cta.is-over { background: rgba(var(--color-accent), .18); }
-  .au__cta:focus-visible { outline: 3px solid rgb(var(--color-accent)); outline-offset: 3px; }
-  .au__cta-main { font-size: 2rem; font-weight: 800; }
-  .au__cta-sub { font-size: 1.3rem; opacity: .8; }
-  .au__check { display: flex; gap: .8rem; align-items: flex-start; cursor: pointer; font-size: 1.4rem; }
-  .au__check input, .au__qa input { width: 2rem; height: 2rem; flex: none; margin: .1rem 0 0; padding: 0; accent-color: rgb(var(--color-foreground)); }
-  .au__policy { border-top: 1px solid rgb(var(--color-border)); padding-top: 1rem; }
-  .au.is-ready .au__summary { border-color: #1a9d55; }
-  .au.is-ready .au__status { color: #1a7a43; }
-  [data-au-later-row][hidden] { display: none; }
-  .au__title, .au__count, .au__template, .au__status { margin: 0; }
-  .au__count, .au__template { font-size: 1.4rem; opacity: .8; }
-  .au__status:empty { display: none; }
-  .au__guidance { margin: 0; font-size: 1.3rem; padding: .8rem 1rem; border-left: 4px solid #1e6bff; border-radius: 4px; background: rgba(30,107,255,.06); white-space: pre-line; }
-  .au__guidance[hidden], .au__template-link[hidden] { display: none; }
-  .au__template-link { margin: 0; font-size: 1.4rem; }
-  .au__qa { display: flex; gap: .8rem; align-items: flex-start; cursor: pointer; }
-  .au__later { font-size: 1.4rem; display: grid; gap: .8rem; padding: 1rem; border-radius: var(--radius); background: rgba(0,0,0,.03); }
-  .au__later p { margin: 0; }
-  .au__later[hidden], .au__qa[hidden], [data-au-upload-ui][hidden] { display: none; }
-  .au__qa { font-size: 1.4rem; border-top: 1px solid rgb(var(--color-border)); padding-top: .8rem; }
-  .au__qa-badge { display: inline-block; padding: 0 .6rem; border-radius: 1rem; background: rgb(var(--color-accent)); color: #fff; font-size: 1.1rem; }
-  .au__qa-badge[hidden] { display: none; }
-  .au__status { font-size: 1.4rem; color: rgb(var(--color-sale)); }
-  .au__dialog { width: min(140rem, 100vw); max-width: 100vw; max-height: 100dvh; height: 100dvh; padding: 0; border: 0; background: rgb(var(--color-background)); color: rgb(var(--color-foreground)); }
-  .au__dialog::backdrop { background: rgba(0,0,0,.5); }
-  .au__head, .au__foot { display: flex; align-items: center; gap: 1.6rem; padding: 1.2rem 2rem; border-bottom: 1px solid rgb(var(--color-border)); }
-  .au__head h2 { margin: 0; flex: 1; }
-  .au__foot { border-bottom: 0; border-top: 1px solid rgb(var(--color-border)); flex-wrap: wrap; font-size: 1.4rem; }
-  .au__foot p { flex: 1 1 30rem; margin: 0; }
-  .au__close { background: none; border: 0; font-size: 2.8rem; line-height: 1; cursor: pointer; color: inherit; min-width: 4.4rem; min-height: 4.4rem; }
-  .au__grid { display: grid; grid-template-columns: 24rem 1fr 28rem; gap: 1.6rem; padding: 1.6rem 2rem; overflow: auto; height: calc(100dvh - 15rem); }
-  .au__col h3 { margin-top: 0; }
-  .au__tile { border: 2px dashed rgb(var(--color-border)); border-radius: var(--radius); padding: 1.2rem; margin-bottom: 1.2rem; position: relative; }
-  .au__tile.is-done { border-style: solid; border-color: rgb(var(--color-accent)); }
-  .au__tile-label { display: grid; gap: .4rem; cursor: pointer; font-size: 1.3rem; word-break: break-all; }
-  .au__file { width: 100%; margin-top: .8rem; font-size: 1.3rem; }
-  .au__file:focus-visible, .au button:focus-visible, .au__canvas:focus-visible { outline: 2px solid rgb(var(--color-accent)); outline-offset: 2px; }
-  .au__toolbar { display: flex; flex-wrap: wrap; gap: .6rem; margin-bottom: 1rem; }
-  .au__toolbar button, .au__tabs button { border: 1px solid rgb(var(--color-border)); background: rgb(var(--color-background)); color: inherit; border-radius: var(--radius-button); padding: .6rem 1rem; font-size: 1.3rem; cursor: pointer; min-height: 3.6rem; }
-  .au__toolbar button[aria-pressed="true"], .au__tabs button[aria-selected="true"] { background: rgb(var(--color-foreground)); color: rgb(var(--color-background)); }
-  .au__range { display: inline-flex; align-items: center; gap: .6rem; font-size: 1.3rem; }
-  .au__range input { width: 9rem; }
-  .au__tabs { display: flex; gap: .6rem; }
-  .au__legend { list-style: none; display: flex; flex-wrap: wrap; gap: 1.6rem; padding: 0; margin: 1rem 0; font-size: 1.3rem; }
-  .au__sw { display: inline-block; width: 1.6rem; height: 0; border-top: 2px dashed; vertical-align: middle; margin-right: .6rem; }
-  .au__sw--safe { border-color: #1e6bff; }
-  .au__sw--cut { border-color: #e0102b; border-top-style: solid; }
-  .au__sw--bleed { border-color: #000; }
-  .au__canvas-wrap { position: relative; background: repeating-conic-gradient(rgba(0,0,0,.05) 0 25%, transparent 0 50%) 0 0 / 20px 20px; border-radius: var(--radius); min-height: 32rem; display: grid; place-items: center; overflow: hidden; perspective: 1200px; }
-  .au__canvas { max-width: 100%; touch-action: none; cursor: grab; transition: transform .4s ease; }
-  .au__canvas-wrap.is-3d .au__canvas { transform: rotateX(18deg) rotateY(-24deg); box-shadow: 20px 30px 40px rgba(0,0,0,.25); }
-  .au__drop { position: absolute; inset: 0; display: grid; place-content: center; text-align: center; gap: 1rem; }
-  .au__drop[hidden] { display: none; }
-  .au__canvas-wrap.is-over { outline: 3px dashed rgb(var(--color-accent)); }
-  .au__zoom { display: flex; gap: 1rem; align-items: center; font-size: 1.3rem; margin-top: 1rem; }
-  .au__hint { font-size: 1.2rem; opacity: .7; }
-  .au__badge { display: inline-block; min-width: 2.4rem; padding: 0 .6rem; border-radius: 1.2rem; background: rgb(var(--color-sale)); color: #fff; text-align: center; font-size: 1.2rem; }
-  .au__warnings { list-style: none; padding: 0; margin: 0; display: grid; gap: .8rem; font-size: 1.3rem; }
-  .au__warnings li { padding: .8rem 1rem; border-left: 4px solid; border-radius: 4px; background: rgba(0,0,0,.03); }
-  .au__warnings .is-error { border-color: #e0102b; }
-  .au__warnings .is-warning { border-color: #f0a500; }
-  .au__warnings .is-info { border-color: #1e6bff; }
-  .au__warnings .is-ok { border-color: #1a9d55; }
-  .au__warnings button { margin-top: .6rem; font-size: 1.2rem; }
-  .au__confirm { display: inline-flex; gap: .8rem; align-items: center; font-weight: 600; }
-  @media (max-width: 989px) {
-    .au__grid { grid-template-columns: 1fr; height: auto; max-height: calc(100dvh - 18rem); }
-    .au__stage { order: -1; }
-  }
-{% endstylesheet %}

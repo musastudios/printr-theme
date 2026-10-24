@@ -107,6 +107,15 @@ export function jpegColorSpace(buf) {
   return adobe ? 'cmyk' : 'unknown';
 }
 
+/* Lucide icons (lucide-static v1.61.0, ISC licence — see docs/LICENSES-lucide.md). */
+const ICONS = {"rectangle-horizontal": "<rect width=\"20\" height=\"12\" x=\"2\" y=\"6\" rx=\"2\" />", "rotate-cw": "<path d=\"M21 12a9 9 0 1 1-9-9c2.52 0 4.93 1 6.74 2.74L21 8\" /><path d=\"M21 3v5h-5\" />", "scan": "<path d=\"M3 7V5a2 2 0 0 1 2-2h2\" /><path d=\"M17 3h2a2 2 0 0 1 2 2v2\" /><path d=\"M21 17v2a2 2 0 0 1-2 2h-2\" /><path d=\"M7 21H5a2 2 0 0 1-2-2v-2\" />", "undo-2": "<path d=\"M9 14 4 9l5-5\" /><path d=\"M4 9h10.5a5.5 5.5 0 0 1 5.5 5.5a5.5 5.5 0 0 1-5.5 5.5H11\" />", "zoom-in": "<circle cx=\"11\" cy=\"11\" r=\"8\" /><line x1=\"21\" x2=\"16.65\" y1=\"21\" y2=\"16.65\" /><line x1=\"11\" x2=\"11\" y1=\"8\" y2=\"14\" /><line x1=\"8\" x2=\"14\" y1=\"11\" y2=\"11\" />", "zoom-out": "<circle cx=\"11\" cy=\"11\" r=\"8\" /><line x1=\"21\" x2=\"16.65\" y1=\"21\" y2=\"16.65\" /><line x1=\"8\" x2=\"14\" y1=\"11\" y2=\"11\" />", "ruler": "<path d=\"M21.3 15.3a2.4 2.4 0 0 1 0 3.4l-2.6 2.6a2.4 2.4 0 0 1-3.4 0L2.7 8.7a2.41 2.41 0 0 1 0-3.4l2.6-2.6a2.41 2.41 0 0 1 3.4 0Z\" /><path d=\"m14.5 12.5 2-2\" /><path d=\"m11.5 9.5 2-2\" /><path d=\"m8.5 6.5 2-2\" /><path d=\"m17.5 15.5 2-2\" />", "scissors": "<circle cx=\"6\" cy=\"6\" r=\"3\" /><path d=\"M8.12 8.12 12 12\" /><path d=\"M20 4 8.12 15.88\" /><circle cx=\"6\" cy=\"18\" r=\"3\" /><path d=\"M14.8 14.8 20 20\" />", "search": "<path d=\"m21 21-4.34-4.34\" /><circle cx=\"11\" cy=\"11\" r=\"8\" />", "blend": "<circle cx=\"15\" cy=\"9\" r=\"7\" /><circle cx=\"9\" cy=\"15\" r=\"7\" />", "rotate-ccw": "<path d=\"M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8\" /><path d=\"M3 3v5h5\" />", "sliders-horizontal": "<path d=\"M10 5H3\" /><path d=\"M12 19H3\" /><path d=\"M14 3v4\" /><path d=\"M16 17v4\" /><path d=\"M21 12h-9\" /><path d=\"M21 19h-5\" /><path d=\"M21 5h-7\" /><path d=\"M8 10v4\" /><path d=\"M8 12H3\" />", "chevron-down": "<path d=\"m6 9 6 6 6-6\" />", "flip-horizontal-2": "<path d=\"M10 12H8\" /><path d=\"M16 12h-2\" /><path d=\"M22 12h-2\" /><path d=\"M4 12H2\" /><path d=\"M7.298 20.288A1 1 0 008 22h8a1 1 0 00.703-1.712l-3.991-3.99a1 1 0 00-1.424-.001z\" /><path d=\"M7.298 3.712A1 1 0 018 2h8a1 1 0 01.703 1.712l-3.991 3.99a1 1 0 01-1.424.001z\" />", "box": "<path d=\"M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z\" /><path d=\"m3.3 7 8.7 5 8.7-5\" /><path d=\"M12 22V12\" />", "upload": "<path d=\"M12 3v12\" /><path d=\"m17 8-5-5-5 5\" /><path d=\"M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4\" />", "replace": "<path d=\"M14 4a1 1 0 0 1 1-1\" /><path d=\"M15 10a1 1 0 0 1-1-1\" /><path d=\"M21 4a1 1 0 0 0-1-1\" /><path d=\"M21 9a1 1 0 0 1-1 1\" /><path d=\"m3 7 3 3 3-3\" /><path d=\"M6 10V5a2 2 0 0 1 2-2h2\" /><rect x=\"3\" y=\"14\" width=\"7\" height=\"7\" rx=\"1\" />", "trash-2": "<path d=\"M10 11v6\" /><path d=\"M14 11v6\" /><path d=\"M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6\" /><path d=\"M3 6h18\" /><path d=\"M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2\" />", "file-image": "<path d=\"M6 22a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h8a2.4 2.4 0 0 1 1.704.706l3.588 3.588A2.4 2.4 0 0 1 20 8v12a2 2 0 0 1-2 2z\" /><path d=\"M14 2v5a1 1 0 0 0 1 1h5\" /><circle cx=\"10\" cy=\"12\" r=\"2\" /><path d=\"m20 17-1.296-1.296a2.41 2.41 0 0 0-3.408 0L9 22\" />", "circle-check": "<circle cx=\"12\" cy=\"12\" r=\"10\" /><path d=\"m16 9-5.5 5.5L8 12\" />", "triangle-alert": "<path d=\"m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3\" /><path d=\"M12 9v4\" /><path d=\"M12 17h.01\" />", "circle-x": "<circle cx=\"12\" cy=\"12\" r=\"10\" /><path d=\"m15 9-6 6\" /><path d=\"m9 9 6 6\" />", "circle-dashed": "<path d=\"M10.1 2.182a10 10 0 0 1 3.8 0\" /><path d=\"M13.9 21.818a10 10 0 0 1-3.8 0\" /><path d=\"M17.609 3.721a10 10 0 0 1 2.69 2.7\" /><path d=\"M2.182 13.9a10 10 0 0 1 0-3.8\" /><path d=\"M20.279 17.609a10 10 0 0 1-2.7 2.69\" /><path d=\"M21.818 10.1a10 10 0 0 1 0 3.8\" /><path d=\"M3.721 6.391a10 10 0 0 1 2.7-2.69\" /><path d=\"M6.391 20.279a10 10 0 0 1-2.69-2.7\" />", "loader-circle": "<path d=\"M21 12a9 9 0 1 1-6.219-8.56\" />", "download": "<path d=\"M12 15V3\" /><path d=\"M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4\" /><path d=\"m7 10 5 5 5-5\" />", "clock": "<circle cx=\"12\" cy=\"12\" r=\"10\" /><path d=\"M12 6v6l4 2\" />", "check": "<path d=\"M20 6 9 17l-5-5\" />", "x": "<path d=\"M18 6 6 18\" /><path d=\"m6 6 12 12\" />", "eye": "<path d=\"M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0\" /><circle cx=\"12\" cy=\"12\" r=\"3\" />", "move": "<path d=\"M12 2v20\" /><path d=\"m15 19-3 3-3-3\" /><path d=\"m19 9 3 3-3 3\" /><path d=\"M2 12h20\" /><path d=\"m5 9-3 3 3 3\" /><path d=\"m9 5 3-3 3 3\" />", "info": "<circle cx=\"12\" cy=\"12\" r=\"10\" /><path d=\"M12 16v-4\" /><path d=\"M12 8h.01\" />"};
+const icon = (n, size = 20, cls = '') => `<svg xmlns="http://www.w3.org/2000/svg" width="${size}" height="${size}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"${cls ? ` class="${cls}"` : ''}>${ICONS[n] || ''}</svg>`;
+const reduced = () => window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
+const wait = (ms) => new Promise((r) => setTimeout(r, reduced() ? 0 : ms));
+const SIDES = ['front', 'back'];
+const el = (tag, cls, html) => { const e = document.createElement(tag); if (cls) e.className = cls; if (html !== undefined) e.innerHTML = html; return e; };
+const LEVEL_RANK = { ok: 0, review: 1, wait: 1, run: 1, warn: 2, err: 3 };
+
 class ArtworkUploader extends HTMLElement {
   connectedCallback() {
     const $ = (s) => this.querySelector(s);
@@ -127,7 +136,7 @@ class ArtworkUploader extends HTMLElement {
     this.dialog = $('dialog'); this.canvas = $('[data-au-canvas]'); this.ctx = this.canvas.getContext('2d');
     this.wrap = $('[data-au-wrap]'); this.drop = $('[data-au-drop]');
     this.state = { front: this.blankSide(), back: this.blankSide() };
-    this.active = 'front'; this.zoom = 1; this.mask = 0.6; this.showGuides = true; this.showCut = true; this.magnify = false; this.landscape = null;
+    this.active = 'front'; this.zoom = 1; this.mask = 0.6; this.showGuides = true; this.showCut = true; this.magnify = false; this.landscape = null; this.view3d = false;
     this.mode = 'upload';
     this.bind();
     this.setVariant(this.dataset.variant);
@@ -142,7 +151,7 @@ class ArtworkUploader extends HTMLElement {
     if (buyBlock) new MutationObserver(() => this.applyGate()).observe(buyBlock, { childList: true, subtree: true });
     this.update();
   }
-  blankSide() { return { file: null, ext: '', source: null, pxW: 0, pxH: 0, pdf: null, rot: 0, scale: 1, x: 0, y: 0, history: [], issues: [] }; }
+  blankSide() { return { file: null, ext: '', source: null, pxW: 0, pxH: 0, pdf: null, rot: 0, scale: 1, x: 0, y: 0, history: [], issues: [], phase: 'empty', progress: 0 }; }
   get form() { return document.getElementById(this.dataset.formId); }
 
   /* ---------- template geometry ---------- */
@@ -187,12 +196,14 @@ class ArtworkUploader extends HTMLElement {
     this.cfg.minDpi = this.cfg.warnDpi;
     this.querySelector('[data-au-tile="back"]').hidden = this.cfg.sides < 2;
     this.querySelector('[data-au-tab="back"]').hidden = this.cfg.sides < 2;
+    if (this.cfg.sides < 2 && this.active === 'back') this.active = 'front';
     const accept = this.cfg.formats.map((f) => `.${f}`).join(',');
     this.querySelectorAll('[data-au-input]').forEach((i) => { i.accept = accept; });
+    const fmts = this.cfg.formats.filter((f) => f !== 'jpeg' && f !== 'tiff').join(', ').toUpperCase();
+    this.querySelectorAll('[data-au-formats]').forEach((e) => { e.textContent = fmt(this.t.drop_formats, { formats: fmts, max: r2(this.cfg.maxBytes / 1048576) }); });
     const guide = [p.guidance, sp.notes].filter(Boolean).join('\n');
-    this.querySelectorAll('[data-au-guidance]').forEach((el) => { el.textContent = guide; el.hidden = !guide; });
-    const tl = this.querySelector('[data-au-template-link]');
-    if (tl) { tl.href = p.template_url || '#'; this.querySelector('[data-au-template-link-row]').hidden = !p.template_url; }
+    this.querySelectorAll('[data-au-guidance]').forEach((e) => { e.textContent = guide; e.hidden = !guide; });
+    this.querySelectorAll('[data-au-template-link]').forEach((tl) => { tl.href = p.template_url || '#'; tl.hidden = !p.template_url; });
   }
   setVariant(id) {
     const v = this.variants.find((x) => String(x.id) === String(id)) || this.variants[0];
@@ -212,46 +223,87 @@ class ArtworkUploader extends HTMLElement {
     const b = this.cfg.bleed; return { w: this.trim.w + 2 * b, h: this.trim.h + 2 * b };
   }
 
+
   /* ---------- events ---------- */
   bind() {
     const q = (s) => this.querySelectorAll(s);
-    this.querySelector('[data-au-open]').addEventListener('click', () => this.openStudio());
-    q('[data-au-close]').forEach((b) => b.addEventListener('click', () => this.dialog.close()));
-    this.dialog.addEventListener('close', () => this.querySelector('[data-au-open]').focus());
+    q('[data-au-open]').forEach((b) => b.addEventListener('click', () => this.openStudio()));
+    this.querySelector('[data-au-open-replace]')?.addEventListener('click', () => this.openStudio());
+    q('[data-au-close]').forEach((b) => b.addEventListener('click', () => this.requestClose()));
+    this.dialog.addEventListener('cancel', (e) => { if (this.busy && !window.confirm(this.t.busy_close)) e.preventDefault(); else this.abortAll(); });
+    this.dialog.addEventListener('close', () => { this.closeMenu(false); this.querySelector('[data-au-open]').focus(); });
     q('[data-au-input]').forEach((inp) => inp.addEventListener('change', () => this.onFile(inp.dataset.auInput, inp.files[0])));
     q('[data-au-remove]').forEach((b) => b.addEventListener('click', () => this.removeFile(b.dataset.auRemove)));
+    q('[data-au-replace]').forEach((b) => b.addEventListener('click', () => this.input(b.dataset.auReplace)?.click()));
     this.querySelector('[data-au-browse]').addEventListener('click', () => this.input(this.active)?.click());
+    this.querySelector('[data-au-cancel]').addEventListener('click', () => this.cancelUpload(this.active));
     this.querySelector('[data-au-confirm]').addEventListener('change', () => this.update());
     this.querySelector('[data-au-later-toggle]')?.addEventListener('change', (e) => { this.mode = e.target.checked ? 'later' : 'upload'; this.update(); });
+    q('[data-au-send-later]').forEach((b) => b.addEventListener('click', () => this.sendLater()));
+    this.querySelector('[data-au-approve]').addEventListener('click', () => this.approve());
     this.querySelector('[data-au-policy]').addEventListener('change', () => this.update());
     // The big CTA is also a drop target: dropping a file opens the studio with it loaded.
     const cta = this.querySelector('[data-au-open]');
     ['dragenter', 'dragover'].forEach((t) => cta.addEventListener(t, (e) => { e.preventDefault(); cta.classList.add('is-over'); }));
     ['dragleave', 'drop'].forEach((t) => cta.addEventListener(t, () => cta.classList.remove('is-over')));
-    cta.addEventListener('drop', (e) => {
-      e.preventDefault(); const f = e.dataTransfer.files[0]; if (!f) return;
-      this.openStudio(); const inp = this.input('front'); const dt = new DataTransfer(); dt.items.add(f); inp.files = dt.files; this.onFile('front', f);
-    });
+    cta.addEventListener('drop', (e) => { e.preventDefault(); const f = e.dataTransfer.files[0]; if (!f) return; this.openStudio(); this.setInputFile('front', f); });
     this.querySelector('[data-au-qa]')?.addEventListener('change', () => this.update());
     // Rewrite the product form payload into an items[] array so the QA fee joins the same /cart/add call.
     // formdata does not bubble; capture at document so the hook survives the buy form being re-rendered on variant change.
     document.addEventListener('formdata', (e) => { if (e.target.id === this.dataset.formId) this.onFormData(e.formData); }, true);
     // Design Service selector: a paid tier means the customer sends a brief after checkout (no upload gate) and QA is included.
     document.addEventListener('design:change', (e) => { if (e.detail.formId === this.dataset.formId) { this.design = e.detail; this.update(); } });
-    q('[data-au-tab]').forEach((b) => b.addEventListener('click', () => this.tab(b.dataset.auTab)));
+    // tabs: click + roving arrow keys
+    const tabs = () => [...q('[data-au-tab]')].filter((b) => !b.hidden);
+    q('[data-au-tab]').forEach((b) => {
+      b.addEventListener('click', () => this.tab(b.dataset.auTab));
+      b.addEventListener('keydown', (e) => {
+        const l = tabs(); let i = l.indexOf(b);
+        if (e.key === 'ArrowRight') i = (i + 1) % l.length; else if (e.key === 'ArrowLeft') i = (i - 1 + l.length) % l.length; else if (e.key === 'Home') i = 0; else if (e.key === 'End') i = l.length - 1; else return;
+        e.preventDefault(); l[i].focus(); this.tab(l[i].dataset.auTab);
+      });
+    });
+    // toolbar: roving tabindex across its direct controls
+    const tb = this.querySelector('[role=toolbar]');
+    const tbItems = () => [...tb.querySelectorAll('button')].filter((b) => !b.closest('[role=menu]') && b.offsetParent !== null);
+    tb.addEventListener('keydown', (e) => {
+      if (e.target.closest('[role=menu]')) return;
+      const l = tbItems(); let i = l.indexOf(e.target); if (i < 0) return;
+      if (e.key === 'ArrowRight') i = (i + 1) % l.length; else if (e.key === 'ArrowLeft') i = (i - 1 + l.length) % l.length; else if (e.key === 'Home') i = 0; else if (e.key === 'End') i = l.length - 1; else return;
+      e.preventDefault(); l.forEach((b) => { b.tabIndex = -1; }); l[i].tabIndex = 0; l[i].focus();
+    });
+    tb.addEventListener('focusin', (e) => { if (e.target.closest('[role=menu]')) return; const l = tbItems(); if (l.includes(e.target)) { l.forEach((b) => { b.tabIndex = -1; }); e.target.tabIndex = 0; } });
     q('[data-au-act]').forEach((b) => b.addEventListener('click', () => this.act(b.dataset.auAct, b)));
+    // view options menu
+    this.menuBtn = this.querySelector('[data-au-menu-btn]'); this.menu = this.querySelector('[data-au-menu]');
+    this.menuBtn.addEventListener('click', () => (this.menu.hidden ? this.openMenu() : this.closeMenu(true)));
+    this.menuBtn.addEventListener('keydown', (e) => { if (e.key === 'ArrowDown') { e.preventDefault(); this.openMenu(); } });
+    this.menu.addEventListener('keydown', (e) => {
+      const items = [...this.menu.querySelectorAll('[role^=menuitem], input')].filter((x) => x.offsetParent !== null);
+      let i = items.indexOf(document.activeElement);
+      if (e.key === 'Escape') { e.preventDefault(); e.stopPropagation(); this.closeMenu(true); return; }
+      if (e.key === 'Tab') { this.closeMenu(false); return; }
+      if (document.activeElement.type === 'range' && (e.key === 'ArrowLeft' || e.key === 'ArrowRight')) return;
+      if (e.key === 'ArrowDown') i = (i + 1) % items.length; else if (e.key === 'ArrowUp') i = (i - 1 + items.length) % items.length; else if (e.key === 'Home') i = 0; else if (e.key === 'End') i = items.length - 1; else return;
+      e.preventDefault(); items[i].focus();
+    });
+    document.addEventListener('pointerdown', (e) => { if (!this.menu.hidden && !e.target.closest('.au__vo')) this.closeMenu(false); });
+    // tooltips: Esc dismisses without moving focus (WCAG 1.4.13)
+    this.dialog.addEventListener('keydown', (e) => { if (e.key === 'Escape') q('.au-tip').forEach((t) => t.classList.add('au-tip--off')); }, true);
+    this.dialog.addEventListener('focusout', () => q('.au-tip--off').forEach((t) => t.classList.remove('au-tip--off')));
+    this.dialog.addEventListener('pointerover', () => q('.au-tip--off').forEach((t) => t.classList.remove('au-tip--off')));
     const scale = this.querySelector('[data-au-scale]');
     scale.addEventListener('pointerdown', () => this.push()); scale.addEventListener('keydown', () => this.push());
     scale.addEventListener('input', () => { this.side.scale = scale.value / 100; this.analyze(this.active, false); this.update(); });
     this.querySelector('[data-au-mask]').addEventListener('input', (e) => { this.mask = e.target.value / 100; this.draw(); });
-    const zoom = this.querySelector('[data-au-zoom]');
-    zoom.addEventListener('input', () => { this.zoom = zoom.value / 100; this.querySelector('[data-au-zoom-out]').value = `${zoom.value}%`; this.draw(); });
-    // drag & drop
-    ['dragenter', 'dragover'].forEach((t) => this.wrap.addEventListener(t, (e) => { e.preventDefault(); this.wrap.classList.add('is-over'); }));
-    ['dragleave', 'drop'].forEach((t) => this.wrap.addEventListener(t, () => this.wrap.classList.remove('is-over')));
-    this.wrap.addEventListener('drop', (e) => {
-      e.preventDefault(); const f = e.dataTransfer.files[0]; if (!f) return;
-      const inp = this.input(this.active); const dt = new DataTransfer(); dt.items.add(f); inp.files = dt.files; this.onFile(this.active, f);
+    // drag & drop on the canvas and on each tile
+    ['dragenter', 'dragover'].forEach((t) => this.wrap.addEventListener(t, (e) => { e.preventDefault(); this.drop.classList.add('is-over'); }));
+    ['dragleave', 'drop'].forEach((t) => this.wrap.addEventListener(t, () => this.drop.classList.remove('is-over')));
+    this.wrap.addEventListener('drop', (e) => { e.preventDefault(); const f = e.dataTransfer.files[0]; if (f) this.setInputFile(this.active, f); });
+    q('[data-au-dz]').forEach((dz) => {
+      ['dragenter', 'dragover'].forEach((t) => dz.addEventListener(t, (e) => { e.preventDefault(); dz.classList.add('is-over'); }));
+      ['dragleave', 'drop'].forEach((t) => dz.addEventListener(t, () => dz.classList.remove('is-over')));
+      dz.addEventListener('drop', (e) => { e.preventDefault(); const f = e.dataTransfer.files[0]; if (f) this.setInputFile(dz.dataset.auDz, f); });
     });
     // position by pointer drag
     let start = null;
@@ -264,13 +316,14 @@ class ArtworkUploader extends HTMLElement {
     const end = () => { if (start) { start = null; this.update(); } };
     this.canvas.addEventListener('pointerup', end); this.canvas.addEventListener('pointercancel', end);
     this.canvas.addEventListener('pointerleave', () => { this.mag = null; this.draw(); });
-    // keyboard positioning
+    // keyboard positioning: arrows nudge, R rotate, +/- scale, Ctrl+Z undo
     this.canvas.addEventListener('keydown', (e) => {
       const step = e.shiftKey ? 0.1 : 0.01; const m = { ArrowLeft: [-step, 0], ArrowRight: [step, 0], ArrowUp: [0, -step], ArrowDown: [0, step] }[e.key];
       if (m && this.side.source) { e.preventDefault(); this.push(); this.side.x += m[0]; this.side.y += m[1]; this.update(); }
       else if (e.key === '+' || e.key === '=') this.setScale(this.side.scale * 1.05);
-      else if (e.key === '-') this.setScale(this.side.scale / 1.05);
-      else if ((e.ctrlKey || e.metaKey) && e.key === 'z') { e.preventDefault(); this.act('undo'); }
+      else if (e.key === '-' || e.key === '−') this.setScale(this.side.scale / 1.05);
+      else if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'z') { e.preventDefault(); this.act('undo'); }
+      else if (!e.ctrlKey && !e.metaKey && e.key.toLowerCase() === 'r' && this.side.source) { e.preventDefault(); this.act('rotate'); }
     });
     window.addEventListener('resize', () => this.dialog.open && this.draw());
   }
@@ -289,53 +342,109 @@ class ArtworkUploader extends HTMLElement {
     fd.append(`items[${n}][properties][_artwork_link]`, link);
     fd.append(`items[${n}][properties][_artwork_fee]`, '1');
   }
-  openStudio() { if (!this.dialog.open) this.dialog.showModal(); requestAnimationFrame(() => this.draw()); }
+  openStudio() { if (!this.dialog.open) this.dialog.showModal(); requestAnimationFrame(() => this.update()); }
+  get busy() { return SIDES.some((k) => ['uploading', 'analyzing'].includes(this.state[k].phase)); }
+  requestClose() { if (this.busy && !window.confirm(this.t.busy_close)) return; this.abortAll(); this.dialog.close(); }
+  abortAll() { SIDES.forEach((k) => { if (this.state[k].phase === 'uploading') this.cancelUpload(k, true); }); }
+  openMenu() { this.menu.hidden = false; this.menuBtn.setAttribute('aria-expanded', 'true'); this.menu.querySelector('[role^=menuitem]')?.focus(); }
+  closeMenu(focus) { if (!this.menu || this.menu.hidden) return; this.menu.hidden = true; this.menuBtn.setAttribute('aria-expanded', 'false'); if (focus) this.menuBtn.focus(); }
   input(side) { return this.querySelector(`[data-au-input="${side}"]`); }
-  get side() { return this.state[this.active === '3d' ? 'front' : this.active]; }
+  setInputFile(side, f) { const inp = this.input(side); const dt = new DataTransfer(); dt.items.add(f); inp.files = dt.files; this.onFile(side, f); }
+  get side() { return this.state[this.active]; }
   tab(name) {
-    this.querySelectorAll('[data-au-tab]').forEach((b) => b.setAttribute('aria-selected', String(b.dataset.auTab === name)));
-    this.wrap.classList.toggle('is-3d', name === '3d');
-    if (name !== '3d') this.active = name; this.update();
+    this.active = name;
+    this.querySelectorAll('[data-au-tab]').forEach((b) => { const on = b.dataset.auTab === name; b.setAttribute('aria-selected', String(on)); b.tabIndex = on ? 0 : -1; });
+    this.wrap.setAttribute('aria-labelledby', this.querySelector(`[data-au-tab="${name}"]`).id);
+    this.update();
   }
   push() { const s = this.side; s.history.push({ rot: s.rot, scale: s.scale, x: s.x, y: s.y }); if (s.history.length > 50) s.history.shift(); }
   setScale(v) { this.push(); this.side.scale = Math.min(4, Math.max(0.1, v)); this.analyze(this.active, false); this.update(); }
+  setZoom(z) { this.zoom = Math.min(3, Math.max(0.5, Math.round(z * 4) / 4)); this.querySelector('[data-au-zoom-out]').value = `${Math.round(this.zoom * 100)}%`; this.draw(); }
   act(a, btn) {
     const s = this.side;
+    const check = (on) => this.querySelectorAll(`[data-au-act="${a}"]`).forEach((b) => b.setAttribute(b.getAttribute('role') === 'menuitemcheckbox' ? 'aria-checked' : 'aria-pressed', String(on)));
     switch (a) {
-      case 'orientation': this.landscape = !this.landscape; if (this.trim) this.trim = { w: this.trim.h, h: this.trim.w }; ['front', 'back'].forEach((k) => this.state[k].source && this.analyze(k, false)); break;
+      case 'orientation': this.landscape = !this.landscape; if (this.trim) this.trim = { w: this.trim.h, h: this.trim.w }; SIDES.forEach((k) => this.state[k].source && this.analyze(k, false)); break;
       case 'rotate': this.push(); s.rot = (s.rot + 90) % 360; this.fit(s); this.analyze(this.active, false); break;
       case 'fit': this.push(); this.fit(s); this.analyze(this.active, false); break;
       case 'undo': { const h = s.history.pop(); if (h) Object.assign(s, h); this.analyze(this.active, false); break; }
       case 'reset': this.push(); s.rot = 0; this.fit(s); this.analyze(this.active, false); break;
-      case 'magnify': this.magnify = !this.magnify; btn.setAttribute('aria-pressed', String(this.magnify)); break;
-      case 'guides': this.showGuides = !this.showGuides; btn.setAttribute('aria-pressed', String(this.showGuides)); break;
-      case 'cut': this.showCut = !this.showCut; btn.setAttribute('aria-pressed', String(this.showCut)); break;
+      case 'zoom-in': this.setZoom(this.zoom + 0.25); return;
+      case 'zoom-out': this.setZoom(this.zoom - 0.25); return;
+      case 'magnify': this.magnify = !this.magnify; check(this.magnify); break;
+      case 'guides': this.showGuides = !this.showGuides; check(this.showGuides); break;
+      case 'cut': this.showCut = !this.showCut; check(this.showCut); break;
+      case '3d': this.view3d = !this.view3d; check(this.view3d); this.wrap.classList.toggle('is-3d', this.view3d); break;
       case 'autorotate': { const k = btn.dataset.side; const t = this.state[k]; this.active = k; this.push(); t.rot = (t.rot + 90) % 360; this.fit(t); this.analyze(k, false); break; }
+      case 'replace': this.input(btn?.dataset.side || this.active)?.click(); return;
     }
     this.update();
   }
   /** Scale 1 == art covers trim+bleed exactly (cover fit), centred. */
   fit(s) { s.scale = 1; s.x = 0; s.y = 0; }
+  announce(msg) { const a = this.querySelector('[data-au-alert]'); a.textContent = ''; requestAnimationFrame(() => { a.textContent = msg; }); }
+  approve() {
+    const b = this.artBlocked();
+    if (b) {
+      this.announce(this.t[b]);
+      if (b === 'confirm_needed') this.querySelector('[data-au-confirm]').focus();
+      else if (b === 'art_required') this.input(this.active)?.focus();
+      else this.querySelector('[data-au-checklist] [data-au-fix], [data-au-checklist] li')?.focus?.();
+      return;
+    }
+    this.dialog.close(); this.update();
+  }
+  sendLater() {
+    const t = this.querySelector('[data-au-later-toggle]'); if (!t) return;
+    t.checked = true; this.mode = 'later'; this.update(); this.dialog.close();
+  }
 
   /* ---------- file intake ---------- */
   removeFile(side) {
-    const inp = this.input(side); inp.value = ''; this.state[side] = this.blankSide(); this.update(); inp.focus();
+    const inp = this.input(side); inp.value = ''; this.state[side] = this.blankSide(); this.update();
+    (this.querySelector(`[data-au-tile="${side}"] .au-dz input`) || inp).focus();
+  }
+  cancelUpload(side, silent) {
+    const s = this.state[side]; s.reader?.abort(); s.cancelled = true;
+    this.input(side).value = ''; this.state[side] = this.blankSide();
+    if (!silent) { this.update(); this.querySelector('[data-au-browse]').focus(); }
+  }
+  /** Read the file locally with progress (the actual transfer happens with the cart form). */
+  readWithProgress(s, file) {
+    return new Promise((resolve, reject) => {
+      const r = new FileReader(); s.reader = r;
+      r.onprogress = (e) => { if (e.lengthComputable) { s.progress = Math.round((e.loaded / e.total) * 100); this.renderProgress(); } };
+      r.onload = () => resolve(r.result); r.onerror = () => reject(r.error); r.onabort = () => reject(new Error('abort'));
+      r.readAsArrayBuffer(file);
+    });
   }
   async onFile(side, file) {
     const s = this.blankSide(); this.state[side] = s; s.file = file || null;
     if (!file) return this.update();
+    if (this.active !== side) this.tab(side);
     s.ext = (file.name.split('.').pop() || '').toLowerCase();
-    if (!this.cfg.formats.includes(s.ext)) { s.issues = [this.issue('error', 'bad_format', { name: file.name, formats: this.cfg.formats.filter((f) => f !== 'jpeg' && f !== 'tiff').join(', ').toUpperCase() })]; return this.update(); }
-    if (file.size > this.cfg.maxBytes) { s.issues = [this.issue('error', 'too_large', { name: file.name, size: r2(file.size / 1048576), max: r2(this.cfg.maxBytes / 1048576) })]; return this.update(); }
+    if (!this.cfg.formats.includes(s.ext)) { s.phase = 'done'; s.issues = [this.issue('error', 'bad_format', { name: file.name, formats: this.cfg.formats.filter((f) => f !== 'jpeg' && f !== 'tiff').join(', ').toUpperCase() })]; return this.update(); }
+    if (file.size > this.cfg.maxBytes) { s.phase = 'done'; s.issues = [this.issue('error', 'too_large', { name: file.name, size: r2(file.size / 1048576), max: r2(this.cfg.maxBytes / 1048576) })]; return this.update(); }
+    s.phase = 'uploading'; this.update();
+    let buf;
+    try { buf = await this.readWithProgress(s, file); await wait(250); } catch (err) {
+      if (s.cancelled || this.state[side] !== s) return;
+      s.phase = 'done'; s.issues = [this.issue('error', 'err_upload')]; return this.update();
+    }
+    if (this.state[side] !== s) return;
+    s.phase = 'analyzing'; this.update();
     try {
       if (PREVIEWABLE.includes(s.ext)) {
         s.source = await createImageBitmap(file); s.pxW = s.source.width; s.pxH = s.source.height;
-        s.color = s.ext === 'png' ? 'rgb' : jpegColorSpace(await file.slice(0, 256 * 1024).arrayBuffer());
+        s.color = s.ext === 'png' ? 'rgb' : jpegColorSpace(buf.slice(0, 256 * 1024));
       } else if (s.ext === 'pdf') {
         await this.loadPdf(s, file);
       }
     } catch (err) { console.warn('[artwork-uploader]', err); s.loadError = true; }
-    this.tab(side); this.analyze(side, true); this.update();
+    await wait(700);
+    if (this.state[side] !== s) return;
+    s.phase = 'done'; this.analyze(side, true); this.update();
+    const n = this.counts(); this.announce(this.summaryText(n));
   }
   async loadPdf(s, file) {
     const pdfjs = await loadPdfjs();
@@ -477,34 +586,162 @@ class ArtworkUploader extends HTMLElement {
     this.form?.querySelectorAll('.shopify-payment-button').forEach((w) => w.classList.toggle('is-au-blocked', !!b));
   }
 
+
   /* ---------- render ---------- */
+  /** Checklist rows for one side, mapped from the preflight issues. Returns { rows, notes }. */
+  checklist(k) {
+    const s = this.state[k]; const sp = this.cfg.special; const doc = this.doc; const used = new Set();
+    const lv = (l) => ({ error: 'err', warning: 'warn', ok: 'ok', info: 'review' }[l] || 'review');
+    const pick = (keys) => s.issues.filter((i) => keys.includes(i.key));
+    const row = (id, label, detail, keys, fallback, fix) => {
+      const hits = pick(keys); hits.forEach((i) => used.add(i));
+      let st = fallback; let text = detail;
+      hits.forEach((i) => { const l = lv(i.level); if (LEVEL_RANK[l] >= LEVEL_RANK[st] || st === 'wait') { st = l; if (i.level !== 'ok') text = i.text; } });
+      return { id, label, detail: text, st, fix: st === 'warn' || st === 'err' ? (typeof fix === 'function' ? fix(hits) : fix) : null };
+    };
+    if (s.phase !== 'done') {
+      const st = s.phase === 'empty' ? 'wait' : 'run';
+      const base = [['size', this.t.ck_size], ['dpi', this.t.ck_dpi], ['format', this.t.ck_format], ['safe', this.t.ck_safe]];
+      return { rows: base.map(([id, label]) => ({ id, label, detail: '', st })), notes: [] };
+    }
+    const fmtErr = pick(['bad_format', 'too_large', 'err_upload']);
+    const rows = [];
+    rows.push(row('format', this.t.ck_format, s.ext.toUpperCase(), ['bad_format', 'too_large', 'err_upload'], 'ok', 'replace'));
+    if (fmtErr.length) return { rows, notes: [] };
+    rows.push(row('size', this.t.ck_size, doc ? fmt(this.t.ck_size_detail, { w: r2(doc.w), h: r2(doc.h) }) : this.t.no_template, ['pdf_ok', 'pdf_no_bleed', 'pdf_size', 'orientation', 'no_template'], s.source || s.pdf ? 'ok' : 'review', (h) => (h.some((i) => i.key === 'orientation') ? 'autorotate' : 'replace')));
+    if (s.pdf) rows.push({ id: 'dpi', label: this.t.ck_dpi, detail: this.t.ck_dpi_vector, st: 'review' });
+    else rows.push(row('dpi', this.t.ck_dpi, fmt(this.t.ck_dpi_detail, { dpi: this.cfg.warnDpi }), ['dpi_ok', 'dpi_low', 'dpi_too_low'], s.source ? 'ok' : 'review', 'replace'));
+    if (!s.pdf && s.source) rows.push(row('ratio', this.t.ck_ratio, `${r2(s.pxW / s.pxH)}`, ['aspect'], 'ok', 'fit'));
+    if (sp.has('apparel_area')) {
+      rows.push(row('area', this.t.ck_area, this.t.lg_area, ['apparel'], 'ok', 'fit'));
+      rows.push({ id: 'bg', label: this.t.ck_bg, detail: '', st: s.ext === 'png' ? 'ok' : 'review' });
+    } else rows.push({ id: 'safe', label: this.t.ck_safe, detail: fmt(this.t.ck_safe_detail, { safe: this.cfg.safe }), st: 'review' });
+    if (sp.has('folds')) rows.push(row('folds', this.t.ck_folds, '', ['folds'], 'review'));
+    if (sp.has('die_cut')) rows.push(row('contour', this.t.ck_contour, '', ['die_cut'], 'review', 'fit'));
+    if (num(this.spec?.sleeve_in)) rows.push({ id: 'sleeve', label: this.t.ck_sleeve, detail: '', st: 'review' });
+    const notes = s.issues.filter((i) => !used.has(i) && i.level !== 'ok').map((i) => ({ ...i, side: k }));
+    return { rows, notes };
+  }
+  /** Counts of errors/warnings across the needed sides. */
+  counts() {
+    const issues = this.allIssues().filter((i) => i.key !== 'missing_file');
+    return { err: issues.filter((i) => i.level === 'error').length, warn: issues.filter((i) => i.level === 'warning').length, any: SIDES.some((k) => this.state[k].file) };
+  }
+  summaryText(n) {
+    if (this.busy) return this.t.analyzing;
+    if (!n.any) return this.t.sum_empty;
+    if (n.err) return fmt(n.err === 1 ? this.t.sum_err_one : this.t.sum_err, { n: n.err });
+    if (n.warn) return fmt(n.warn === 1 ? this.t.sum_warn_one : this.t.sum_warn, { n: n.warn });
+    return this.t.sum_pass;
+  }
+  sideStatus(k) {
+    const s = this.state[k];
+    if (!s.file) return { cls: 'pend', label: this.t.badge_needed, ic: 'circle-dashed', dot: '' };
+    if (s.phase === 'uploading' || s.phase === 'analyzing') return { cls: 'run', label: this.t.badge_checking, ic: 'loader-circle', dot: '' };
+    const e = s.issues.filter((i) => i.level === 'error').length; const w = s.issues.filter((i) => i.level === 'warning').length;
+    if (e) return { cls: 'err', label: fmt(e === 1 ? this.t.badge_err_one : this.t.badge_err, { n: e }), ic: 'circle-x', dot: 'err' };
+    if (w) return { cls: 'warn', label: fmt(w === 1 ? this.t.badge_warn_one : this.t.badge_warn, { n: w }), ic: 'triangle-alert', dot: 'warn' };
+    return { cls: 'ok', label: this.t.badge_ready, ic: 'circle-check', dot: 'ok' };
+  }
+  badge(st) { return `<span class="au-badge au-badge--${st.cls}">${icon(st.ic, 14, st.cls === 'run' ? 'au-spin' : '')}${st.label}</span>`; }
+  renderProgress() {
+    const s = this.side; const bar = this.querySelector('[data-au-up-bar]');
+    bar.setAttribute('aria-valuenow', s.progress); bar.style.setProperty('--p', `${s.progress}%`);
+    const mb = (b) => r2(b / 1048576);
+    if (s.file) this.querySelector('[data-au-up-text]').textContent = fmt(this.t.uploading, { file: s.file.name, p: s.progress, x: mb((s.file.size * s.progress) / 100), y: mb(s.file.size) });
+    SIDES.forEach((k) => { const fb = this.querySelector(`[data-au-tile="${k}"] [data-au-filebar]`); fb.hidden = this.state[k].phase !== 'uploading'; fb.style.setProperty('--p', `${this.state[k].progress}%`); });
+  }
   update() {
     const issues = this.allIssues();
-    const needed = this.cfg.sides; const done = (this.state.front.file ? 1 : 0) + (needed === 2 && this.state.back.file ? 1 : 0);
-    this.querySelectorAll('[data-au-count]').forEach((el) => { el.textContent = fmt(this.t.files_uploaded, { done, total: needed }); });
+    const needed = this.cfg.sides; const neededSides = needed === 2 ? SIDES : ['front'];
+    const done = neededSides.filter((k) => this.state[k].file).length;
+    this.querySelectorAll('[data-au-count]').forEach((e) => { e.textContent = done ? fmt(this.t.files_uploaded, { done, total: needed }) : ''; });
+    this.querySelector('[data-au-sides-count]').textContent = fmt(this.t.sides_count, { n: done, t: needed });
     const doc = this.doc;
     const tpl = this.trim ? fmt(this.t.template, { w: r2(this.trim.w), h: r2(this.trim.h), bw: r2(doc.w), bh: r2(doc.h), dpi: this.cfg.minDpi }) : this.t.no_template;
     const name = this.spec?.label || this.profile?.name;
-    this.querySelector('[data-au-template-label]').textContent = name && this.trim ? `${fmt(this.t.spec_line, { name, w: r2(this.trim.w), h: r2(this.trim.h), sides: needed, dpi: this.cfg.minDpi })}. ${tpl}` : tpl;
-    ['front', 'back'].forEach((k) => {
-      const tile = this.querySelector(`[data-au-tile="${k}"]`); const s = this.state[k];
-      tile.classList.toggle('is-done', !!s.file);
-      const label = tile.querySelector('[data-au-filename]'); tile.dataset.def ||= label.textContent;
-      label.textContent = s.file ? `${s.file.name} · ${r2(s.file.size / 1048576)} MB` : tile.dataset.def;
-      tile.querySelector('[data-au-remove]').hidden = !s.file;
+    const specLine = name && this.trim ? fmt(this.t.spec_line, { name, w: r2(this.trim.w), h: r2(this.trim.h), sides: needed, dpi: this.cfg.minDpi }) : '';
+    this.querySelector('[data-au-template-label]').textContent = specLine ? `${specLine}. ${tpl}` : tpl;
+    this.querySelector('[data-au-eyebrow]').textContent = [this.dataset.productTitle, specLine.replace(/^[^:]*:\s*/, '') || (this.trim ? `${r2(this.trim.w)}" × ${r2(this.trim.h)}"` : '')].filter(Boolean).join(' · ');
+    const n = this.counts();
+    // product card
+    this.classList.toggle('has-art', n.any);
+    const psBadge = this.querySelector('[data-au-ps-badge]');
+    const overall = !n.any ? null : this.busy ? { cls: 'run', label: this.t.badge_checking, ic: 'loader-circle' } : n.err ? { cls: 'err', label: fmt(n.err === 1 ? this.t.badge_err_one : this.t.badge_err, { n: n.err }), ic: 'circle-x' } : n.warn && !this.querySelector('[data-au-confirm]').checked ? { cls: 'warn', label: this.t.needs_review, ic: 'triangle-alert' } : done < needed ? { cls: 'pend', label: this.t.badge_needed, ic: 'circle-dashed' } : { cls: 'ok', label: this.t.badge_ready, ic: 'circle-check' };
+    psBadge.innerHTML = overall ? this.badge(overall) : '';
+    const psList = this.querySelector('[data-au-ps-list]'); psList.replaceChildren();
+    if (n.any) neededSides.forEach((k) => {
+      const s = this.state[k]; const li = el('li');
+      li.innerHTML = `<span class="au-thumb">${icon('file-image', 20)}</span><span style="min-width:0"><b></b><small></small></span>${this.badge(this.sideStatus(k))}`;
+      li.querySelector('b').textContent = s.file ? s.file.name : this.t[k];
+      li.querySelector('small').textContent = s.file ? `${this.t[k]} · ${s.ext.toUpperCase()} · ${r2(s.file.size / 1048576)} MB` : this.t.badge_needed;
+      if (s.source) this.thumb(li.querySelector('.au-thumb'), s);
+      psList.append(li);
+    });
+    this.querySelector('[data-au-open-replace]').hidden = !n.any;
+    // tiles + tab badges
+    SIDES.forEach((k) => {
+      const tile = this.querySelector(`[data-au-tile="${k}"]`); const s = this.state[k]; const st = this.sideStatus(k);
+      tile.classList.toggle('is-done', !!s.file); tile.classList.toggle('is-active', k === this.active && !s.file);
+      ['ok', 'warn', 'err'].forEach((c) => tile.classList.toggle(`is-${c}`, st.cls === c));
+      this.querySelector(`[data-au-side-badge="${k}"]`).innerHTML = this.badge(st);
+      tile.querySelector('.au-dz').hidden = !!s.file;
+      tile.querySelector('[data-au-file]').hidden = !s.file;
+      if (s.file) {
+        tile.querySelector('[data-au-filename]').textContent = s.file.name;
+        tile.querySelector('[data-au-filemeta]').textContent = `${s.ext.toUpperCase()} · ${r2(s.file.size / 1048576)} MB${s.pxW && !s.pdf ? ` · ${s.pxW}×${s.pxH}px` : ''}`;
+        const th = tile.querySelector('.au-thumb'); if (s.source) this.thumb(th, s); else th.innerHTML = icon('file-image', 22);
+      }
+      const tb = this.querySelector(`[data-au-tab-badge="${k}"]`);
+      tb.innerHTML = st.dot ? this.badge(st) : '';
+    });
+    // checklist + notes for the active side
+    const s = this.side; const { rows, notes } = this.checklist(this.active);
+    const ck = this.querySelector('[data-au-checklist]'); ck.replaceChildren();
+    const ICON_FOR = { ok: 'circle-check', warn: 'triangle-alert', err: 'circle-x', wait: 'circle-dashed', run: 'loader-circle', review: 'eye' };
+    rows.forEach((r) => {
+      const li = el('li'); li.dataset.ck = r.id; li.tabIndex = -1;
+      li.innerHTML = `<span class="au-ic--${r.st}">${icon(ICON_FOR[r.st], 20, r.st === 'run' ? 'au-spin' : '')}</span><span><b></b><small></small></span><span class="au__st au__st--${r.st}">${this.t[`st_${r.st}`]}</span>`;
+      li.querySelector('b').textContent = r.label; li.querySelector('small').textContent = r.detail || '';
+      if (r.fix) {
+        const map = { fit: ['scan', this.t.fix_fit], replace: ['replace', this.t.fix_replace], autorotate: ['rotate-cw', this.t.auto_rotate] }; const [ic, label] = map[r.fix];
+        const b = el('button', 'au-btn au-btn--outline au-btn--sm au-fix', `${icon(ic, 16)}<span></span>`); b.type = 'button'; b.dataset.auFix = r.fix; b.dataset.side = this.active; b.querySelector('span').textContent = label;
+        b.addEventListener('click', () => this.act(r.fix, b)); li.append(b);
+      }
+      ck.append(li);
     });
     const ul = this.querySelector('[data-au-warnings]'); ul.replaceChildren();
-    const problems = issues.filter((i) => i.level === 'error' || i.level === 'warning');
-    this.querySelector('[data-au-badge]').textContent = problems.length;
-    if (!issues.length) { const li = document.createElement('li'); li.className = 'is-ok'; li.textContent = this.t.no_warnings; ul.append(li); }
-    issues.forEach((i) => {
-      const li = document.createElement('li'); li.className = `is-${i.level}`;
-      li.textContent = `${this.t[i.side]}: ${i.text}`;
-      if (i.fix) { const b = document.createElement('button'); b.type = 'button'; b.className = 'button button--secondary'; b.textContent = this.t.auto_rotate; b.dataset.side = i.fix; b.addEventListener('click', () => this.act('autorotate', b)); li.append(document.createElement('br'), b); }
-      ul.append(li);
-    });
-    this.querySelector('[data-au-scale]').value = Math.round(this.side.scale * 100);
-    this.drop.hidden = !!this.side.source;
+    const otherNotes = SIDES.filter((k) => k !== this.active && neededSides.includes(k)).flatMap((k) => this.state[k].issues.filter((i) => i.level === 'error' || i.level === 'warning').map((i) => ({ ...i, side: k })));
+    [...notes, ...otherNotes].forEach((i) => { const li = el('li', `is-${i.level}`); li.textContent = `${this.t[i.side]}: ${i.text}`; ul.append(li); });
+    this.querySelector('[data-au-notes-wrap]').hidden = !ul.children.length;
+    const total = n.err + n.warn;
+    this.querySelector('[data-au-badge]').innerHTML = !n.any ? '' : this.busy ? this.badge({ cls: 'run', label: this.t.badge_checking, ic: 'loader-circle' }) : n.err ? this.badge({ cls: 'err', label: fmt(n.err === 1 ? this.t.badge_err_one : this.t.badge_err, { n: n.err }), ic: 'circle-x' }) : n.warn ? this.badge({ cls: 'warn', label: fmt(n.warn === 1 ? this.t.badge_warn_one : this.t.badge_warn, { n: n.warn }), ic: 'triangle-alert' }) : this.badge({ cls: 'ok', label: this.t.badge_ready, ic: 'circle-check' });
+    const sum = this.querySelector('[data-au-summary]'); sum.textContent = this.summaryText(n); sum.className = `au__sum${!n.any || this.busy ? '' : n.err ? ' is-err' : n.warn ? ' is-warn' : ' is-ok'}`;
+    // stage overlays
+    const hasFile = !!s.file;
+    this.drop.hidden = hasFile;
+    this.querySelector('[data-au-drop-title]').textContent = this.t[`drop_canvas_${this.active}`];
+    this.querySelector('[data-au-ovl-up]').hidden = s.phase !== 'uploading';
+    this.querySelector('[data-au-ovl-an]').hidden = s.phase !== 'analyzing';
+    const errI = s.phase === 'done' && s.issues.find((i) => i.level === 'error');
+    this.querySelector('[data-au-errbar]').hidden = !errI; if (errI) this.querySelector('[data-au-errbar-text]').textContent = errI.text;
+    this.classList.toggle('is-empty-side', !s.source);
+    this.renderProgress();
+    // legend per mode
+    const sp = this.cfg.special; const show = (k, v) => { const li = this.querySelector(`[data-lg="${k}"]`); if (li) li.hidden = !v; };
+    const ap = sp.has('apparel_area');
+    show('bleed', !ap); show('cut', !ap && !sp.has('die_cut')); show('safe', !ap); show('fold', sp.has('folds')); show('contour', sp.has('die_cut')); show('area', ap); show('sleeve', !!num(this.spec?.sleeve_in));
+    this.querySelector('[data-au-orient-val]').textContent = this.landscape ? this.t.landscape : this.t.portrait;
+    // footer: ack + approve
+    const ackRow = this.querySelector('[data-au-ack]'); const ack = this.querySelector('[data-au-confirm]');
+    ackRow.hidden = !(n.warn && !n.err && !this.busy);
+    this.querySelector('[data-au-ack-text]').textContent = fmt(n.warn === 1 ? this.t.ack_one : this.t.ack, { n: n.warn });
+    if (ackRow.hidden && ack.checked && !n.warn) ack.checked = false;
+    const ab = this.busy ? 'busy' : this.artBlocked(); const ap2 = this.querySelector('[data-au-approve]');
+    if (ab) { ap2.setAttribute('aria-disabled', 'true'); this.querySelector('[data-au-why]').textContent = `${this.t.approve_why} ${ab === 'busy' ? this.t.analyzing : this.t[ab]}`; }
+    else { ap2.removeAttribute('aria-disabled'); this.querySelector('[data-au-why]').textContent = ''; }
+    this.querySelector('[data-au-scale]').value = Math.round(s.scale * 100);
+    // product-card modes (unchanged behaviour)
     const brief = this.brief; const later = this.mode === 'later' || brief;
     const laterRow = this.querySelector('[data-au-later-row]'); if (laterRow) laterRow.hidden = brief;
     this.querySelector('[data-au-brief]').hidden = !brief;
@@ -516,11 +753,16 @@ class ArtworkUploader extends HTMLElement {
     pp.disabled = !pol.checked; if (pol.checked && !pp.value) pp.value = `Accepted ${new Date().toISOString()}`; if (!pol.checked) pp.value = '';
     this.querySelectorAll('[data-au-input]').forEach((i) => { i.disabled = later; });
     const qaRow = this.querySelector('[data-au-qa-row]'); if (qaRow) { qaRow.hidden = this.qaHidden; this.querySelector('[data-au-qa]').disabled = this.qaHidden; }
-    const badge = this.querySelector('[data-au-qa-badge]'); if (badge) badge.hidden = !later;
+    const qb = this.querySelector('[data-au-qa-badge]'); if (qb) qb.hidden = !later;
     this.writeProps(issues);
-    if (later) this.querySelectorAll('[data-au-prop]').forEach((el) => { el.disabled = true; });
+    if (later) this.querySelectorAll('[data-au-prop]').forEach((e) => { e.disabled = true; });
     const b = this.blocked(); this.querySelector('[data-au-status]').textContent = b ? this.t[b] : this.t.gate_ok;
     this.applyGate(); this.draw();
+  }
+  /** Small preview of the art in a thumb slot (cached per source). */
+  thumb(slot, s) {
+    if (!s.thumbUrl) { const c = document.createElement('canvas'); const k = 96 / Math.max(s.pxW, s.pxH); c.width = Math.max(1, Math.round(s.pxW * k)); c.height = Math.max(1, Math.round(s.pxH * k)); c.getContext('2d').drawImage(s.source, 0, 0, c.width, c.height); s.thumbUrl = c.toDataURL(); }
+    slot.innerHTML = `<img src="${s.thumbUrl}" alt="">`;
   }
   writeProps(issues) {
     const has = this.state.front.file || this.state.back.file;
@@ -537,32 +779,47 @@ class ArtworkUploader extends HTMLElement {
   draw() {
     if (!this.dialog.open) return;
     const doc = this.doc || { w: 3.5, h: 2 }; const ctx = this.ctx; const dpr = window.devicePixelRatio || 1;
-    const avail = Math.max(240, this.wrap.clientWidth - 40) * this.zoom; const maxH = Math.max(240, window.innerHeight * 0.5) * this.zoom;
-    const pad = 24 * dpr; const ppi = Math.min((avail * dpr - 2 * pad) / doc.w, (maxH * dpr - 2 * pad) / doc.h); this.ppi = ppi;
+    const avail = Math.max(200, this.wrap.clientWidth - 32) * this.zoom; const maxH = Math.max(220, Math.min(window.innerHeight * 0.5, 520)) * this.zoom;
+    const pad = 20 * dpr; const ppi = Math.min((avail * dpr - 2 * pad) / doc.w, (maxH * dpr - 2 * pad) / doc.h); this.ppi = ppi;
     const W = Math.round(doc.w * ppi + 2 * pad); const H = Math.round(doc.h * ppi + 2 * pad);
     this.canvas.width = W; this.canvas.height = H; this.canvas.style.width = `${W / dpr}px`;
     ctx.clearRect(0, 0, W, H); ctx.fillStyle = '#fff'; ctx.fillRect(pad, pad, doc.w * ppi, doc.h * ppi);
     const s = this.side; const b = this.cfg.bleed * ppi; const sf = (this.cfg.bleed + this.cfg.safe) * ppi;
+    const sp = this.cfg.special; const ap = sp.has('apparel_area'); const die = sp.has('die_cut');
     if (s.source && this.doc) {
       const rotated = s.rot % 180 !== 0; const aw = rotated ? s.pxH : s.pxW; const ah = rotated ? s.pxW : s.pxH;
-      const k = (this.cfg.special.has('apparel_area') ? Math.min((doc.w * ppi) / aw, (doc.h * ppi) / ah) : Math.max((doc.w * ppi) / aw, (doc.h * ppi) / ah)) * s.scale;
+      const k = (ap ? Math.min((doc.w * ppi) / aw, (doc.h * ppi) / ah) : Math.max((doc.w * ppi) / aw, (doc.h * ppi) / ah)) * s.scale;
       ctx.save(); ctx.translate(pad + (doc.w / 2 + s.x) * ppi, pad + (doc.h / 2 + s.y) * ppi); ctx.rotate((s.rot * Math.PI) / 180);
       ctx.drawImage(s.source, (-s.pxW * k) / 2, (-s.pxH * k) / 2, s.pxW * k, s.pxH * k); ctx.restore();
     }
-    // mask outside the cut line
-    ctx.save(); ctx.fillStyle = `rgba(255,255,255,${this.mask})`; ctx.beginPath(); ctx.rect(0, 0, W, H); ctx.rect(pad + b, pad + b, doc.w * ppi - 2 * b, doc.h * ppi - 2 * b); ctx.fill('evenodd'); ctx.restore();
-    const box = (inset, color, dash) => { ctx.save(); ctx.strokeStyle = color; ctx.lineWidth = 1.5 * dpr; ctx.setLineDash(dash.map((d) => d * dpr)); ctx.strokeRect(pad + inset, pad + inset, doc.w * ppi - 2 * inset, doc.h * ppi - 2 * inset); ctx.restore(); };
-    const sp = this.cfg.special;
-    if (sp.has('apparel_area')) { if (this.showGuides) box(0, COLORS.safe, [6, 4]); }
-    else {
-      if (this.showGuides) { box(0, COLORS.bleed, [4, 3]); box(sf, COLORS.safe, [6, 4]); }
-      if (this.showCut) box(b, COLORS.cut, sp.has('die_cut') ? [2, 3] : []);
+    const rr = (inset, r) => { const x = pad + inset; const y = pad + inset; const w = doc.w * ppi - 2 * inset; const h = doc.h * ppi - 2 * inset; ctx.beginPath(); ctx.roundRect ? ctx.roundRect(x, y, w, h, r) : ctx.rect(x, y, w, h); };
+    const dieR = Math.min(doc.w, doc.h) * ppi * 0.12;
+    // mask outside the cut line (contour for die-cut)
+    if (!ap) { ctx.save(); ctx.fillStyle = `rgba(255,255,255,${this.mask})`; ctx.beginPath(); ctx.rect(0, 0, W, H); if (die && ctx.roundRect) ctx.roundRect(pad + b, pad + b, doc.w * ppi - 2 * b, doc.h * ppi - 2 * b, dieR); else ctx.rect(pad + b, pad + b, doc.w * ppi - 2 * b, doc.h * ppi - 2 * b); ctx.fill('evenodd'); ctx.restore(); }
+    const line = (color, width, dash, path) => { ctx.save(); ctx.strokeStyle = color; ctx.lineWidth = width * dpr; ctx.setLineDash(dash.map((d) => d * dpr)); path(); ctx.stroke(); ctx.restore(); };
+    const label = (txt, x, y, bg = '#000', fg = '#fff') => { ctx.save(); ctx.font = `700 ${11 * dpr}px system-ui, sans-serif`; const w = ctx.measureText(txt).width + 10 * dpr; ctx.fillStyle = bg; ctx.fillRect(x, y, w, 16 * dpr); ctx.fillStyle = fg; ctx.textBaseline = 'middle'; ctx.fillText(txt, x + 5 * dpr, y + 8 * dpr); ctx.restore(); };
+    if (ap) {
+      if (this.showGuides) { line(COLORS.safe, 1.5, [6, 4], () => rr(0, 0)); label(this.t.lg_area, pad + 6 * dpr, pad + 6 * dpr, COLORS.safe); }
+    } else {
+      if (this.showGuides) { line(COLORS.bleed, 1.5, [4, 3], () => rr(0, 0)); line(COLORS.safe, 1.5, [6, 4], () => rr(sf, die ? Math.max(0, dieR - this.cfg.safe * ppi) : 0)); }
+      if (this.showCut) { if (die) line('#FB56D6', 3, [], () => rr(b, dieR)); else line(COLORS.cut, 2, [], () => rr(b, 0)); }
     }
     if (sp.has('folds') && this.trim && this.showGuides) {
-      ctx.save(); ctx.strokeStyle = '#8a2be2'; ctx.lineWidth = 1.5 * dpr; ctx.setLineDash([8 * dpr, 4 * dpr, 2 * dpr, 4 * dpr]);
-      foldPositions(this.cfg.panels, sp.panelCount, this.trim.w).forEach((fx) => { const x = pad + b + fx * ppi; ctx.beginPath(); ctx.moveTo(x, pad); ctx.lineTo(x, pad + doc.h * ppi); ctx.stroke(); });
-      ctx.restore();
+      foldPositions(this.cfg.panels, sp.panelCount, this.trim.w).forEach((fx) => {
+        const x = pad + b + fx * ppi; line('#000', 1.5, [2, 3], () => { ctx.beginPath(); ctx.moveTo(x, pad); ctx.lineTo(x, pad + doc.h * ppi); });
+        label(this.t.lg_fold, x - 16 * dpr, pad + doc.h * ppi - 22 * dpr);
+      });
     }
+    const sleeve = num(this.spec?.sleeve_in);
+    if (sleeve && this.showGuides) {
+      const w = sleeve * ppi; ctx.save(); ctx.beginPath(); ctx.rect(pad, pad, w, doc.h * ppi); ctx.clip(); ctx.strokeStyle = 'rgba(0,0,0,.55)'; ctx.lineWidth = 1.5 * dpr;
+      for (let i = -doc.h * ppi; i < w + doc.h * ppi; i += 8 * dpr) { ctx.beginPath(); ctx.moveTo(pad + i, pad); ctx.lineTo(pad + i + doc.h * ppi, pad + doc.h * ppi); ctx.stroke(); }
+      ctx.restore(); label(this.t.lg_sleeve, pad + 4 * dpr, pad + 6 * dpr);
+    }
+    // large-format scale chip: real inches vs on-screen inches (96 CSS px per inch)
+    const chip = this.querySelector('[data-au-scale-chip]');
+    const showChip = sp.has('large_format') && this.trim; chip.hidden = !showChip;
+    if (showChip) { const ratio = Math.max(1, Math.round((96 * dpr) / ppi)); chip.querySelector('span').textContent = fmt(this.t.scale_chip, { n: ratio, h: `${r2(this.trim.h)}"` }); }
     if (this.magnify && this.mag) {
       const r = 70 * dpr; const z = 3; const { x, y } = this.mag;
       ctx.save(); ctx.beginPath(); ctx.arc(x, y, r, 0, Math.PI * 2); ctx.clip();

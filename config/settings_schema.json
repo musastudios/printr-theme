@@ -393,6 +393,38 @@
         "id": "artwork_email",
         "label": "Artwork email",
         "default": "shopprintr@gmail.com"
+      },
+      {
+        "type": "header",
+        "content": "Uploader status colors"
+      },
+      {
+        "type": "paragraph",
+        "content": "Pending approval: green and amber are new to the brand. Change them here; they feed CSS custom properties --au-ok and --au-warn."
+      },
+      {
+        "type": "color",
+        "id": "artwork_ok_color",
+        "label": "Pass (green) text",
+        "default": "#0B7A3B"
+      },
+      {
+        "type": "color",
+        "id": "artwork_ok_bg",
+        "label": "Pass (green) background",
+        "default": "#E3F3E8"
+      },
+      {
+        "type": "color",
+        "id": "artwork_warn_color",
+        "label": "Warning (amber) text",
+        "default": "#8A5300"
+      },
+      {
+        "type": "color",
+        "id": "artwork_warn_bg",
+        "label": "Warning (amber) background",
+        "default": "#FFF1D2"
       }
     ]
   }
