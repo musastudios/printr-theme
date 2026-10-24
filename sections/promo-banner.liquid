@@ -9,6 +9,7 @@
     <div>
       <span class="slug">{{ section.settings.slug | escape }}</span>
       <h2>{{ section.settings.heading | escape }}</h2>
+      {%- if section.settings.body != blank -%}<div class="rte promo__body">{{ section.settings.body }}</div>{%- endif -%}
       {%- if section.settings.link != blank -%}<a class="button" href="{{ section.settings.link }}">{{ section.settings.button | escape }}</a>{%- endif -%}
     </div>
     {%- if section.settings.end_date != blank -%}
@@ -31,6 +32,7 @@
   .promo-bg .section-bg__img { object-position: right center; }
   .promo-bg__overlay { position: absolute; inset: 0; opacity: var(--overlay, .5); background: linear-gradient(90deg, rgb(var(--color-background)) 0%, rgba(var(--color-background), .85) 35%, rgba(var(--color-background), 0) 70%); }
   @media (max-width: 749px) { .promo-bg__overlay { background: rgba(var(--color-background), .85); } }
+  .promo__body p { margin: 0 0 1.6rem; max-width: 48rem; }
 {% endstylesheet %}
 {% schema %}
 {
@@ -38,6 +40,7 @@
   "settings": [
     { "type": "text", "id": "slug", "label": "Small label", "default": "Limited offer" },
     { "type": "text", "id": "heading", "label": "Heading", "default": "20% off 1,000+ business cards" },
+    { "type": "richtext", "id": "body", "label": "Text" },
     { "type": "text", "id": "button", "label": "Button label", "default": "Start printing" },
     { "type": "url", "id": "link", "label": "Button link" },
     { "type": "text", "id": "end_date", "label": "Countdown end (YYYY-MM-DDTHH:MM)", "info": "Leave blank to hide the countdown" },

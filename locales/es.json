@@ -12,10 +12,12 @@
     "close": "Cerrar",
     "newsletter": {
       "email": "Correo electrónico",
-      "subscribe": "Suscribirse",
+      "subscribe": "Suscribirme",
       "success": "¡Gracias por suscribirte!",
       "no_thanks": "No, gracias",
-      "use_code": "Usa el código"
+      "use_code": "Usa el código",
+      "placeholder": "Tu email",
+      "fine_print": "Puedes darte de baja cuando quieras."
     },
     "countdown": {
       "days": "Días",

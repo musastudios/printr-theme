@@ -23,19 +23,26 @@
         "m1": {
           "type": "message",
           "settings": {
-            "text": "Free shipping over $99 · 48-hour business cards"
+            "text": "Fast, reliable shipping on every order."
           }
         },
         "m2": {
           "type": "message",
           "settings": {
-            "text": "Volume pricing: the more you print, the less you pay"
+            "text": "New here? Start your first order in minutes."
+          }
+        },
+        "m3": {
+          "type": "message",
+          "settings": {
+            "text": "Fast turnaround on everyday print."
           }
         }
       },
       "block_order": [
         "m1",
-        "m2"
+        "m2",
+        "m3"
       ],
       "settings": {
         "menu": "utility-menu",

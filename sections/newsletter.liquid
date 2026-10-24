@@ -10,9 +10,10 @@
       {%- else -%}
         <label class="visually-hidden" for="NewsletterEmail-{{ section.id }}">{{ 'general.newsletter.email' | t }}</label>
         <div class="newsletter__field">
-          <input id="NewsletterEmail-{{ section.id }}" type="email" name="contact[email]" required autocomplete="email" placeholder="{{ 'general.newsletter.email' | t }}">
+          <input id="NewsletterEmail-{{ section.id }}" type="email" name="contact[email]" required autocomplete="email" placeholder="{{ 'general.newsletter.placeholder' | t }}">
           <button type="submit" class="button">{{ 'general.newsletter.subscribe' | t }}</button>
         </div>
+        <p class="newsletter__fine">{{ 'general.newsletter.fine_print' | t }}</p>
         {{ form.errors | default_errors }}
       {%- endif -%}
     {%- endform -%}
@@ -25,6 +26,7 @@
   .newsletter form { width: 100%; max-width: 52rem; }
   .newsletter__field { display: flex; gap: .8rem; flex-wrap: wrap; }
   .newsletter__field input { flex: 1 1 22rem; min-height: 4.8rem; padding: 0 1.6rem; border: 2px solid rgb(var(--color-foreground)); border-radius: var(--radius-button); background: rgb(var(--color-background)); color: rgb(var(--color-foreground)); font: inherit; }
+  .newsletter__fine { margin: .8rem 0 0; font-size: 1.3rem; opacity: .75; }
 {% endstylesheet %}
 {% schema %}
 {

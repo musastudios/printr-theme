@@ -15,7 +15,9 @@
       "subscribe": "Subscribe",
       "success": "Thanks for subscribing!",
       "no_thanks": "No thanks",
-      "use_code": "Use code"
+      "use_code": "Use code",
+      "placeholder": "Your email",
+      "fine_print": "You can unsubscribe at any time."
     },
     "countdown": {
       "days": "Days",

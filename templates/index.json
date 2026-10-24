@@ -3,7 +3,7 @@
     "circles": {
       "type": "category-circles",
       "settings": {
-        "heading": "",
+        "heading": "Find it fast.",
         "collections": [
           "business-cards",
           "postcards",
@@ -20,7 +20,8 @@
         "sale_badge": "Sale",
         "sale_label": "On sale",
         "sale_link": "/collections/sale",
-        "color_scheme": "scheme-1"
+        "color_scheme": "scheme-1",
+        "intro": "<p>Pick a category and start building your order in minutes.</p>"
       }
     },
     "hero": {
@@ -49,7 +50,7 @@
               "type": "heading",
               "settings": {
                 "slug": "Gym & fitness",
-                "heading": "Gym merch & signage that pumps",
+                "heading": "Print that hits as hard.",
                 "tag": "h1",
                 "size": "h1",
                 "alignment": "left"
@@ -58,7 +59,7 @@
             "t": {
               "type": "text",
               "settings": {
-                "text": "<p>Tees, banners and wall signs that keep your members fired up.</p>",
+                "text": "<p>Banners, flyers and cards built to pack the gym floor.</p>",
                 "alignment": "left"
               }
             },
@@ -72,7 +73,7 @@
                 "b1": {
                   "type": "button",
                   "settings": {
-                    "label": "Shop apparel",
+                    "label": "Shop fitness prints",
                     "link": "shopify://collections/apparel",
                     "style": "primary"
                   }
@@ -104,7 +105,7 @@
               "type": "heading",
               "settings": {
                 "slug": "Restaurants",
-                "heading": "Menus worth savoring",
+                "heading": "Menus they'll remember.",
                 "tag": "h2",
                 "size": "h1",
                 "alignment": "left"
@@ -113,7 +114,7 @@
             "t": {
               "type": "text",
               "settings": {
-                "text": "<p>Durable, beautiful menus and table tents your guests will remember.</p>",
+                "text": "<p>Menus, table cards and signage with real restaurant polish.</p>",
                 "alignment": "left"
               }
             },
@@ -127,7 +128,7 @@
                 "b1": {
                   "type": "button",
                   "settings": {
-                    "label": "Shop brochures & menus",
+                    "label": "Shop restaurant prints",
                     "link": "shopify://collections/brochures",
                     "style": "primary"
                   }
@@ -159,7 +160,7 @@
               "type": "heading",
               "settings": {
                 "slug": "Fast food",
-                "heading": "Banners & signs that sell",
+                "heading": "Big, bold, impossible to miss.",
                 "tag": "h2",
                 "size": "h1",
                 "alignment": "left"
@@ -168,7 +169,7 @@
             "t": {
               "type": "text",
               "settings": {
-                "text": "<p>Feather flags, window banners and sidewalk signs that make every order pop.</p>",
+                "text": "<p>Banners and signs that turn foot traffic into orders.</p>",
                 "alignment": "left"
               }
             },
@@ -182,7 +183,7 @@
                 "b1": {
                   "type": "button",
                   "settings": {
-                    "label": "Shop banners",
+                    "label": "Shop banners & signs",
                     "link": "shopify://collections/banners",
                     "style": "primary"
                   }
@@ -214,7 +215,7 @@
               "type": "heading",
               "settings": {
                 "slug": "Medical & dental",
-                "heading": "Appointment cards patients keep",
+                "heading": "Clean print. Trusted practice.",
                 "tag": "h2",
                 "size": "h1",
                 "alignment": "left"
@@ -223,7 +224,7 @@
             "t": {
               "type": "text",
               "settings": {
-                "text": "<p>Clean, professional appointment and business cards for your practice.</p>",
+                "text": "<p>Appointment cards, brochures and signage that look as professional as you are.</p>",
                 "alignment": "left"
               }
             },
@@ -237,7 +238,7 @@
                 "b1": {
                   "type": "button",
                   "settings": {
-                    "label": "Shop business cards",
+                    "label": "Shop clinic prints",
                     "link": "shopify://collections/business-cards",
                     "style": "primary"
                   }
@@ -269,7 +270,7 @@
               "type": "heading",
               "settings": {
                 "slug": "One-stop print shop",
-                "heading": "Everything your brand prints",
+                "heading": "Every print your brand needs.",
                 "tag": "h2",
                 "size": "h1",
                 "alignment": "left"
@@ -278,7 +279,7 @@
             "t": {
               "type": "text",
               "settings": {
-                "text": "<p>Cards, flyers, banners, signs and more, all in one place.</p>",
+                "text": "<p>Cards, stickers, apparel and more, all from one shop.</p>",
                 "alignment": "left"
               }
             },
@@ -292,7 +293,7 @@
                 "b1": {
                   "type": "button",
                   "settings": {
-                    "label": "See all products",
+                    "label": "Shop all products",
                     "link": "shopify://collections/all-print-products",
                     "style": "primary"
                   }
@@ -335,7 +336,7 @@
             "icon": "clock",
             "image": "shopify://shop_images/printr-feat-fast-turnaround.jpg",
             "title": "Fast turnaround",
-            "text": "<p>Most everyday print ready in 2 to 4 business days.</p>"
+            "text": "<p>Quick production on everyday print, from upload to shipping.</p>"
           }
         },
         "f2": {
@@ -344,7 +345,7 @@
             "icon": "print",
             "image": "shopify://shop_images/printr-feat-premium-stocks.jpg",
             "title": "Premium stocks",
-            "text": "<p>Silk, soft-touch, heavy cardstock and specialty finishes.</p>"
+            "text": "<p>Thick papers, rich finishes and colour that pops.</p>"
           }
         },
         "f3": {
@@ -353,7 +354,7 @@
             "icon": "check",
             "image": "shopify://shop_images/printr-feat-reprint-guarantee.jpg",
             "title": "Reprint guarantee",
-            "text": "<p>If we make a print error, we reprint it at no cost.</p>"
+            "text": "<p>Not right? We'll reprint it.</p>"
           }
         },
         "f4": {
@@ -361,8 +362,8 @@
           "settings": {
             "icon": "truck",
             "image": "shopify://shop_images/printr-feat-free-shipping.jpg",
-            "title": "Free shipping",
-            "text": "<p>Free standard shipping on qualifying orders.</p>"
+            "title": "Reliable shipping",
+            "text": "<p>Fast, reliable shipping to your door.</p>"
           }
         },
         "f5": {
@@ -371,7 +372,7 @@
             "icon": "chat",
             "image": "shopify://shop_images/printr-feat-design-help.jpg",
             "title": "Design help",
-            "text": "<p>Free file check on every order, plus design support when you need it.</p>"
+            "text": "<p>No artwork? Our team will help you get print-ready.</p>"
           }
         },
         "f6": {
@@ -380,7 +381,7 @@
             "icon": "print",
             "image": "shopify://shop_images/printr-feat-bulk-pricing.jpg",
             "title": "Bulk pricing",
-            "text": "<p>The more you print, the less you pay per piece.</p>"
+            "text": "<p>Order more, pay less per piece.</p>"
           }
         }
       },
@@ -442,10 +443,11 @@
     "collections": {
       "type": "collection-list",
       "settings": {
-        "heading": "Shop by product",
+        "heading": "Shop by product.",
         "layout": "grid",
         "columns": 5,
-        "color_scheme": "scheme-1"
+        "color_scheme": "scheme-1",
+        "intro": "<p>From business cards to full storefront signage, everything your business prints, in one place.</p>"
       },
       "blocks": {
         "c1": {
@@ -537,12 +539,13 @@
       "type": "promo-banner",
       "settings": {
         "slug": "Volume pricing",
-        "heading": "Order more, save more on every print job",
-        "button": "Shop deals",
+        "heading": "Print more. Pay less.",
+        "button": "See volume pricing",
         "link": "shopify://collections/sale",
         "color_scheme": "scheme-3",
         "image": "shopify://shop_images/printr-promo-bulk.jpg",
-        "overlay": 75
+        "overlay": 75,
+        "body": "<p>Volume pricing on bigger runs, so every piece costs less.</p>"
       }
     },
     "featured_postcards": {
@@ -605,21 +608,21 @@
         "h": {
           "type": "heading",
           "settings": {
-            "heading": "Proofed by humans, printed by pros",
-            "slug": "How it works"
+            "heading": "How it works",
+            "slug": ""
           }
         },
         "t": {
           "type": "text",
           "settings": {
-            "text": "<p>Upload your artwork, we check bleed, resolution and color, then send a free digital proof before anything hits the press.</p>"
+            "text": "<ol><li><strong>Choose your product.</strong> Pick the size, paper and quantity.</li><li><strong>Upload or get design help.</strong> Send your file, or let our team help prepare it.</li><li><strong>Review and approve.</strong> Check your order details and give the green light.</li><li><strong>We print and ship.</strong> Your order goes to press and ships to your door.</li></ol>"
           }
         },
         "b": {
           "type": "button",
           "settings": {
-            "label": "File setup guide",
-            "link": "/pages/file-setup-guide"
+            "label": "Start your order",
+            "link": "shopify://collections/all-print-products"
           }
         }
       },
@@ -723,27 +726,27 @@
           "type": "testimonial",
           "settings": {
             "rating": 5,
-            "author": "M. R.",
+            "author": "J.R.",
             "role": "Restaurant owner",
-            "quote": "<p>Our menus and flyers came out sharp and on time. The file check caught a bleed issue before printing.</p>"
+            "quote": "<p>Our new menus came out sharp and on time. Ordering was easy.</p>"
           }
         },
         "q2": {
           "type": "testimonial",
           "settings": {
             "rating": 5,
-            "author": "L. P.",
-            "role": "Real estate agent",
-            "quote": "<p>Volume pricing made it easy to order cards for the whole team.</p>"
+            "author": "M.T.",
+            "role": "Gym owner",
+            "quote": "<p>The banners for our grand opening looked incredible. People noticed.</p>"
           }
         },
         "q3": {
           "type": "testimonial",
           "settings": {
             "rating": 5,
-            "author": "A. G.",
-            "role": "Event planner",
-            "quote": "<p>Our banners and flags arrived vibrant and sturdy. We will order again.</p>"
+            "author": "A.L.",
+            "role": "Clinic manager",
+            "quote": "<p>Fast, simple and the cards feel premium. We'll be back.</p>"
           }
         }
       },
@@ -757,22 +760,23 @@
       "type": "promo-banner",
       "settings": {
         "slug": "New customers",
-        "heading": "First order? Every job starts with a free digital proof",
-        "button": "Start printing",
+        "heading": "New here? Let's print your first order.",
+        "button": "Start your order",
         "link": "shopify://collections/all-print-products",
         "end_date": "",
         "color_scheme": "scheme-1",
         "image": "shopify://shop_images/printr-promo-new-customers.jpg",
-        "overlay": 60
+        "overlay": 60,
+        "body": "<p>Pick your product, upload your file or get design help, and we'll take it from there.</p>"
       }
     },
     "video_press": {
       "type": "video-loop",
       "settings": {
-        "video_desktop": "shopify://files/videos/printr-press-loop-1920x1080.mp4",
-        "video_mobile": "shopify://files/videos/printr-press-loop-1080x1350.mp4",
-        "poster_desktop": "shopify://shop_images/printr-press-loop-1920x1080-poster.jpg",
-        "poster_mobile": "shopify://shop_images/printr-press-loop-1080x1350-poster.jpg",
+        "video_desktop": "shopify://files/videos/printr-press-loop-1920x1080-v2.mp4",
+        "video_mobile": "shopify://files/videos/printr-press-loop-1080x1350-v2.mp4",
+        "poster_desktop": "shopify://shop_images/printr-press-loop-1920x1080-poster-v2.jpg",
+        "poster_mobile": "shopify://shop_images/printr-press-loop-1080x1350-poster-v2.jpg",
         "alt": "Printing press running a CMYK job",
         "ratio_desktop": "21 / 9",
         "ratio_mobile": "4 / 5",
@@ -799,7 +803,7 @@
         "full_width": false,
         "slug": "Business cards",
         "heading": "Cards that make the first impression",
-        "text": "<p>Matte, gloss and soft-touch, ready in days.</p>",
+        "text": "<p>Matte, gloss and soft-touch finishes.</p>",
         "button": "Shop business cards",
         "link": "shopify://collections/business-cards",
         "overlay": 55,
@@ -812,21 +816,21 @@
         "h": {
           "type": "heading",
           "settings": {
-            "heading": "Ready when your deadline is",
+            "heading": "Ready to print something great?",
             "alignment": "center"
           }
         },
         "t": {
           "type": "text",
           "settings": {
-            "text": "<p>Upload your files today and get a free proof before anything goes to press.</p>",
+            "text": "<p>Start your order now and get it in your hands fast.</p>",
             "alignment": "center"
           }
         },
         "b": {
           "type": "button",
           "settings": {
-            "label": "Start your order",
+            "label": "Start printing",
             "link": "shopify://collections/all-print-products"
           }
         }
@@ -845,8 +849,8 @@
     "newsletter": {
       "type": "newsletter",
       "settings": {
-        "heading": "Get print deals in your inbox",
-        "text": "<p>New products, seasonal offers and file tips. No spam.</p>",
+        "heading": "Get print deals first.",
+        "text": "<p>Join our list for promos, new products and print tips. No spam.</p>",
         "color_scheme": "scheme-1",
         "bg_image": "shopify://shop_images/printr-bg-ink-splash.jpg",
         "bg_overlay": 25

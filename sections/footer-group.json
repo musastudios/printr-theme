@@ -17,8 +17,8 @@
           "type": "icon-column",
           "settings": {
             "icon": "print",
-            "title": "Free proof",
-            "text": "<p>We check every file before printing.</p>"
+            "title": "Design help",
+            "text": "<p>No artwork? We'll help you get print-ready.</p>"
           }
         },
         "t3": {
@@ -88,7 +88,8 @@
         "n1"
       ],
       "settings": {
-        "color_scheme": "scheme-5"
+        "color_scheme": "scheme-5",
+        "text": "<p><strong>Print that works as hard as you do.</strong></p><p>PRINTR is the online print shop by Caguas Copy. We help small businesses look big with quality print products, simple ordering and fast turnaround, backed by our reprint guarantee.</p>"
       }
     }
   },

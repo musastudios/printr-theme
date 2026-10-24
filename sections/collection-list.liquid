@@ -2,7 +2,10 @@
 <div class="section color-{{ section.settings.color_scheme }}">
   <div class="page-width">
     <div class="section-head" data-reveal>
-      <h2>{{ section.settings.heading | escape }}</h2>
+      <div>
+        <h2>{{ section.settings.heading | escape }}</h2>
+        {%- if section.settings.intro != blank -%}<div class="rte collection-list__intro">{{ section.settings.intro }}</div>{%- endif -%}
+      </div>
     </div>
     <ul class="grid collection-list{% if section.settings.layout == 'slider' %} collection-list--slider{% endif %}" role="list" style="--cols: {{ section.settings.columns }}">
       {%- for block in section.blocks -%}
@@ -38,6 +41,7 @@
   "name": "Collection list",
   "settings": [
     { "type": "text", "id": "heading", "label": "Heading", "default": "Shop by product" },
+    { "type": "richtext", "id": "intro", "label": "Intro text" },
     { "type": "select", "id": "layout", "label": "Layout", "options": [{ "value": "grid", "label": "Grid" }, { "value": "slider", "label": "Slider" }], "default": "grid" },
     { "type": "range", "id": "columns", "label": "Columns (desktop)", "min": 2, "max": 6, "step": 1, "default": 4 },
     { "type": "color_scheme", "id": "color_scheme", "label": "Color scheme", "default": "scheme-1" }
