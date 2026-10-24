@@ -1,0 +1,10 @@
+<div class="section page-width page-content">
+  <h1>{{ page.title | escape }}</h1>
+  <div class="rte">{{ page.content }}</div>
+</div>
+{% stylesheet %}
+  .page-content { max-width: 80rem; }
+{% endstylesheet %}
+{% schema %}
+{ "name": "Page", "settings": [] }
+{% endschema %}

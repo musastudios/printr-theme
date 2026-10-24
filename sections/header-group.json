@@ -1,0 +1,17 @@
+{
+  "type": "header",
+  "name": "Header group",
+  "sections": {
+    "announcement": {
+      "type": "announcement-bar",
+      "blocks": {
+        "a1": { "type": "announcement", "settings": { "text": "Free shipping on orders over $75 · Same-day printing available" } },
+        "a2": { "type": "announcement", "settings": { "text": "Volume pricing: the more you print, the less you pay" } }
+      },
+      "block_order": ["a1", "a2"],
+      "settings": { "color_scheme": "scheme-5", "show_localization": true }
+    },
+    "header": { "type": "header", "settings": { "menu": "main-menu", "sticky": true, "color_scheme": "scheme-1" } }
+  },
+  "order": ["announcement", "header"]
+}

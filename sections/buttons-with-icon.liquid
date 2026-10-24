@@ -1,0 +1,47 @@
+<div class="section color-{{ section.settings.color_scheme }}">
+  <div class="page-width">
+    {%- if section.settings.heading != blank -%}<h2 class="h3" style="text-align: center">{{ section.settings.heading | escape }}</h2>{%- endif -%}
+    <ul class="icon-buttons" role="list">
+      {%- for block in section.blocks -%}
+        <li {{ block.shopify_attributes }}>
+          <a class="icon-pill" href="{{ block.settings.link | default: '#' }}">
+            <span class="icon-pill__icon">
+              {%- if block.settings.image -%}{{ block.settings.image | image_url: width: 96 | image_tag: loading: 'lazy', alt: '' }}{%- else -%}{% render 'icon', name: block.settings.icon %}{%- endif -%}
+            </span>
+            {{ block.settings.label | escape }}
+          </a>
+        </li>
+      {%- endfor -%}
+    </ul>
+  </div>
+</div>
+{% stylesheet %}
+  .icon-buttons { display: flex; flex-wrap: wrap; justify-content: center; gap: 1.2rem; list-style: none; padding: 0; margin: 0; }
+  .icon-pill { display: inline-flex; align-items: center; gap: 1rem; min-height: 5.2rem; padding: .6rem 2rem .6rem .6rem; border: 1px solid rgb(var(--color-border)); border-radius: 99px; text-decoration: none; font-weight: 600; transition: background .2s, color .2s, translate .2s; }
+  .icon-pill:hover, .icon-pill:focus-visible { background: rgb(var(--color-foreground)); color: rgb(var(--color-background)); translate: 0 -2px; }
+  .icon-pill__icon { width: 4rem; height: 4rem; border-radius: 50%; background: rgba(var(--color-foreground), .06); display: grid; place-items: center; overflow: hidden; }
+  .icon-pill__icon .icon { width: 2rem; }
+{% endstylesheet %}
+{% schema %}
+{
+  "name": "Buttons with icon",
+  "settings": [
+    { "type": "text", "id": "heading", "label": "Heading", "default": "What are you printing today?" },
+    { "type": "color_scheme", "id": "color_scheme", "label": "Color scheme", "default": "scheme-1" }
+  ],
+  "blocks": [{ "type": "button", "name": "Button", "settings": [
+    { "type": "text", "id": "label", "label": "Label", "default": "Business cards" },
+    { "type": "url", "id": "link", "label": "Link" },
+    { "type": "select", "id": "icon", "label": "Icon", "options": [
+      { "value": "print", "label": "Print" }, { "value": "mail", "label": "Mail" }, { "value": "truck", "label": "Truck" }, { "value": "store", "label": "Store" }, { "value": "sparkle", "label": "Sparkle" }, { "value": "heart", "label": "Heart" }, { "value": "clock", "label": "Clock" }
+    ], "default": "print" },
+    { "type": "image_picker", "id": "image", "label": "Custom icon image" }
+  ] }],
+  "presets": [{ "name": "Buttons with icon", "blocks": [
+    { "type": "button", "settings": { "label": "Business cards", "icon": "print" } },
+    { "type": "button", "settings": { "label": "Postcards", "icon": "mail" } },
+    { "type": "button", "settings": { "label": "Flags", "icon": "sparkle" } },
+    { "type": "button", "settings": { "label": "Rush orders", "icon": "clock" } }
+  ] }]
+}
+{% endschema %}

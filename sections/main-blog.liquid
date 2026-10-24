@@ -1,0 +1,25 @@
+<div class="section page-width">
+  <h1>{{ blog.title | escape }}</h1>
+  {%- paginate blog.articles by 9 -%}
+    <ul class="grid" role="list" style="--cols: 3; --cols-mobile: 1">
+      {%- for article in blog.articles -%}
+        <li class="article-card" data-reveal>
+          <a href="{{ article.url }}" class="media crop" style="--ratio: 1.4">
+            {%- if article.image -%}{{ article.image | image_url: width: 900 | image_tag: loading: 'lazy', widths: '400, 600, 900', sizes: '(min-width: 990px) 33vw, 100vw' }}{%- else -%}{{ 'image' | placeholder_svg_tag: 'placeholder' }}{%- endif -%}
+          </a>
+          <span class="slug">{{ article.published_at | time_tag: format: 'date' }}</span>
+          <h2 class="h3"><a href="{{ article.url }}">{{ article.title | escape }}</a></h2>
+          <p>{{ article.excerpt_or_content | strip_html | truncatewords: 24 }}</p>
+        </li>
+      {%- endfor -%}
+    </ul>
+    {% render 'pagination', paginate: paginate %}
+  {%- endpaginate -%}
+</div>
+{% stylesheet %}
+  .article-card { display: grid; gap: 1rem; align-content: start; }
+  .article-card h2 a { text-decoration: none; }
+{% endstylesheet %}
+{% schema %}
+{ "name": "Blog posts", "settings": [] }
+{% endschema %}

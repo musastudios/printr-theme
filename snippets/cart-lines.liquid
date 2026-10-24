@@ -1,0 +1,45 @@
+{% doc %}
+  Cart line items list, shared by cart drawer and cart page.
+  @example
+  {% render 'cart-lines' %}
+{% enddoc %}
+<ul class="cart-lines" role="list">
+  {%- for item in cart.items -%}
+    <li class="cart-line">
+      <a href="{{ item.url }}" class="media cart-line__media" style="--ratio: 1">
+        {%- if item.image -%}{{ item.image | image_url: width: 200 | image_tag: loading: 'lazy', widths: '100, 200', sizes: '100px' }}{%- endif -%}
+      </a>
+      <div class="cart-line__info">
+        <a href="{{ item.url }}" class="cart-line__title">{{ item.product.title | escape }}</a>
+        {%- unless item.product.has_only_default_variant -%}<p class="cart-line__meta">{{ item.variant.title }}</p>{%- endunless -%}
+        {%- for p in item.properties -%}
+          {%- assign first_char = p.first | slice: 0 -%}
+          {%- if p.last != blank and first_char != '_' -%}<p class="cart-line__meta">{{ p.first }}: {{ p.last }}</p>{%- endif -%}
+        {%- endfor -%}
+        {%- if item.selling_plan_allocation -%}<p class="cart-line__meta">{{ item.selling_plan_allocation.selling_plan.name }}</p>{%- endif -%}
+        <div class="cart-line__row">
+          <quantity-input class="qty">
+            <button type="button" name="minus">−<span class="visually-hidden">{{ 'products.product.decrease' | t }}</span></button>
+            <label class="visually-hidden" for="Line-{{ item.key }}">{{ 'products.product.quantity' | t }}</label>
+            <input id="Line-{{ item.key }}" type="number" value="{{ item.quantity }}" min="0" data-line-qty data-line="{{ forloop.index }}">
+            <button type="button" name="plus">+<span class="visually-hidden">{{ 'products.product.increase' | t }}</span></button>
+          </quantity-input>
+          <a href="{{ item.url_to_remove }}" class="link-button" data-line-remove="{{ forloop.index }}">{{ 'sections.cart.remove' | t: title: '' }}<span class="visually-hidden">{{ item.product.title | escape }}</span></a>
+        </div>
+      </div>
+      <div class="cart-line__price">
+        {%- if item.original_line_price > item.final_line_price -%}<s>{{ item.original_line_price | money }}</s>{%- endif -%}
+        <strong>{{ item.final_line_price | money }}</strong>
+      </div>
+    </li>
+  {%- endfor -%}
+</ul>
+{% stylesheet %}
+  .cart-lines { list-style: none; padding: 0; margin: 0; display: grid; gap: 2rem; }
+  .cart-line { display: grid; grid-template-columns: 8rem 1fr auto; gap: 1.6rem; align-items: start; }
+  .cart-line__title { font-weight: 700; text-decoration: none; }
+  .cart-line__meta { margin: .2rem 0; font-size: 1.3rem; opacity: .75; }
+  .cart-line__row { display: flex; gap: 1.6rem; align-items: center; margin-top: 1rem; }
+  .cart-line__price { text-align: right; display: grid; }
+  .cart-line__price s { opacity: .6; font-size: 1.3rem; }
+{% endstylesheet %}

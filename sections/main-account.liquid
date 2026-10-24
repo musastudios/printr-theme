@@ -1,0 +1,44 @@
+<div class="section page-width account">
+  <div class="account__head">
+    <div><span class="slug">{{ 'customer.account.title' | t }}</span><h1 class="h2">{%- liquid
+      assign greet_name = customer.first_name | default: customer.email
+    -%}{{ 'customer.account.hello' | t: name: greet_name }}</h1></div>
+    <a class="button button--secondary" href="{{ routes.account_logout_url }}">{{ 'customer.account.logout' | t }}</a>
+  </div>
+  <div class="account__grid">
+    <div>
+      <h2 class="h3">{{ 'customer.orders.title' | t }}</h2>
+      {%- paginate customer.orders by 10 -%}
+        {%- if customer.orders.size > 0 -%}
+          <div class="table-scroll" role="region" tabindex="0" aria-label="{{ 'customer.orders.title' | t }}">
+            <table class="account-table">
+              <thead><tr><th scope="col">{{ 'customer.orders.order' | t }}</th><th scope="col">{{ 'customer.orders.date' | t }}</th><th scope="col">{{ 'customer.orders.payment' | t }}</th><th scope="col">{{ 'customer.orders.fulfillment' | t }}</th><th scope="col">{{ 'customer.orders.total' | t }}</th></tr></thead>
+              <tbody>
+                {%- for order in customer.orders -%}
+                  <tr>
+                    <th scope="row"><a href="{{ order.customer_url }}" aria-label="{{ 'customer.orders.view' | t: name: order.name }}">{{ order.name }}</a></th>
+                    <td>{{ order.created_at | time_tag: format: 'date' }}</td>
+                    <td><span class="status">{{ order.financial_status_label }}</span></td>
+                    <td><span class="status">{{ order.fulfillment_status_label }}</span></td>
+                    <td>{{ order.total_net_amount | money_with_currency }}</td>
+                  </tr>
+                {%- endfor -%}
+              </tbody>
+            </table>
+          </div>
+          {% render 'pagination', paginate: paginate %}
+        {%- else -%}
+          <div class="empty-state">{% render 'icon', name: 'print' %}<p>{{ 'customer.orders.none' | t }}</p><a class="button" href="{{ routes.all_products_collection_url }}">{{ 'sections.cart.continue' | t }}</a></div>
+        {%- endif -%}
+      {%- endpaginate -%}
+    </div>
+    <aside class="account-card crop">
+      <h2 class="h3">{{ 'customer.account.details' | t }}</h2>
+      {{ customer.default_address | format_address }}
+      <a class="link" href="{{ routes.account_addresses_url }}">{{ 'customer.account.view_addresses' | t: count: customer.addresses_count }}</a>
+    </aside>
+  </div>
+</div>
+{% schema %}
+{ "name": "Account", "settings": [] }
+{% endschema %}

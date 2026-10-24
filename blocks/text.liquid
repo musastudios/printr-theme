@@ -1,0 +1,14 @@
+<div class="block-text rte" style="--align: {{ block.settings.alignment }}" {{ block.shopify_attributes }}>{{ block.settings.text }}</div>
+{% stylesheet %}
+  .block-text { text-align: var(--align); max-width: 64ch; }
+{% endstylesheet %}
+{% schema %}
+{
+  "name": "Text",
+  "settings": [
+    { "type": "richtext", "id": "text", "label": "Text", "default": "<p>Business cards, flyers, flags and more, printed on premium stock.</p>" },
+    { "type": "text_alignment", "id": "alignment", "label": "Alignment", "default": "left" }
+  ],
+  "presets": [{ "name": "Text" }]
+}
+{% endschema %}

@@ -1,0 +1,17 @@
+<div class="media crop" style="--ratio: {{ block.settings.ratio }}" {{ block.shopify_attributes }}>
+  {%- if block.settings.image != blank -%}
+    {{ block.settings.image | image_url: width: 1600 | image_tag: loading: 'lazy', widths: '400, 800, 1200, 1600', sizes: '(min-width: 990px) 50vw, 100vw' }}
+  {%- else -%}
+    {{ 'image' | placeholder_svg_tag: 'placeholder' }}
+  {%- endif -%}
+</div>
+{% schema %}
+{
+  "name": "Image",
+  "settings": [
+    { "type": "image_picker", "id": "image", "label": "Image" },
+    { "type": "select", "id": "ratio", "label": "Aspect ratio", "options": [{ "value": "1", "label": "Square" }, { "value": "0.8", "label": "Portrait" }, { "value": "1.5", "label": "Landscape" }], "default": "1" }
+  ],
+  "presets": [{ "name": "Image" }]
+}
+{% endschema %}

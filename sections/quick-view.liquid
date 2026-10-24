@@ -1,0 +1,14 @@
+<quick-view-modal>
+  <dialog class="quick-view" aria-label="{{ 'products.product.quick_add' | t }}">
+    <button type="button" class="icon-button quick-view__close" data-close>{% render 'icon', name: 'close' %}<span class="visually-hidden">{{ 'general.close' | t }}</span></button>
+    <div data-body></div>
+  </dialog>
+</quick-view-modal>
+{% stylesheet %}
+  .quick-view { width: min(96rem, 94vw); max-height: 90vh; border: 0; border-radius: var(--radius); padding: 3rem; background: rgb(var(--color-background)); color: rgb(var(--color-foreground)); }
+  .quick-view::backdrop { background: rgba(0,0,0,.5); }
+  .quick-view__close { position: absolute; top: 1rem; right: 1rem; }
+{% endstylesheet %}
+{% schema %}
+{ "name": "Quick view", "settings": [] }
+{% endschema %}

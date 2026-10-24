@@ -1,0 +1,36 @@
+{% doc %}
+  Inline SVG icon.
+  @param {string} name - Icon name: search, cart, account, menu, close, arrow-left, arrow-right, plus, minus, check, truck, print, clock, chat, heart, compare, grid, list, pin, store, eye, arrow-up, mail, lock, sparkle
+  @example
+  {% render 'icon', name: 'cart' %}
+{% enddoc %}
+<svg class="icon icon-{{ name }}" aria-hidden="true" focusable="false" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+  {%- case name -%}
+    {%- when 'search' -%}<circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/>
+    {%- when 'cart' -%}<path d="M5 7h14l-1.5 12h-11z"/><path d="M9 7a3 3 0 0 1 6 0"/>
+    {%- when 'account' -%}<circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/>
+    {%- when 'menu' -%}<path d="M3 6h18M3 12h18M3 18h18"/>
+    {%- when 'close' -%}<path d="M6 6l12 12M18 6 6 18"/>
+    {%- when 'arrow-left' -%}<path d="M15 5l-7 7 7 7"/>
+    {%- when 'arrow-right' -%}<path d="M9 5l7 7-7 7"/>
+    {%- when 'plus' -%}<path d="M12 5v14M5 12h14"/>
+    {%- when 'minus' -%}<path d="M5 12h14"/>
+    {%- when 'check' -%}<path d="m5 12 5 5 9-10"/>
+    {%- when 'truck' -%}<path d="M3 6h11v10H3zM14 9h4l3 3v4h-7"/><circle cx="7" cy="18" r="2"/><circle cx="17" cy="18" r="2"/>
+    {%- when 'print' -%}<path d="M7 9V3h10v6"/><rect x="3" y="9" width="18" height="8" rx="2"/><path d="M7 14h10v7H7z"/>
+    {%- when 'clock' -%}<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>
+    {%- when 'chat' -%}<path d="M4 5h16v11H8l-4 4z"/>
+    {%- when 'heart' -%}<path d="M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.6-7 10-7 10z"/>
+    {%- when 'compare' -%}<path d="M7 4v16M17 4v16M3 8l4-4 4 4M13 16l4 4 4-4"/>
+    {%- when 'grid' -%}<rect x="4" y="4" width="7" height="7"/><rect x="13" y="4" width="7" height="7"/><rect x="4" y="13" width="7" height="7"/><rect x="13" y="13" width="7" height="7"/>
+    {%- when 'list' -%}<rect x="4" y="5" width="5" height="5"/><rect x="4" y="14" width="5" height="5"/><path d="M12 7h8M12 16h8"/>
+    {%- when 'pin' -%}<path d="M12 21s-6-5.7-6-11a6 6 0 0 1 12 0c0 5.3-6 11-6 11z"/><circle cx="12" cy="10" r="2"/>
+    {%- when 'store' -%}<path d="M4 9l1.5-5h13L20 9M4 9h16v11H4zM9 20v-6h6v6"/>
+    {%- when 'eye' -%}<path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/>
+    {%- when 'arrow-up' -%}<path d="M5 12l7-7 7 7M12 5v14"/>
+    {%- when 'mail' -%}<rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/>
+    {%- when 'lock' -%}<rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/>
+    {%- when 'sparkle' -%}<path d="M12 3v6M12 15v6M3 12h6M15 12h6"/>
+    {%- else -%}<circle cx="12" cy="12" r="9"/>
+  {%- endcase -%}
+</svg>

@@ -1,0 +1,23 @@
+<div class="section page-width contact">
+  {%- form 'contact', id: 'ContactForm' -%}
+    {%- if form.posted_successfully? -%}
+      <p role="status" class="contact__success">{% render 'icon', name: 'check' %} {{ 'sections.contact.success' | t }}</p>
+    {%- endif -%}
+    {{ form.errors | default_errors }}
+    <div class="contact__grid">
+      <div class="field"><label for="ContactName">{{ 'sections.contact.name' | t }}</label><input id="ContactName" name="contact[name]" autocomplete="name" value="{{ form.name }}"></div>
+      <div class="field"><label for="ContactEmail">{{ 'sections.contact.email' | t }} *</label><input id="ContactEmail" type="email" name="contact[email]" autocomplete="email" required value="{{ form.email }}"></div>
+      <div class="field"><label for="ContactPhone">{{ 'sections.contact.phone' | t }}</label><input id="ContactPhone" type="tel" name="contact[phone]" autocomplete="tel" value="{{ form.phone }}"></div>
+    </div>
+    <div class="field"><label for="ContactBody">{{ 'sections.contact.message' | t }}</label><textarea id="ContactBody" name="contact[body]" rows="6">{{ form.body }}</textarea></div>
+    <button type="submit" class="button">{{ 'sections.contact.send' | t }}</button>
+  {%- endform -%}
+</div>
+{% stylesheet %}
+  .contact { max-width: 80rem; }
+  .contact__grid { display: grid; gap: 0 1.6rem; }
+  @media (min-width: 750px) { .contact__grid { grid-template-columns: 1fr 1fr; } }
+{% endstylesheet %}
+{% schema %}
+{ "name": "Contact form", "settings": [], "presets": [{ "name": "Contact form" }] }
+{% endschema %}

@@ -1,0 +1,115 @@
+{% doc %}
+  Product card with hover image, swatches, badges, quick add and quick view.
+  @param {product} product - The product to display
+  @param {boolean} [compact] - Smaller card without actions
+  @param {string} [sizes] - Image sizes attribute
+  @example
+  {% render 'product-card', product: product %}
+{% enddoc %}
+{%- liquid
+  assign sizes = sizes | default: '(min-width: 990px) 25vw, 50vw'
+  assign second = product.media[1]
+  assign color_option = nil
+  for option in product.options_with_values
+    assign oname = option.name | downcase
+    if oname == 'color' or oname == 'colour' or oname == 'finish' or oname == 'acabado'
+      assign color_option = option
+    endif
+  endfor
+-%}
+<article class="card{% if compact %} card--compact{% endif %}" data-reveal>
+  <a href="{{ product.url }}" class="card__media media crop" style="--ratio: 1">
+    {%- if product.featured_media -%}
+      {{ product.featured_media | image_url: width: 900 | image_tag: loading: 'lazy', sizes: sizes, widths: '300, 450, 600, 900', class: 'card__img' }}
+      {%- if settings.card_show_secondary_image and second -%}
+        {{ second | image_url: width: 900 | image_tag: loading: 'lazy', sizes: sizes, widths: '300, 450, 600, 900', class: 'card__img card__img--alt', alt: '' }}
+      {%- endif -%}
+    {%- else -%}
+      {{ 'product-1' | placeholder_svg_tag: 'placeholder' }}
+    {%- endif -%}
+    <span class="card__badges">
+      {%- if product.available == false -%}
+        <span class="badge">{{ 'products.product.sold_out' | t }}</span>
+      {%- elsif product.compare_at_price > product.price -%}
+        <span class="badge badge--sale">{{ 'products.product.sale' | t }}</span>
+      {%- elsif product.tags contains 'new' -%}
+        <span class="badge badge--new">{{ 'products.product.new' | t }}</span>
+      {%- endif -%}
+    </span>
+  </a>
+  <div class="card__tools">
+    {%- if settings.enable_wishlist -%}
+      <button type="button" class="card__tool" data-wishlist-toggle="{{ product.handle }}" aria-pressed="false" aria-label="{{ 'products.wishlist.add' | t: title: product.title | escape }}">{% render 'icon', name: 'heart' %}</button>
+    {%- endif -%}
+    {%- if settings.enable_compare -%}
+      <button type="button" class="card__tool" data-compare-toggle="{{ product.handle }}" aria-pressed="false" aria-label="{{ 'products.compare.add' | t: title: product.title | escape }}">{% render 'icon', name: 'compare' %}</button>
+    {%- endif -%}
+    {%- if settings.card_show_quick_view -%}
+      <button type="button" class="card__tool" data-quick-view="{{ product.url }}" aria-label="{{ 'products.product.quick_view' | t: title: product.title | escape }}">{% render 'icon', name: 'eye' %}</button>
+    {%- endif -%}
+  </div>
+  <div class="card__info">
+    {%- if product.vendor != blank and settings.card_show_vendor -%}<span class="card__vendor">{{ product.vendor | escape }}</span>{%- endif -%}
+    <h3 class="card__title"><a href="{{ product.url }}">{{ product.title | escape }}</a></h3>
+    {% render 'price', product: product, show_from: settings.card_show_from_price %}
+    {%- if settings.card_show_swatches and color_option -%}
+      <ul class="swatches" role="list">
+        {%- for value in color_option.values limit: 5 -%}
+          <li>
+            <span class="swatch" title="{{ value | escape }}" style="{% if value.swatch.color %}--swatch: {{ value.swatch.color }};{% endif %}{% if value.swatch.image %}background-image: url({{ value.swatch.image | image_url: width: 48 }});{% endif %}"><span class="visually-hidden">{{ value }}</span></span>
+          </li>
+        {%- endfor -%}
+      </ul>
+    {%- endif -%}
+  </div>
+  {%- unless compact -%}
+    <div class="card__actions">
+      {%- if settings.card_show_quick_add and product.available -%}
+        {%- if product.has_only_default_variant -%}
+          <product-form>
+            {%- form 'product', product -%}
+              <input type="hidden" name="id" value="{{ product.selected_or_first_available_variant.id }}">
+              <button type="submit" class="button button--secondary">{% render 'icon', name: 'plus' %}{{ 'products.product.quick_add' | t }}</button>
+            {%- endform -%}
+          </product-form>
+        {%- else -%}
+          <button type="button" class="button button--secondary" data-quick-view="{{ product.url }}">{{ 'products.product.choose_options' | t }}</button>
+        {%- endif -%}
+      {%- endif -%}
+    </div>
+  {%- endunless -%}
+</article>
+{% stylesheet %}
+  .card { display: flex; flex-direction: column; gap: 1.2rem; position: relative; }
+  .card__media { display: block; }
+  .card__img--alt { position: absolute; inset: 0; opacity: 0; transition: opacity .4s; }
+  .card:hover .card__img--alt { opacity: 1; }
+  .card__badges { position: absolute; top: 1.2rem; left: 1.2rem; display: flex; gap: .6rem; z-index: 3; }
+  .card__title { font-size: 1.7rem; margin: 0; font-weight: 600; letter-spacing: 0; }
+  .card__title a { text-decoration: none; }
+  .card__title a::after { content: ""; position: absolute; inset: 0; z-index: 1; }
+  .card__actions { position: relative; z-index: 2; }
+  .card__actions .button { width: 100%; min-height: 4.2rem; font-size: 1.4rem; }
+  .swatches { display: flex; gap: .6rem; list-style: none; padding: 0; margin: 0; }
+  .swatch { display: block; width: 2rem; height: 2rem; border-radius: 50%; background: var(--swatch, #ccc) center/cover; border: 1px solid rgb(var(--color-border)); }
+  .card__tools { position: absolute; top: 1.2rem; right: 1.2rem; z-index: 3; display: grid; gap: .6rem; }
+  .card__tool { width: 3.8rem; height: 3.8rem; border-radius: 50%; display: grid; place-items: center; border: 1px solid rgb(var(--color-border)); background: rgb(var(--color-background)); color: rgb(var(--color-foreground)); cursor: pointer; opacity: 0; translate: 6px 0; transition: opacity .25s, translate .25s, background .2s, color .2s; }
+  .card__tool .icon { width: 1.8rem; }
+  .card:hover .card__tool, .card:focus-within .card__tool, .card__tool[aria-pressed="true"] { opacity: 1; translate: 0; }
+  @media (hover: none) { .card__tool { opacity: 1; translate: 0; } }
+  .card__tool:hover { background: rgb(var(--color-foreground)); color: rgb(var(--color-background)); }
+  .card__tool[aria-pressed="true"] { background: var(--m); border-color: var(--m); color: #fff; }
+  .card__tool[aria-pressed="true"] .icon-heart { fill: currentColor; }
+  .card__vendor { font-size: 1.2rem; text-transform: uppercase; letter-spacing: .08em; opacity: .7; }
+  .card__info { display: grid; gap: .4rem; }
+  .card__img { transition: scale .6s cubic-bezier(.2,.7,.2,1); }
+  .card:hover .card__img { scale: 1.04; }
+  @container (min-width: 520px) {
+    .card { flex-direction: row; align-items: center; gap: 2.4rem; }
+    .card__media { flex: 0 0 38%; }
+    .card__info { flex: 1; }
+    .card__actions { flex: 0 0 20rem; }
+    .card__title { font-size: 2rem; }
+  }
+  .card--compact .card__title { font-size: 1.4rem; }
+{% endstylesheet %}

@@ -1,0 +1,175 @@
+{%- liquid
+  assign menu = section.settings.menu
+-%}
+<header class="header color-{{ section.settings.color_scheme }}{% if section.settings.sticky %} header--sticky{% endif %}">
+  <div class="page-width header__inner">
+    <button type="button" class="icon-button header__menu-toggle" data-drawer-open="MenuDrawer" aria-controls="MenuDrawer" aria-expanded="false">
+      {% render 'icon', name: 'menu' %}<span class="visually-hidden">{{ 'accessibility.menu' | t }}</span>
+    </button>
+    <a href="{{ routes.root_url }}" class="header__logo">
+      {%- if settings.logo != blank -%}
+        {{ settings.logo | image_url: width: 600 | image_tag: width: settings.logo_width, height: null, widths: '150, 300, 450, 600', alt: shop.name, preload: true, sizes: '(min-width: 750px) 200px, 140px' }}
+      {%- else -%}
+        <span class="header__wordmark">{{ shop.name }}</span>
+      {%- endif -%}
+    </a>
+    <nav class="header__nav" aria-label="{{ 'accessibility.menu' | t }}">
+      <ul class="header__menu" role="list">
+        {%- for link in menu.links -%}
+          <li class="header__item{% if link.links.size > 0 %} has-mega{% endif %}">
+            {%- if link.links.size > 0 -%}
+              <details class="mega">
+                <summary class="header__link{% if link.child_active %} is-active{% endif %}">{{ link.title }}</summary>
+                <div class="mega__panel color-{{ section.settings.color_scheme }}">
+                  <div class="page-width mega__inner">
+                    <ul class="mega__cols" role="list">
+                      {%- for child in link.links -%}
+                        <li>
+                          <a class="mega__title" href="{{ child.url }}">{{ child.title }}</a>
+                          {%- if child.links.size > 0 -%}
+                            <ul role="list">
+                              {%- for grandchild in child.links -%}
+                                <li><a href="{{ grandchild.url }}">{{ grandchild.title }}</a></li>
+                              {%- endfor -%}
+                            </ul>
+                          {%- endif -%}
+                        </li>
+                      {%- endfor -%}
+                    </ul>
+                    {%- if section.settings.mega_collection != blank -%}
+                      <div class="mega__products">
+                        {%- for product in section.settings.mega_collection.products limit: 2 -%}
+                          {% render 'product-card', product: product, compact: true %}
+                        {%- endfor -%}
+                      </div>
+                    {%- endif -%}
+                  </div>
+                </div>
+              </details>
+            {%- else -%}
+              <a class="header__link{% if link.active %} is-active{% endif %}" href="{{ link.url }}" {% if link.active %}aria-current="page"{% endif %}>{{ link.title }}</a>
+            {%- endif -%}
+          </li>
+        {%- endfor -%}
+      </ul>
+    </nav>
+    <div class="header__icons">
+      <button type="button" class="icon-button" data-drawer-open="SearchDrawer" aria-controls="SearchDrawer" aria-expanded="false">
+        {% render 'icon', name: 'search' %}<span class="visually-hidden">{{ 'accessibility.search' | t }}</span>
+      </button>
+      {%- if shop.customer_accounts_enabled -%}
+        <a class="icon-button" href="{{ routes.account_url }}">
+          {% render 'icon', name: 'account' %}<span class="visually-hidden">{{ 'accessibility.account' | t }}</span>
+        </a>
+      {%- endif -%}
+      {%- if settings.enable_wishlist -%}
+        <a class="icon-button" href="{{ settings.wishlist_page.url | default: '/pages/wishlist' }}">
+          {% render 'icon', name: 'heart' %}<span class="visually-hidden">{{ 'products.wishlist.title' | t }}</span>
+          <span class="cart-bubble" data-wishlist-count hidden></span>
+        </a>
+      {%- endif -%}
+      <a class="icon-button" href="{{ routes.cart_url }}" {% if settings.cart_type == 'drawer' %}data-drawer-open="CartDrawer" aria-controls="CartDrawer" aria-expanded="false"{% endif %}>
+        {% render 'icon', name: 'cart' %}
+        <span class="visually-hidden">{{ 'accessibility.cart' | t }}</span>
+        <span class="cart-bubble" data-cart-count {% if cart.item_count == 0 %}hidden{% endif %}>{{ cart.item_count }}</span>
+      </a>
+    </div>
+  </div>
+  {%- if settings.show_cmyk_bar -%}
+    <div class="cmyk-bar" aria-hidden="true"><span></span><span></span><span></span><span></span></div>
+  {%- endif -%}
+</header>
+
+<drawer-panel id="MenuDrawer" class="drawer drawer--left" role="dialog" aria-modal="true" aria-label="{{ 'accessibility.menu' | t }}">
+  <div class="drawer__overlay" data-drawer-close></div>
+  <div class="drawer__panel">
+    <div class="drawer__header">
+      <span class="slug">{{ 'accessibility.menu' | t }}</span>
+      <button type="button" class="icon-button" data-drawer-close>{% render 'icon', name: 'close' %}<span class="visually-hidden">{{ 'accessibility.close_menu' | t }}</span></button>
+    </div>
+    <ul class="mobile-menu" role="list">
+      {%- for link in menu.links -%}
+        <li>
+          {%- if link.links.size > 0 -%}
+            <details>
+              <summary>{{ link.title }}</summary>
+              <ul role="list">
+                {%- for child in link.links -%}
+                  <li><a href="{{ child.url }}">{{ child.title }}</a></li>
+                {%- endfor -%}
+              </ul>
+            </details>
+          {%- else -%}
+            <a href="{{ link.url }}">{{ link.title }}</a>
+          {%- endif -%}
+        </li>
+      {%- endfor -%}
+    </ul>
+  </div>
+</drawer-panel>
+
+<drawer-panel id="SearchDrawer" class="drawer drawer--top" role="dialog" aria-modal="true" aria-label="{{ 'accessibility.search' | t }}">
+  <div class="drawer__overlay" data-drawer-close></div>
+  <div class="drawer__panel search-panel">
+    <div class="drawer__header">
+      <span class="slug">{{ 'accessibility.search' | t }}</span>
+      <button type="button" class="icon-button" data-drawer-close>{% render 'icon', name: 'close' %}<span class="visually-hidden">{{ 'general.close' | t }}</span></button>
+    </div>
+    <predictive-search class="search-panel__body">
+      <form action="{{ routes.search_url }}" method="get" role="search">
+        <label class="visually-hidden" for="HeaderSearch">{{ 'accessibility.search' | t }}</label>
+        <input id="HeaderSearch" type="search" name="q" data-autofocus placeholder="{{ 'sections.search.placeholder' | t }}" autocomplete="off" role="combobox" aria-expanded="false" aria-controls="PredictiveResults">
+        <input type="hidden" name="options[prefix]" value="last">
+      </form>
+      <div id="PredictiveResults" data-results hidden aria-live="polite"></div>
+    </predictive-search>
+  </div>
+</drawer-panel>
+
+{% stylesheet %}
+  .header { position: relative; z-index: 40; border-bottom: 1px solid rgb(var(--color-border)); }
+  .header--sticky { position: sticky; top: 0; }
+  .header__inner { display: grid; grid-template-columns: auto 1fr auto; align-items: center; gap: 2rem; min-height: 7.2rem; }
+  .header__wordmark { font-family: var(--font-heading-family); font-weight: 800; font-size: 2.6rem; letter-spacing: -0.04em; }
+  .header__logo { text-decoration: none; }
+  .header__nav { display: none; }
+  .header__menu { display: flex; gap: 2.8rem; list-style: none; margin: 0; padding: 0; justify-content: center; }
+  .header__link { font-weight: 600; text-decoration: none; cursor: pointer; list-style: none; padding: 2.4rem 0; display: block; }
+  .header__link::-webkit-details-marker { display: none; }
+  .header__link:hover, .header__link.is-active { text-decoration: underline; text-decoration-color: var(--m); text-decoration-thickness: 3px; text-underline-offset: 6px; }
+  .header__icons { display: flex; justify-content: flex-end; }
+  .cart-bubble { position: absolute; top: 0; right: 0; min-width: 1.8rem; height: 1.8rem; border-radius: 99px; background: var(--color-cart-bubble); color: #fff; font-size: 1.1rem; display: grid; place-items: center; }
+  .cart-bubble[hidden] { display: none; }
+  .mega__panel { position: absolute; left: 0; right: 0; top: 100%; border-top: 1px solid rgb(var(--color-border)); box-shadow: 0 20px 40px rgba(0,0,0,.08); }
+  .mega__inner { display: grid; grid-template-columns: 2fr 1fr; gap: 4rem; padding-block: 4rem; }
+  .mega__cols { display: grid; grid-template-columns: repeat(auto-fill, minmax(16rem, 1fr)); gap: 2.4rem; list-style: none; padding: 0; margin: 0; }
+  .mega__cols ul { list-style: none; padding: 0; margin: 1rem 0 0; display: grid; gap: .6rem; }
+  .mega__cols a { text-decoration: none; }
+  .mega__title { font-weight: 700; }
+  .mega__products { display: grid; grid-template-columns: 1fr 1fr; gap: 1.6rem; }
+  .mobile-menu { list-style: none; padding: 2rem; margin: 0; display: grid; gap: 1.6rem; font-size: 2rem; font-weight: 600; }
+  .mobile-menu a { text-decoration: none; }
+  .mobile-menu ul { list-style: none; padding: 1rem 0 0 1.6rem; font-size: 1.6rem; display: grid; gap: 1rem; }
+  .drawer--top .drawer__panel { left: 0; width: 100%; bottom: auto; max-height: 90vh; transform: translateY(-100%); }
+  .search-panel__body { display: block; padding: 2rem; max-width: 90rem; margin: 0 auto; width: 100%; }
+  .search-panel__body input[type=search] { font-size: 2.2rem; padding: 1.6rem 2rem; border-radius: 99px; }
+  @media (min-width: 990px) {
+    .header__nav { display: block; }
+    .header__menu-toggle { display: none; }
+    .header__inner { grid-template-columns: auto 1fr auto; }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Header",
+  "class": "header-section",
+  "settings": [
+    { "type": "link_list", "id": "menu", "label": "Menu", "default": "main-menu" },
+    { "type": "collection", "id": "mega_collection", "label": "Mega menu featured collection" },
+    { "type": "checkbox", "id": "sticky", "label": "Sticky header", "default": true },
+    { "type": "color_scheme", "id": "color_scheme", "label": "Color scheme", "default": "scheme-1" }
+  ],
+  "enabled_on": { "groups": ["header"] }
+}
+{% endschema %}

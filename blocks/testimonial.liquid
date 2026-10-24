@@ -1,0 +1,22 @@
+<figure class="testimonial crop" {{ block.shopify_attributes }}>
+  <div class="testimonial__stars" aria-label="{{ block.settings.rating }}/5">{% for i in (1..block.settings.rating) %}★{% endfor %}</div>
+  <blockquote class="rte">{{ block.settings.quote }}</blockquote>
+  <figcaption><strong>{{ block.settings.author | escape }}</strong>{% if block.settings.role != blank %} · {{ block.settings.role | escape }}{% endif %}</figcaption>
+</figure>
+{% stylesheet %}
+  .testimonial { margin: 0; padding: 3.2rem; border-radius: var(--radius); background: rgba(var(--color-foreground), .04); display: flex; flex-direction: column; gap: 1.6rem; height: 100%; }
+  .testimonial blockquote { margin: 0; font-size: 1.9rem; }
+  .testimonial__stars { color: var(--m); letter-spacing: .2em; }
+{% endstylesheet %}
+{% schema %}
+{
+  "name": "Testimonial",
+  "settings": [
+    { "type": "range", "id": "rating", "label": "Rating", "min": 1, "max": 5, "step": 1, "default": 5 },
+    { "type": "richtext", "id": "quote", "label": "Quote", "default": "<p>Crisp colors, thick stock and delivered in two days. Our new cards look amazing.</p>" },
+    { "type": "text", "id": "author", "label": "Author", "default": "María R." },
+    { "type": "text", "id": "role", "label": "Role", "default": "Café owner" }
+  ],
+  "presets": [{ "name": "Testimonial" }]
+}
+{% endschema %}

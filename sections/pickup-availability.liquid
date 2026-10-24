@@ -1,0 +1,48 @@
+{%- comment -%}Rendered via /variants/:id/?section_id=pickup-availability{%- endcomment -%}
+{%- assign pick_up_availabilities = product_variant.store_availabilities | where: 'pick_up_enabled', true -%}
+{%- if pick_up_availabilities.size > 0 -%}
+  {%- assign first = pick_up_availabilities.first -%}
+  <div class="pickup">
+    {% render 'icon', name: 'store' %}
+    <div>
+      {%- if first.available -%}
+        <p class="pickup__status">{{ 'products.pickup.available_at' | t: location: first.location.name }}</p>
+        <p class="pickup__time">{{ first.pick_up_time }}</p>
+      {%- else -%}
+        <p class="pickup__status">{{ 'products.pickup.unavailable_at' | t: location: first.location.name }}</p>
+      {%- endif -%}
+      <button type="button" class="link" data-pickup-open aria-haspopup="dialog">{{ 'products.pickup.check_other' | t }}</button>
+    </div>
+  </div>
+  <dialog class="modal" aria-labelledby="PickupTitle">
+    <div class="modal__inner">
+      <div class="modal__header">
+        <h2 id="PickupTitle" class="h3">{{ product_variant.product.title | escape }}</h2>
+        <button type="button" class="icon-button" data-close>{% render 'icon', name: 'close' %}<span class="visually-hidden">{{ 'general.close' | t }}</span></button>
+      </div>
+      {%- unless product_variant.product.has_only_default_variant -%}<p>{{ product_variant.title | escape }}</p>{%- endunless -%}
+      <ul class="pickup__list" role="list">
+        {%- for availability in pick_up_availabilities -%}
+          <li>
+            <h3 class="h4">{{ availability.location.name | escape }}</h3>
+            <p>{%- if availability.available -%}{% render 'icon', name: 'check' %} {{ 'products.pickup.ready' | t }} · {{ availability.pick_up_time }}{%- else -%}{{ 'products.pickup.not_ready' | t }}{%- endif -%}</p>
+            <address>{{ availability.location.address | format_address }}</address>
+            {%- if availability.location.address.phone.size > 0 -%}<p>{{ availability.location.address.phone }}</p>{%- endif -%}
+          </li>
+        {%- endfor -%}
+      </ul>
+    </div>
+  </dialog>
+{%- endif -%}
+{% stylesheet %}
+  .pickup { display: flex; gap: 1.2rem; align-items: flex-start; padding: 1.6rem; border: 1px dashed rgb(var(--color-border)); border-radius: var(--radius); }
+  .pickup .icon { width: 2.4rem; flex: none; }
+  .pickup p { margin: 0 0 .4rem; }
+  .pickup__status { font-weight: 600; }
+  .pickup__time { font-size: 1.4rem; opacity: .75; }
+  .pickup__list { list-style: none; padding: 0; display: grid; gap: 2.4rem; }
+  .pickup__list address { font-style: normal; font-size: 1.4rem; }
+{% endstylesheet %}
+{% schema %}
+{ "name": "Pickup availability", "settings": [] }
+{% endschema %}

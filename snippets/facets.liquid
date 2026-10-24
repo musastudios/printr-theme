@@ -1,0 +1,63 @@
+{% doc %}
+  Storefront filtering and sorting form.
+  @param {object} results - Collection or search object
+  @param {string} section_id - Section id
+  @param {string} [terms] - Search terms (search page)
+  @example
+  {% render 'facets', results: collection, section_id: section.id %}
+{% enddoc %}
+<facet-form class="facets" data-section="{{ section_id }}">
+  <form>
+    {%- if terms -%}<input type="hidden" name="q" value="{{ terms | escape }}"><input type="hidden" name="options[prefix]" value="last">{%- endif -%}
+    <h2 class="slug">{{ 'collections.general.filters' | t }}</h2>
+    {%- for filter in results.filters -%}
+      <details class="facet" open>
+        <summary>{{ filter.label }}</summary>
+        {%- case filter.type -%}
+          {%- when 'price_range' -%}
+            <div class="facet__price">
+              <label>{{ 'collections.general.from' | t }}
+                <input type="number" name="{{ filter.min_value.param_name }}" value="{% if filter.min_value.value %}{{ filter.min_value.value | money_without_currency | remove: ',' }}{% endif %}" min="0" max="{{ filter.range_max | money_without_currency | remove: ',' }}" placeholder="0">
+              </label>
+              <label>{{ 'collections.general.to' | t }}
+                <input type="number" name="{{ filter.max_value.param_name }}" value="{% if filter.max_value.value %}{{ filter.max_value.value | money_without_currency | remove: ',' }}{% endif %}" min="0" max="{{ filter.range_max | money_without_currency | remove: ',' }}" placeholder="{{ filter.range_max | money_without_currency | remove: ',' }}">
+              </label>
+            </div>
+          {%- else -%}
+            <ul role="list" class="facet__list{% if filter.presentation == 'swatch' %} facet__list--swatch{% endif %}">
+              {%- for value in filter.values -%}
+                <li>
+                  <label class="facet__option{% if value.count == 0 and value.active == false %} is-disabled{% endif %}">
+                    <input type="checkbox" name="{{ value.param_name }}" value="{{ value.value }}" {% if value.active %}checked{% endif %} {% if value.count == 0 and value.active == false %}disabled{% endif %}>
+                    {%- if filter.presentation == 'swatch' and value.swatch.color -%}<span class="swatch" style="--swatch: {{ value.swatch.color }}" aria-hidden="true"></span>{%- endif -%}
+                    {{ value.label }} <small>({{ value.count }})</small>
+                  </label>
+                </li>
+              {%- endfor -%}
+            </ul>
+        {%- endcase -%}
+      </details>
+    {%- endfor -%}
+    <div class="facets__sort field">
+      <label for="SortBy-{{ section_id }}">{{ 'collections.general.sort_by' | t }}</label>
+      {%- assign sort_by = results.sort_by | default: results.default_sort_by -%}
+      <select id="SortBy-{{ section_id }}" name="sort_by">
+        {%- for option in results.sort_options -%}
+          <option value="{{ option.value }}" {% if option.value == sort_by %}selected{% endif %}>{{ option.name }}</option>
+        {%- endfor -%}
+      </select>
+    </div>
+    <noscript><button type="submit" class="button">{{ 'collections.general.apply' | t }}</button></noscript>
+    <a href="{{ results.url | default: routes.search_url }}{% if terms %}?q={{ terms | url_encode }}{% endif %}" class="link-button">{{ 'collections.general.clear_all' | t }}</a>
+  </form>
+</facet-form>
+{% stylesheet %}
+  .facets form { display: grid; gap: 1.6rem; }
+  .facet { border-bottom: 1px solid rgb(var(--color-border)); padding-bottom: 1.2rem; }
+  .facet summary { font-weight: 700; cursor: pointer; padding-block: .6rem; }
+  .facet__list { list-style: none; padding: 0; margin: .8rem 0 0; display: grid; gap: .6rem; max-height: 26rem; overflow: auto; }
+  .facet__option { display: flex; gap: .8rem; align-items: center; font-weight: 400; cursor: pointer; }
+  .facet__option input { width: auto; }
+  .facet__option.is-disabled { opacity: .45; }
+  .facet__price { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+{% endstylesheet %}

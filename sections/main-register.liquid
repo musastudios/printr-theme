@@ -1,0 +1,24 @@
+<div class="section page-width account-narrow">
+  <div class="account-card crop">
+    <h1 class="h2">{{ 'customer.register.title' | t }}</h1>
+    {%- form 'create_customer', novalidate: 'novalidate' -%}
+      {%- if form.errors -%}
+        <div class="form-error" role="alert" tabindex="-1" autofocus>
+          <ul>{%- for field in form.errors -%}<li>{%- if field == 'form' -%}{{ form.errors.messages[field] }}{%- else -%}<a href="#Reg-{{ field }}">{{ form.errors.translated_fields[field] | capitalize }} {{ form.errors.messages[field] }}</a>{%- endif -%}</li>{%- endfor -%}</ul>
+        </div>
+      {%- endif -%}
+      <div class="field-row">
+        <div class="field"><label for="Reg-first_name">{{ 'customer.register.first_name' | t }}</label><input id="Reg-first_name" name="customer[first_name]" autocomplete="given-name"></div>
+        <div class="field"><label for="Reg-last_name">{{ 'customer.register.last_name' | t }}</label><input id="Reg-last_name" name="customer[last_name]" autocomplete="family-name"></div>
+      </div>
+      <div class="field"><label for="Reg-email">{{ 'customer.login.email' | t }} *</label><input type="email" id="Reg-email" name="customer[email]" autocomplete="email" autocapitalize="off" required{% if form.errors contains 'email' %} aria-invalid="true"{% endif %}></div>
+      <div class="field"><label for="Reg-password">{{ 'customer.login.password' | t }} *</label><input type="password" id="Reg-password" name="customer[password]" autocomplete="new-password" required aria-describedby="PwHint"{% if form.errors contains 'password' %} aria-invalid="true"{% endif %}><small id="PwHint">{{ 'customer.register.password_hint' | t }}</small></div>
+      <label class="check"><input type="checkbox" name="customer[accepts_marketing]" value="true"> {{ 'customer.register.marketing' | t }}</label>
+      <button class="button button--full">{{ 'customer.register.submit' | t }}</button>
+    {%- endform -%}
+    <p class="account-switch">{{ 'customer.register.have_account' | t }} <a href="{{ routes.account_login_url }}">{{ 'customer.login.title' | t }}</a></p>
+  </div>
+</div>
+{% schema %}
+{ "name": "Register", "settings": [] }
+{% endschema %}

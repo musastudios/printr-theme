@@ -1,0 +1,56 @@
+<div class="announcement color-{{ section.settings.color_scheme }}">
+  <div class="page-width announcement__inner">
+    <ul class="announcement__list" role="list">
+      {%- for block in section.blocks -%}
+        <li {{ block.shopify_attributes }}>
+          {%- if block.settings.link != blank -%}
+            <a href="{{ block.settings.link }}">{{ block.settings.text }}</a>
+          {%- else -%}
+            {{ block.settings.text }}
+          {%- endif -%}
+        </li>
+      {%- endfor -%}
+    </ul>
+    {%- if section.settings.show_localization -%}
+      {%- form 'localization', class: 'announcement__locale' -%}
+        {%- if localization.available_languages.size > 1 -%}
+          <label class="visually-hidden" for="AnnLang">{{ 'accessibility.localization' | t }}</label>
+          <select id="AnnLang" name="locale_code" onchange="this.form.submit()">
+            {%- for language in localization.available_languages -%}
+              <option value="{{ language.iso_code }}" {% if language.iso_code == localization.language.iso_code %}selected{% endif %}>{{ language.endonym_name | capitalize }}</option>
+            {%- endfor -%}
+          </select>
+        {%- endif -%}
+      {%- endform -%}
+    {%- endif -%}
+  </div>
+</div>
+{% stylesheet %}
+  .announcement { font-size: 1.3rem; font-weight: 600; }
+  .announcement__inner { display: flex; align-items: center; justify-content: center; gap: 2rem; min-height: 3.6rem; }
+  .announcement__list { display: flex; gap: 3rem; list-style: none; margin: 0; padding: 0; overflow-x: auto; }
+  .announcement__locale select { padding: 0.2rem 0.8rem; width: auto; background: transparent; border: 0; }
+{% endstylesheet %}
+{% schema %}
+{
+  "name": "Announcement bar",
+  "tag": "aside",
+  "class": "section-announcement",
+  "settings": [
+    { "type": "color_scheme", "id": "color_scheme", "label": "Color scheme", "default": "scheme-5" },
+    { "type": "checkbox", "id": "show_localization", "label": "Show language selector", "default": true }
+  ],
+  "blocks": [
+    {
+      "type": "announcement",
+      "name": "Announcement",
+      "settings": [
+        { "type": "text", "id": "text", "label": "Text", "default": "Free shipping on orders over $75" },
+        { "type": "url", "id": "link", "label": "Link" }
+      ]
+    }
+  ],
+  "enabled_on": { "groups": ["header"] },
+  "presets": [{ "name": "Announcement bar", "blocks": [{ "type": "announcement" }] }]
+}
+{% endschema %}

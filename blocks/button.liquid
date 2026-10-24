@@ -1,0 +1,12 @@
+<a class="button{% if block.settings.style == 'secondary' %} button--secondary{% endif %}" {% if block.settings.link != blank %}href="{{ block.settings.link }}"{% else %}role="link" aria-disabled="true"{% endif %} {{ block.shopify_attributes }}>{{ block.settings.label | escape }}</a>
+{% schema %}
+{
+  "name": "Button",
+  "settings": [
+    { "type": "text", "id": "label", "label": "Label", "default": "Shop now" },
+    { "type": "url", "id": "link", "label": "Link" },
+    { "type": "select", "id": "style", "label": "Style", "options": [{ "value": "primary", "label": "Primary" }, { "value": "secondary", "label": "Secondary" }], "default": "primary" }
+  ],
+  "presets": [{ "name": "Button" }]
+}
+{% endschema %}

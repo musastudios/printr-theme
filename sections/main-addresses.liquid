@@ -1,0 +1,40 @@
+<div class="section page-width account">
+  <a class="link" href="{{ routes.account_url }}">← {{ 'customer.account.return' | t }}</a>
+  <div class="account__head">
+    <h1 class="h2">{{ 'customer.addresses.title' | t }}</h1>
+  </div>
+  {%- paginate customer.addresses by 6 -%}
+    <ul class="address-grid" role="list">
+      <li class="account-card crop address-card address-card--new">
+        <details{% if customer.addresses_count == 0 %} open{% endif %}>
+          <summary class="button">{% render 'icon', name: 'plus' %}{{ 'customer.addresses.add' | t }}</summary>
+          {%- form 'customer_address', customer.new_address -%}
+            {% render 'address-form', form: form, id: 'new' %}
+            <button class="button">{{ 'customer.addresses.save' | t }}</button>
+          {%- endform -%}
+        </details>
+      </li>
+      {%- for address in customer.addresses -%}
+        <li class="account-card crop address-card">
+          {%- if address == customer.default_address -%}<span class="status">{{ 'customer.addresses.default' | t }}</span>{%- endif -%}
+          {{ address | format_address }}
+          <details>
+            <summary class="link">{{ 'customer.addresses.edit' | t }}<span class="visually-hidden"> {{ address.address1 }}</span></summary>
+            {%- form 'customer_address', address -%}
+              {% render 'address-form', form: form, id: address.id %}
+              <button class="button">{{ 'customer.addresses.save' | t }}</button>
+            {%- endform -%}
+          </details>
+          <form method="post" action="{{ address.url }}" data-confirm="{{ 'customer.addresses.delete_confirm' | t }}">
+            <input type="hidden" name="_method" value="delete">
+            <button class="link link--danger">{{ 'customer.addresses.delete' | t }}<span class="visually-hidden"> {{ address.address1 }}</span></button>
+          </form>
+        </li>
+      {%- endfor -%}
+    </ul>
+    {% render 'pagination', paginate: paginate %}
+  {%- endpaginate -%}
+</div>
+{% schema %}
+{ "name": "Addresses", "settings": [] }
+{% endschema %}

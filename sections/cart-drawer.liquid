@@ -1,0 +1,29 @@
+<drawer-panel id="CartDrawer" class="drawer" role="dialog" aria-modal="true" aria-labelledby="CartDrawerTitle">
+  <div class="drawer__overlay" data-drawer-close></div>
+  <div class="drawer__panel">
+    <div class="drawer__header">
+      <h2 id="CartDrawerTitle" class="h3">{{ 'sections.cart.title' | t }} ({{ cart.item_count }})</h2>
+      <button type="button" class="icon-button" data-drawer-close>{% render 'icon', name: 'close' %}<span class="visually-hidden">{{ 'general.close' | t }}</span></button>
+    </div>
+    <cart-items class="cart-drawer__body">
+      {%- if cart.item_count > 0 -%}
+        <div class="cart-drawer__lines">{% render 'cart-lines' %}</div>
+        <div class="cart-drawer__footer">{% render 'cart-summary', show_view_cart: true %}</div>
+      {%- else -%}
+        <div class="cart-empty">
+          <p>{{ 'sections.cart.empty' | t }}</p>
+          <a class="button" href="{{ routes.all_products_collection_url }}">{{ 'sections.cart.continue' | t }}</a>
+        </div>
+      {%- endif -%}
+    </cart-items>
+  </div>
+</drawer-panel>
+{% stylesheet %}
+  .cart-drawer__body { display: flex; flex-direction: column; flex: 1; }
+  .cart-drawer__lines { padding: 2rem; flex: 1; overflow: auto; }
+  .cart-drawer__footer { padding: 2rem; border-top: 1px solid rgb(var(--color-border)); }
+  .cart-empty { padding: 4rem 2rem; text-align: center; display: grid; gap: 2rem; justify-items: center; }
+{% endstylesheet %}
+{% schema %}
+{ "name": "Cart drawer", "settings": [] }
+{% endschema %}

@@ -1,0 +1,21 @@
+<div class="section page-width color-{{ section.settings.color_scheme }}">
+  <handle-grid class="handle-grid" data-source="recent" data-limit="{{ section.settings.limit }}"{% if product %} data-exclude="{{ product.handle }}"{% endif %}>
+    <h2 class="h3">{{ section.settings.heading | escape }}</h2>
+    <ul class="grid product-grid" data-grid role="list" style="--cols: {{ section.settings.limit }}"></ul>
+  </handle-grid>
+</div>
+{% stylesheet %}
+  .handle-grid:not([data-has-items]) { display: none; }
+  .handle-grid[aria-busy="true"] [data-grid] { opacity: .5; }
+{% endstylesheet %}
+{% schema %}
+{
+  "name": "Recently viewed",
+  "settings": [
+    { "type": "text", "id": "heading", "label": "Heading", "default": "Recently viewed" },
+    { "type": "range", "id": "limit", "label": "Products", "min": 2, "max": 6, "step": 1, "default": 4 },
+    { "type": "color_scheme", "id": "color_scheme", "label": "Color scheme", "default": "scheme-1" }
+  ],
+  "presets": [{ "name": "Recently viewed" }]
+}
+{% endschema %}

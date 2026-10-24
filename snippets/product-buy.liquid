@@ -1,0 +1,48 @@
+{% doc %}
+  Quantity selector, artwork note property and add-to-cart buttons.
+  @param {variant} variant - Selected variant
+  @param {string} section_id - Section id for unique ids
+  @param {boolean} [show_artwork] - Show artwork notes field
+  @param {boolean} [show_dynamic_checkout] - Show accelerated checkout buttons
+  @example
+  {% render 'product-buy', product: product, variant: variant, section_id: section.id %}
+{% enddoc %}
+<product-form class="product-buy" data-swap="buy">
+  {%- form 'product', product, id: 'ProductForm-' | append: section_id, novalidate: 'novalidate' -%}
+    <input type="hidden" name="id" value="{{ variant.id }}">
+    {%- if show_artwork -%}
+      <div class="field">
+        <label for="Artwork-{{ section_id }}">{{ 'products.product.upload.label' | t }}</label>
+        <textarea id="Artwork-{{ section_id }}" name="properties[Artwork]" rows="2" aria-describedby="ArtworkHelp-{{ section_id }}"></textarea>
+        <small id="ArtworkHelp-{{ section_id }}">{{ 'products.product.upload.help' | t }}</small>
+      </div>
+    {%- endif -%}
+    <div class="product-buy__row">
+      <quantity-input class="qty">
+        <button type="button" name="minus">−<span class="visually-hidden">{{ 'products.product.decrease' | t }}</span></button>
+        <label class="visually-hidden" for="Qty-{{ section_id }}">{{ 'products.product.quantity' | t }}</label>
+        <input id="Qty-{{ section_id }}" type="number" name="quantity" value="1" min="1" step="1" inputmode="numeric">
+        <button type="button" name="plus">+<span class="visually-hidden">{{ 'products.product.increase' | t }}</span></button>
+      </quantity-input>
+      <button type="submit" class="button product-buy__submit" {% unless variant.available %}disabled{% endunless %}>
+        {%- if variant == nil -%}
+          {{ 'products.product.unavailable' | t }}
+        {%- elsif variant.available -%}
+          {{ 'products.product.add_to_cart' | t }}
+        {%- else -%}
+          {{ 'products.product.sold_out' | t }}
+        {%- endif -%}
+      </button>
+    </div>
+    <p class="form-error" role="alert" data-form-error hidden></p>
+    {%- if show_dynamic_checkout -%}
+      {{ form | payment_button }}
+    {%- endif -%}
+  {%- endform -%}
+</product-form>
+{% stylesheet %}
+  .product-buy__row { display: flex; gap: 1rem; }
+  .product-buy__submit { flex: 1; }
+  .product-buy .shopify-payment-button { margin-top: 1rem; }
+  .form-error { color: var(--color-sale); }
+{% endstylesheet %}

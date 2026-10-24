@@ -1,0 +1,14 @@
+<div class="section page-width">
+  <h1>{{ page.title | default: section.settings.heading | escape }}</h1>
+  <handle-grid class="wishlist" data-source="wishlist" data-limit="48">
+    <ul class="grid product-grid" data-grid role="list" style="--cols: 4"></ul>
+    <div class="empty-state" data-empty>
+      {% render 'icon', name: 'heart' %}
+      <p>{{ 'products.wishlist.empty' | t }}</p>
+      <a class="button" href="{{ routes.all_products_collection_url }}">{{ 'sections.cart.continue' | t }}</a>
+    </div>
+  </handle-grid>
+</div>
+{% schema %}
+{ "name": "Wishlist", "settings": [{ "type": "text", "id": "heading", "label": "Fallback heading", "default": "Your favorites" }] }
+{% endschema %}

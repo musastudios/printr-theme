@@ -1,0 +1,31 @@
+<div class="marquee color-{{ section.settings.color_scheme }}" style="--duration: {{ section.settings.speed }}s">
+  <div class="marquee__track">
+    {%- for i in (1..2) -%}
+      <ul class="marquee__list" role="list" {% if i == 2 %}aria-hidden="true"{% endif %}>
+        {%- for block in section.blocks -%}
+          <li {% if i == 1 %}{{ block.shopify_attributes }}{% endif %}>{{ block.settings.text | escape }}<span class="marquee__dot" aria-hidden="true"></span></li>
+        {%- endfor -%}
+      </ul>
+    {%- endfor -%}
+  </div>
+</div>
+{% stylesheet %}
+  .marquee { overflow: hidden; padding-block: 1.8rem; border-block: 1px solid rgb(var(--color-border)); }
+  .marquee__track { display: flex; width: max-content; animation: marquee var(--duration) linear infinite; }
+  .marquee:hover .marquee__track { animation-play-state: paused; }
+  .marquee__list { display: flex; list-style: none; margin: 0; padding: 0; }
+  .marquee__list li { display: flex; align-items: center; gap: 3rem; padding-right: 3rem; font-family: var(--font-heading-family); font-weight: 700; font-size: clamp(2rem, 3vw, 3.6rem); text-transform: uppercase; white-space: nowrap; }
+  .marquee__dot { width: 1.4rem; height: 1.4rem; border-radius: 50%; background: conic-gradient(var(--c) 0 25%, var(--m) 0 50%, var(--y) 0 75%, var(--k) 0); }
+  @keyframes marquee { to { transform: translateX(-50%); } }
+{% endstylesheet %}
+{% schema %}
+{
+  "name": "Scrolling text",
+  "settings": [
+    { "type": "color_scheme", "id": "color_scheme", "label": "Color scheme", "default": "scheme-4" },
+    { "type": "range", "id": "speed", "label": "Duration (seconds)", "min": 10, "max": 60, "step": 5, "default": 30 }
+  ],
+  "blocks": [{ "type": "item", "name": "Item", "settings": [{ "type": "text", "id": "text", "label": "Text", "default": "Business cards" }] }],
+  "presets": [{ "name": "Scrolling text", "blocks": [{ "type": "item" }, { "type": "item", "settings": { "text": "Flags" } }, { "type": "item", "settings": { "text": "Postcards" } }] }]
+}
+{% endschema %}

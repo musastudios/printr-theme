@@ -1,0 +1,45 @@
+{% doc %}
+  Free shipping goal, note, subtotal and checkout button.
+  @param {boolean} [show_view_cart] - Show a link to the cart page
+  @example
+  {% render 'cart-summary' %}
+{% enddoc %}
+{%- liquid
+  assign threshold = settings.free_shipping_threshold | times: 100 | times: cart.currency.rate | default: 0
+-%}
+<div class="cart-summary">
+  {%- if threshold > 0 -%}
+    {%- liquid
+      assign remaining = threshold | minus: cart.total_price
+      assign pct = cart.total_price | times: 100.0 | divided_by: threshold
+      if pct > 100
+        assign pct = 100
+      endif
+    -%}
+    <div class="ship-goal">
+      <p>{%- if remaining > 0 -%}{{ 'sections.cart.free_shipping_remaining' | t: amount: remaining | money }}{%- else -%}{{ 'sections.cart.free_shipping_reached' | t }}{%- endif -%}</p>
+      <div class="ship-goal__bar" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="{{ pct | round }}" aria-label="{{ 'sections.cart.free_shipping_reached' | t }}"><span style="width: {{ pct }}%"></span></div>
+    </div>
+  {%- endif -%}
+  {%- if settings.cart_show_note -%}
+    <details class="cart-note">
+      <summary>{{ 'sections.cart.note' | t }}</summary>
+      <label class="visually-hidden" for="CartNote">{{ 'sections.cart.note' | t }}</label>
+      <textarea id="CartNote" name="note" form="CartForm" rows="3">{{ cart.note }}</textarea>
+    </details>
+  {%- endif -%}
+  <p class="cart-summary__total"><span>{{ 'sections.cart.subtotal' | t }}</span><strong>{{ cart.total_price | money_with_currency }}</strong></p>
+  <small>{{ 'sections.cart.taxes' | t }}</small>
+  <form action="{{ routes.cart_url }}" method="post" id="CartForm">
+    <button type="submit" name="checkout" class="button button--full">{{ 'sections.cart.checkout' | t }}</button>
+  </form>
+  {%- if show_view_cart -%}<a class="link-button" href="{{ routes.cart_url }}">{{ 'sections.cart.view_cart' | t }}</a>{%- endif -%}
+</div>
+{% stylesheet %}
+  .cart-summary { display: grid; gap: 1.2rem; }
+  .ship-goal p { margin: 0 0 .6rem; font-size: 1.4rem; font-weight: 600; }
+  .ship-goal__bar { height: .8rem; border-radius: 99px; background: rgba(var(--color-foreground), .1); overflow: hidden; }
+  .ship-goal__bar span { display: block; height: 100%; background: linear-gradient(90deg, var(--c), var(--m), var(--y)); }
+  .cart-summary__total { display: flex; justify-content: space-between; font-size: 1.8rem; margin: 0; }
+  .cart-note summary { cursor: pointer; font-weight: 600; font-size: 1.4rem; }
+{% endstylesheet %}

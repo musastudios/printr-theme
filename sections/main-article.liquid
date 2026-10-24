@@ -1,0 +1,17 @@
+<article class="section page-width article">
+  <span class="slug">{{ article.published_at | time_tag: format: 'date' }}</span>
+  <h1>{{ article.title | escape }}</h1>
+  <p>{{ 'sections.blog.by' | t: author: article.author }}</p>
+  {%- if article.image -%}
+    <div class="media crop" style="--ratio: {{ article.image.aspect_ratio }}">{{ article.image | image_url: width: 1800 | image_tag: widths: '600, 1200, 1800', sizes: '(min-width: 990px) 80rem, 100vw', fetchpriority: 'high' }}</div>
+  {%- endif -%}
+  <div class="rte article__body">{{ article.content }}</div>
+  <a class="button button--secondary" href="{{ blog.url }}">{{ 'sections.blog.back' | t }}</a>
+</article>
+{% stylesheet %}
+  .article { max-width: 84rem; }
+  .article__body { margin-block: 4rem; font-size: 1.8rem; }
+{% endstylesheet %}
+{% schema %}
+{ "name": "Article", "settings": [] }
+{% endschema %}

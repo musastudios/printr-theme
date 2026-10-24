@@ -1,0 +1,31 @@
+<div class="section color-{{ section.settings.color_scheme }}">
+  <div class="page-width iwt{% if section.settings.reverse %} iwt--reverse{% endif %}">
+    <div class="media crop" style="--ratio: 1.1" data-reveal>
+      {%- if section.settings.image != blank -%}
+        {{ section.settings.image | image_url: width: 1600 | image_tag: loading: 'lazy', widths: '500, 800, 1200, 1600', sizes: '(min-width: 990px) 50vw, 100vw' }}
+      {%- else -%}
+        {{ 'lifestyle-1' | placeholder_svg_tag: 'placeholder' }}
+      {%- endif -%}
+    </div>
+    <div class="iwt__content" data-reveal>
+      {% content_for 'blocks' %}
+    </div>
+  </div>
+</div>
+{% stylesheet %}
+  .iwt { display: grid; gap: 4rem; align-items: center; }
+  .iwt__content { display: flex; flex-direction: column; gap: 2rem; align-items: flex-start; }
+  @media (min-width: 750px) { .iwt { grid-template-columns: 1fr 1fr; } .iwt--reverse > :first-child { order: 2; } }
+{% endstylesheet %}
+{% schema %}
+{
+  "name": "Image with text",
+  "blocks": [{ "type": "@theme" }],
+  "settings": [
+    { "type": "image_picker", "id": "image", "label": "Image" },
+    { "type": "checkbox", "id": "reverse", "label": "Image on right", "default": false },
+    { "type": "color_scheme", "id": "color_scheme", "label": "Color scheme", "default": "scheme-2" }
+  ],
+  "presets": [{ "name": "Image with text", "blocks": [{ "type": "heading" }, { "type": "text" }, { "type": "button" }] }]
+}
+{% endschema %}

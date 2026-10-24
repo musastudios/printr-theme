@@ -1,0 +1,37 @@
+<div class="section color-{{ section.settings.color_scheme }}">
+  <div class="page-width promo crop" data-reveal>
+    <div>
+      <span class="slug">{{ section.settings.slug | escape }}</span>
+      <h2>{{ section.settings.heading | escape }}</h2>
+      {%- if section.settings.link != blank -%}<a class="button" href="{{ section.settings.link }}">{{ section.settings.button | escape }}</a>{%- endif -%}
+    </div>
+    {%- if section.settings.end_date != blank -%}
+      <countdown-timer class="countdown" data-end="{{ section.settings.end_date | escape }}" role="timer">
+        <span><b data-days>00</b>{{ 'general.countdown.days' | t }}</span>
+        <span><b data-hours>00</b>{{ 'general.countdown.hours' | t }}</span>
+        <span><b data-minutes>00</b>{{ 'general.countdown.minutes' | t }}</span>
+        <span><b data-seconds>00</b>{{ 'general.countdown.seconds' | t }}</span>
+      </countdown-timer>
+    {%- endif -%}
+  </div>
+</div>
+{% stylesheet %}
+  .promo { display: flex; flex-wrap: wrap; gap: 3rem; justify-content: space-between; align-items: center; padding-block: 2rem; }
+  .countdown { display: flex; gap: 1.2rem; }
+  .countdown span { display: grid; text-align: center; font-size: 1.2rem; text-transform: uppercase; letter-spacing: .1em; min-width: 7rem; padding: 1.4rem; border: 2px solid currentColor; border-radius: var(--radius); }
+  .countdown b { font-family: var(--font-heading-family); font-size: 3.6rem; line-height: 1; }
+{% endstylesheet %}
+{% schema %}
+{
+  "name": "Promotion banner",
+  "settings": [
+    { "type": "text", "id": "slug", "label": "Small label", "default": "Limited offer" },
+    { "type": "text", "id": "heading", "label": "Heading", "default": "20% off 1,000+ business cards" },
+    { "type": "text", "id": "button", "label": "Button label", "default": "Start printing" },
+    { "type": "url", "id": "link", "label": "Button link" },
+    { "type": "text", "id": "end_date", "label": "Countdown end (YYYY-MM-DDTHH:MM)", "info": "Leave blank to hide the countdown" },
+    { "type": "color_scheme", "id": "color_scheme", "label": "Color scheme", "default": "scheme-3" }
+  ],
+  "presets": [{ "name": "Promotion banner" }]
+}
+{% endschema %}

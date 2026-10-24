@@ -1,0 +1,18 @@
+{
+  "sections": {
+    "breadcrumbs": {
+      "type": "breadcrumbs"
+    },
+    "main": {
+      "type": "main-page"
+    },
+    "form": {
+      "type": "contact-form"
+    }
+  },
+  "order": [
+    "breadcrumbs",
+    "main",
+    "form"
+  ]
+}

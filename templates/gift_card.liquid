@@ -1,0 +1,22 @@
+{% layout none %}
+<!doctype html>
+<html lang="{{ request.locale.iso_code }}">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>{{ 'gift_cards.issued.title' | t }}</title>
+    {% render 'css-variables' %}
+    {{ 'base.css' | asset_url | stylesheet_tag }}
+    {{ content_for_header }}
+  </head>
+  <body>
+    <main class="section page-width" style="text-align: center; max-width: 60rem">
+      <h1>{{ 'gift_cards.issued.title' | t }}</h1>
+      <p class="h2">{{ gift_card.balance | money }}</p>
+      {%- if gift_card.expired -%}<p class="badge">{{ 'gift_cards.issued.expired' | t }}</p>{%- endif -%}
+      <p>{{ 'gift_cards.issued.code' | t }}: <strong>{{ gift_card.code | format_code }}</strong></p>
+      {%- if gift_card.pass_url -%}<p><a href="{{ gift_card.pass_url }}">Apple Wallet</a></p>{%- endif -%}
+      <p><a class="button" href="{{ shop.url }}">{{ shop.name }}</a></p>
+    </main>
+  </body>
+</html>

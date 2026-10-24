@@ -1,0 +1,24 @@
+{%- liquid
+  assign tag = block.settings.tag
+-%}
+<{{ tag }} class="block-heading {{ block.settings.size }}" style="--align: {{ block.settings.alignment }}" {{ block.shopify_attributes }}>
+  {%- if block.settings.slug != blank -%}<span class="slug">{{ block.settings.slug }}</span><br>{%- endif -%}
+  {{ block.settings.heading }}
+</{{ tag }}>
+{% stylesheet %}
+  .block-heading { text-align: var(--align); margin: 0; }
+  .block-heading .slug { font-family: var(--font-body-family); margin-bottom: 1rem; }
+{% endstylesheet %}
+{% schema %}
+{
+  "name": "Heading",
+  "settings": [
+    { "type": "text", "id": "slug", "label": "Small label" },
+    { "type": "inline_richtext", "id": "heading", "label": "Heading", "default": "Print that gets noticed" },
+    { "type": "select", "id": "tag", "label": "HTML tag", "options": [{ "value": "h1", "label": "H1" }, { "value": "h2", "label": "H2" }, { "value": "h3", "label": "H3" }, { "value": "p", "label": "Paragraph" }], "default": "h2" },
+    { "type": "select", "id": "size", "label": "Size", "options": [{ "value": "h1", "label": "Large" }, { "value": "h2", "label": "Medium" }, { "value": "h3", "label": "Small" }], "default": "h2" },
+    { "type": "text_alignment", "id": "alignment", "label": "Alignment", "default": "left" }
+  ],
+  "presets": [{ "name": "Heading" }]
+}
+{% endschema %}

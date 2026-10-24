@@ -1,0 +1,36 @@
+{
+  "sections": {
+    "breadcrumbs": {
+      "type": "breadcrumbs"
+    },
+    "main": {
+      "type": "main-collection"
+    },
+    "marquee": {
+      "type": "marquee",
+      "blocks": {
+        "i1": {
+          "type": "item",
+          "settings": {
+            "text": "Free proof on every order"
+          }
+        },
+        "i2": {
+          "type": "item",
+          "settings": {
+            "text": "Volume discounts"
+          }
+        }
+      },
+      "block_order": [
+        "i1",
+        "i2"
+      ]
+    }
+  },
+  "order": [
+    "breadcrumbs",
+    "main",
+    "marquee"
+  ]
+}

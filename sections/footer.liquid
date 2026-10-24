@@ -1,0 +1,81 @@
+<footer class="footer color-{{ section.settings.color_scheme }}">
+  {%- if settings.show_cmyk_bar -%}<div class="cmyk-bar" aria-hidden="true"><span></span><span></span><span></span><span></span></div>{%- endif -%}
+  <div class="page-width footer__grid">
+    <div class="footer__brand">
+      <p class="footer__wordmark">{{ shop.name }}</p>
+      {%- if section.settings.text != blank -%}<div class="rte">{{ section.settings.text }}</div>{%- endif -%}
+      <ul class="footer__social" role="list">
+        {%- if settings.social_instagram_link != blank -%}<li><a href="{{ settings.social_instagram_link }}">{{ 'general.social.instagram' | t }}</a></li>{%- endif -%}
+        {%- if settings.social_facebook_link != blank -%}<li><a href="{{ settings.social_facebook_link }}">{{ 'general.social.facebook' | t }}</a></li>{%- endif -%}
+        {%- if settings.social_tiktok_link != blank -%}<li><a href="{{ settings.social_tiktok_link }}">{{ 'general.social.tiktok' | t }}</a></li>{%- endif -%}
+      </ul>
+    </div>
+    {%- for block in section.blocks -%}
+      {%- case block.type -%}
+        {%- when 'menu' -%}
+          <nav class="footer__col" aria-label="{{ block.settings.heading | escape }}" {{ block.shopify_attributes }}>
+            <h2 class="footer__heading">{{ block.settings.heading | escape }}</h2>
+            <ul role="list">
+              {%- for link in block.settings.menu.links -%}
+                <li><a href="{{ link.url }}">{{ link.title }}</a></li>
+              {%- endfor -%}
+            </ul>
+          </nav>
+        {%- when 'newsletter' -%}
+          <div class="footer__col footer__newsletter" {{ block.shopify_attributes }}>
+            <h2 class="footer__heading">{{ block.settings.heading | escape }}</h2>
+            {%- form 'customer', id: 'FooterNewsletter' -%}
+              <input type="hidden" name="contact[tags]" value="newsletter">
+              {%- if form.posted_successfully? -%}
+                <p role="status">{{ 'general.newsletter.success' | t }}</p>
+              {%- else -%}
+                <label class="visually-hidden" for="FooterEmail">{{ 'general.newsletter.email' | t }}</label>
+                <div class="footer__field">
+                  <input id="FooterEmail" type="email" name="contact[email]" required autocomplete="email" placeholder="{{ 'general.newsletter.email' | t }}">
+                  <button type="submit" class="button">{{ 'general.newsletter.subscribe' | t }}</button>
+                </div>
+                {{ form.errors | default_errors }}
+              {%- endif -%}
+            {%- endform -%}
+          </div>
+      {%- endcase -%}
+    {%- endfor -%}
+  </div>
+  <div class="page-width footer__bottom">
+    <small>&copy; {{ 'now' | date: '%Y' }} {{ shop.name | link_to: routes.root_url }} · {{ powered_by_link }}</small>
+    <ul class="footer__payments" role="list">
+      {%- for type in shop.enabled_payment_types -%}
+        <li>{{ type | payment_type_svg_tag: class: 'payment-icon' }}</li>
+      {%- endfor -%}
+    </ul>
+  </div>
+</footer>
+{% stylesheet %}
+  .footer { padding-bottom: 2rem; }
+  .footer__grid { display: grid; gap: 4rem; padding-block: 6rem 4rem; grid-template-columns: 1fr; }
+  @media (min-width: 750px) { .footer__grid { grid-template-columns: 2fr repeat(3, 1fr); } }
+  .footer__wordmark { font-family: var(--font-heading-family); font-weight: 800; font-size: 4.8rem; letter-spacing: -.04em; margin: 0 0 1rem; }
+  .footer__heading { font-size: 1.3rem; text-transform: uppercase; letter-spacing: .14em; }
+  .footer ul { list-style: none; padding: 0; margin: 0; display: grid; gap: .8rem; }
+  .footer a { text-decoration: none; }
+  .footer a:hover { text-decoration: underline; }
+  .footer__social { display: flex !important; gap: 1.6rem !important; margin-top: 2rem !important; }
+  .footer__field { display: flex; gap: .8rem; }
+  .footer__bottom { display: flex; flex-wrap: wrap; gap: 2rem; justify-content: space-between; align-items: center; border-top: 1px solid rgb(var(--color-border)); padding-top: 2rem; }
+  .footer__payments { display: flex !important; gap: .6rem !important; }
+  .payment-icon { width: 3.8rem; height: auto; }
+{% endstylesheet %}
+{% schema %}
+{
+  "name": "Footer",
+  "settings": [
+    { "type": "richtext", "id": "text", "label": "Brand text", "default": "<p>Print shop for business cards, flyers, flags and more.</p>" },
+    { "type": "color_scheme", "id": "color_scheme", "label": "Color scheme", "default": "scheme-5" }
+  ],
+  "blocks": [
+    { "type": "menu", "name": "Menu", "settings": [{ "type": "text", "id": "heading", "label": "Heading", "default": "Shop" }, { "type": "link_list", "id": "menu", "label": "Menu", "default": "footer" }] },
+    { "type": "newsletter", "name": "Newsletter", "limit": 1, "settings": [{ "type": "text", "id": "heading", "label": "Heading", "default": "Ink-fresh deals" }] }
+  ],
+  "enabled_on": { "groups": ["footer"] }
+}
+{% endschema %}

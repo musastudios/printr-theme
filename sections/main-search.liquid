@@ -1,0 +1,41 @@
+<div class="section page-width">
+  <h1>{{ 'sections.search.title' | t }}</h1>
+  <form action="{{ routes.search_url }}" method="get" role="search" class="search-page__form">
+    <label class="visually-hidden" for="SearchPage">{{ 'accessibility.search' | t }}</label>
+    <input id="SearchPage" type="search" name="q" value="{{ search.terms | escape }}" placeholder="{{ 'sections.search.placeholder' | t }}">
+    <input type="hidden" name="options[prefix]" value="last">
+    <button class="button" type="submit">{{ 'sections.search.submit' | t }}</button>
+  </form>
+  {%- if search.performed -%}
+    <div class="collection">
+      {%- if search.filters.size > 0 -%}
+        <div>{% render 'facets', results: search, section_id: section.id, terms: search.terms %}</div>
+      {%- endif -%}
+      {%- paginate search.results by 24 -%}
+        <div data-results-grid>
+          <p role="status">{%- if search.results_count > 0 -%}{{ 'sections.search.results_for' | t: count: search.results_count, terms: search.terms }}{%- else -%}{{ 'sections.search.no_results' | t: terms: search.terms }}{%- endif -%}</p>
+          <ul class="grid product-grid" role="list" style="--cols: 3">
+            {%- for item in search.results -%}
+              <li>
+                {%- if item.object_type == 'product' -%}
+                  {% render 'product-card', product: item %}
+                {%- else -%}
+                  <a class="search-result crop" href="{{ item.url }}"><span class="slug">{{ item.object_type }}</span><h3>{{ item.title | escape }}</h3></a>
+                {%- endif -%}
+              </li>
+            {%- endfor -%}
+          </ul>
+          {% render 'pagination', paginate: paginate %}
+        </div>
+      {%- endpaginate -%}
+    </div>
+  {%- endif -%}
+</div>
+{% stylesheet %}
+  .search-page__form { display: flex; gap: 1rem; margin-bottom: 4rem; max-width: 70rem; }
+  .search-result { display: block; padding: 2.4rem; border: 1px solid rgb(var(--color-border)); border-radius: var(--radius); text-decoration: none; }
+  @media (min-width: 990px) { .section .collection { display: grid; grid-template-columns: 26rem 1fr; gap: 4rem; } }
+{% endstylesheet %}
+{% schema %}
+{ "name": "Search results", "settings": [] }
+{% endschema %}

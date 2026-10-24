@@ -1,0 +1,16 @@
+<div class="section color-{{ section.settings.color_scheme }}">
+  <div class="page-width rich-text" data-reveal>
+    {% content_for 'blocks' %}
+  </div>
+</div>
+{% stylesheet %}
+  .rich-text { display: flex; flex-direction: column; align-items: center; gap: 2rem; text-align: center; }
+{% endstylesheet %}
+{% schema %}
+{
+  "name": "Rich text",
+  "blocks": [{ "type": "@theme" }],
+  "settings": [{ "type": "color_scheme", "id": "color_scheme", "label": "Color scheme", "default": "scheme-1" }],
+  "presets": [{ "name": "Rich text", "blocks": [{ "type": "heading", "settings": { "alignment": "center" } }, { "type": "text", "settings": { "alignment": "center" } }] }]
+}
+{% endschema %}

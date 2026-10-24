@@ -1,0 +1,11 @@
+<div class="section page-width">
+  <h1>{{ page_title | escape }}</h1>
+  <ul class="grid collection-list" role="list" style="--cols: 4">
+    {%- for c in collections -%}
+      <li><a href="{{ c.url }}" class="collection-tile"><div class="media crop">{%- if c.featured_image -%}{{ c.featured_image | image_url: width: 800 | image_tag: loading: 'lazy', widths: '300, 500, 800', sizes: '(min-width: 990px) 25vw, 50vw' }}{%- else -%}{{ 'collection-1' | placeholder_svg_tag: 'placeholder' }}{%- endif -%}</div><span class="collection-tile__title">{{ c.title }}</span></a></li>
+    {%- endfor -%}
+  </ul>
+</div>
+{% schema %}
+{ "name": "Collections list", "settings": [] }
+{% endschema %}

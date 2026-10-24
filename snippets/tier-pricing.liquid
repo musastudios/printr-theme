@@ -1,0 +1,121 @@
+{% doc %}
+  Quantity-tier price table for print products. Lists every variant that shares the
+  currently selected options except the quantity option, with total, unit price and savings.
+  Works when the product has an option named "Quantity" or "Cantidad" whose values start with a number (e.g. "250", "500 cards").
+  Falls back to the product metafield custom.price_tiers (multi-line text "qty:price" per line) for products without a quantity option.
+  @param {product} product - The product
+  @param {variant} variant - The currently selected variant
+  @example
+  {% render 'tier-pricing', product: product, variant: product.selected_or_first_available_variant %}
+{% enddoc %}
+{%- liquid
+  assign qty_index = nil
+  for option in product.options_with_values
+    assign oname = option.name | downcase
+    if oname == 'quantity' or oname == 'cantidad' or oname == 'qty'
+      assign qty_index = forloop.index0
+      assign qty_option = option
+    endif
+  endfor
+-%}
+{%- if qty_index != nil -%}
+  {%- liquid
+    assign first_unit = nil
+  -%}
+  <div class="tiers" data-swap="tiers">
+    <h2 class="tiers__heading slug">{{ 'products.product.tiers.heading' | t }}</h2>
+    <table class="tiers__table">
+      <thead>
+        <tr>
+          <th scope="col">{{ 'products.product.tiers.quantity' | t }}</th>
+          <th scope="col">{{ 'products.product.tiers.total' | t }}</th>
+          <th scope="col">{{ 'products.product.tiers.per_unit' | t }}</th>
+          <th scope="col"><span class="visually-hidden">{{ 'products.product.tiers.select' | t }}</span></th>
+        </tr>
+      </thead>
+      <tbody>
+        {%- for value in qty_option.values -%}
+          {%- liquid
+            assign match = nil
+            for v in product.variants
+              assign ok = true
+              for opt in v.options
+                if forloop.index0 == qty_index
+                  if opt != value
+                    assign ok = false
+                  endif
+                else
+                  assign cur = variant.options[forloop.index0]
+                  if opt != cur
+                    assign ok = false
+                  endif
+                endif
+              endfor
+              if ok
+                assign match = v
+                break
+              endif
+            endfor
+          -%}
+          {%- if match -%}
+            {%- liquid
+              assign units = value | remove: ',' | split: ' ' | first | plus: 0
+              assign unit_cents = 0
+              if units > 0
+                assign unit_cents = match.price | times: 1.0 | divided_by: units
+              endif
+              if first_unit == nil
+                assign first_unit = unit_cents
+              endif
+              assign saving = 0
+              if first_unit > 0 and unit_cents < first_unit
+                assign saving = first_unit | minus: unit_cents | times: 100 | divided_by: first_unit | round
+              endif
+            -%}
+            <tr{% if match.id == variant.id %} class="is-current" aria-current="true"{% endif %}>
+              <th scope="row">{{ value }}</th>
+              <td>{{ match.price | money }}</td>
+              <td>
+                {%- if units > 0 -%}{{ unit_cents | round | money }}{%- endif -%}
+                {%- if saving > 0 -%} <span class="badge badge--new">{{ 'products.product.tiers.save' | t: percent: saving }}</span>{%- endif -%}
+              </td>
+              <td>
+                {%- unless match.id == variant.id -%}
+                  <button type="button" class="link-button" data-tier-select="{{ value.id }}" {% unless match.available %}disabled{% endunless %}>{{ 'products.product.tiers.select' | t }}<span class="visually-hidden"> {{ value }}</span></button>
+                {%- else -%}
+                  {% render 'icon', name: 'check' %}
+                {%- endunless -%}
+              </td>
+            </tr>
+          {%- endif -%}
+        {%- endfor -%}
+      </tbody>
+    </table>
+  </div>
+{%- elsif product.metafields.custom.price_tiers != blank -%}
+  {%- assign lines = product.metafields.custom.price_tiers.value | newline_to_br | split: '<br />' -%}
+  <div class="tiers" data-swap="tiers">
+    <h2 class="tiers__heading slug">{{ 'products.product.tiers.heading' | t }}</h2>
+    <table class="tiers__table">
+      <thead><tr><th scope="col">{{ 'products.product.tiers.quantity' | t }}</th><th scope="col">{{ 'products.product.tiers.per_unit' | t }}</th></tr></thead>
+      <tbody>
+        {%- for line in lines -%}
+          {%- assign pair = line | strip | split: ':' -%}
+          {%- if pair.size == 2 -%}
+            <tr><th scope="row">{{ pair[0] | strip }}+</th><td>{{ pair[1] | strip }}</td></tr>
+          {%- endif -%}
+        {%- endfor -%}
+      </tbody>
+    </table>
+  </div>
+{%- else -%}
+  <div data-swap="tiers"></div>
+{%- endif -%}
+{% stylesheet %}
+  .tiers { border: 1px dashed rgb(var(--color-border)); border-radius: var(--radius); padding: 1.6rem 2rem; }
+  .tiers__table { width: 100%; border-collapse: collapse; font-size: 1.4rem; }
+  .tiers__table th, .tiers__table td { text-align: left; padding: .8rem .4rem; border-bottom: 1px solid rgb(var(--color-border)); }
+  .tiers__table thead th { font-size: 1.2rem; text-transform: uppercase; letter-spacing: .08em; opacity: .7; }
+  .tiers__table tr.is-current { background: rgba(var(--color-accent), .08); font-weight: 700; }
+  .tiers__table tbody tr:last-child > * { border-bottom: 0; }
+{% endstylesheet %}

@@ -1,0 +1,7 @@
+{%- comment -%}Renders a single product card for the current product context. Fetched via ?section_id=card-render by wishlist, recently viewed and compare features.{%- endcomment -%}
+{%- if product -%}
+  <div data-card-item data-handle="{{ product.handle }}">{% render 'product-card', product: product, compact: true, sizes: '(min-width: 990px) 20vw, 50vw' %}</div>
+{%- endif -%}
+{% schema %}
+{ "name": "Card render", "settings": [] }
+{% endschema %}

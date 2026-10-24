@@ -1,0 +1,47 @@
+{%- if settings.enable_compare -%}
+  {%- capture labels -%}{"price": {{ 'products.compare.price' | t | json }}, "availability": {{ 'products.compare.availability' | t | json }}, "type": {{ 'products.compare.type' | t | json }}, "vendor": {{ 'products.compare.vendor' | t | json }}, "turnaround": {{ 'products.product.turnaround' | t | json }}, "description": {{ 'products.compare.description' | t | json }}, "sku": {{ 'products.product.sku' | t | json }}}{%- endcapture -%}
+  <compare-bar class="compare-bar color-{{ section.settings.color_scheme }}" hidden collapsed data-labels="{{ labels | escape }}">
+    <div class="compare-bar__inner page-width" role="region" aria-label="{{ 'products.compare.title' | t }}">
+      <button type="button" class="compare-bar__toggle" data-collapse><span class="slug">{{ 'products.compare.title' | t }}</span> <span data-compare-count class="count-pill"></span></button>
+      <ul class="compare-bar__items" role="list" data-items></ul>
+      <div class="compare-bar__actions">
+        <button type="button" class="button" data-open>{{ 'products.compare.compare_now' | t }}</button>
+        <button type="button" class="link" data-clear>{{ 'products.compare.clear' | t }}</button>
+      </div>
+    </div>
+    <dialog class="modal compare-modal" aria-labelledby="CompareTitle">
+      <div class="modal__inner">
+        <div class="modal__header">
+          <h2 id="CompareTitle" class="h3">{{ 'products.compare.title' | t }}</h2>
+          <button type="button" class="icon-button" data-close>{% render 'icon', name: 'close' %}<span class="visually-hidden">{{ 'general.close' | t }}</span></button>
+        </div>
+        <p class="compare-modal__hint"><span class="diff-key" aria-hidden="true"></span>{{ 'products.compare.differences' | t }}</p>
+        <div class="compare-modal__scroll" data-table tabindex="0" role="region" aria-label="{{ 'products.compare.title' | t }}"></div>
+      </div>
+    </dialog>
+  </compare-bar>
+{%- endif -%}
+{% stylesheet %}
+  .compare-bar { position: fixed; inset: auto 0 0; z-index: 40; border-top: 2px solid rgb(var(--color-foreground)); box-shadow: 0 -10px 30px rgba(0,0,0,.08); transition: translate .35s cubic-bezier(.2,.7,.2,1); }
+  .compare-bar[hidden] { display: none; }
+  .compare-bar[collapsed] { translate: 0 calc(100% - 4.8rem); }
+  .compare-bar__inner { display: grid; gap: 1.6rem; padding-block: 1.2rem 2rem; }
+  .compare-bar__toggle { background: none; border: 0; padding: 0; min-height: 3.2rem; display: flex; align-items: center; gap: .8rem; cursor: pointer; color: inherit; font: inherit; }
+  .count-pill { min-width: 2.2rem; padding: 0 .6rem; border-radius: 99px; background: var(--m); color: #fff; font-size: 1.2rem; }
+  .compare-bar__items { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 1.2rem; list-style: none; margin: 0; padding: 0; }
+  .compare-bar__item { position: relative; display: flex; gap: 1rem; align-items: center; font-size: 1.3rem; }
+  .compare-bar__item a { display: flex; gap: 1rem; align-items: center; text-decoration: none; }
+  .compare-bar__item .media { width: 5.6rem; flex: none; }
+  .compare-bar__actions { display: flex; gap: 2rem; align-items: center; }
+  @media (min-width: 990px) { .compare-bar__inner { grid-template-columns: auto 1fr auto; align-items: center; } }
+  .compare-modal__scroll { overflow: auto; max-height: 70vh; }
+  .compare-table { border-collapse: collapse; width: 100%; min-width: 60rem; font-size: 1.4rem; }
+  .compare-table th, .compare-table td { padding: 1.2rem; border-bottom: 1px solid rgb(var(--color-border)); text-align: left; vertical-align: top; }
+  .compare-table thead th { width: 22%; }
+  .compare-table tbody th { position: sticky; left: 0; background: rgb(var(--color-background)); font-weight: 600; white-space: nowrap; }
+  .compare-table tr.is-diff td { background: rgba(255, 242, 0, .18); }
+  .diff-key { display: inline-block; width: 1.2rem; height: 1.2rem; background: rgba(255, 242, 0, .6); margin-right: .6rem; vertical-align: middle; }
+{% endstylesheet %}
+{% schema %}
+{ "name": "Compare bar", "settings": [{ "type": "color_scheme", "id": "color_scheme", "label": "Color scheme", "default": "scheme-1" }] }
+{% endschema %}

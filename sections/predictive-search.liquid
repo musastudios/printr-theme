@@ -1,0 +1,35 @@
+{%- if predictive_search.performed -%}
+  <div class="ps">
+    {%- if predictive_search.resources.queries.size > 0 -%}
+      <div><h3 class="slug">{{ 'sections.search.suggestions' | t }}</h3>
+        <ul role="list">{%- for q in predictive_search.resources.queries -%}<li><a href="{{ q.url }}">{{ q.styled_text }}</a></li>{%- endfor -%}</ul></div>
+    {%- endif -%}
+    {%- if predictive_search.resources.products.size > 0 -%}
+      <div><h3 class="slug">{{ 'sections.search.products' | t }}</h3>
+        <ul role="list" class="ps__products">
+          {%- for p in predictive_search.resources.products -%}
+            <li><a href="{{ p.url }}" class="ps__product">
+              {%- if p.featured_image -%}{{ p.featured_image | image_url: width: 120 | image_tag: loading: 'lazy', widths: '60, 120', sizes: '60px' }}{%- endif -%}
+              <span>{{ p.title | escape }}<br><small>{{ p.price | money }}</small></span></a></li>
+          {%- endfor -%}
+        </ul></div>
+    {%- endif -%}
+    {%- if predictive_search.resources.pages.size > 0 or predictive_search.resources.articles.size > 0 -%}
+      <div><h3 class="slug">{{ 'sections.search.pages' | t }}</h3>
+        <ul role="list">
+          {%- for p in predictive_search.resources.pages -%}<li><a href="{{ p.url }}">{{ p.title }}</a></li>{%- endfor -%}
+          {%- for a in predictive_search.resources.articles -%}<li><a href="{{ a.url }}">{{ a.title }}</a></li>{%- endfor -%}
+        </ul></div>
+    {%- endif -%}
+    <a class="button button--secondary" href="{{ routes.search_url }}?q={{ predictive_search.terms | url_encode }}">{{ 'sections.search.view_all' | t }}</a>
+  </div>
+{%- endif -%}
+{% stylesheet %}
+  .ps { display: grid; gap: 2rem; padding-top: 2rem; }
+  .ps ul { list-style: none; padding: 0; margin: 0; display: grid; gap: .8rem; }
+  .ps__product { display: flex; gap: 1.2rem; align-items: center; text-decoration: none; }
+  .ps__product img { width: 6rem; border-radius: .8rem; }
+{% endstylesheet %}
+{% schema %}
+{ "name": "Predictive search", "settings": [] }
+{% endschema %}

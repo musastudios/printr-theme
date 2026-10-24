@@ -1,0 +1,96 @@
+<div class="collection-hero color-{{ section.settings.color_scheme }}">
+  <div class="page-width collection-hero__inner crop">
+    <h1>{{ collection.title | escape }}</h1>
+    {%- if collection.description != blank -%}<div class="rte">{{ collection.description }}</div>{%- endif -%}
+  </div>
+</div>
+<div class="section page-width collection">
+  {%- if section.settings.enable_filtering -%}
+    <button type="button" class="button button--secondary collection__filter-toggle" data-drawer-open="FacetDrawer" aria-controls="FacetDrawer" aria-expanded="false">{{ 'collections.general.filter' | t }}</button>
+    <drawer-panel id="FacetDrawer" class="drawer drawer--left facets-drawer" role="dialog" aria-modal="true" aria-label="{{ 'collections.general.filters' | t }}">
+      <div class="drawer__overlay" data-drawer-close></div>
+      <div class="drawer__panel">
+        <div class="drawer__header"><span class="slug">{{ 'collections.general.filters' | t }}</span><button type="button" class="icon-button" data-drawer-close>{% render 'icon', name: 'close' %}<span class="visually-hidden">{{ 'general.close' | t }}</span></button></div>
+        <div class="facets-drawer__body">{% render 'facets', results: collection, section_id: section.id %}</div>
+      </div>
+    </drawer-panel>
+  {%- endif -%}
+  {%- paginate collection.products by section.settings.per_page -%}
+    <div data-results-grid>
+      <div class="collection__toolbar">
+        <p class="collection__count" role="status">{{ 'collections.general.products_count' | t: count: collection.products_count }}</p>
+        {%- if section.settings.show_layout_switch -%}
+          <layout-switch data-target="#ProductGrid-{{ section.id }}" role="group" aria-label="{{ 'collections.general.layout' | t }}">
+            <button type="button" value="grid" aria-pressed="true" class="icon-button">{% render 'icon', name: 'grid' %}<span class="visually-hidden">{{ 'collections.general.grid' | t }}</span></button>
+            <button type="button" value="list" aria-pressed="false" class="icon-button">{% render 'icon', name: 'list' %}<span class="visually-hidden">{{ 'collections.general.list' | t }}</span></button>
+          </layout-switch>
+        {%- endif -%}
+      </div>
+      {%- if collection.products.size > 0 -%}
+        <ul id="ProductGrid-{{ section.id }}" class="grid product-grid" data-product-grid data-layout="grid" role="list" style="--cols: {{ section.settings.columns }}">
+          {%- for product in collection.products -%}
+            <li>{% render 'product-card', product: product %}</li>
+          {%- endfor -%}
+        </ul>
+        {%- if section.settings.pagination_type == 'pages' -%}
+          {% render 'pagination', paginate: paginate %}
+        {%- elsif paginate.pages > 1 -%}
+          {%- assign shown = paginate.current_offset | plus: collection.products.size -%}
+          <load-more class="load-more" data-section="{{ section.id }}" data-mode="{{ section.settings.pagination_type }}"{% if paginate.next %} data-next="{{ paginate.next.url }}"{% endif %}>
+            <p data-progress>{{ 'collections.general.showing' | t: shown: shown, total: paginate.items }}<progress max="{{ paginate.items }}" value="{{ shown }}" aria-hidden="true"></progress></p>
+            {%- if paginate.next -%}
+              <button type="button" class="button button--secondary">{{ 'collections.general.load_more' | t }}</button>
+              <noscript><a href="{{ paginate.next.url }}">{{ 'general.next' | t }}</a></noscript>
+            {%- endif -%}
+          </load-more>
+        {%- endif -%}
+      {%- else -%}
+        <div class="empty-state">
+          {% render 'icon', name: 'search' %}
+          <p>{{ 'collections.general.empty' | t }}</p>
+          <a class="button" href="{{ collection.url }}">{{ 'collections.general.clear_all' | t }}</a>
+        </div>
+      {%- endif -%}
+    </div>
+  {%- endpaginate -%}
+</div>
+{% stylesheet %}
+  .collection-hero { padding-block: 6rem 4rem; }
+  .collection-hero__inner { max-width: 80rem; margin-inline: auto; text-align: center; }
+  .collection__filter-toggle { margin-bottom: 2rem; }
+  .collection__count { opacity: .7; margin: 0; }
+  .collection__toolbar { display: flex; justify-content: space-between; align-items: center; gap: 1rem; margin-bottom: 2.4rem; }
+  layout-switch { display: flex; gap: .4rem; }
+  layout-switch [aria-pressed="true"] { background: rgb(var(--color-foreground)); color: rgb(var(--color-background)); }
+  .product-grid[data-layout="list"] { --cols: 1 !important; }
+  .load-more { display: grid; justify-items: center; gap: 1.6rem; margin-top: 4.8rem; text-align: center; }
+  .load-more p { display: grid; gap: .8rem; margin: 0; font-size: 1.4rem; }
+  .load-more progress { width: 20rem; height: .4rem; appearance: none; border: 0; background: rgba(var(--color-foreground), .1); }
+  .load-more progress::-webkit-progress-bar { background: rgba(var(--color-foreground), .1); }
+  .load-more progress::-webkit-progress-value { background: var(--m); }
+  .load-more progress::-moz-progress-bar { background: var(--m); }
+  .facets-drawer__body { padding: 2rem; }
+  @media (min-width: 990px) {
+    .collection { display: grid; grid-template-columns: 26rem 1fr; gap: 4rem; }
+    .collection__filter-toggle { display: none; }
+    .facets-drawer { position: static; visibility: visible; z-index: auto; }
+    .facets-drawer .drawer__overlay, .facets-drawer .drawer__header { display: none; }
+    .facets-drawer .drawer__panel { position: static; transform: none; width: auto; background: none; overflow: visible; }
+    .facets-drawer__body { padding: 0; position: sticky; top: 10rem; }
+  }
+{% endstylesheet %}
+{% schema %}
+{
+  "name": "Product grid",
+  "settings": [
+    { "type": "range", "id": "per_page", "label": "Products per page", "min": 8, "max": 48, "step": 4, "default": 24 },
+    { "type": "range", "id": "columns", "label": "Columns (desktop)", "min": 2, "max": 5, "step": 1, "default": 3 },
+    { "type": "select", "id": "pagination_type", "label": "Pagination", "options": [
+      { "value": "pages", "label": "Numbered pages" }, { "value": "button", "label": "Load more button" }, { "value": "infinite", "label": "Infinite scroll" }
+    ], "default": "button" },
+    { "type": "checkbox", "id": "show_layout_switch", "label": "Show grid/list switch", "default": true },
+    { "type": "checkbox", "id": "enable_filtering", "label": "Enable filtering and sorting", "default": true },
+    { "type": "color_scheme", "id": "color_scheme", "label": "Banner color scheme", "default": "scheme-4" }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,35 @@
+{% doc %}
+  Renders a product or variant price, with compare-at and unit price.
+  @param {product} product - The product
+  @param {variant} [variant] - Optional variant; defaults to selected or first available
+  @param {boolean} [show_from] - Show "From" price when prices vary
+  @example
+  {% render 'price', product: product, show_from: true %}
+{% enddoc %}
+{%- liquid
+  assign target = variant | default: product.selected_or_first_available_variant
+  assign price = target.price
+  assign compare = target.compare_at_price
+  if show_from and product.price_varies
+    assign price = product.price_min
+    assign compare = nil
+  endif
+-%}
+<div class="price">
+  {%- if show_from and product.price_varies -%}
+    <span>{{ 'products.product.from_price' | t: price: price | money }}</span>
+  {%- elsif compare > price -%}
+    <span class="visually-hidden">{{ 'products.product.sale_price' | t }}</span>
+    <span>{{ price | money }}</span>
+    <span class="visually-hidden">{{ 'products.product.regular_price' | t }}</span>
+    <s>{{ compare | money }}</s>
+  {%- else -%}
+    <span>{{ price | money }}</span>
+  {%- endif -%}
+  {%- if target.unit_price_measurement -%}
+    <small class="price__unit">
+      <span class="visually-hidden">{{ 'products.product.unit_price' | t }}</span>
+      {{ target.unit_price | money }}/{{ target.unit_price_measurement.reference_unit }}
+    </small>
+  {%- endif -%}
+</div>

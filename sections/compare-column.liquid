@@ -1,0 +1,25 @@
+{%- comment -%}One product's comparison data, fetched via ?section_id=compare-column.{%- endcomment -%}
+{%- if product -%}
+  {%- assign v = product.selected_or_first_available_variant -%}
+  <div data-compare-column data-handle="{{ product.handle }}">
+    <div data-row="product">
+      <a href="{{ product.url }}" class="compare-product">
+        <span class="media" style="--ratio: 1">{%- if product.featured_media -%}{{ product.featured_media | image_url: width: 400 | image_tag: loading: 'lazy', widths: '200, 400', sizes: '200px' }}{%- endif -%}</span>
+        <strong>{{ product.title | escape }}</strong>
+      </a>
+    </div>
+    <div data-row="price">{% render 'price', product: product, show_from: true %}</div>
+    <div data-row="availability">{%- if product.available -%}{{ 'products.compare.in_stock' | t }}{%- else -%}{{ 'products.product.sold_out' | t }}{%- endif -%}</div>
+    <div data-row="type">{{ product.type | default: '—' | escape }}</div>
+    <div data-row="vendor">{{ product.vendor | default: '—' | escape }}</div>
+    {%- for option in product.options_with_values -%}
+      <div data-row="option:{{ option.name | handle }}" data-label="{{ option.name | escape }}">{{ option.values | join: ', ' }}</div>
+    {%- endfor -%}
+    <div data-row="turnaround">{{ product.metafields.custom.turnaround.value | default: '—' }}</div>
+    <div data-row="description">{{ product.description | strip_html | truncatewords: 30 }}</div>
+    <div data-row="sku">{{ v.sku | default: '—' }}</div>
+  </div>
+{%- endif -%}
+{% schema %}
+{ "name": "Compare column", "settings": [] }
+{% endschema %}

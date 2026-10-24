@@ -1,0 +1,24 @@
+{%- if product -%}
+  {%- assign variant = product.selected_or_first_available_variant -%}
+  <div class="qv" data-selected-variant="{{ variant.id }}">
+    <div class="media" style="--ratio: 1" data-swap="media">
+      {%- assign featured = variant.featured_media | default: product.featured_media -%}
+      {%- if featured -%}{{ featured | image_url: width: 900 | image_tag: widths: '400, 600, 900', sizes: '45vw' }}{%- endif -%}
+    </div>
+    <div class="qv__info">
+      <h2 class="h3"><a href="{{ product.url }}">{{ product.title | escape }}</a></h2>
+      <div data-swap="price">{% render 'price', product: product, variant: variant %}</div>
+      {% render 'variant-picker', product: product, section_id: section.id, update_url: false %}
+      {% render 'tier-pricing', product: product, variant: variant %}
+      {% render 'product-buy', variant: variant, section_id: section.id %}
+    </div>
+  </div>
+{%- endif -%}
+{% stylesheet %}
+  .qv { display: grid; gap: 3rem; }
+  .qv__info { display: flex; flex-direction: column; gap: 1.6rem; }
+  @media (min-width: 750px) { .qv { grid-template-columns: 1fr 1fr; } }
+{% endstylesheet %}
+{% schema %}
+{ "name": "Quick view content", "settings": [] }
+{% endschema %}

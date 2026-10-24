@@ -1,0 +1,14 @@
+{
+  "sections": {
+    "breadcrumbs": {
+      "type": "breadcrumbs"
+    },
+    "main": {
+      "type": "main-page"
+    }
+  },
+  "order": [
+    "breadcrumbs",
+    "main"
+  ]
+}

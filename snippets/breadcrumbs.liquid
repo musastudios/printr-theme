@@ -1,0 +1,21 @@
+{% doc %}
+  Accessible breadcrumb trail for the current page.
+  @example
+  {% render 'breadcrumbs' %}
+{% enddoc %}
+<nav class="breadcrumbs page-width" aria-label="{{ 'general.breadcrumbs' | t }}">
+  <ol>
+    <li><a href="{{ routes.root_url }}">{{ 'general.home' | t }}</a></li>
+    {%- if collection -%}
+      <li><a href="{{ collection.url }}" {% unless product %}aria-current="page"{% endunless %}>{{ collection.title }}</a></li>
+    {%- endif -%}
+    {%- if product -%}
+      <li><span aria-current="page">{{ product.title }}</span></li>
+    {%- elsif article -%}
+      <li><a href="{{ blog.url }}">{{ blog.title }}</a></li>
+      <li><span aria-current="page">{{ article.title }}</span></li>
+    {%- elsif page -%}
+      <li><span aria-current="page">{{ page.title }}</span></li>
+    {%- endif -%}
+  </ol>
+</nav>

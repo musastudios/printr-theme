@@ -1,0 +1,60 @@
+<div class="section page-width">
+  <h1>{{ 'sections.cart.title' | t }}</h1>
+  <cart-items data-section="{{ section.id }}">
+    {%- if cart.item_count > 0 -%}
+      <div class="main-cart">
+        {% render 'cart-lines' %}
+        <aside class="main-cart__summary crop">
+          {% render 'cart-summary' %}
+          {%- if section.settings.show_estimator -%}
+            <details class="estimator">
+              <summary>{% render 'icon', name: 'truck' %}{{ 'sections.cart.estimate.title' | t }}</summary>
+              <shipping-estimator>
+                <form class="estimator__form" novalidate>
+                  <div class="field">
+                    <label for="EstCountry">{{ 'sections.cart.estimate.country' | t }}</label>
+                    <select id="EstCountry" name="country" autocomplete="country">
+                      {%- for c in localization.available_countries -%}
+                        <option value="{{ c.name | escape }}"{% if c.iso_code == localization.country.iso_code %} selected{% endif %}>{{ c.name }}</option>
+                      {%- endfor -%}
+                    </select>
+                  </div>
+                  <div class="field">
+                    <label for="EstProvince">{{ 'sections.cart.estimate.province' | t }}</label>
+                    <input id="EstProvince" name="province" autocomplete="address-level1">
+                  </div>
+                  <div class="field">
+                    <label for="EstZip">{{ 'sections.cart.estimate.zip' | t }}</label>
+                    <input id="EstZip" name="zip" autocomplete="postal-code" inputmode="text">
+                  </div>
+                  <button type="submit" class="button button--secondary">{{ 'sections.cart.estimate.submit' | t }}</button>
+                </form>
+                <div class="estimator__results" data-results role="status" aria-live="polite"></div>
+              </shipping-estimator>
+            </details>
+          {%- endif -%}
+        </aside>
+      </div>
+    {%- else -%}
+      <div class="cart-empty empty-state">
+        {% render 'icon', name: 'cart' %}
+        <p>{{ 'sections.cart.empty' | t }}</p>
+        <a class="button" href="{{ routes.all_products_collection_url }}">{{ 'sections.cart.continue' | t }}</a>
+      </div>
+    {%- endif -%}
+  </cart-items>
+</div>
+{% stylesheet %}
+  .main-cart { display: grid; gap: 4rem; }
+  .main-cart__summary { padding: 2.4rem; border-radius: var(--radius); background: rgba(var(--color-foreground), .04); align-self: start; }
+  .estimator { margin-top: 2.4rem; border-top: 1px solid rgb(var(--color-border)); padding-top: 1.6rem; }
+  .estimator summary { display: flex; gap: .8rem; align-items: center; font-weight: 600; cursor: pointer; }
+  .estimator summary .icon { width: 2rem; }
+  .estimator__form { display: grid; gap: .4rem; margin-top: 1.6rem; }
+  .estimator__results ul { list-style: none; padding: 0; margin: 1.6rem 0 0; display: grid; gap: .8rem; }
+  .estimator__results li { display: flex; justify-content: space-between; gap: 1rem; }
+  @media (min-width: 990px) { .main-cart { grid-template-columns: 2fr 1fr; } }
+{% endstylesheet %}
+{% schema %}
+{ "name": "Cart", "settings": [{ "type": "checkbox", "id": "show_estimator", "label": "Show shipping estimator", "default": true }] }
+{% endschema %}

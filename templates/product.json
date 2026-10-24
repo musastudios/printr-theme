@@ -1,0 +1,122 @@
+{
+  "sections": {
+    "breadcrumbs": {
+      "type": "breadcrumbs"
+    },
+    "main": {
+      "type": "main-product",
+      "blocks": {
+        "title": {
+          "type": "title"
+        },
+        "price": {
+          "type": "price"
+        },
+        "picker": {
+          "type": "variant_picker"
+        },
+        "tiers": {
+          "type": "tier_pricing"
+        },
+        "turn": {
+          "type": "turnaround"
+        },
+        "buy": {
+          "type": "buy_buttons"
+        },
+        "desc": {
+          "type": "description"
+        },
+        "specs": {
+          "type": "collapsible",
+          "settings": {
+            "heading": "Paper & finish specs"
+          }
+        },
+        "files": {
+          "type": "collapsible",
+          "settings": {
+            "heading": "File setup guide",
+            "content": "<p>PDF, 300 dpi, CMYK, 0.125\" bleed on all sides.</p>"
+          }
+        },
+        "pickup": {
+          "type": "pickup",
+          "settings": {}
+        },
+        "actions": {
+          "type": "actions",
+          "settings": {}
+        },
+        "tabs": {
+          "type": "tabs",
+          "settings": {}
+        }
+      },
+      "block_order": [
+        "title",
+        "price",
+        "picker",
+        "tiers",
+        "turn",
+        "buy",
+        "pickup",
+        "actions",
+        "desc",
+        "specs",
+        "files",
+        "tabs"
+      ]
+    },
+    "trust": {
+      "type": "multicolumn",
+      "blocks": {
+        "a": {
+          "type": "icon-column",
+          "settings": {
+            "icon": "print"
+          }
+        },
+        "b": {
+          "type": "icon-column",
+          "settings": {
+            "icon": "truck",
+            "title": "Fast shipping",
+            "text": "<p>Tracked delivery.</p>"
+          }
+        },
+        "c": {
+          "type": "icon-column",
+          "settings": {
+            "icon": "check",
+            "title": "Free file check",
+            "text": "<p>Every order proofed.</p>"
+          }
+        }
+      },
+      "block_order": [
+        "a",
+        "b",
+        "c"
+      ],
+      "settings": {
+        "columns": 3,
+        "compact": true
+      }
+    },
+    "related": {
+      "type": "related-products"
+    },
+    "recent": {
+      "type": "recently-viewed",
+      "settings": {}
+    }
+  },
+  "order": [
+    "breadcrumbs",
+    "main",
+    "trust",
+    "related",
+    "recent"
+  ]
+}

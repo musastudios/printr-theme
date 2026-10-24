@@ -1,0 +1,93 @@
+<div class="section color-{{ section.settings.color_scheme }}">
+  <div class="page-width spotlight">
+    <div class="spotlight__intro">
+      <span class="slug">{{ section.settings.slug | escape }}</span>
+      <h2>{{ section.settings.heading | escape }}</h2>
+      <ol class="spotlight__list" role="list">
+        .spotlight:has(.spotlight__item:nth-child(1) :is(:hover, :focus-visible)) .spotlight__img { opacity: 0; }
+  .spotlight:has(.spotlight__item:nth-child(1) :is(:hover, :focus-visible)) .spotlight__img:nth-child(1) { opacity: 1; scale: 1; }
+  .spotlight:has(.spotlight__item:nth-child(2) :is(:hover, :focus-visible)) .spotlight__img { opacity: 0; }
+  .spotlight:has(.spotlight__item:nth-child(2) :is(:hover, :focus-visible)) .spotlight__img:nth-child(2) { opacity: 1; scale: 1; }
+  .spotlight:has(.spotlight__item:nth-child(3) :is(:hover, :focus-visible)) .spotlight__img { opacity: 0; }
+  .spotlight:has(.spotlight__item:nth-child(3) :is(:hover, :focus-visible)) .spotlight__img:nth-child(3) { opacity: 1; scale: 1; }
+  .spotlight:has(.spotlight__item:nth-child(4) :is(:hover, :focus-visible)) .spotlight__img { opacity: 0; }
+  .spotlight:has(.spotlight__item:nth-child(4) :is(:hover, :focus-visible)) .spotlight__img:nth-child(4) { opacity: 1; scale: 1; }
+  .spotlight:has(.spotlight__item:nth-child(5) :is(:hover, :focus-visible)) .spotlight__img { opacity: 0; }
+  .spotlight:has(.spotlight__item:nth-child(5) :is(:hover, :focus-visible)) .spotlight__img:nth-child(5) { opacity: 1; scale: 1; }
+  .spotlight:has(.spotlight__item:nth-child(6) :is(:hover, :focus-visible)) .spotlight__img { opacity: 0; }
+  .spotlight:has(.spotlight__item:nth-child(6) :is(:hover, :focus-visible)) .spotlight__img:nth-child(6) { opacity: 1; scale: 1; }
+  .spotlight:has(.spotlight__item:nth-child(7) :is(:hover, :focus-visible)) .spotlight__img { opacity: 0; }
+  .spotlight:has(.spotlight__item:nth-child(7) :is(:hover, :focus-visible)) .spotlight__img:nth-child(7) { opacity: 1; scale: 1; }
+  .spotlight:has(.spotlight__item:nth-child(8) :is(:hover, :focus-visible)) .spotlight__img { opacity: 0; }
+  .spotlight:has(.spotlight__item:nth-child(8) :is(:hover, :focus-visible)) .spotlight__img:nth-child(8) { opacity: 1; scale: 1; }
+      </ol>
+    </div>
+    <div class="spotlight__stage media crop" aria-hidden="true">
+      .spotlight:has(.spotlight__item:nth-child(1) :is(:hover, :focus-visible)) .spotlight__img { opacity: 0; }
+  .spotlight:has(.spotlight__item:nth-child(1) :is(:hover, :focus-visible)) .spotlight__img:nth-child(1) { opacity: 1; scale: 1; }
+  .spotlight:has(.spotlight__item:nth-child(2) :is(:hover, :focus-visible)) .spotlight__img { opacity: 0; }
+  .spotlight:has(.spotlight__item:nth-child(2) :is(:hover, :focus-visible)) .spotlight__img:nth-child(2) { opacity: 1; scale: 1; }
+  .spotlight:has(.spotlight__item:nth-child(3) :is(:hover, :focus-visible)) .spotlight__img { opacity: 0; }
+  .spotlight:has(.spotlight__item:nth-child(3) :is(:hover, :focus-visible)) .spotlight__img:nth-child(3) { opacity: 1; scale: 1; }
+  .spotlight:has(.spotlight__item:nth-child(4) :is(:hover, :focus-visible)) .spotlight__img { opacity: 0; }
+  .spotlight:has(.spotlight__item:nth-child(4) :is(:hover, :focus-visible)) .spotlight__img:nth-child(4) { opacity: 1; scale: 1; }
+  .spotlight:has(.spotlight__item:nth-child(5) :is(:hover, :focus-visible)) .spotlight__img { opacity: 0; }
+  .spotlight:has(.spotlight__item:nth-child(5) :is(:hover, :focus-visible)) .spotlight__img:nth-child(5) { opacity: 1; scale: 1; }
+  .spotlight:has(.spotlight__item:nth-child(6) :is(:hover, :focus-visible)) .spotlight__img { opacity: 0; }
+  .spotlight:has(.spotlight__item:nth-child(6) :is(:hover, :focus-visible)) .spotlight__img:nth-child(6) { opacity: 1; scale: 1; }
+  .spotlight:has(.spotlight__item:nth-child(7) :is(:hover, :focus-visible)) .spotlight__img { opacity: 0; }
+  .spotlight:has(.spotlight__item:nth-child(7) :is(:hover, :focus-visible)) .spotlight__img:nth-child(7) { opacity: 1; scale: 1; }
+  .spotlight:has(.spotlight__item:nth-child(8) :is(:hover, :focus-visible)) .spotlight__img { opacity: 0; }
+  .spotlight:has(.spotlight__item:nth-child(8) :is(:hover, :focus-visible)) .spotlight__img:nth-child(8) { opacity: 1; scale: 1; }
+    </div>
+  </div>
+</div>
+{% stylesheet %}
+  .spotlight { display: grid; gap: 4rem; align-items: center; }
+  @media (min-width: 990px) { .spotlight { grid-template-columns: 1fr 1fr; } }
+  .spotlight__list { list-style: none; padding: 0; margin: 2.4rem 0 0; counter-reset: s; }
+  .spotlight__link { display: grid; grid-template-columns: 4.8rem 1fr auto; gap: 1.6rem; align-items: baseline; padding: 2rem 0; border-bottom: 1px solid rgb(var(--color-border)); text-decoration: none; transition: padding .3s, color .3s; }
+  .spotlight__num { font-family: var(--font-heading-family); opacity: .5; }
+  .spotlight__title { font-family: var(--font-heading-family); font-size: clamp(2rem, 2.6vw, 3.2rem); line-height: 1.1; }
+  .spotlight__link:hover, .spotlight__link:focus-visible { padding-left: 1.2rem; color: var(--m); }
+  .spotlight__stage { position: relative; --ratio: .85; }
+  .spotlight__img { position: absolute; inset: 0; opacity: 0; scale: 1.04; transition: opacity .5s, scale .8s; }
+  .spotlight__img img, .spotlight__img svg { width: 100%; height: 100%; object-fit: cover; }
+  .spotlight__img:first-child { opacity: 1; scale: 1; }
+  /* CSS-only image swap driven by :has() — no JS */
+  .spotlight:has(.spotlight__item:nth-child(1) :is(:hover, :focus-visible)) .spotlight__img { opacity: 0; }
+  .spotlight:has(.spotlight__item:nth-child(1) :is(:hover, :focus-visible)) .spotlight__img:nth-child(1) { opacity: 1; scale: 1; }
+  .spotlight:has(.spotlight__item:nth-child(2) :is(:hover, :focus-visible)) .spotlight__img { opacity: 0; }
+  .spotlight:has(.spotlight__item:nth-child(2) :is(:hover, :focus-visible)) .spotlight__img:nth-child(2) { opacity: 1; scale: 1; }
+  .spotlight:has(.spotlight__item:nth-child(3) :is(:hover, :focus-visible)) .spotlight__img { opacity: 0; }
+  .spotlight:has(.spotlight__item:nth-child(3) :is(:hover, :focus-visible)) .spotlight__img:nth-child(3) { opacity: 1; scale: 1; }
+  .spotlight:has(.spotlight__item:nth-child(4) :is(:hover, :focus-visible)) .spotlight__img { opacity: 0; }
+  .spotlight:has(.spotlight__item:nth-child(4) :is(:hover, :focus-visible)) .spotlight__img:nth-child(4) { opacity: 1; scale: 1; }
+  .spotlight:has(.spotlight__item:nth-child(5) :is(:hover, :focus-visible)) .spotlight__img { opacity: 0; }
+  .spotlight:has(.spotlight__item:nth-child(5) :is(:hover, :focus-visible)) .spotlight__img:nth-child(5) { opacity: 1; scale: 1; }
+  .spotlight:has(.spotlight__item:nth-child(6) :is(:hover, :focus-visible)) .spotlight__img { opacity: 0; }
+  .spotlight:has(.spotlight__item:nth-child(6) :is(:hover, :focus-visible)) .spotlight__img:nth-child(6) { opacity: 1; scale: 1; }
+  .spotlight:has(.spotlight__item:nth-child(7) :is(:hover, :focus-visible)) .spotlight__img { opacity: 0; }
+  .spotlight:has(.spotlight__item:nth-child(7) :is(:hover, :focus-visible)) .spotlight__img:nth-child(7) { opacity: 1; scale: 1; }
+  .spotlight:has(.spotlight__item:nth-child(8) :is(:hover, :focus-visible)) .spotlight__img { opacity: 0; }
+  .spotlight:has(.spotlight__item:nth-child(8) :is(:hover, :focus-visible)) .spotlight__img:nth-child(8) { opacity: 1; scale: 1; }
+{% endstylesheet %}
+{% schema %}
+{
+  "name": "Spotlight picks",
+  "settings": [
+    { "type": "text", "id": "slug", "label": "Eyebrow", "default": "Spotlight" },
+    { "type": "text", "id": "heading", "label": "Heading", "default": "Paper picks of the month" },
+    { "type": "color_scheme", "id": "color_scheme", "label": "Color scheme", "default": "scheme-1" }
+  ],
+  "blocks": [
+    { "type": "pick", "name": "Pick", "settings": [
+      { "type": "product", "id": "product", "label": "Product" },
+      { "type": "text", "id": "title", "label": "Title override" },
+      { "type": "image_picker", "id": "image", "label": "Image override" }
+    ] }
+  ],
+  "max_blocks": 6,
+  "presets": [{ "name": "Spotlight picks", "blocks": [{ "type": "pick", "settings": { "title": "Soft-touch cards" } }, { "type": "pick", "settings": { "title": "Kraft postcards" } }, { "type": "pick", "settings": { "title": "Feather flags" } }] }]
+}
+{% endschema %}

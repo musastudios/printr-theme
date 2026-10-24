@@ -1,0 +1,24 @@
+<div class="icon-column" {{ block.shopify_attributes }}>
+  <span class="icon-column__icon">{% render 'icon', name: block.settings.icon %}</span>
+  <div>
+    <h3 class="icon-column__title">{{ block.settings.title | escape }}</h3>
+    {%- if block.settings.text != blank -%}<div class="rte">{{ block.settings.text }}</div>{%- endif -%}
+  </div>
+</div>
+{% stylesheet %}
+  .icon-column { display: flex; gap: 1.6rem; align-items: flex-start; }
+  .icon-column__icon { display: grid; place-items: center; width: 5.2rem; height: 5.2rem; border-radius: 50%; background: rgb(var(--color-accent)); color: rgb(var(--color-background)); flex: none; }
+  .icon-column__title { font-size: 1.7rem; margin: 0 0 .4rem; }
+  .icon-column .rte p { margin: 0; opacity: .8; font-size: 1.4rem; }
+{% endstylesheet %}
+{% schema %}
+{
+  "name": "Icon column",
+  "settings": [
+    { "type": "select", "id": "icon", "label": "Icon", "options": [{ "value": "truck", "label": "Truck" }, { "value": "print", "label": "Printer" }, { "value": "clock", "label": "Clock" }, { "value": "chat", "label": "Chat" }, { "value": "check", "label": "Check" }], "default": "print" },
+    { "type": "text", "id": "title", "label": "Title", "default": "Premium stock" },
+    { "type": "richtext", "id": "text", "label": "Text", "default": "<p>16pt matte, gloss, soft-touch and more.</p>" }
+  ],
+  "presets": [{ "name": "Icon column" }]
+}
+{% endschema %}

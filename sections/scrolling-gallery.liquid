@@ -1,0 +1,44 @@
+<div class="section scroll-gallery color-{{ section.settings.color_scheme }}" style="--speed: {{ section.settings.speed }}s">
+  {%- if section.settings.heading != blank -%}<h2 class="page-width">{{ section.settings.heading | escape }}</h2>{%- endif -%}
+  <div class="scroll-gallery__viewport">
+    {%- for n in (1..2) -%}
+      <ul class="scroll-gallery__row" role="list"{% if n == 2 %} aria-hidden="true"{% endif %}>
+        {%- for block in section.blocks -%}
+          <li class="scroll-gallery__item crop" {% if n == 1 %}{{ block.shopify_attributes }}{% endif %}>
+            {%- if block.settings.link != blank and n == 1 -%}<a href="{{ block.settings.link }}">{%- endif -%}
+            {%- if block.settings.image -%}
+              {%- if n == 1 -%}{%- assign alt = block.settings.image.alt -%}{%- else -%}{%- assign alt = '' -%}{%- endif -%}
+              {{ block.settings.image | image_url: width: 800 | image_tag: loading: 'lazy', widths: '300, 500, 800', sizes: '30rem', alt: alt }}
+            {%- else -%}
+              {{ 'image' | placeholder_svg_tag: 'placeholder' }}
+            {%- endif -%}
+            {%- if block.settings.link != blank and n == 1 -%}</a>{%- endif -%}
+          </li>
+        {%- endfor -%}
+      </ul>
+    {%- endfor -%}
+  </div>
+</div>
+{% stylesheet %}
+  .scroll-gallery { overflow: hidden; }
+  .scroll-gallery__viewport { display: flex; width: max-content; animation: gallery-scroll var(--speed) linear infinite; }
+  .scroll-gallery__viewport:hover, .scroll-gallery__viewport:focus-within { animation-play-state: paused; }
+  .scroll-gallery__row { display: flex; gap: 1.6rem; list-style: none; margin: 0; padding: 0 1.6rem 0 0; }
+  .scroll-gallery__item { width: clamp(20rem, 24vw, 32rem); aspect-ratio: 4 / 5; overflow: hidden; border-radius: var(--radius); }
+  .scroll-gallery__item:nth-child(even) { aspect-ratio: 1; align-self: center; }
+  .scroll-gallery__item img, .scroll-gallery__item svg { width: 100%; height: 100%; object-fit: cover; }
+  @keyframes gallery-scroll { to { translate: -50% 0; } }
+  @media (prefers-reduced-motion: reduce) { .scroll-gallery__viewport { animation: none; overflow-x: auto; width: auto; } .scroll-gallery__row[aria-hidden] { display: none; } }
+{% endstylesheet %}
+{% schema %}
+{
+  "name": "Scrolling gallery",
+  "settings": [
+    { "type": "text", "id": "heading", "label": "Heading" },
+    { "type": "range", "id": "speed", "label": "Loop duration", "min": 20, "max": 120, "step": 5, "unit": "s", "default": 50 },
+    { "type": "color_scheme", "id": "color_scheme", "label": "Color scheme", "default": "scheme-1" }
+  ],
+  "blocks": [{ "type": "image", "name": "Image", "settings": [{ "type": "image_picker", "id": "image", "label": "Image" }, { "type": "url", "id": "link", "label": "Link" }] }],
+  "presets": [{ "name": "Scrolling gallery", "blocks": [{ "type": "image" }, { "type": "image" }, { "type": "image" }, { "type": "image" }, { "type": "image" }] }]
+}
+{% endschema %}
