@@ -1,5 +1,101 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
 {
-  "current": "Printr",
+  "current": {
+    "logo": "shopify://shop_images/printr-logo.svg",
+    "show_brand_logo": true,
+    "brand_gradient": true,
+    "sections": {
+      "cart-drawer": {
+        "type": "cart-drawer",
+        "settings": {}
+      },
+      "quick-view": {
+        "type": "quick-view",
+        "settings": {}
+      },
+      "compare-bar": {
+        "type": "compare-bar",
+        "settings": {
+          "color_scheme": ""
+        }
+      },
+      "newsletter-popup": {
+        "type": "newsletter-popup",
+        "settings": {
+          "enable": false,
+          "delay": 10,
+          "frequency": 14,
+          "exit_intent": true,
+          "slug": "First order",
+          "heading": "10% off your first print run",
+          "text": "<p>Join for printing tips, new paper stocks and members-only deals.</p>",
+          "code": "INK10",
+          "color_scheme": ""
+        }
+      }
+    },
+    "content_for_index": [],
+    "color_schemes": {
+      "scheme-1": {
+        "settings": {
+          "background": "#faf8f3",
+          "text": "#000000",
+          "button": "#000000",
+          "button_label": "#ffffff",
+          "accent": "#b8167a",
+          "border": "#e4dfd3"
+        }
+      },
+      "scheme-2": {
+        "settings": {
+          "background": "#27d6ff",
+          "text": "#000000",
+          "button": "#000000",
+          "button_label": "#ffffff",
+          "accent": "#000000",
+          "border": "#12bde6"
+        }
+      },
+      "scheme-3": {
+        "settings": {
+          "background": "#f962dd",
+          "text": "#000000",
+          "button": "#000000",
+          "button_label": "#fff915",
+          "accent": "#000000",
+          "border": "#e24bc6"
+        }
+      },
+      "scheme-4": {
+        "settings": {
+          "background": "#fff915",
+          "text": "#000000",
+          "button": "#000000",
+          "button_label": "#fff915",
+          "accent": "#b8167a",
+          "border": "#e6e000"
+        }
+      },
+      "scheme-5": {
+        "settings": {
+          "background": "#000000",
+          "text": "#faf8f3",
+          "button": "#fff915",
+          "button_label": "#000000",
+          "accent": "#27d6ff",
+          "border": "#2a2a2e"
+        }
+      }
+    }
+  },
   "presets": {
     "Printr": {
       "color_schemes": {

@@ -1,51 +1,56 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
 {
   "type": "header",
   "name": "Header group",
   "sections": {
-    "header": {
-      "type": "header",
-      "settings": {
-        "menu": "main-menu",
-        "sticky": true,
-        "color_scheme": "scheme-1",
-        "highlight_item": "On Sale",
-        "show_categories": true,
-        "search_placeholder": "What do you want to print?",
-        "store_link": "/pages/contact",
-        "store_label": "Find a store"
-      }
-    },
-    "topbar": {
-      "type": "topbar",
+    "announcement": {
+      "type": "announcement-bar",
       "blocks": {
-        "m1": {
-          "type": "message",
+        "a1": {
+          "type": "announcement",
           "settings": {
-            "text": "Free shipping over $99 · 48-hour business cards"
+            "text": "Free shipping over $99 · 48-hour cards",
+            "link": ""
           }
         },
-        "m2": {
-          "type": "message",
+        "a2": {
+          "type": "announcement",
           "settings": {
-            "text": "Volume pricing: the more you print, the less you pay"
+            "text": "Volume pricing: the more you print, the less you pay",
+            "link": ""
           }
         }
       },
       "block_order": [
-        "m1",
-        "m2"
+        "a1",
+        "a2"
       ],
       "settings": {
-        "menu": "footer",
-        "show_country": true,
-        "show_language": true,
-        "show_social": true,
-        "color_scheme": "scheme-5"
+        "color_scheme": "scheme-5",
+        "show_localization": true
+      }
+    },
+    "header": {
+      "type": "header",
+      "settings": {
+        "customer_account_menu": "customer-account-main-menu",
+        "menu": "main-menu",
+        "mega_collection": "automated-collection",
+        "sticky": true,
+        "color_scheme": "scheme-1"
       }
     }
   },
   "order": [
-    "topbar",
+    "announcement",
     "header"
   ]
 }
