@@ -1,4 +1,4 @@
-<div class="section color-{{ section.settings.color_scheme }}{% if section.settings.image != blank %} has-bg promo-section--image{% endif %}">
+<div class="section promo-section color-{{ section.settings.color_scheme }}{% if section.settings.image != blank %} has-bg promo-section--image{% endif %}">
   {%- if section.settings.image != blank -%}
     <div class="section-bg promo-bg" aria-hidden="true">
       {{ section.settings.image | image_url: width: 2400 | image_tag: widths: '750, 1100, 1500, 1920, 2400', sizes: '100vw', loading: 'lazy', alt: '', class: 'section-bg__img' }}
@@ -23,6 +23,7 @@
   </div>
 </div>
 {% stylesheet %}
+  .promo-section { overflow-x: clip; }
   .promo { display: flex; flex-wrap: wrap; gap: 3rem; justify-content: space-between; align-items: center; padding-block: 2rem; }
   .countdown { display: flex; gap: 1.2rem; }
   .countdown span { display: grid; text-align: center; font-size: 1.2rem; text-transform: uppercase; letter-spacing: .1em; min-width: 7rem; padding: 1.4rem; border: 2px solid currentColor; border-radius: var(--radius); }

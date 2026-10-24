@@ -21,10 +21,10 @@
   .hero-slider { position: relative; overflow: hidden; border-radius: calc(var(--radius, 12px) * 1.5); isolation: isolate; }
   .hero-slider-wrap.is-full .hero-slider { border-radius: 0; width: 100%; }
   @media (min-width: 750px) {
-    .hero-slider-wrap.is-full .slide { min-height: 0; height: clamp(56rem, var(--hero-h, 75vh), 82rem); }
+    .hero-slider-wrap.is-full .hero-slider .slide { min-height: 0; height: clamp(56rem, var(--hero-h, 75vh), 82rem); }
   }
   @media (max-width: 749px) {
-    .hero-m-portrait .slide { min-height: 0; aspect-ratio: 4 / 5; }
+    .hero-m-portrait .hero-slider .slide { min-height: 0; height: auto; aspect-ratio: 4 / 5; }
   }
   .hero-slider .swiper-wrapper { display: flex; }
   .hero-slider .swiper-wrapper > * { flex: 0 0 100%; width: 100%; min-width: 0; height: auto; }
