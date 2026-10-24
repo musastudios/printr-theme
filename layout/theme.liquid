@@ -8,6 +8,8 @@
     <link rel="canonical" href="{{ canonical_url }}">
     {%- if settings.favicon != blank -%}
       <link rel="icon" type="image/png" href="{{ settings.favicon | image_url: width: 32, height: 32 }}">
+    {%- else -%}
+      <link rel="icon" type="image/svg+xml" href="{{ 'printr-mark.svg' | asset_url }}">
     {%- endif -%}
     <link rel="preconnect" href="https://fonts.shopifycdn.com" crossorigin>
     <title>
@@ -54,7 +56,7 @@
     </script>
     {{ content_for_header }}
   </head>
-  <body data-cart-type="{{ settings.cart_type }}" class="{% if settings.animations_reveal %}has-motion{% endif %}{% if settings.page_transitions %} vt{% endif %}{% if settings.paper_texture %} paper{% endif %}{% if settings.show_crop_marks %} crop-on{% endif %}">
+  <body data-cart-type="{{ settings.cart_type }}" class="{% if settings.animations_reveal %}has-motion{% endif %}{% if settings.page_transitions %} vt{% endif %}{% if settings.paper_texture %} paper{% endif %}{% if settings.show_crop_marks %} crop-on{% endif %}{% if settings.brand_gradient %} brand-gradient{% endif %}">
     <a class="skip-link visually-hidden-focusable" href="#MainContent">{{ 'accessibility.skip_to_content' | t }}</a>
     {% sections 'header-group' %}
     <main id="MainContent" class="main" role="main" tabindex="-1">

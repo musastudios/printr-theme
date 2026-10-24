@@ -16,6 +16,13 @@
         "label": "Logo"
       },
       {
+        "type": "checkbox",
+        "id": "show_brand_logo",
+        "label": "Show Printr demo logo when no logo is uploaded",
+        "info": "Turn off to show your store name as text.",
+        "default": true
+      },
+      {
         "type": "range",
         "id": "logo_width",
         "label": "Logo width",
@@ -200,6 +207,13 @@
         "type": "checkbox",
         "id": "show_cmyk_bar",
         "label": "Show CMYK registration strip",
+        "default": true
+      },
+      {
+        "type": "checkbox",
+        "id": "brand_gradient",
+        "label": "Use brand gradient accents",
+        "info": "Applies the logo gradient to new badges, active links, progress bars and button hovers.",
         "default": true
       }
     ]

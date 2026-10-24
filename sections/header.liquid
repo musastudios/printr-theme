@@ -6,11 +6,11 @@
     <button type="button" class="icon-button header__menu-toggle" data-drawer-open="MenuDrawer" aria-controls="MenuDrawer" aria-expanded="false">
       {% render 'icon', name: 'menu' %}<span class="visually-hidden">{{ 'accessibility.menu' | t }}</span>
     </button>
-    <a href="{{ routes.root_url }}" class="header__logo">
+    <a href="{{ routes.root_url }}" class="header__logo" style="--logo-width: {{ settings.logo_width }}">
       {%- if settings.logo != blank -%}
         {{ settings.logo | image_url: width: 600 | image_tag: width: settings.logo_width, height: null, widths: '150, 300, 450, 600', alt: shop.name, preload: true, sizes: '(min-width: 750px) 200px, 140px' }}
       {%- else -%}
-        <span class="header__wordmark">{{ shop.name }}</span>
+        {%- if settings.show_brand_logo -%}{% render 'printr-logo', uid: 'header', class: 'header__brand-logo' %}{%- else -%}<span class="header__wordmark">{{ shop.name }}</span>{%- endif -%}
       {%- endif -%}
     </a>
     <nav class="header__nav" aria-label="{{ 'accessibility.menu' | t }}">
@@ -131,7 +131,8 @@
   .header--sticky { position: sticky; top: 0; }
   .header__inner { display: grid; grid-template-columns: auto 1fr auto; align-items: center; gap: 2rem; min-height: 7.2rem; }
   .header__wordmark { font-family: var(--font-heading-family); font-weight: 800; font-size: 2.6rem; letter-spacing: -0.04em; }
-  .header__logo { text-decoration: none; }
+  .header__logo { text-decoration: none; color: rgb(var(--color-foreground)); display: inline-flex; }
+  .header__brand-logo { width: calc(var(--logo-width, 140) * 1px); max-width: 40vw; height: auto; display: block; }
   .header__nav { display: none; }
   .header__menu { display: flex; gap: 2.8rem; list-style: none; margin: 0; padding: 0; justify-content: center; }
   .header__link { font-weight: 600; text-decoration: none; cursor: pointer; list-style: none; padding: 2.4rem 0; display: block; }

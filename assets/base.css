@@ -3,7 +3,7 @@
 html{font-size:calc(var(--font-body-scale) * 62.5%);scroll-behavior:smooth}
 body{margin:0;font-family:var(--font-body-family);font-weight:var(--font-body-weight);font-size:1.6rem;line-height:1.6;color:rgb(var(--color-foreground));background:rgb(var(--color-background));-webkit-font-smoothing:antialiased}
 body.paper{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 .05 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
-:root{--c:#00AEEF;--m:#E6007E;--y:#FFF200;--k:#16161A;--space:clamp(4rem,6vw,8rem)}
+:root{--c:#27D6FF;--m:#F962DD;--y:#FFF915;--k:#000000;--g1:#FFF200;--g2:#FF7D4F;--g3:#EC2F8F;--g4:#1FB3EC;--brand-gradient:linear-gradient(120deg,var(--g4) 0%,var(--g1) 28%,var(--g2) 62%,var(--g3) 100%);--space:clamp(4rem,6vw,8rem)}
 [class*="color-scheme"]{color:rgb(var(--color-foreground));background-color:rgb(var(--color-background))}
 h1,h2,h3,h4,.h1,.h2,.h3{font-family:var(--font-heading-family);font-weight:var(--font-heading-weight);line-height:1.05;letter-spacing:-.02em;margin:0 0 .5em}
 h1,.h1{font-size:calc(var(--font-heading-scale) * clamp(3.6rem,6vw,7.2rem))}
@@ -164,3 +164,10 @@ body:has(compare-bar:not([hidden])) .back-to-top{bottom:8rem}
 ::view-transition-old(root),::view-transition-new(root){animation-duration:.28s}
 @media (prefers-reduced-motion:reduce){.scroll-progress{display:none}.skeleton{animation:none}.modal[open]{animation:none}}
 .compare-product { display: grid; gap: .8rem; text-decoration: none; }
+
+/* Brand gradient accents (logo "r" circle) */
+.brand-gradient .badge--new{background:var(--brand-gradient);color:#000}
+.brand-gradient .scroll-progress,.brand-gradient .ship-goal__bar span{background:var(--brand-gradient)}
+.brand-gradient .header__link.is-active{text-decoration:none;background-image:var(--brand-gradient);background-size:100% 3px;background-repeat:no-repeat;background-position:0 100%;padding-bottom:6px}
+.brand-gradient .button:not(.button--secondary):hover{box-shadow:0 0 0 2px rgb(var(--color-background)),0 0 0 4px var(--g2),4px 6px 0 4px var(--g3)}
+.brand-gradient .slideshow__dots button[aria-current=true]{background:var(--brand-gradient);border-color:transparent}

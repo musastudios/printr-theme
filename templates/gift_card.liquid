@@ -12,7 +12,7 @@
   </head>
   <body>
     <main class="section page-width" style="text-align: center; max-width: 60rem">
-      {%- if settings.logo -%}{{ settings.logo | image_url: width: 300 | image_tag: alt: shop.name, style: 'max-height:6rem;width:auto;margin-inline:auto' }}{%- else -%}<p class="h3">{{ shop.name }}</p>{%- endif -%}
+      {%- if settings.logo -%}{{ settings.logo | image_url: width: 300 | image_tag: alt: shop.name, style: 'max-height:6rem;width:auto;margin-inline:auto' }}{%- elsif settings.show_brand_logo -%}<span style="display:block;width:20rem;margin-inline:auto;color:#000">{% render 'printr-logo', uid: 'gift' %}</span>{%- else -%}<p class="h3">{{ shop.name }}</p>{%- endif -%}
       <h1>{{ 'gift_cards.issued.title' | t }}</h1>
       <p class="h2">{{ gift_card.balance | money }}</p>
       {%- if gift_card.expired -%}<p class="badge">{{ 'gift_cards.issued.expired' | t }}</p>{%- endif -%}

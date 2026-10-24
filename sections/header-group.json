@@ -5,7 +5,7 @@
     "announcement": {
       "type": "announcement-bar",
       "blocks": {
-        "a1": { "type": "announcement", "settings": { "text": "Free shipping on orders over $75 · Same-day printing available" } },
+        "a1": { "type": "announcement", "settings": { "text": "Free shipping over $99 · 48-hour cards" } },
         "a2": { "type": "announcement", "settings": { "text": "Volume pricing: the more you print, the less you pay" } }
       },
       "block_order": ["a1", "a2"],
