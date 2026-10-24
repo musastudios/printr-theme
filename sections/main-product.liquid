@@ -157,11 +157,12 @@
       { "type": "checkbox", "id": "show_dynamic_checkout", "label": "Show dynamic checkout buttons", "default": true }
     ] },
     { "type": "artwork_uploader", "name": "Artwork uploader", "limit": 1, "settings": [
-      { "type": "paragraph", "content": "Place above Buy buttons. Product metafields custom.trim_width_in, trim_height_in, bleed_in, safe_in, min_dpi and sides override these defaults; otherwise trim size is parsed from the variant Size option." },
+      { "type": "paragraph", "content": "Place above Buy buttons. Product metafields custom.A variant print_spec metaobject (custom.print_spec), then product metafields custom.trim_width_in, trim_height_in, bleed_in, safe_in, min_dpi and sides, override these defaults; otherwise trim size is parsed from the variant Size option." },
       { "type": "select", "id": "sides", "label": "Sides", "options": [{ "value": "1", "label": "1 (front only)" }, { "value": "2", "label": "2 (front and back)" }], "default": "1" },
       { "type": "select", "id": "bleed_in", "label": "Bleed", "options": [{ "value": "0", "label": "0\"" }, { "value": "0.0625", "label": "1/16\"" }, { "value": "0.125", "label": "1/8\" (0.125)" }, { "value": "0.25", "label": "1/4\"" }], "default": "0.125" },
       { "type": "select", "id": "safe_in", "label": "Safe margin", "options": [{ "value": "0", "label": "0\"" }, { "value": "0.0625", "label": "1/16\"" }, { "value": "0.125", "label": "1/8\" (0.125)" }, { "value": "0.25", "label": "1/4\"" }], "default": "0.125" },
-      { "type": "range", "id": "max_mb", "label": "Max file size", "min": 1, "max": 20, "step": 1, "unit": "MB", "default": 20, "info": "Shopify's native line item file upload rejects files over 20 MB." }
+      { "type": "range", "id": "max_mb", "label": "Max file size", "min": 1, "max": 20, "step": 1, "unit": "MB", "default": 20, "info": "Shopify's native line item file upload rejects files over 20 MB." },
+      { "type": "product", "id": "qa_product", "label": "Pre-flight & QA fee product", "info": "Hidden $5 product added alongside the item when the customer opts in. Leave empty to hide the option." }
     ] },
     { "type": "description", "name": "Description", "limit": 1 },
     { "type": "pickup", "name": "Pickup availability", "limit": 1 },

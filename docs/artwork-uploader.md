@@ -31,3 +31,16 @@ Effective DPI = pixels / inches covered at the current placement (cover-fit × u
 - Dynamic checkout buttons are intercepted while blocked, but accelerated checkout may not carry file properties reliably; consider disabling them on artwork products.
 - pdf.js loads from a CDN (needs network; can be vendored into assets later).
 - 3D preview is a CSS tilt.
+
+## v1.1: spec-driven, send-later, QA add-on
+**Spec precedence (field by field):** variant `custom.print_spec` (metaobject: trim_w_in, trim_h_in, bleed_in, safe_in, min_dpi, warn_dpi, sides, pages, formats, special, optional panels) → product metafields / block settings → variant Size parse. All variants' specs are emitted as JSON so changing the variant re-applies the spec without a reload.
+- DPI: with a spec, error < `min_dpi`, warn < `warn_dpi` (default max(min_dpi, 300)). Without one, error < 150, warn < product `min_dpi` (300). `large_format` defaults to error 75 / warn 150.
+- `formats`: list or comma text (e.g. `pdf,jpg,png`) restricts the whitelist.
+- `pages`: expected PDF page count (overrides the sides check).
+- `special` (text, comma list or JSON list): `large_format`; `die_cut` (warning to include a CutContour path, cut line drawn dotted); `folds` / `folds:3` / `trifold` / `bifold` (purple fold lines from `panels`, a list of panel widths in inches like `[3.66,3.67,3.67]`, or equal panels); `apparel_area` (trim = print area, no bleed/safe/cut, art contain-fit inside).
+
+**Artwork choice:** radio *Upload now* / *Send artwork after checkout*. Later mode disables the file inputs, sends `properties[Artwork]=Will send after checkout`, requires "I'll email my files…" and shows QA as Recommended.
+
+**QA add-on:** block setting *Pre-flight & QA fee product*. When checked, the form's `formdata` event rewrites the payload into `items[0]…` (parent incl. files) + `items[1]` (fee, qty 1, `_for`=product title, `_artwork_link`, `_artwork_fee`) in the same `/cart/add.js` request. Parent gets `_artwork_link` + `Pre-flight QA: Yes`. `theme.js` `removeOrphanFees()` runs after every cart change and on cart page/drawer load and zeroes fee lines whose parent link is gone.
+
+**Send-later page:** `templates/page.upload-artwork.json` → `sections/artwork-dropoff.liquid` (+ `assets/artwork-dropoff.js`, reads `?order=#1234` into a mailto). Email notification snippet: `docs/order-confirmation-artwork.md`.

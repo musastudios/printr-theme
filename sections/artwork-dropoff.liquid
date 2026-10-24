@@ -1,0 +1,75 @@
+{%- liquid
+  assign email = section.settings.email | default: 'shopprintr@gmail.com'
+  assign subject_prefix = 'artwork_dropoff.subject_prefix' | t
+-%}
+<div class="section page-width ad" id="ArtworkDropoff-{{ section.id }}">
+  <h1>{{ section.settings.heading | default: page.title | escape }}</h1>
+  {%- if section.settings.intro != blank -%}<div class="rte">{{ section.settings.intro }}</div>{%- endif -%}
+
+  <artwork-dropoff class="ad__card" data-email="{{ email | escape }}" data-subject="{{ subject_prefix | escape }}" data-body="{{ 'artwork_dropoff.mail_body' | t | escape }}">
+    <h2 class="h4">{{ 'artwork_dropoff.steps_heading' | t }}</h2>
+    <ol class="ad__steps">
+      <li>{{ 'artwork_dropoff.step_1' | t }}</li>
+      <li>{{ 'artwork_dropoff.step_2' | t }} <strong>{{ email }}</strong></li>
+      <li>{{ 'artwork_dropoff.step_3' | t }}</li>
+      <li>{{ 'artwork_dropoff.step_4' | t }}</li>
+    </ol>
+    <div class="field ad__order">
+      <label for="AdOrder-{{ section.id }}">{{ 'artwork_dropoff.order_label' | t }}</label>
+      <input id="AdOrder-{{ section.id }}" type="text" inputmode="text" placeholder="#1234" autocomplete="off" data-ad-order>
+    </div>
+    <a class="button" href="mailto:{{ email }}" data-ad-mailto>{{ 'artwork_dropoff.email_button' | t }}</a>
+    <p class="ad__note">{{ 'artwork_dropoff.large_files' | t }}</p>
+  </artwork-dropoff>
+
+  {%- if section.blocks.size > 0 -%}
+    <h2 class="h4">{{ 'artwork_dropoff.specs_heading' | t }}</h2>
+    <div class="ad__table-wrap">
+      <table class="ad__table">
+        <thead><tr><th scope="col">{{ 'artwork_dropoff.col_product' | t }}</th><th scope="col">{{ 'artwork_dropoff.col_specs' | t }}</th><th scope="col">{{ 'artwork_dropoff.col_template' | t }}</th></tr></thead>
+        <tbody>
+          {%- for block in section.blocks -%}
+            <tr {{ block.shopify_attributes }}>
+              <th scope="row">{{ block.settings.product_name | escape }}</th>
+              <td>{{ block.settings.specs }}</td>
+              <td>{%- if block.settings.template_url != blank -%}<a href="{{ block.settings.template_url }}" download>{{ 'artwork_dropoff.download' | t }}</a>{%- else -%}—{%- endif -%}</td>
+            </tr>
+          {%- endfor -%}
+        </tbody>
+      </table>
+    </div>
+  {%- endif -%}
+  {%- if page.content != blank -%}<div class="rte ad__extra">{{ page.content }}</div>{%- endif -%}
+</div>
+<script src="{{ 'artwork-dropoff.js' | asset_url }}" type="module" defer="defer"></script>
+{% stylesheet %}
+  .ad { max-width: 90rem; }
+  .ad__card { display: grid; gap: 1.2rem; border: 1px solid rgb(var(--color-border)); border-radius: var(--radius); padding: 2rem; margin: 2.4rem 0; }
+  .ad__card h2 { margin: 0; }
+  .ad__steps { margin: 0; padding-left: 2rem; display: grid; gap: .6rem; }
+  .ad__order { max-width: 32rem; }
+  .ad__card .button { justify-self: start; }
+  .ad__note { font-size: 1.4rem; opacity: .8; margin: 0; }
+  .ad__table-wrap { overflow-x: auto; }
+  .ad__table { width: 100%; border-collapse: collapse; font-size: 1.4rem; }
+  .ad__table th, .ad__table td { text-align: left; padding: 1rem; border-bottom: 1px solid rgb(var(--color-border)); vertical-align: top; }
+{% endstylesheet %}
+{% schema %}
+{
+  "name": "Artwork drop-off",
+  "tag": "section",
+  "settings": [
+    { "type": "text", "id": "heading", "label": "Heading", "default": "Send your artwork" },
+    { "type": "richtext", "id": "intro", "label": "Intro", "default": "<p>Sending your files after checkout? Email them to us with your order number and we'll handle prepress and upload them to production.</p>" },
+    { "type": "text", "id": "email", "label": "Artwork email", "default": "shopprintr@gmail.com" }
+  ],
+  "blocks": [
+    { "type": "spec", "name": "Product spec", "settings": [
+      { "type": "text", "id": "product_name", "label": "Product", "default": "Business cards 2\" x 3.5\"" },
+      { "type": "richtext", "id": "specs", "label": "Specs", "default": "<p>Trim 2\" x 3.5\" · Bleed 0.125\" · Safe 0.125\" · 300 DPI · CMYK PDF</p>" },
+      { "type": "url", "id": "template_url", "label": "Template download URL" }
+    ] }
+  ],
+  "presets": [{ "name": "Artwork drop-off" }]
+}
+{% endschema %}

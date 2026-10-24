@@ -101,10 +101,31 @@ class CartItems extends HTMLElement {
       });
       const data = await res.json();
       renderCartSections(data.sections); refreshCount();
+      await removeOrphanFees(data);
     } catch (err) { console.error(err); } finally { this.removeAttribute('aria-busy'); }
   }
 }
 customElements.define('cart-items', CartItems);
+
+/* Artwork QA fee lines (properties._artwork_fee) follow their parent (matching _artwork_link); orphans are removed. */
+let feeCheck = null;
+async function removeOrphanFees(cart) {
+  if (feeCheck) return feeCheck;
+  feeCheck = (async () => {
+    try {
+      const c = cart && cart.items ? cart : await (await fetch(`${window.routes.cart_url}.js`)).json();
+      const parents = new Set(c.items.filter((i) => i.properties && i.properties._artwork_link && !i.properties._artwork_fee).map((i) => i.properties._artwork_link));
+      const updates = {};
+      c.items.forEach((i) => { if (i.properties && i.properties._artwork_fee && !parents.has(i.properties._artwork_link)) updates[i.key] = 0; });
+      if (!Object.keys(updates).length) return;
+      const res = await fetch(`${window.routes.cart_url}/update.js`, { method: 'POST', headers: { 'Content-Type': 'application/json', Accept: 'application/json' }, body: JSON.stringify({ updates, sections: sectionIdsOnPage() }) });
+      const data = await res.json();
+      renderCartSections(data.sections); refreshCount();
+    } catch (err) { console.error(err); } finally { feeCheck = null; }
+  })();
+  return feeCheck;
+}
+if (document.querySelector('cart-items') || document.getElementById('CartDrawer')) removeOrphanFees();
 
 /* Product form: AJAX add to cart, opens drawer */
 class ProductForm extends HTMLElement {

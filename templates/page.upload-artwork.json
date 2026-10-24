@@ -1,0 +1,16 @@
+{
+  "sections": {
+    "breadcrumbs": { "type": "breadcrumbs" },
+    "main": {
+      "type": "artwork-dropoff",
+      "blocks": {
+        "spec-1": { "type": "spec", "settings": { "product_name": "Business cards 2\" x 3.5\"", "specs": "<p>Trim 2\" x 3.5\" · Bleed 0.125\" (document 2.25\" x 3.75\") · Safe 0.125\" · 300 DPI · CMYK PDF preferred</p>" } },
+        "spec-2": { "type": "spec", "settings": { "product_name": "Flyers 8.5\" x 11\"", "specs": "<p>Trim 8.5\" x 11\" · Bleed 0.125\" (document 8.75\" x 11.25\") · Safe 0.125\" · 300 DPI</p>" } },
+        "spec-3": { "type": "spec", "settings": { "product_name": "Posters / large format", "specs": "<p>Final size, no bleed unless noted · 150 DPI at full size · PDF or high-res JPG</p>" } }
+      },
+      "block_order": ["spec-1", "spec-2", "spec-3"],
+      "settings": {}
+    }
+  },
+  "order": ["breadcrumbs", "main"]
+}

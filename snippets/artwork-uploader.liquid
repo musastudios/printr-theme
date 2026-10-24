@@ -39,9 +39,21 @@
   data-trim-h="{{ trim_h }}"
   data-size-index="{{ size_index }}"
   data-variant="{{ product.selected_or_first_available_variant.id }}"
+  data-fee-variant="{{ block.settings.qa_product.selected_or_first_available_variant.id }}"
+  data-product-title="{{ product.title | escape }}"
 >
   <script type="application/json" data-au-variants>
-    [{%- for v in product.variants -%}{"id":{{ v.id }},"options":{{ v.options | json }}}{%- unless forloop.last -%},{%- endunless -%}{%- endfor -%}]
+    [
+      {%- for v in product.variants -%}
+        {%- assign spec = v.metafields.custom.print_spec.value -%}
+        {"id":{{ v.id }},"options":{{ v.options | json }}
+        {%- if spec != blank -%}
+          ,"spec":{"trim_w_in":{{ spec.trim_w_in.value | json }},"trim_h_in":{{ spec.trim_h_in.value | json }},"bleed_in":{{ spec.bleed_in.value | json }},"safe_in":{{ spec.safe_in.value | json }},"min_dpi":{{ spec.min_dpi.value | json }},"warn_dpi":{{ spec.warn_dpi.value | json }},"sides":{{ spec.sides.value | json }},"pages":{{ spec.pages.value | json }},"formats":{{ spec.formats.value | json }},"special":{{ spec.special.value | json }},"panels":{{ spec.panels.value | json }}}
+        {%- endif -%}
+        }
+        {%- unless forloop.last -%},{%- endunless -%}
+      {%- endfor -%}
+    ]
   </script>
   <script type="application/json" data-au-strings>
     {
@@ -69,15 +81,41 @@
       "back": {{ 'artwork.back' | t | json }},
       "template": {{ 'artwork.template' | t | json }},
       "blocked": {{ 'artwork.blocked' | t | json }},
+      "die_cut": {{ 'artwork.die_cut' | t | json }},
+      "folds": {{ 'artwork.folds' | t | json }},
+      "apparel": {{ 'artwork.apparel' | t | json }},
+      "large_format": {{ 'artwork.large_format' | t | json }},
+      "email_required": {{ 'artwork.email_required' | t | json }},
+      "qa_recommended": {{ 'artwork.qa_recommended' | t | json }},
+      "pages_mismatch": {{ 'artwork.pages_mismatch' | t | json }},
+      "fold_label": {{ 'artwork.fold_label' | t | json }},
       "confirm_needed": {{ 'artwork.confirm_needed' | t | json }}
     }
   </script>
 
   <div class="au__summary">
     <p class="au__title h5">{{ 'artwork.title' | t }}</p>
+    <fieldset class="au__choice">
+      <legend class="visually-hidden">{{ 'artwork.choice_legend' | t }}</legend>
+      <label><input type="radio" name="au-mode-{{ section_id }}" value="upload" data-au-mode checked> {{ 'artwork.mode_upload' | t }}</label>
+      <label><input type="radio" name="au-mode-{{ section_id }}" value="later" data-au-mode> {{ 'artwork.mode_later' | t }}</label>
+    </fieldset>
+    <div class="au__later" data-au-later hidden>
+      <p>{{ 'artwork.later_help' | t }}</p>
+      <label class="au__confirm"><input type="checkbox" data-au-email-confirm> {{ 'artwork.later_confirm' | t }}</label>
+      <input type="hidden" name="properties[Artwork]" value="Will send after checkout" form="{{ form_id }}" data-au-later-prop disabled>
+    </div>
+    {%- if block.settings.qa_product != blank -%}
+      <label class="au__qa">
+        <input type="checkbox" data-au-qa>
+        <span><strong>{{ 'artwork.qa_label' | t }} (+{%- if block.settings.qa_product != blank -%}{{ block.settings.qa_product.price | money }}{%- endif -%})</strong> <span class="au__qa-badge" data-au-qa-badge hidden>{{ 'artwork.qa_recommended_badge' | t }}</span><br><small>{{ 'artwork.qa_help' | t }}</small></span>
+      </label>
+    {%- endif -%}
+    <div data-au-upload-ui>
     <p class="au__count" data-au-count></p>
     <p class="au__template" data-au-template-label></p>
     <button type="button" class="button au__open" data-au-open aria-haspopup="dialog" aria-controls="{{ uid }}-dialog">{{ 'artwork.open_studio' | t }}</button>
+    </div>
     <p class="au__status" data-au-status aria-live="polite"></p>
   </div>
 
@@ -177,6 +215,14 @@
   .au__title, .au__count, .au__template, .au__status { margin: 0; }
   .au__count, .au__template { font-size: 1.4rem; opacity: .8; }
   .au__status:empty { display: none; }
+  .au__choice { border: 0; padding: 0; margin: 0; display: grid; gap: .6rem; }
+  .au__choice label, .au__qa { display: flex; gap: .8rem; align-items: flex-start; cursor: pointer; }
+  .au__later { font-size: 1.4rem; display: grid; gap: .8rem; padding: 1rem; border-radius: var(--radius); background: rgba(0,0,0,.03); }
+  .au__later p { margin: 0; }
+  .au__later[hidden], [data-au-upload-ui][hidden] { display: none; }
+  .au__qa { font-size: 1.4rem; border-top: 1px solid rgb(var(--color-border)); padding-top: .8rem; }
+  .au__qa-badge { display: inline-block; padding: 0 .6rem; border-radius: 1rem; background: rgb(var(--color-accent)); color: #fff; font-size: 1.1rem; }
+  .au__qa-badge[hidden] { display: none; }
   .au__status { font-size: 1.4rem; color: rgb(var(--color-sale)); }
   .au__dialog { width: min(140rem, 100vw); max-width: 100vw; max-height: 100dvh; height: 100dvh; padding: 0; border: 0; background: rgb(var(--color-background)); color: rgb(var(--color-foreground)); }
   .au__dialog::backdrop { background: rgba(0,0,0,.5); }

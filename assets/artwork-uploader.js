@@ -3,7 +3,9 @@
  * associated with the product form via the `form` attribute. */
 const PDFJS = 'https://cdn.jsdelivr.net/npm/pdfjs-dist@4.10.38/build/pdf.min.mjs';
 const PDFJS_WORKER = 'https://cdn.jsdelivr.net/npm/pdfjs-dist@4.10.38/build/pdf.worker.min.mjs';
-const EXT = ['pdf', 'jpg', 'jpeg', 'png', 'tif', 'tiff', 'eps'];
+const ALL_EXT = ['pdf', 'jpg', 'jpeg', 'png', 'tif', 'tiff', 'eps'];
+const num = (v) => (v === null || v === undefined || v === '' || Number.isNaN(parseFloat(v)) ? null : parseFloat(v));
+const first = (...a) => a.find((v) => v !== null && v !== undefined);
 const PREVIEWABLE = ['jpg', 'jpeg', 'png'];
 const COLORS = { bleed: '#000000', cut: '#e0102b', safe: '#1e6bff' };
 let pdfjsPromise;
@@ -20,6 +22,33 @@ export function parseSize(str) {
   let w = parseFloat(m[1]); let h = parseFloat(m[2]);
   if (m[3] === 'mm') { w /= 25.4; h /= 25.4; } else if (m[3] === 'cm') { w /= 2.54; h /= 2.54; }
   return w > 0 && h > 0 ? { w, h } : null;
+}
+
+/** Normalise spec.special (string, comma list, JSON list) into a Set of mode keys. */
+export function parseSpecial(v) {
+  let list = v;
+  if (typeof v === 'string') { try { list = JSON.parse(v); } catch (e) { list = v.split(/[,;|]/); } }
+  if (!Array.isArray(list)) list = list ? [list] : [];
+  const out = new Set(); let folds = 0;
+  list.map((x) => String(x).trim().toLowerCase()).filter(Boolean).forEach((x) => {
+    const m = x.match(/^(?:folds?|fold)[:=\s]*(\d+)/); if (m) { out.add('folds'); folds = parseInt(m[1], 10); return; }
+    if (/tri-?fold|z-?fold|letter-?fold/.test(x)) { out.add('folds'); folds = 3; return; }
+    if (/bi-?fold|half-?fold|folded/.test(x)) { out.add('folds'); folds ||= 2; return; }
+    if (/large|banner|poster|wide/.test(x)) out.add('large_format');
+    else if (/die|cut[_ -]?path|contour|sticker/.test(x)) out.add('die_cut');
+    else if (/apparel|print[_ -]?area|shirt|garment/.test(x)) out.add('apparel_area');
+    else out.add(x.replace(/\s+/g, '_'));
+  });
+  out.panelCount = folds; return out;
+}
+
+/** Panels: list/JSON of panel widths (inches) or a count; returns fold x-positions in inches from the trim's left edge. */
+export function foldPositions(panels, count, trimW) {
+  let list = panels;
+  if (typeof list === 'string') { try { list = JSON.parse(list); } catch (e) { list = list.split(/[,;|x]/).map(parseFloat).filter((n) => n > 0); } }
+  if (typeof list === 'number') { count = list; list = null; }
+  if (Array.isArray(list) && list.length > 1) { const out = []; let acc = 0; list.slice(0, -1).forEach((w) => { acc += parseFloat(w); out.push(acc); }); return out; }
+  const n = count || 2; return Array.from({ length: n - 1 }, (_, i) => (trimW * (i + 1)) / n);
 }
 
 /** Detect JPEG colour space: SOF component count 4 or Adobe APP14 marker => CMYK. */
@@ -54,10 +83,12 @@ class ArtworkUploader extends HTMLElement {
       trimH: parseFloat(this.dataset.trimH) || 0,
       sizeIndex: parseInt(this.dataset.sizeIndex, 10)
     };
+    this.base = { ...this.cfg };
     this.dialog = $('dialog'); this.canvas = $('[data-au-canvas]'); this.ctx = this.canvas.getContext('2d');
     this.wrap = $('[data-au-wrap]'); this.drop = $('[data-au-drop]');
     this.state = { front: this.blankSide(), back: this.blankSide() };
     this.active = 'front'; this.zoom = 1; this.mask = 0.6; this.showGuides = true; this.showCut = true; this.magnify = false; this.landscape = null;
+    this.mode = 'upload';
     this.bind();
     this.setVariant(this.dataset.variant);
     document.addEventListener('variant:change', (e) => { this.setVariant(e.detail.variantId); this.applyGate(); });
@@ -70,8 +101,36 @@ class ArtworkUploader extends HTMLElement {
   get form() { return document.getElementById(this.dataset.formId); }
 
   /* ---------- template geometry ---------- */
+  /** Precedence: variant print_spec metaobject > product metafields/block settings > Size option parse. */
+  resolveSpec(v) {
+    const sp = (v && v.spec) || {}; const b = this.base; const special = parseSpecial(sp.special);
+    const large = special.has('large_format'); const apparel = special.has('apparel_area');
+    const specMin = num(sp.min_dpi); const specWarn = num(sp.warn_dpi);
+    let formats = sp.formats; if (typeof formats === 'string') { try { formats = JSON.parse(formats); } catch (e) { formats = formats.split(/[,;|\s]+/); } }
+    formats = Array.isArray(formats) ? formats.map((f) => String(f).toLowerCase().replace(/^\./, '')).filter((f) => ALL_EXT.includes(f)) : [];
+    if (formats.includes('jpg') && !formats.includes('jpeg')) formats.push('jpeg');
+    if (formats.includes('tif') && !formats.includes('tiff')) formats.push('tiff');
+    this.cfg = {
+      ...b,
+      trimW: first(num(sp.trim_w_in), b.trimW || null) || 0,
+      trimH: first(num(sp.trim_h_in), b.trimH || null) || 0,
+      bleed: apparel ? 0 : first(num(sp.bleed_in), b.bleed),
+      safe: apparel ? 0 : first(num(sp.safe_in), b.safe),
+      // error below errDpi, warn below warnDpi
+      errDpi: first(specMin, large ? 75 : 150),
+      warnDpi: first(specWarn, specMin !== null ? Math.max(specMin, large ? 150 : 300) : (large ? 150 : b.minDpi)),
+      sides: Math.min(2, Math.max(1, parseInt(first(num(sp.sides), b.sides), 10) || 1)),
+      pages: num(sp.pages),
+      formats: formats.length ? formats : ALL_EXT,
+      special, panels: sp.panels
+    };
+    this.cfg.minDpi = this.cfg.warnDpi;
+    this.querySelector('[data-au-tile="back"]').hidden = this.cfg.sides < 2;
+    this.querySelector('[data-au-tab="back"]').hidden = this.cfg.sides < 2;
+  }
   setVariant(id) {
     const v = this.variants.find((x) => String(x.id) === String(id)) || this.variants[0];
+    this.resolveSpec(v);
     let size = this.cfg.trimW && this.cfg.trimH ? { w: this.cfg.trimW, h: this.cfg.trimH } : null;
     if (!size && v) {
       if (this.cfg.sizeIndex >= 0) size = parseSize(v.options[this.cfg.sizeIndex]);
@@ -97,6 +156,11 @@ class ArtworkUploader extends HTMLElement {
     q('[data-au-remove]').forEach((b) => b.addEventListener('click', () => this.removeFile(b.dataset.auRemove)));
     this.querySelector('[data-au-browse]').addEventListener('click', () => this.input(this.active)?.click());
     this.querySelector('[data-au-confirm]').addEventListener('change', () => this.update());
+    q('[data-au-mode]').forEach((r) => r.addEventListener('change', () => { if (r.checked) { this.mode = r.value; this.update(); } }));
+    this.querySelector('[data-au-email-confirm]').addEventListener('change', () => this.update());
+    this.querySelector('[data-au-qa]')?.addEventListener('change', () => this.update());
+    // Rewrite the product form payload into an items[] array so the QA fee joins the same /cart/add call.
+    this.form?.addEventListener('formdata', (e) => this.onFormData(e.formData));
     q('[data-au-tab]').forEach((b) => b.addEventListener('click', () => this.tab(b.dataset.auTab)));
     q('[data-au-act]').forEach((b) => b.addEventListener('click', () => this.act(b.dataset.auAct, b)));
     const scale = this.querySelector('[data-au-scale]');
@@ -132,6 +196,26 @@ class ArtworkUploader extends HTMLElement {
       else if ((e.ctrlKey || e.metaKey) && e.key === 'z') { e.preventDefault(); this.act('undo'); }
     });
     window.addEventListener('resize', () => this.dialog.open && this.draw());
+  }
+  get qa() { return !!this.querySelector('[data-au-qa]')?.checked && !!this.dataset.feeVariant; }
+  onFormData(fd) {
+    if (!this.qa) return;
+    const link = `au${Date.now().toString(36)}${Math.random().toString(36).slice(2, 7)}`;
+    const entries = [...fd.entries()];
+    entries.forEach(([k]) => fd.delete(k));
+    entries.forEach(([k, v]) => {
+      if (k === 'id' || k === 'quantity' || k === 'selling_plan') fd.append(`items[0][${k}]`, v);
+      else if (k.startsWith('properties[')) fd.append(`items[0]${k}`, v);
+      else fd.append(k, v);
+    });
+    if (!fd.has('items[0][quantity]')) fd.append('items[0][quantity]', '1');
+    fd.append('items[0][properties][_artwork_link]', link);
+    fd.append('items[0][properties][Pre-flight QA]', 'Yes');
+    fd.append('items[1][id]', this.dataset.feeVariant);
+    fd.append('items[1][quantity]', '1');
+    fd.append('items[1][properties][_for]', this.dataset.productTitle || '');
+    fd.append('items[1][properties][_artwork_link]', link);
+    fd.append('items[1][properties][_artwork_fee]', '1');
   }
   openStudio() { if (!this.dialog.open) this.dialog.showModal(); requestAnimationFrame(() => this.draw()); }
   input(side) { return this.querySelector(`[data-au-input="${side}"]`); }
@@ -169,7 +253,7 @@ class ArtworkUploader extends HTMLElement {
     const s = this.blankSide(); this.state[side] = s; s.file = file || null;
     if (!file) return this.update();
     s.ext = (file.name.split('.').pop() || '').toLowerCase();
-    if (!EXT.includes(s.ext)) { s.issues = [this.issue('error', 'bad_format', { name: file.name })]; return this.update(); }
+    if (!this.cfg.formats.includes(s.ext)) { s.issues = [this.issue('error', 'bad_format', { name: file.name, formats: this.cfg.formats.filter((f) => f !== 'jpeg' && f !== 'tiff').join(', ').toUpperCase() })]; return this.update(); }
     if (file.size > this.cfg.maxBytes) { s.issues = [this.issue('error', 'too_large', { name: file.name, size: r2(file.size / 1048576), max: r2(this.cfg.maxBytes / 1048576) })]; return this.update(); }
     try {
       if (PREVIEWABLE.includes(s.ext)) {
@@ -205,6 +289,11 @@ class ArtworkUploader extends HTMLElement {
     if (s.loadError && s.ext === 'pdf') out.push(this.issue('warning', 'pdf_failed', { name }));
     if (s.loadError && s.ext !== 'pdf') out.push(this.issue('info', 'no_preview', { name }));
     if (autoFit) this.fit(s);
+    const sp = this.cfg.special;
+    if (sp.has('die_cut')) out.push(this.issue('warning', 'die_cut'));
+    if (sp.has('folds')) out.push(this.issue('info', 'folds', { n: foldPositions(this.cfg.panels, sp.panelCount, this.trim?.w || 0).length + 1 }));
+    if (sp.has('apparel_area')) out.push(this.issue('info', 'apparel'));
+    if (sp.has('large_format')) out.push(this.issue('info', 'large_format', { dpi: this.cfg.warnDpi }));
     const rotated = s.rot % 180 !== 0;
     const artW = rotated ? s.pxH : s.pxW; const artH = rotated ? s.pxW : s.pxH;
     if (doc && s.pdf) {
@@ -214,15 +303,16 @@ class ArtworkUploader extends HTMLElement {
       else if (Math.abs(pw - this.trim.w) <= tol && Math.abs(ph - this.trim.h) <= tol) out.push(this.issue('warning', 'pdf_no_bleed', { ...vars, bleed: this.cfg.bleed }));
       else if (Math.abs(ph - doc.w) <= tol && Math.abs(pw - doc.h) <= tol) out.push(this.issue('warning', 'orientation', { name }, { fix: side }));
       else out.push(this.issue('warning', 'pdf_size', vars));
-      if (s.pdf.pages !== this.cfg.sides && !(side === 'front' && s.pdf.pages === 1)) out.push(this.issue('warning', 'pdf_pages', { pages: s.pdf.pages, sides: this.cfg.sides }));
+      if (this.cfg.pages) { if (s.pdf.pages !== this.cfg.pages && !(this.cfg.sides === 2 && s.pdf.pages === 1)) out.push(this.issue('warning', 'pages_mismatch', { pages: s.pdf.pages, expected: this.cfg.pages })); }
+      else if (s.pdf.pages !== this.cfg.sides && !(side === 'front' && s.pdf.pages === 1)) out.push(this.issue('warning', 'pdf_pages', { pages: s.pdf.pages, sides: this.cfg.sides }));
     } else if (doc && s.pxW && !s.pdf) {
       const artLand = artW > artH; const docLand = doc.w > doc.h;
       if (artW !== artH && doc.w !== doc.h && artLand !== docLand) out.push(this.issue('warning', 'orientation', { name }, { fix: side }));
       const ra = artW / artH; const rd = doc.w / doc.h;
-      if (artLand === docLand && Math.abs(ra / rd - 1) > 0.02) out.push(this.issue('warning', 'aspect', { ar: r2(ra), tr: r2(rd) }));
+      if (artLand === docLand && Math.abs(ra / rd - 1) > 0.02) out.push(this.issue(sp.has('apparel_area') ? 'info' : 'warning', 'aspect', { ar: r2(ra), tr: r2(rd) }));
       const dpi = Math.floor(this.effectiveDpi(s));
-      if (dpi < 150) out.push(this.issue('error', 'dpi_too_low', { dpi, min: this.cfg.minDpi }));
-      else if (dpi < this.cfg.minDpi) out.push(this.issue('warning', 'dpi_low', { dpi, min: this.cfg.minDpi }));
+      if (dpi < this.cfg.errDpi) out.push(this.issue('error', 'dpi_too_low', { dpi, min: this.cfg.warnDpi, err: this.cfg.errDpi }));
+      else if (dpi < this.cfg.warnDpi) out.push(this.issue('warning', 'dpi_low', { dpi, min: this.cfg.warnDpi }));
       else out.push(this.issue('ok', 'dpi_ok', { dpi }));
       s.dpi = dpi;
       if (s.color === 'cmyk') out.push(this.issue('ok', 'cmyk')); else out.push(this.issue('info', 'rgb'));
@@ -233,11 +323,12 @@ class ArtworkUploader extends HTMLElement {
   effectiveDpi(s) {
     const doc = this.doc; const rotated = s.rot % 180 !== 0;
     const w = rotated ? s.pxH : s.pxW; const h = rotated ? s.pxW : s.pxH;
-    const cover = Math.max(doc.w / w, doc.h / h); // inches per pixel at scale 1
+    const cover = this.cfg.special.has('apparel_area') ? Math.min(doc.w / w, doc.h / h) : Math.max(doc.w / w, doc.h / h); // inches per pixel at scale 1
     return 1 / (cover * s.scale);
   }
   allIssues() {
     const list = [];
+    if (this.mode === 'later') return list;
     const needed = this.cfg.sides === 2 ? ['front', 'back'] : ['front'];
     needed.forEach((k) => {
       const s = this.state[k];
@@ -247,6 +338,7 @@ class ArtworkUploader extends HTMLElement {
     return list;
   }
   blocked() {
+    if (this.mode === 'later') return this.querySelector('[data-au-email-confirm]').checked ? false : 'email_required';
     const issues = this.allIssues();
     if (issues.some((i) => i.level === 'error')) return 'blocked';
     if (issues.some((i) => i.level === 'warning') && !this.querySelector('[data-au-confirm]').checked) return 'confirm_needed';
@@ -290,7 +382,14 @@ class ArtworkUploader extends HTMLElement {
     });
     this.querySelector('[data-au-scale]').value = Math.round(this.side.scale * 100);
     this.drop.hidden = !!this.side.source;
+    const later = this.mode === 'later';
+    this.querySelector('[data-au-later]').hidden = !later;
+    this.querySelector('[data-au-upload-ui]').hidden = later;
+    this.querySelector('[data-au-later-prop]').disabled = !later;
+    this.querySelectorAll('[data-au-input]').forEach((i) => { i.disabled = later; });
+    const badge = this.querySelector('[data-au-qa-badge]'); if (badge) badge.hidden = !later;
     this.writeProps(issues);
+    if (later) this.querySelectorAll('[data-au-prop]').forEach((el) => { el.disabled = true; });
     const b = this.blocked(); this.querySelector('[data-au-status]').textContent = b ? this.t[b] : '';
     this.applyGate(); this.draw();
   }
@@ -317,15 +416,24 @@ class ArtworkUploader extends HTMLElement {
     const s = this.side; const b = this.cfg.bleed * ppi; const sf = (this.cfg.bleed + this.cfg.safe) * ppi;
     if (s.source && this.doc) {
       const rotated = s.rot % 180 !== 0; const aw = rotated ? s.pxH : s.pxW; const ah = rotated ? s.pxW : s.pxH;
-      const k = Math.max((doc.w * ppi) / aw, (doc.h * ppi) / ah) * s.scale;
+      const k = (this.cfg.special.has('apparel_area') ? Math.min((doc.w * ppi) / aw, (doc.h * ppi) / ah) : Math.max((doc.w * ppi) / aw, (doc.h * ppi) / ah)) * s.scale;
       ctx.save(); ctx.translate(pad + (doc.w / 2 + s.x) * ppi, pad + (doc.h / 2 + s.y) * ppi); ctx.rotate((s.rot * Math.PI) / 180);
       ctx.drawImage(s.source, (-s.pxW * k) / 2, (-s.pxH * k) / 2, s.pxW * k, s.pxH * k); ctx.restore();
     }
     // mask outside the cut line
     ctx.save(); ctx.fillStyle = `rgba(255,255,255,${this.mask})`; ctx.beginPath(); ctx.rect(0, 0, W, H); ctx.rect(pad + b, pad + b, doc.w * ppi - 2 * b, doc.h * ppi - 2 * b); ctx.fill('evenodd'); ctx.restore();
     const box = (inset, color, dash) => { ctx.save(); ctx.strokeStyle = color; ctx.lineWidth = 1.5 * dpr; ctx.setLineDash(dash.map((d) => d * dpr)); ctx.strokeRect(pad + inset, pad + inset, doc.w * ppi - 2 * inset, doc.h * ppi - 2 * inset); ctx.restore(); };
-    if (this.showGuides) { box(0, COLORS.bleed, [4, 3]); box(sf, COLORS.safe, [6, 4]); }
-    if (this.showCut) box(b, COLORS.cut, []);
+    const sp = this.cfg.special;
+    if (sp.has('apparel_area')) { if (this.showGuides) box(0, COLORS.safe, [6, 4]); }
+    else {
+      if (this.showGuides) { box(0, COLORS.bleed, [4, 3]); box(sf, COLORS.safe, [6, 4]); }
+      if (this.showCut) box(b, COLORS.cut, sp.has('die_cut') ? [2, 3] : []);
+    }
+    if (sp.has('folds') && this.trim && this.showGuides) {
+      ctx.save(); ctx.strokeStyle = '#8a2be2'; ctx.lineWidth = 1.5 * dpr; ctx.setLineDash([8 * dpr, 4 * dpr, 2 * dpr, 4 * dpr]);
+      foldPositions(this.cfg.panels, sp.panelCount, this.trim.w).forEach((fx) => { const x = pad + b + fx * ppi; ctx.beginPath(); ctx.moveTo(x, pad); ctx.lineTo(x, pad + doc.h * ppi); ctx.stroke(); });
+      ctx.restore();
+    }
     if (this.magnify && this.mag) {
       const r = 70 * dpr; const z = 3; const { x, y } = this.mag;
       ctx.save(); ctx.beginPath(); ctx.arc(x, y, r, 0, Math.PI * 2); ctx.clip();

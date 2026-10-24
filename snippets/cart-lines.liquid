@@ -12,6 +12,7 @@
       <div class="cart-line__info">
         <a href="{{ item.url }}" class="cart-line__title">{{ item.product.title | escape }}</a>
         {%- unless item.product.has_only_default_variant -%}<p class="cart-line__meta">{{ item.variant.title }}</p>{%- endunless -%}
+        {%- if item.properties._for != blank -%}<p class="cart-line__meta">{{ 'artwork.qa_for' | t }}: {{ item.properties._for | escape }}</p>{%- endif -%}
         {%- for p in item.properties -%}
           {%- assign first_char = p.first | slice: 0 -%}
           {%- if p.last != blank and first_char != '_' -%}<p class="cart-line__meta">{{ p.first }}: {{ p.last }}</p>{%- endif -%}
