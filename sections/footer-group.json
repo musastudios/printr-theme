@@ -79,12 +79,20 @@
             "heading": "Company",
             "menu": "footer-company"
           }
+        },
+        "m4": {
+          "type": "menu",
+          "settings": {
+            "heading": "Legal",
+            "menu": "footer-legal"
+          }
         }
       },
       "block_order": [
         "m1",
         "m2",
         "m3",
+        "m4",
         "n1"
       ],
       "settings": {
