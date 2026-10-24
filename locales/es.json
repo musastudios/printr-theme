@@ -407,6 +407,8 @@
     "pdf_pages": "El PDF tiene {pages} páginas; este producto imprime {sides} lado(s).",
     "pdf_failed": "No pudimos leer {name} para la vista previa; se adjuntará igual y nuestro equipo lo revisará.",
     "no_preview": "{name} no se puede previsualizar en el navegador. Solo se verificó el tipo y tamaño; nuestro equipo lo revisará.",
+    "download_template": "Descargar la plantilla de impresión",
+    "spec_line": "{name}: {w}\" × {h}\" · {sides} archivo(s) · mín. {dpi} DPI",
     "no_template": "Selecciona un tamaño para ver la plantilla.",
     "template": "Corte {w}\" x {h}\" · con sangrado {bw}\" x {bh}\" · {dpi} DPI recomendados",
     "auto_rotate": "Rotar automáticamente",

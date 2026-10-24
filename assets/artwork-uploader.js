@@ -50,6 +50,7 @@ export function parseSpecial(v) {
     const m = x.match(/^(?:folds?|fold)[:=\s]*(\d+)/); if (m) { out.add('folds'); folds = parseInt(m[1], 10); return; }
     if (/tri-?fold|z-?fold|letter-?fold/.test(x)) { out.add('folds'); folds = 3; return; }
     if (/bi-?fold|half-?fold|folded/.test(x)) { out.add('folds'); folds ||= 2; return; }
+    if (/grommet/.test(x)) { out.add('grommets'); out.add('large_format'); return; }
     if (/large|banner|poster|wide/.test(x)) out.add('large_format');
     else if (/die|cut[_ -]?path|contour|sticker/.test(x)) out.add('die_cut');
     else if (/apparel|print[_ -]?area|shirt|garment/.test(x)) out.add('apparel_area');
@@ -65,6 +66,28 @@ export function foldPositions(panels, count, trimW) {
   if (typeof list === 'number') { count = list; list = null; }
   if (Array.isArray(list) && list.length > 1) { const out = []; let acc = 0; list.slice(0, -1).forEach((w) => { acc += parseFloat(w); out.push(acc); }); return out; }
   const n = count || 2; return Array.from({ length: n - 1 }, (_, i) => (trimW * (i + 1)) / n);
+}
+
+/** Sides implied by a variant option: "4/0" or "Single-Sided" => 1, "4/4", "5/1" or "Double-Sided" => 2; null when no hint. */
+export function sidesFromOptions(options) {
+  for (const o of options || []) {
+    const s = String(o).toLowerCase();
+    const m = s.match(/(?:^|\s)(\d)\/(\d)\s*colou?r/); if (m) return parseInt(m[2], 10) > 0 ? 2 : 1;
+    if (/single[- ]sided|one[- ]sided|1[- ]sided/.test(s)) return 1;
+    if (/double[- ]sided|two[- ]sided|2[- ]sided/.test(s)) return 2;
+  }
+  return null;
+}
+
+/** Profile size whose trim matches a size string in either orientation. */
+export function matchSize(sizes, options) {
+  if (!Array.isArray(sizes)) return null;
+  for (const o of options || []) {
+    const d = parseSize(o); if (!d) continue;
+    const hit = sizes.find((z) => z && ((Math.abs(z.trim_w_in - d.w) < 0.01 && Math.abs(z.trim_h_in - d.h) < 0.01) || (Math.abs(z.trim_w_in - d.h) < 0.01 && Math.abs(z.trim_h_in - d.w) < 0.01)));
+    if (hit) return hit;
+  }
+  return null;
 }
 
 /** Detect JPEG colour space: SOF component count 4 or Adobe APP14 marker => CMYK. */
@@ -89,6 +112,7 @@ class ArtworkUploader extends HTMLElement {
     const $ = (s) => this.querySelector(s);
     this.t = JSON.parse($('[data-au-strings]').textContent);
     this.variants = JSON.parse($('[data-au-variants]').textContent);
+    const pj = $('[data-au-profile]'); try { this.profile = pj ? JSON.parse(pj.textContent) : {}; } catch (e) { this.profile = {}; }
     this.cfg = {
       sides: Math.min(2, Math.max(1, parseInt(this.dataset.sides, 10) || 1)),
       bleed: parseFloat(this.dataset.bleed) || 0.125,
@@ -122,9 +146,24 @@ class ArtworkUploader extends HTMLElement {
   get form() { return document.getElementById(this.dataset.formId); }
 
   /* ---------- template geometry ---------- */
-  /** Precedence: variant print_spec metaobject > product metafields/block settings > Size option parse. */
+  /**
+   * Precedence: variant print_spec override > profile size matching the variant's size option >
+   * product print_spec > product metafields/block settings > Size option parse.
+   */
+  pickSpec(v) {
+    const p = this.profile || {};
+    if (v && v.spec) return v.spec;
+    const opts = this.cfg.sizeIndex >= 0 && v ? [v.options[this.cfg.sizeIndex], ...v.options] : v?.options;
+    return matchSize(p.sizes, opts) || p.product_spec || null;
+  }
   resolveSpec(v) {
-    const sp = (v && v.spec) || {}; const b = this.base; const special = parseSpecial(sp.special);
+    const p = this.profile || {};
+    const sp = { ...(this.pickSpec(v) || {}) };
+    if (!sp.special && p.mode) sp.special = p.mode;
+    if (!sp.formats && p.formats) sp.formats = p.formats;
+    if (!parseSpecial(sp.special).has('apparel_area')) { const os = sidesFromOptions(v?.options); if (os) sp.sides = os; }
+    this.spec = sp;
+    const b = this.base; const special = parseSpecial(sp.special);
     const large = special.has('large_format'); const apparel = special.has('apparel_area');
     const specMin = num(sp.min_dpi); const specWarn = num(sp.warn_dpi);
     let formats = sp.formats; if (typeof formats === 'string') { try { formats = JSON.parse(formats); } catch (e) { formats = formats.split(/[,;|\s]+/); } }
@@ -148,6 +187,12 @@ class ArtworkUploader extends HTMLElement {
     this.cfg.minDpi = this.cfg.warnDpi;
     this.querySelector('[data-au-tile="back"]').hidden = this.cfg.sides < 2;
     this.querySelector('[data-au-tab="back"]').hidden = this.cfg.sides < 2;
+    const accept = this.cfg.formats.map((f) => `.${f}`).join(',');
+    this.querySelectorAll('[data-au-input]').forEach((i) => { i.accept = accept; });
+    const guide = [p.guidance, sp.notes].filter(Boolean).join('\n');
+    this.querySelectorAll('[data-au-guidance]').forEach((el) => { el.textContent = guide; el.hidden = !guide; });
+    const tl = this.querySelector('[data-au-template-link]');
+    if (tl) { tl.href = p.template_url || '#'; this.querySelector('[data-au-template-link-row]').hidden = !p.template_url; }
   }
   setVariant(id) {
     const v = this.variants.find((x) => String(x.id) === String(id)) || this.variants[0];
@@ -438,7 +483,9 @@ class ArtworkUploader extends HTMLElement {
     const needed = this.cfg.sides; const done = (this.state.front.file ? 1 : 0) + (needed === 2 && this.state.back.file ? 1 : 0);
     this.querySelectorAll('[data-au-count]').forEach((el) => { el.textContent = fmt(this.t.files_uploaded, { done, total: needed }); });
     const doc = this.doc;
-    this.querySelector('[data-au-template-label]').textContent = this.trim ? fmt(this.t.template, { w: r2(this.trim.w), h: r2(this.trim.h), bw: r2(doc.w), bh: r2(doc.h), dpi: this.cfg.minDpi }) : this.t.no_template;
+    const tpl = this.trim ? fmt(this.t.template, { w: r2(this.trim.w), h: r2(this.trim.h), bw: r2(doc.w), bh: r2(doc.h), dpi: this.cfg.minDpi }) : this.t.no_template;
+    const name = this.spec?.label || this.profile?.name;
+    this.querySelector('[data-au-template-label]').textContent = name && this.trim ? `${fmt(this.t.spec_line, { name, w: r2(this.trim.w), h: r2(this.trim.h), sides: needed, dpi: this.cfg.minDpi })}. ${tpl}` : tpl;
     ['front', 'back'].forEach((k) => {
       const tile = this.querySelector(`[data-au-tile="${k}"]`); const s = this.state[k];
       tile.classList.toggle('is-done', !!s.file);

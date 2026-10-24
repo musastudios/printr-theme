@@ -407,6 +407,8 @@
     "pdf_pages": "PDF has {pages} pages; this product prints {sides} side(s).",
     "pdf_failed": "Couldn't read {name} for preview; it will still be attached and checked by our team.",
     "no_preview": "{name} can't be previewed in the browser. Only file type and size were checked; our team will review it.",
+    "download_template": "Download the print template",
+    "spec_line": "{name}: {w}\" × {h}\" · {sides} file(s) · min {dpi} DPI",
     "no_template": "Select a size to see the print template.",
     "template": "Trim {w}\" x {h}\" · with bleed {bw}\" x {bh}\" · {dpi} DPI recommended",
     "auto_rotate": "Auto-rotate",

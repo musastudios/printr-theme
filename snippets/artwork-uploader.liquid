@@ -17,6 +17,12 @@
   assign terms_url = terms_url | default: block.settings.terms_url | default: settings.artwork_terms_url | default: '/pages/artwork-terms'
   assign uid = 'AU-' | append: section_id
   assign mf = product.metafields.custom
+  assign profile = mf.print_profile.value
+  assign product_spec = mf.print_spec.value | default: profile.default_size.value
+  assign template_url = profile.template_url.value
+  if profile.template_file.value != blank
+    assign template_url = profile.template_file.value.url | default: template_url
+  endif
   assign sides = mf.sides.value | default: block.settings.sides | default: 1
   assign sides = sides | plus: 0
   assign bleed = mf.bleed_in.value | default: block.settings.bleed_in | default: 0.125
@@ -53,15 +59,30 @@
   <script type="application/json" data-au-variants>
     [
       {%- for v in product.variants -%}
-        {%- assign spec = v.metafields.custom.print_spec.value -%}
         {"id":{{ v.id }},"options":{{ v.options | json }}
-        {%- if spec != blank -%}
-          ,"spec":{"trim_w_in":{{ spec.trim_w_in.value | json }},"trim_h_in":{{ spec.trim_h_in.value | json }},"bleed_in":{{ spec.bleed_in.value | json }},"safe_in":{{ spec.safe_in.value | json }},"min_dpi":{{ spec.min_dpi.value | json }},"warn_dpi":{{ spec.warn_dpi.value | json }},"sides":{{ spec.sides.value | json }},"pages":{{ spec.pages.value | json }},"formats":{{ spec.formats.value | json }},"special":{{ spec.special.value | json }},"panels":{{ spec.panels.value | json }}}
+        {%- if v.metafields.custom.print_spec.value != blank -%}
+          ,"spec":{% render 'print-spec-json', spec: v.metafields.custom.print_spec.value %}
         {%- endif -%}
         }
         {%- unless forloop.last -%},{%- endunless -%}
       {%- endfor -%}
     ]
+  </script>
+  <script type="application/json" data-au-profile>
+    {
+      "name":{{ profile.name.value | json }},
+      "mode":{{ profile.mode.value | json }},
+      "color_mode":{{ profile.color_mode.value | json }},
+      "formats":{{ profile.formats.value | json }},
+      "guidance":{{ profile.guidance.value | json }},
+      "template_url":{{ template_url | json }},
+      "product_spec":{% render 'print-spec-json', spec: product_spec %},
+      "sizes":[
+        {%- for sz in profile.sizes.value -%}
+          {% render 'print-spec-json', spec: sz %}{%- unless forloop.last -%},{%- endunless -%}
+        {%- endfor -%}
+      ]
+    }
   </script>
   <script type="application/json" data-au-strings>
     {
@@ -84,6 +105,7 @@
       "pdf_failed": {{ 'artwork.pdf_failed' | t | json }},
       "no_preview": {{ 'artwork.no_preview' | t | json }},
       "no_template": {{ 'artwork.no_template' | t | json }},
+      "spec_line": {{ 'artwork.spec_line' | t | json }},
       "auto_rotate": {{ 'artwork.auto_rotate' | t | json }},
       "front": {{ 'artwork.front' | t | json }},
       "back": {{ 'artwork.back' | t | json }},
@@ -121,6 +143,8 @@
       </button>
       <p class="au__count" id="{{ uid }}-count" data-au-count></p>
       <p class="au__template" data-au-template-label></p>
+      <p class="au__guidance" data-au-guidance hidden></p>
+      <p class="au__template-link" data-au-template-link-row hidden><a href="#" data-au-template-link target="_blank" rel="noopener">{{ 'artwork.download_template' | t }}</a></p>
     </div>
     {%- unless standalone -%}
       <label class="au__check" data-au-later-row>
@@ -225,6 +249,7 @@
       {%- comment -%} Right: preflight {%- endcomment -%}
       <section class="au__col au__preflight" aria-labelledby="{{ uid }}-pfh">
         <h3 id="{{ uid }}-pfh" class="h6">{{ 'artwork.preflight' | t }} <span class="au__badge" data-au-badge>0</span></h3>
+        <p class="au__guidance" data-au-guidance hidden></p>
         <ul class="au__warnings" data-au-warnings aria-live="polite" aria-relevant="all"></ul>
       </section>
     </div>
@@ -254,6 +279,9 @@
   .au__title, .au__count, .au__template, .au__status { margin: 0; }
   .au__count, .au__template { font-size: 1.4rem; opacity: .8; }
   .au__status:empty { display: none; }
+  .au__guidance { margin: 0; font-size: 1.3rem; padding: .8rem 1rem; border-left: 4px solid #1e6bff; border-radius: 4px; background: rgba(30,107,255,.06); white-space: pre-line; }
+  .au__guidance[hidden], .au__template-link[hidden] { display: none; }
+  .au__template-link { margin: 0; font-size: 1.4rem; }
   .au__qa { display: flex; gap: .8rem; align-items: flex-start; cursor: pointer; }
   .au__later { font-size: 1.4rem; display: grid; gap: .8rem; padding: 1rem; border-radius: var(--radius); background: rgba(0,0,0,.03); }
   .au__later p { margin: 0; }
