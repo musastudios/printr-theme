@@ -1,0 +1,37 @@
+/* Spotlight picks: hovering a list item swaps the stage image (CSS only). */
+.spotlight { display: grid; gap: 4rem; align-items: center; }
+@media (min-width: 990px) { .spotlight { grid-template-columns: 1fr 1fr; } }
+.spotlight__list { list-style: none; padding: 0; margin: 2.4rem 0 0; counter-reset: s; }
+.spotlight__link { display: grid; grid-template-columns: 4.8rem 1fr auto; gap: 1.6rem; align-items: baseline; padding: 2rem 0; border-bottom: 1px solid rgb(var(--color-border)); text-decoration: none; transition: padding .3s, color .3s; }
+.spotlight__price { font-weight: 600; }
+.spotlight__num { font-family: var(--font-heading-family); opacity: .5; }
+.spotlight__title { font-family: var(--font-heading-family); font-size: clamp(2rem, 2.6vw, 3.2rem); line-height: 1.1; }
+.spotlight__link:hover, .spotlight__link:focus-visible { padding-left: 1.2rem; color: var(--m); }
+.spotlight__stage { position: relative; --ratio: .85; }
+.spotlight__img { position: absolute; inset: 0; opacity: 0; scale: 1.04; transition: opacity .5s, scale .8s; }
+.spotlight__img img, .spotlight__img svg { width: 100%; height: 100%; object-fit: cover; }
+.spotlight__img:first-child { opacity: 1; scale: 1; }
+.spotlight:has(.spotlight__item:nth-child(1) :is(:hover, :focus-visible)) .spotlight__img { opacity: 0; }
+.spotlight:has(.spotlight__item:nth-child(1) :is(:hover, :focus-visible)) .spotlight__img:nth-child(1) { opacity: 1; scale: 1; }
+.spotlight:has(.spotlight__item:nth-child(2) :is(:hover, :focus-visible)) .spotlight__img { opacity: 0; }
+.spotlight:has(.spotlight__item:nth-child(2) :is(:hover, :focus-visible)) .spotlight__img:nth-child(2) { opacity: 1; scale: 1; }
+.spotlight:has(.spotlight__item:nth-child(3) :is(:hover, :focus-visible)) .spotlight__img { opacity: 0; }
+.spotlight:has(.spotlight__item:nth-child(3) :is(:hover, :focus-visible)) .spotlight__img:nth-child(3) { opacity: 1; scale: 1; }
+.spotlight:has(.spotlight__item:nth-child(4) :is(:hover, :focus-visible)) .spotlight__img { opacity: 0; }
+.spotlight:has(.spotlight__item:nth-child(4) :is(:hover, :focus-visible)) .spotlight__img:nth-child(4) { opacity: 1; scale: 1; }
+.spotlight:has(.spotlight__item:nth-child(5) :is(:hover, :focus-visible)) .spotlight__img { opacity: 0; }
+.spotlight:has(.spotlight__item:nth-child(5) :is(:hover, :focus-visible)) .spotlight__img:nth-child(5) { opacity: 1; scale: 1; }
+.spotlight:has(.spotlight__item:nth-child(6) :is(:hover, :focus-visible)) .spotlight__img { opacity: 0; }
+.spotlight:has(.spotlight__item:nth-child(6) :is(:hover, :focus-visible)) .spotlight__img:nth-child(6) { opacity: 1; scale: 1; }
+.spotlight:has(.spotlight__item:nth-child(7) :is(:hover, :focus-visible)) .spotlight__img { opacity: 0; }
+.spotlight:has(.spotlight__item:nth-child(7) :is(:hover, :focus-visible)) .spotlight__img:nth-child(7) { opacity: 1; scale: 1; }
+.spotlight:has(.spotlight__item:nth-child(8) :is(:hover, :focus-visible)) .spotlight__img { opacity: 0; }
+.spotlight:has(.spotlight__item:nth-child(8) :is(:hover, :focus-visible)) .spotlight__img:nth-child(8) { opacity: 1; scale: 1; }
+.spotlight:has(.spotlight__item:nth-child(9) :is(:hover, :focus-visible)) .spotlight__img { opacity: 0; }
+.spotlight:has(.spotlight__item:nth-child(9) :is(:hover, :focus-visible)) .spotlight__img:nth-child(9) { opacity: 1; scale: 1; }
+.spotlight:has(.spotlight__item:nth-child(10) :is(:hover, :focus-visible)) .spotlight__img { opacity: 0; }
+.spotlight:has(.spotlight__item:nth-child(10) :is(:hover, :focus-visible)) .spotlight__img:nth-child(10) { opacity: 1; scale: 1; }
+.spotlight:has(.spotlight__item:nth-child(11) :is(:hover, :focus-visible)) .spotlight__img { opacity: 0; }
+.spotlight:has(.spotlight__item:nth-child(11) :is(:hover, :focus-visible)) .spotlight__img:nth-child(11) { opacity: 1; scale: 1; }
+.spotlight:has(.spotlight__item:nth-child(12) :is(:hover, :focus-visible)) .spotlight__img { opacity: 0; }
+.spotlight:has(.spotlight__item:nth-child(12) :is(:hover, :focus-visible)) .spotlight__img:nth-child(12) { opacity: 1; scale: 1; }
