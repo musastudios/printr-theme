@@ -1,22 +1,53 @@
 {
   "sections": {
+    "circles": {
+      "type": "category-circles",
+      "settings": {
+        "heading": "",
+        "collections": [
+          "business-cards",
+          "postcards",
+          "flyers",
+          "brochures",
+          "stickers-labels",
+          "banners",
+          "flags",
+          "signs",
+          "apparel"
+        ],
+        "show_sale": true,
+        "sale_badge": "Sale",
+        "sale_label": "On sale",
+        "sale_link": "/collections/sale",
+        "color_scheme": "scheme-1"
+      }
+    },
     "hero": {
       "type": "slideshow",
+      "settings": {
+        "autoplay": true,
+        "speed": 6,
+        "full_width": false,
+        "height": 70,
+        "height_mobile": 60,
+        "effect": "slide"
+      },
       "blocks": {
         "s1": {
           "type": "slide",
           "settings": {
+            "image": "shopify://shop_images/printr-hero-cards.jpg",
             "color_scheme": "scheme-4",
             "style": "overlay",
             "position": "center",
-            "overlay": 40
+            "overlay": 45
           },
           "blocks": {
             "h": {
               "type": "heading",
               "settings": {
-                "heading": "Cards that leave a mark",
                 "slug": "Business cards",
+                "heading": "Cards that leave a mark",
                 "tag": "h1",
                 "size": "h1",
                 "alignment": "center"
@@ -25,80 +56,170 @@
             "t": {
               "type": "text",
               "settings": {
-                "text": "<p>16pt premium stock, matte, gloss or soft-touch. From 100 to 10,000.</p>"
+                "text": "<p>Premium stocks, rounded or square corners, ready in as little as 48 hours.</p>",
+                "alignment": "center"
               }
             },
-            "b": {
-              "type": "button",
+            "g": {
+              "type": "group",
               "settings": {
-                "label": "Design yours"
-              }
+                "direction": "row",
+                "gap": 12
+              },
+              "blocks": {
+                "b1": {
+                  "type": "button",
+                  "settings": {
+                    "label": "Shop business cards",
+                    "link": "shopify://collections/business-cards",
+                    "style": "primary"
+                  }
+                },
+                "b2": {
+                  "type": "button",
+                  "settings": {
+                    "label": "See all products",
+                    "link": "shopify://collections/all-print-products",
+                    "style": "secondary"
+                  }
+                }
+              },
+              "block_order": [
+                "b1",
+                "b2"
+              ]
             }
           },
           "block_order": [
             "h",
             "t",
-            "b"
+            "g"
           ]
         },
         "s2": {
           "type": "slide",
           "settings": {
+            "image": "shopify://shop_images/printr-hero-large-format.jpg",
             "color_scheme": "scheme-2",
             "style": "overlay",
             "position": "center",
-            "overlay": 40
+            "overlay": 45
           },
           "blocks": {
             "h": {
               "type": "heading",
               "settings": {
-                "heading": "Flags & banners, full bleed",
                 "slug": "Large format",
+                "heading": "Go big with banners, flags and signs",
+                "tag": "h2",
                 "size": "h1",
                 "alignment": "center"
               }
             },
-            "b": {
-              "type": "button",
+            "t": {
+              "type": "text",
               "settings": {
-                "label": "Shop flags"
+                "text": "<p>Vivid, weather-ready prints for storefronts, trade shows and events.</p>",
+                "alignment": "center"
               }
+            },
+            "g": {
+              "type": "group",
+              "settings": {
+                "direction": "row",
+                "gap": 12
+              },
+              "blocks": {
+                "b1": {
+                  "type": "button",
+                  "settings": {
+                    "label": "Shop large format",
+                    "link": "shopify://collections/banners",
+                    "style": "primary"
+                  }
+                },
+                "b2": {
+                  "type": "button",
+                  "settings": {
+                    "label": "Shop signs",
+                    "link": "shopify://collections/signs",
+                    "style": "secondary"
+                  }
+                }
+              },
+              "block_order": [
+                "b1",
+                "b2"
+              ]
             }
           },
           "block_order": [
             "h",
-            "b"
+            "t",
+            "g"
           ]
         },
         "s3": {
           "type": "slide",
           "settings": {
+            "image": "shopify://shop_images/printr-hero-stickers.jpg",
+            "color_scheme": "scheme-4",
             "style": "overlay",
             "position": "center",
-            "overlay": 40
+            "overlay": 45
           },
           "blocks": {
             "h": {
               "type": "heading",
               "settings": {
                 "slug": "Stickers & labels",
-                "heading": "Die-cut to any shape",
+                "heading": "Stick your brand everywhere",
                 "tag": "h2",
                 "size": "h1",
                 "alignment": "center"
               }
             },
-            "b": {
-              "type": "button",
+            "t": {
+              "type": "text",
               "settings": {
-                "label": "Shop stickers"
+                "text": "<p>Custom die-cut stickers and roll labels in any shape and size.</p>",
+                "alignment": "center"
               }
+            },
+            "g": {
+              "type": "group",
+              "settings": {
+                "direction": "row",
+                "gap": 12
+              },
+              "blocks": {
+                "b1": {
+                  "type": "button",
+                  "settings": {
+                    "label": "Shop stickers",
+                    "link": "shopify://collections/stickers-labels",
+                    "style": "primary"
+                  }
+                },
+                "b2": {
+                  "type": "button",
+                  "settings": {
+                    "label": "On sale",
+                    "link": "shopify://collections/sale",
+                    "style": "secondary"
+                  }
+                }
+              },
+              "block_order": [
+                "b1",
+                "b2"
+              ]
             }
           },
           "block_order": [
             "h",
-            "b"
+            "t",
+            "g"
           ]
         }
       },
@@ -106,15 +227,56 @@
         "s1",
         "s2",
         "s3"
-      ],
+      ]
+    },
+    "features": {
+      "type": "multicolumn",
       "settings": {
-        "autoplay": true,
-        "speed": 6,
-        "full_width": false,
-        "height": 70,
-        "height_mobile": 60,
-        "effect": "slide"
-      }
+        "heading": "",
+        "columns": 4,
+        "compact": true,
+        "color_scheme": "scheme-1"
+      },
+      "blocks": {
+        "f1": {
+          "type": "icon-column",
+          "settings": {
+            "icon": "clock",
+            "title": "Fast turnaround",
+            "text": "<p>Most everyday print ready in 2 to 4 business days.</p>"
+          }
+        },
+        "f2": {
+          "type": "icon-column",
+          "settings": {
+            "icon": "print",
+            "title": "Premium stocks",
+            "text": "<p>Silk, soft-touch, heavy cardstock and specialty finishes.</p>"
+          }
+        },
+        "f3": {
+          "type": "icon-column",
+          "settings": {
+            "icon": "check",
+            "title": "Free file check",
+            "text": "<p>We review every file for bleed, resolution and color.</p>"
+          }
+        },
+        "f4": {
+          "type": "icon-column",
+          "settings": {
+            "icon": "truck",
+            "title": "Volume pricing",
+            "text": "<p>The more you print, the less you pay per piece.</p>"
+          }
+        }
+      },
+      "block_order": [
+        "f1",
+        "f2",
+        "f3",
+        "f4"
+      ]
     },
     "marquee": {
       "type": "marquee",
@@ -164,38 +326,79 @@
     },
     "collections": {
       "type": "collection-list",
+      "settings": {
+        "heading": "Shop by product",
+        "layout": "grid",
+        "columns": 4,
+        "color_scheme": "scheme-1"
+      },
       "blocks": {
         "c1": {
-          "type": "collection"
+          "type": "collection",
+          "settings": {
+            "collection": "business-cards"
+          }
         },
         "c2": {
-          "type": "collection"
+          "type": "collection",
+          "settings": {
+            "collection": "postcards"
+          }
         },
         "c3": {
-          "type": "collection"
+          "type": "collection",
+          "settings": {
+            "collection": "flyers"
+          }
         },
         "c4": {
-          "type": "collection"
+          "type": "collection",
+          "settings": {
+            "collection": "brochures"
+          }
+        },
+        "c5": {
+          "type": "collection",
+          "settings": {
+            "collection": "stickers-labels"
+          }
+        },
+        "c6": {
+          "type": "collection",
+          "settings": {
+            "collection": "banners"
+          }
+        },
+        "c7": {
+          "type": "collection",
+          "settings": {
+            "collection": "signs"
+          }
+        },
+        "c8": {
+          "type": "collection",
+          "settings": {
+            "collection": "apparel"
+          }
         }
       },
       "block_order": [
         "c1",
         "c2",
         "c3",
-        "c4"
-      ],
-      "settings": {
-        "heading": "Shop by product",
-        "layout": "grid",
-        "columns": 4,
-        "color_scheme": "scheme-1"
-      }
+        "c4",
+        "c5",
+        "c6",
+        "c7",
+        "c8"
+      ]
     },
     "featured": {
       "type": "featured-collection",
       "settings": {
         "slug": "Bestsellers",
-        "heading": "Most printed this week",
+        "heading": "Business cards",
+        "collection": "business-cards",
         "limit": 8,
         "columns": 4,
         "color_scheme": "scheme-1"
@@ -204,33 +407,66 @@
     "promo": {
       "type": "promo-banner",
       "settings": {
+        "slug": "Volume pricing",
+        "heading": "Order more, save more on every print job",
+        "button": "Shop deals",
+        "link": "shopify://collections/sale",
         "color_scheme": "scheme-3"
+      }
+    },
+    "featured_postcards": {
+      "type": "featured-collection",
+      "settings": {
+        "slug": "Marketing",
+        "heading": "Postcards",
+        "collection": "postcards",
+        "limit": 8,
+        "columns": 4,
+        "color_scheme": "scheme-1"
       }
     },
     "tabs": {
       "type": "collection-tabs",
+      "settings": {
+        "heading": "Explore our print range",
+        "color_scheme": "scheme-1"
+      },
       "blocks": {
         "t1": {
           "type": "tab",
           "settings": {
-            "label": "Cards"
+            "label": "Cards",
+            "collection": "business-cards"
           }
         },
         "t2": {
           "type": "tab",
           "settings": {
-            "label": "Large format"
+            "label": "Marketing",
+            "collection": "postcards"
+          }
+        },
+        "t3": {
+          "type": "tab",
+          "settings": {
+            "label": "Large format",
+            "collection": "banners"
+          }
+        },
+        "t4": {
+          "type": "tab",
+          "settings": {
+            "label": "Stickers",
+            "collection": "stickers-labels"
           }
         }
       },
       "block_order": [
         "t1",
-        "t2"
-      ],
-      "settings": {
-        "heading": "Explore our print range",
-        "color_scheme": "scheme-1"
-      }
+        "t2",
+        "t3",
+        "t4"
+      ]
     },
     "iwt": {
       "type": "image-with-text",
@@ -251,7 +487,8 @@
         "b": {
           "type": "button",
           "settings": {
-            "label": "Get a quote"
+            "label": "File setup guide",
+            "link": "/pages/file-setup-guide"
           }
         }
       },
@@ -261,29 +498,119 @@
         "b"
       ],
       "settings": {
-        "color_scheme": "scheme-2"
+        "color_scheme": "scheme-2",
+        "image": "shopify://shop_images/printr-promo.jpg"
       }
+    },
+    "gallery": {
+      "type": "scrolling-gallery",
+      "settings": {
+        "heading": "Printed for businesses like yours",
+        "speed": 30,
+        "color_scheme": "scheme-1"
+      },
+      "blocks": {
+        "g1": {
+          "type": "image",
+          "settings": {
+            "image": "shopify://shop_images/printr-business-cards.jpg",
+            "link": "shopify://collections/business-cards"
+          }
+        },
+        "g2": {
+          "type": "image",
+          "settings": {
+            "image": "shopify://shop_images/printr-flyers.jpg",
+            "link": "shopify://collections/flyers"
+          }
+        },
+        "g3": {
+          "type": "image",
+          "settings": {
+            "image": "shopify://shop_images/printr-banners.jpg",
+            "link": "shopify://collections/banners"
+          }
+        },
+        "g4": {
+          "type": "image",
+          "settings": {
+            "image": "shopify://shop_images/printr-stickers.jpg",
+            "link": "shopify://collections/stickers-labels"
+          }
+        },
+        "g5": {
+          "type": "image",
+          "settings": {
+            "image": "shopify://shop_images/printr-flags.jpg",
+            "link": "shopify://collections/flags"
+          }
+        },
+        "g6": {
+          "type": "image",
+          "settings": {
+            "image": "shopify://shop_images/printr-apparel.jpg",
+            "link": "shopify://collections/apparel"
+          }
+        },
+        "g7": {
+          "type": "image",
+          "settings": {
+            "image": "shopify://shop_images/printr-signs.jpg",
+            "link": "shopify://collections/signs"
+          }
+        },
+        "g8": {
+          "type": "image",
+          "settings": {
+            "image": "shopify://shop_images/printr-brochures.jpg",
+            "link": "shopify://collections/brochures"
+          }
+        }
+      },
+      "block_order": [
+        "g1",
+        "g2",
+        "g3",
+        "g4",
+        "g5",
+        "g6",
+        "g7",
+        "g8"
+      ]
     },
     "testimonials": {
       "type": "multicolumn",
+      "settings": {
+        "heading": "Loved by local businesses",
+        "columns": 3,
+        "color_scheme": "scheme-1"
+      },
       "blocks": {
         "q1": {
-          "type": "testimonial"
+          "type": "testimonial",
+          "settings": {
+            "rating": 5,
+            "author": "M. R.",
+            "role": "Restaurant owner",
+            "quote": "<p>Our menus and flyers came out sharp and on time. The file check caught a bleed issue before printing.</p>"
+          }
         },
         "q2": {
           "type": "testimonial",
           "settings": {
-            "author": "Luis P.",
-            "role": "Realtor",
-            "quote": "<p>The quantity pricing made it easy to order 2,500 cards for the whole team.</p>"
+            "rating": 5,
+            "author": "L. P.",
+            "role": "Real estate agent",
+            "quote": "<p>Volume pricing made it easy to order cards for the whole team.</p>"
           }
         },
         "q3": {
           "type": "testimonial",
           "settings": {
-            "author": "Ana G.",
+            "rating": 5,
+            "author": "A. G.",
             "role": "Event planner",
-            "quote": "<p>Our flags arrived vibrant and sturdy. Will order again.</p>"
+            "quote": "<p>Our banners and flags arrived vibrant and sturdy. We will order again.</p>"
           }
         }
       },
@@ -291,65 +618,21 @@
         "q1",
         "q2",
         "q3"
-      ],
-      "settings": {
-        "heading": "Loved by local businesses",
-        "columns": 3,
-        "color_scheme": "scheme-1"
-      }
-    },
-    "spotlight_picks": {
-      "type": "spotlight-picks",
-      "settings": {}
-    },
-    "lookbook": {
-      "type": "lookbook",
-      "settings": {}
-    },
-    "favorite_products": {
-      "type": "favorite-products",
-      "settings": {}
-    },
-    "scrolling_gallery": {
-      "type": "scrolling-gallery",
-      "settings": {}
-    },
-    "comparison_table": {
-      "type": "comparison-table",
-      "settings": {}
-    },
-    "buttons_with_icon": {
-      "type": "buttons-with-icon",
-      "settings": {}
-    },
-    "circles": {
-      "type": "category-circles",
-      "settings": {
-        "heading": "",
-        "show_sale": true,
-        "sale_badge": "Sale",
-        "sale_label": "Sale items",
-        "sale_link": "/collections/all",
-        "color_scheme": "scheme-1"
-      }
+      ]
     }
   },
   "order": [
     "circles",
     "hero",
+    "features",
     "marquee",
     "collections",
     "featured",
     "promo",
+    "featured_postcards",
     "tabs",
     "iwt",
-    "spotlight_picks",
-    "lookbook",
-    "favorite_products",
-    "scrolling_gallery",
-    "comparison_table",
-    "buttons_with_icon",
+    "gallery",
     "testimonials"
   ]
 }
-

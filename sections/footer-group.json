@@ -5,24 +5,95 @@
     "trust": {
       "type": "multicolumn",
       "blocks": {
-        "t1": { "type": "icon-column", "settings": { "icon": "truck", "title": "Fast shipping", "text": "<p>Island-wide and US delivery.</p>" } },
-        "t2": { "type": "icon-column", "settings": { "icon": "print", "title": "Free proof", "text": "<p>We check every file before printing.</p>" } },
-        "t3": { "type": "icon-column", "settings": { "icon": "clock", "title": "Same-day option", "text": "<p>Order by noon, pick up today.</p>" } },
-        "t4": { "type": "icon-column", "settings": { "icon": "chat", "title": "Real support", "text": "<p>Talk to a print expert.</p>" } }
+        "t1": {
+          "type": "icon-column",
+          "settings": {
+            "icon": "truck",
+            "title": "Fast shipping",
+            "text": "<p>Island-wide and US delivery.</p>"
+          }
+        },
+        "t2": {
+          "type": "icon-column",
+          "settings": {
+            "icon": "print",
+            "title": "Free proof",
+            "text": "<p>We check every file before printing.</p>"
+          }
+        },
+        "t3": {
+          "type": "icon-column",
+          "settings": {
+            "icon": "check",
+            "title": "Free file check",
+            "text": "<p>Every file reviewed before it prints.</p>"
+          }
+        },
+        "t4": {
+          "type": "icon-column",
+          "settings": {
+            "icon": "chat",
+            "title": "Real support",
+            "text": "<p>Talk to a print expert.</p>"
+          }
+        }
       },
-      "block_order": ["t1", "t2", "t3", "t4"],
-      "settings": { "columns": 4, "compact": true, "color_scheme": "scheme-1" }
+      "block_order": [
+        "t1",
+        "t2",
+        "t3",
+        "t4"
+      ],
+      "settings": {
+        "columns": 4,
+        "compact": true,
+        "color_scheme": "scheme-1"
+      }
     },
     "footer": {
       "type": "footer",
       "blocks": {
-        "m1": { "type": "menu", "settings": { "heading": "Shop", "menu": "main-menu" } },
-        "m2": { "type": "menu", "settings": { "heading": "Help", "menu": "footer" } },
-        "n1": { "type": "newsletter", "settings": { "heading": "Ink-fresh deals" } }
+        "m1": {
+          "type": "menu",
+          "settings": {
+            "heading": "Shop",
+            "menu": "footer-shop"
+          }
+        },
+        "m2": {
+          "type": "menu",
+          "settings": {
+            "heading": "Help",
+            "menu": "footer-help"
+          }
+        },
+        "n1": {
+          "type": "newsletter",
+          "settings": {
+            "heading": "Get print deals and new product news"
+          }
+        },
+        "m3": {
+          "type": "menu",
+          "settings": {
+            "heading": "Company",
+            "menu": "footer-company"
+          }
+        }
       },
-      "block_order": ["m1", "m2", "n1"],
-      "settings": { "color_scheme": "scheme-5" }
+      "block_order": [
+        "m1",
+        "m2",
+        "m3",
+        "n1"
+      ],
+      "settings": {
+        "color_scheme": "scheme-5"
+      }
     }
   },
-  "order": ["trust", "footer"]
+  "order": [
+    "trust",
+    "footer"
+  ]
 }

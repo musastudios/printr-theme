@@ -14,7 +14,7 @@
         "store_link": "/pages/contact",
         "store_label": "Find a store",
         "customer_account_menu": "customer-account-main-menu",
-        "mega_collection": "automated-collection"
+        "mega_collection": "all-print-products"
       }
     },
     "topbar": {
@@ -23,7 +23,7 @@
         "m1": {
           "type": "message",
           "settings": {
-            "text": "Free shipping over $99 \u00b7 48-hour business cards"
+            "text": "Free shipping over $99 · 48-hour business cards"
           }
         },
         "m2": {
@@ -38,10 +38,10 @@
         "m2"
       ],
       "settings": {
-        "menu": "footer",
+        "menu": "utility-menu",
         "show_country": true,
         "show_language": true,
-        "show_social": true,
+        "show_social": false,
         "color_scheme": "scheme-5"
       }
     }
