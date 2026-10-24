@@ -17,7 +17,8 @@
 -%}
 <div class="price">
   {%- if show_from and product.price_varies -%}
-    <span>{{ 'products.product.from_price' | t: price: price | money }}</span>
+    {%- assign price_formatted = price | money -%}
+    <span>{{ 'products.product.from_price' | t: price: price_formatted }}</span>
   {%- elsif compare > price -%}
     <span class="visually-hidden">{{ 'products.product.sale_price' | t }}</span>
     <span>{{ price | money }}</span>
