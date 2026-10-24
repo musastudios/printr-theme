@@ -1,56 +1,53 @@
-/*
- * ------------------------------------------------------------
- * IMPORTANT: The contents of this file are auto-generated.
- *
- * This file may be updated by the Shopify admin theme editor
- * or related systems. Please exercise caution as any changes
- * made to this file may be overwritten.
- * ------------------------------------------------------------
- */
 {
   "type": "header",
   "name": "Header group",
   "sections": {
-    "announcement": {
-      "type": "announcement-bar",
+    "header": {
+      "type": "header",
+      "settings": {
+        "menu": "main-menu",
+        "sticky": true,
+        "color_scheme": "scheme-1",
+        "highlight_item": "On Sale",
+        "show_categories": true,
+        "search_placeholder": "What do you want to print?",
+        "store_link": "/pages/contact",
+        "store_label": "Find a store",
+        "customer_account_menu": "customer-account-main-menu",
+        "mega_collection": "automated-collection"
+      }
+    },
+    "topbar": {
+      "type": "topbar",
       "blocks": {
-        "a1": {
-          "type": "announcement",
+        "m1": {
+          "type": "message",
           "settings": {
-            "text": "Free shipping over $99 · 48-hour cards",
-            "link": ""
+            "text": "Free shipping over $99 \u00b7 48-hour business cards"
           }
         },
-        "a2": {
-          "type": "announcement",
+        "m2": {
+          "type": "message",
           "settings": {
-            "text": "Volume pricing: the more you print, the less you pay",
-            "link": ""
+            "text": "Volume pricing: the more you print, the less you pay"
           }
         }
       },
       "block_order": [
-        "a1",
-        "a2"
+        "m1",
+        "m2"
       ],
       "settings": {
-        "color_scheme": "scheme-5",
-        "show_localization": true
-      }
-    },
-    "header": {
-      "type": "header",
-      "settings": {
-        "customer_account_menu": "customer-account-main-menu",
-        "menu": "main-menu",
-        "mega_collection": "automated-collection",
-        "sticky": true,
-        "color_scheme": "scheme-1"
+        "menu": "footer",
+        "show_country": true,
+        "show_language": true,
+        "show_social": true,
+        "color_scheme": "scheme-5"
       }
     }
   },
   "order": [
-    "announcement",
+    "topbar",
     "header"
   ]
 }
