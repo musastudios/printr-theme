@@ -8,7 +8,8 @@
   {% render 'product-buy', product: product, variant: variant, section_id: section.id %}
 {% enddoc %}
 <product-form class="product-buy" data-swap="buy">
-  {%- form 'product', product, id: 'ProductForm-' | append: section_id, novalidate: 'novalidate' -%}
+  {%- assign form_id = 'ProductForm-' | append: section_id -%}
+  {%- form 'product', variant.product, id: form_id, novalidate: 'novalidate' -%}
     <input type="hidden" name="id" value="{{ variant.id }}">
     {%- if show_artwork -%}
       <div class="field">

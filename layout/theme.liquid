@@ -49,7 +49,7 @@
         compareRemoved: {{ 'products.compare.removed' | t | json }},
         compareCleared: {{ 'products.compare.cleared' | t | json }},
         remove: {{ 'general.remove' | t | json }},
-        moreLoaded: {{ 'sections.collection.more_loaded' | t: count: '{{ count }}' | json }},
+        moreLoaded: {{ 'sections.collection.more_loaded' | t: count: '__COUNT__' | json }},
         noRates: {{ 'sections.cart.estimate.none' | t | json }},
         free: {{ 'sections.cart.estimate.free' | t | json }}
       };

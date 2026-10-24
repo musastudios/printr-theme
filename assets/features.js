@@ -178,7 +178,7 @@ class LoadMore extends HTMLElement {
       items.forEach((li) => grid.append(li));
       const nextEl = doc.querySelector('load-more');
       this.querySelector('[data-progress]')?.replaceWith(nextEl?.querySelector('[data-progress]') || '');
-      announce(t('moreLoaded').replace('{{ count }}', items.length));
+      announce(t('moreLoaded').replace('__COUNT__', items.length));
       grid.children[grid.children.length - items.length]?.querySelector('a')?.focus({ preventScroll: true });
       if (nextEl?.dataset.next) { this.dataset.next = nextEl.dataset.next; } else { this.remove(); }
       document.dispatchEvent(new CustomEvent('reveal:scan'));
