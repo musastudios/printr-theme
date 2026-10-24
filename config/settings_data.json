@@ -30,10 +30,11 @@
       "newsletter-popup": {
         "type": "newsletter-popup",
         "settings": {
-          "enable": false,
+          "enable": true,
           "delay": 10,
           "frequency": 14,
           "exit_intent": true,
+          "image": "shopify://shop_images/caguas-copy-circle-business-cards.jpg",
           "slug": "First order",
           "heading": "10% off your first print run",
           "text": "<p>Join for printing tips, new paper stocks and members-only deals.</p>",
