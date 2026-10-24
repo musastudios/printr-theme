@@ -4,6 +4,7 @@
     <div><span class="slug">{{ order.created_at | time_tag: format: 'date_at_time' }}</span><h1 class="h2">{{ 'customer.order.title' | t: name: order.name }}</h1></div>
   </div>
   {%- if order.cancelled -%}<p class="form-error" role="status">{%- assign cancel_date = order.cancelled_at | date: format: 'date' -%}{{ 'customer.order.cancelled' | t: date: cancel_date }} — {{ order.cancel_reason_label }}</p>{%- endif -%}
+  {% render 'artwork-pending', order: order, notice: true %}
   <div class="account__grid">
     <div class="table-scroll" role="region" tabindex="0" aria-label="{{ 'customer.order.title' | t: name: order.name }}">
       <table class="account-table">

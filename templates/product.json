@@ -58,6 +58,12 @@
             "hide_qa": true,
             "quote_url": "/pages/design-services"
           }
+        },
+        "artwork": {
+          "type": "artwork_uploader",
+          "settings": {
+            "terms_url": "/pages/artwork-terms"
+          }
         }
       },
       "block_order": [
@@ -66,6 +72,7 @@
         "picker",
         "tiers",
         "turn",
+        "artwork",
         "ds",
         "buy",
         "pickup",

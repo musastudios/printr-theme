@@ -346,6 +346,13 @@
       "title": "Elige una nueva contraseña",
       "subtext": "Escribe una nueva contraseña para tu cuenta.",
       "submit": "Restablecer contraseña"
+    },
+    "artwork": {
+      "pending_title": "Arte pendiente",
+      "pending_list": "Estas órdenes esperan tu arte:",
+      "pending_order": "Esta orden espera tu arte. La producción comienza cuando lo recibamos.",
+      "upload": "Subir arte",
+      "received": "Arte recibido"
     }
   },
   "artwork": {
@@ -408,7 +415,7 @@
     "choice_legend": "¿Cómo enviarás el arte?",
     "mode_upload": "Subir ahora",
     "mode_later": "Enviar arte después de pagar",
-    "later_help": "Después de pagar, envía tus archivos a shopprintr@gmail.com con tu número de orden en el asunto. La producción comienza cuando los recibamos.",
+    "later_help": "Después de pagar, súbelo desde Mi cuenta → tu orden (o /pages/upload-artwork) o envíalo a shopprintr@gmail.com con tu número de orden. La producción comienza cuando recibamos tus archivos.",
     "later_confirm": "Enviaré mis archivos a shopprintr@gmail.com con mi número de orden",
     "qa_label": "Pre-flight y revisión por diseñador",
     "qa_help": "Un diseñador de nuestro equipo revisa y corrige tus archivos (tamaño, sangrado, resolución, color) antes de imprimir.",
@@ -423,7 +430,17 @@
     "pages_mismatch": "El PDF tiene {pages} páginas; este producto espera {expected}.",
     "fold_label": "Línea de doblez",
     "brief_help": "Escogiste {tier}: no tienes que subir nada ahora. Después de pagar te enviaremos por email un enlace para enviar tu archivo actual (si tienes) y una breve descripción: logo, texto, colores, referencias y fecha límite.",
-    "brief_qa_included": "El pre-flight QA está incluido con tu servicio de diseño."
+    "brief_qa_included": "El pre-flight QA está incluido con tu servicio de diseño.",
+    "step_label": "Paso 1 de 2 · Requerido antes de pagar",
+    "cta": "Sube tu arte",
+    "cta_sub": "Arrastra un archivo aquí o haz clic · PDF, JPG, PNG, TIF, EPS · lo revisamos al instante",
+    "later_toggle": "Enviaré mi arte después (por email o desde mi cuenta luego de pagar)",
+    "policy_html": "Acepto los <a href=\"{{ url }}\" target=\"_blank\" rel=\"noopener\">términos de subida de arte</a>: tengo los derechos para usar este arte, soy responsable de su contenido y ortografía, y el preflight es una revisión técnica, no una corrección de textos.",
+    "policy_required": "Acepta los términos de subida de arte para continuar.",
+    "art_required": "Sube tu arte (debe pasar el preflight) o marca “Enviaré mi arte después”.",
+    "gate_ok": "Listo. Tu opción de arte se guarda con este artículo.",
+    "buy_now": "Comprar ahora",
+    "buy_now_error": "No se pudo iniciar el pago. Intenta Añadir al carrito."
   },
   "artwork_dropoff": {
     "subject_prefix": "Order",
@@ -440,7 +457,16 @@
     "col_specs": "Especificaciones",
     "col_template": "Plantilla",
     "download": "Descargar",
-    "mail_body": "Hola PRINTR, adjunto el arte para la orden {order}.\n\nProducto(s):\nNotas:\n"
+    "mail_body": "Hola PRINTR, adjunto el arte para la orden {order}.\n\nProducto(s):\nNotas:\n",
+    "up_heading": "Sube el arte de una orden existente",
+    "order_num": "Número de orden",
+    "email": "Email de la orden",
+    "submit": "Enviar arte",
+    "sending": "Subiendo…",
+    "sent": "¡Gracias! Recibimos tu arte para la orden {order}. Te escribiremos si algo necesita atención.",
+    "fallback": "La subida en línea no está disponible ahora. Se abrirá tu app de email: adjunta tus archivos y envía.",
+    "failed": "La subida falló. Usa el botón de email abajo.",
+    "need_order": "Escribe tu número de orden y email."
   },
   "design_service": {
     "legend": "Ayuda de diseño (opcional)",

@@ -44,3 +44,38 @@ Effective DPI = pixels / inches covered at the current placement (cover-fit × u
 **QA add-on:** block setting *Pre-flight & QA fee product*. When checked, the form's `formdata` event rewrites the payload into `items[0]…` (parent incl. files) + `items[1]` (fee, qty 1, `_for`=product title, `_artwork_link`, `_artwork_fee`) in the same `/cart/add.js` request. Parent gets `_artwork_link` + `Pre-flight QA: Yes`. `theme.js` `removeOrphanFees()` runs after every cart change and on cart page/drawer load and zeroes fee lines whose parent link is gone.
 
 **Send-later page:** `templates/page.upload-artwork.json` → `sections/artwork-dropoff.liquid` (+ `assets/artwork-dropoff.js`, reads `?order=#1234` into a mailto). Email notification snippet: `docs/order-confirmation-artwork.md`.
+
+## Hard gate (v2)
+
+The artwork block (`templates/product.json` → `artwork`, before `ds`/`buy`) is step 1. Add to cart, Buy it now and the sticky bar stay `aria-disabled` (capture-phase click/keydown/submit guards, helper text via `aria-describedby`) until:
+
+- **Art:** a file passed preflight, **or** "I'll send my artwork later" is ticked (adds `properties[Artwork]=Will send after checkout`), **or** a paid Design Service tier is chosen; **and**
+- **Policy:** the required terms checkbox (EN/ES, links to `artwork_terms_url`, default `/pages/artwork-terms`) is ticked → `properties[Artwork terms]=Accepted <ISO time>`.
+
+### Buy it now decision
+
+Shopify's dynamic checkout (`payment_button`) skips multipart file upload and line-item extras (help.shopify.com/en/manual/online-store/dynamic-checkout/compatibility; Dawn #509/#731). Files, QA and Design lines would be lost. On products **with** the artwork block, `product-buy` renders a theme "Buy it now" button (same shape as Add to cart). It POSTs `new FormData(form)` to `/cart/add.js` (files plus formdata hooks), then goes to `/checkout`. Trade-off: no Shop Pay / Apple Pay express button on those products, and `/checkout` contains anything already in the cart. Products without the block keep native `payment_button`, now with rounded corners.
+
+## Send-later → upload after paying
+
+- **Customer accounts:** legacy (classic) account templates are theme Liquid, so `snippets/artwork-pending` adds a notice to `main-account` (list) and `main-order`. New customer accounts can't be themed; that needs a Customer Account UI extension (app). **Recommendation: keep legacy accounts** (Settings → Customer accounts) or build the extension later.
+- A line is pending when it has `Artwork: Will send after checkout` and the order isn't tagged `artwork-received` (or cancelled). The link goes to `/pages/upload-artwork?order=#1234&email=…`.
+- `/pages/upload-artwork` (section `artwork-dropoff`, "Show online uploader") reuses the same uploader, preflight and terms checkbox in standalone mode. It POSTs multipart (`order`, `email`, `shop`, `properties[...]`) to `artwork_upload_endpoint`. With no endpoint, or on failure, it opens `mailto:` with the order number.
+
+### Proposed backend
+
+**Cloudflare Worker + R2 (recommended):** it verifies the order name + email via the Admin API (`read_orders`), stores the files in R2 under `orders/<name>/`, adds the order tag `artwork-received` plus a note/metafield with the file links (`write_orders`), and emails the shop. Shopify Forms can't take file uploads or tag orders, so it only works as a contact fallback.
+
+## Needs Juan's approval
+
+1. Create the `/pages/artwork-terms` page (the policy text is legal copy) and the `upload-artwork` page using that template.
+2. Set up the Worker/R2 and a custom app Admin API token (`read_orders`, `write_orders`), then set the endpoint in Theme settings.
+3. Keep legacy customer accounts, or fund a UI extension.
+4. Accept losing express-wallet Buy it now on artwork products.
+5. Publishing / merging to main.
+
+## Risks / untested
+
+- Quick view (`quick-view-content`) has no gate, so products can be added from it without art or terms.
+- Not tested on a live checkout. That includes file properties reaching the order and `/checkout` redirects with existing cart items.
+- The order-page notice relies on the exact property string `Will send after checkout`.

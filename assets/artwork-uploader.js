@@ -110,7 +110,12 @@ class ArtworkUploader extends HTMLElement {
     document.addEventListener('variant:change', (e) => { this.setVariant(e.detail.variantId); this.applyGate(); });
     // Capture-phase guard so the theme's ProductForm (and native submit) never fire while blocked.
     document.addEventListener('submit', (e) => this.guard(e), true);
-    document.addEventListener('click', (e) => { if (e.target.closest(`#${this.dataset.formId} .shopify-payment-button`) && this.blocked()) { e.preventDefault(); e.stopPropagation(); this.openStudio(); } }, true);
+    // Capture-phase click guard for every buy control tied to this form (submit, theme Buy it now, native payment button, sticky bar).
+    document.addEventListener('click', (e) => this.onBuyClick(e), true);
+    document.addEventListener('keydown', (e) => { if ((e.key === 'Enter' || e.key === ' ') && e.target.closest?.('[aria-disabled="true"][data-au-blocked]')) { e.preventDefault(); this.onBuyClick(e); } }, true);
+    // The buy block is re-rendered on variant change; re-apply the gate to the new buttons.
+    const buyBlock = document.getElementById(`BuyBlock-${this.dataset.section}`);
+    if (buyBlock) new MutationObserver(() => this.applyGate()).observe(buyBlock, { childList: true, subtree: true });
     this.update();
   }
   blankSide() { return { file: null, ext: '', source: null, pxW: 0, pxH: 0, pdf: null, rot: 0, scale: 1, x: 0, y: 0, history: [], issues: [] }; }
@@ -172,8 +177,16 @@ class ArtworkUploader extends HTMLElement {
     q('[data-au-remove]').forEach((b) => b.addEventListener('click', () => this.removeFile(b.dataset.auRemove)));
     this.querySelector('[data-au-browse]').addEventListener('click', () => this.input(this.active)?.click());
     this.querySelector('[data-au-confirm]').addEventListener('change', () => this.update());
-    q('[data-au-mode]').forEach((r) => r.addEventListener('change', () => { if (r.checked) { this.mode = r.value; this.update(); } }));
-    this.querySelector('[data-au-email-confirm]').addEventListener('change', () => this.update());
+    this.querySelector('[data-au-later-toggle]')?.addEventListener('change', (e) => { this.mode = e.target.checked ? 'later' : 'upload'; this.update(); });
+    this.querySelector('[data-au-policy]').addEventListener('change', () => this.update());
+    // The big CTA is also a drop target: dropping a file opens the studio with it loaded.
+    const cta = this.querySelector('[data-au-open]');
+    ['dragenter', 'dragover'].forEach((t) => cta.addEventListener(t, (e) => { e.preventDefault(); cta.classList.add('is-over'); }));
+    ['dragleave', 'drop'].forEach((t) => cta.addEventListener(t, () => cta.classList.remove('is-over')));
+    cta.addEventListener('drop', (e) => {
+      e.preventDefault(); const f = e.dataTransfer.files[0]; if (!f) return;
+      this.openStudio(); const inp = this.input('front'); const dt = new DataTransfer(); dt.items.add(f); inp.files = dt.files; this.onFile('front', f);
+    });
     this.querySelector('[data-au-qa]')?.addEventListener('change', () => this.update());
     // Rewrite the product form payload into an items[] array so the QA fee joins the same /cart/add call.
     // formdata does not bubble; capture at document so the hook survives the buy form being re-rendered on variant change.
@@ -351,24 +364,72 @@ class ArtworkUploader extends HTMLElement {
     });
     return list;
   }
-  blocked() {
-    if (this.brief) return false;
-    if (this.mode === 'later') return this.querySelector('[data-au-email-confirm]').checked ? false : 'email_required';
+  /** Art gate (file passed preflight, send-later ticked, or paid Design Service) then the terms checkbox. */
+  artBlocked() {
+    if (this.brief || this.mode === 'later') return false;
+    const needed = this.cfg.sides === 2 ? ['front', 'back'] : ['front'];
+    if (!needed.some((k) => this.state[k].file)) return 'art_required';
     const issues = this.allIssues();
     if (issues.some((i) => i.level === 'error')) return 'blocked';
     if (issues.some((i) => i.level === 'warning') && !this.querySelector('[data-au-confirm]').checked) return 'confirm_needed';
     return false;
   }
+  blocked() { return this.artBlocked() || (this.querySelector('[data-au-policy]').checked ? false : 'policy_required'); }
+  explain(b) {
+    this.querySelector('[data-au-status]').textContent = this.t[b];
+    if (b === 'policy_required') { if (this.dialog.open) this.dialog.close(); const p = this.querySelector('[data-au-policy]'); p.scrollIntoView({ block: 'center', behavior: 'smooth' }); p.focus({ preventScroll: true }); }
+    else if (b === 'art_required') { this.scrollIntoView({ block: 'start', behavior: 'smooth' }); this.querySelector('[data-au-open]').focus({ preventScroll: true }); }
+    else this.openStudio();
+  }
   guard(e) {
     if (e.target !== this.form) return;
     const b = this.blocked();
-    if (b) { e.preventDefault(); e.stopImmediatePropagation(); this.openStudio(); this.querySelector('[data-au-status]').textContent = this.t[b]; }
+    if (b) { e.preventDefault(); e.stopImmediatePropagation(); this.explain(b); }
+  }
+  /** Every control that can put this item in the cart or start checkout. */
+  buyButtons() {
+    const f = this.form; if (!f) return [];
+    const list = [...f.querySelectorAll('[type="submit"], [data-buy-now], .shopify-payment-button__button')];
+    if (!this.dataset.standalone) list.push(...document.querySelectorAll('.sticky-buy .button'));
+    return list;
+  }
+  onBuyClick(e) {
+    const t = e.target.closest?.('button, [role="button"], .shopify-payment-button'); if (!t) return;
+    const f = this.form; if (!f) return;
+    const inForm = f.contains(t) || t.closest('.sticky-buy'); if (!inForm) return;
+    const isBuy = t.matches('[type="submit"], [data-buy-now], .sticky-buy .button') || t.closest('.shopify-payment-button');
+    if (!isBuy) return;
+    const b = this.blocked();
+    if (b) { e.preventDefault(); e.stopImmediatePropagation(); this.explain(b); return; }
+    if (t.matches('[data-buy-now]')) { e.preventDefault(); this.buyNow(t); }
+  }
+  /** Theme Buy it now: native accelerated checkout drops file properties and linked lines, so add to cart
+   * with the same FormData (fires `formdata`, so QA/Design lines join) then go to /checkout. */
+  async buyNow(btn) {
+    if (btn.getAttribute('aria-busy') === 'true') return;
+    btn.setAttribute('aria-busy', 'true');
+    try {
+      const res = await fetch(`${window.routes?.cart_add_url || '/cart/add'}.js`, { method: 'POST', headers: { Accept: 'application/json' }, body: new FormData(this.form) });
+      if (!res.ok) { const j = await res.json().catch(() => ({})); throw new Error(j.description || j.message || this.t.buy_now_error); }
+      window.location.href = `${window.Shopify?.routes?.root || '/'}checkout`;
+    } catch (err) {
+      btn.removeAttribute('aria-busy');
+      const el = this.form.querySelector('[data-form-error]') || this.querySelector('[data-au-status]');
+      el.hidden = false; el.textContent = err.message || this.t.buy_now_error;
+    }
   }
   applyGate() {
-    const btn = this.form?.querySelector('[type="submit"]'); if (!btn) return;
-    const b = this.blocked();
-    if (b) { btn.disabled = true; btn.dataset.auBlocked = 'true'; btn.title = this.t[b]; }
-    else if (btn.dataset.auBlocked) { delete btn.dataset.auBlocked; btn.removeAttribute('title'); btn.disabled = false; }
+    const b = this.blocked(); const statusId = this.querySelector('[data-au-status]').id;
+    this.classList.toggle('is-ready', !b);
+    this.buyButtons().forEach((btn) => {
+      if (b) {
+        btn.setAttribute('aria-disabled', 'true'); btn.dataset.auBlocked = 'true'; btn.title = this.t[b];
+        const d = (btn.getAttribute('aria-describedby') || '').split(' ').filter(Boolean); if (!d.includes(statusId)) btn.setAttribute('aria-describedby', [...d, statusId].join(' '));
+      } else if (btn.dataset.auBlocked) {
+        delete btn.dataset.auBlocked; btn.removeAttribute('title'); btn.removeAttribute('aria-disabled');
+      }
+    });
+    this.form?.querySelectorAll('.shopify-payment-button').forEach((w) => w.classList.toggle('is-au-blocked', !!b));
   }
 
   /* ---------- render ---------- */
@@ -398,18 +459,20 @@ class ArtworkUploader extends HTMLElement {
     this.querySelector('[data-au-scale]').value = Math.round(this.side.scale * 100);
     this.drop.hidden = !!this.side.source;
     const brief = this.brief; const later = this.mode === 'later' || brief;
-    this.querySelector('[data-au-choice]').hidden = brief;
+    const laterRow = this.querySelector('[data-au-later-row]'); if (laterRow) laterRow.hidden = brief;
     this.querySelector('[data-au-brief]').hidden = !brief;
     if (brief) this.querySelector('[data-au-brief-text]').textContent = fmt(this.t.brief_help, { tier: this.design.name });
-    this.querySelector('[data-au-later]').hidden = !(this.mode === 'later') || brief;
+    const laterBox = this.querySelector('[data-au-later]'); if (laterBox) laterBox.hidden = !(this.mode === 'later') || brief;
     this.querySelector('[data-au-upload-ui]').hidden = later;
-    const lp = this.querySelector('[data-au-later-prop]'); lp.disabled = !later; lp.value = brief ? BRIEF_PROP : 'Will send after checkout';
+    const lp = this.querySelector('[data-au-later-prop]'); if (lp) { lp.disabled = !later; lp.value = brief ? BRIEF_PROP : 'Will send after checkout'; }
+    const pol = this.querySelector('[data-au-policy]'); const pp = this.querySelector('[data-au-policy-prop]');
+    pp.disabled = !pol.checked; if (pol.checked && !pp.value) pp.value = `Accepted ${new Date().toISOString()}`; if (!pol.checked) pp.value = '';
     this.querySelectorAll('[data-au-input]').forEach((i) => { i.disabled = later; });
     const qaRow = this.querySelector('[data-au-qa-row]'); if (qaRow) { qaRow.hidden = this.qaHidden; this.querySelector('[data-au-qa]').disabled = this.qaHidden; }
     const badge = this.querySelector('[data-au-qa-badge]'); if (badge) badge.hidden = !later;
     this.writeProps(issues);
     if (later) this.querySelectorAll('[data-au-prop]').forEach((el) => { el.disabled = true; });
-    const b = this.blocked(); this.querySelector('[data-au-status]').textContent = b ? this.t[b] : '';
+    const b = this.blocked(); this.querySelector('[data-au-status]').textContent = b ? this.t[b] : this.t.gate_ok;
     this.applyGate(); this.draw();
   }
   writeProps(issues) {

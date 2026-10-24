@@ -9,6 +9,12 @@
     <div>
       <h2 class="h3">{{ 'customer.orders.title' | t }}</h2>
       {%- paginate customer.orders by 10 -%}
+        {%- capture art_items -%}{%- for order in customer.orders -%}{% render 'artwork-pending', order: order %}{%- endfor -%}{%- endcapture -%}
+        {%- if art_items != blank -%}
+          <div class="art-pending" role="status">
+            <div><p><strong>{{ 'customer.artwork.pending_title' | t }}</strong> — {{ 'customer.artwork.pending_list' | t }}</p><ul>{{ art_items }}</ul></div>
+          </div>
+        {%- endif -%}
         {%- if customer.orders.size > 0 -%}
           <div class="table-scroll" role="region" tabindex="0" aria-label="{{ 'customer.orders.title' | t }}">
             <table class="account-table">

@@ -346,6 +346,13 @@
       "title": "Choose a new password",
       "subtext": "Enter a new password for your account.",
       "submit": "Reset password"
+    },
+    "artwork": {
+      "pending_title": "Artwork needed",
+      "pending_list": "These orders are waiting for your artwork:",
+      "pending_order": "This order is waiting for your artwork. Production starts once we receive it.",
+      "upload": "Upload artwork",
+      "received": "Artwork received"
     }
   },
   "artwork": {
@@ -408,7 +415,7 @@
     "choice_legend": "How will you provide artwork?",
     "mode_upload": "Upload now",
     "mode_later": "Send artwork after checkout",
-    "later_help": "After checkout, email your files to shopprintr@gmail.com with your order number in the subject. Production starts once we receive them.",
+    "later_help": "After checkout, upload from My account → your order (or /pages/upload-artwork) or email shopprintr@gmail.com with your order number. Production starts once we receive your files.",
     "later_confirm": "I'll email my files to shopprintr@gmail.com with my order number",
     "qa_label": "Pre-flight & designer QA",
     "qa_help": "A designer on our team checks and fixes your files (size, bleed, resolution, colour) before printing.",
@@ -423,7 +430,17 @@
     "pages_mismatch": "PDF has {pages} pages; this product expects {expected}.",
     "fold_label": "Fold line",
     "brief_help": "You chose {tier}: no upload needed now. After checkout we'll email you a link to send your current file (if any) and a short brief: logo, text, colors, references and deadline.",
-    "brief_qa_included": "Pre-flight QA is included with your design service."
+    "brief_qa_included": "Pre-flight QA is included with your design service.",
+    "step_label": "Step 1 of 2 · Required before checkout",
+    "cta": "Upload your artwork",
+    "cta_sub": "Drop a file here or click · PDF, JPG, PNG, TIF, EPS · we check it instantly",
+    "later_toggle": "I'll send my artwork later (email or from my account after paying)",
+    "policy_html": "I accept the <a href=\"{{ url }}\" target=\"_blank\" rel=\"noopener\">artwork upload terms</a>: I have the rights to use this artwork, I am responsible for its content and spelling, and preflight is a technical check, not proofreading.",
+    "policy_required": "Accept the artwork upload terms to continue.",
+    "art_required": "Upload your artwork (it must pass preflight) or tick “I’ll send my artwork later”.",
+    "gate_ok": "Ready. Your artwork choice is saved with this item.",
+    "buy_now": "Buy it now",
+    "buy_now_error": "Could not start checkout. Try Add to cart."
   },
   "artwork_dropoff": {
     "subject_prefix": "Order",
@@ -440,7 +457,16 @@
     "col_specs": "Specs",
     "col_template": "Template",
     "download": "Download",
-    "mail_body": "Hi PRINTR, attached is the artwork for order {order}.\n\nProduct(s):\nNotes:\n"
+    "mail_body": "Hi PRINTR, attached is the artwork for order {order}.\n\nProduct(s):\nNotes:\n",
+    "up_heading": "Upload artwork for an existing order",
+    "order_num": "Order number",
+    "email": "Order email",
+    "submit": "Submit artwork",
+    "sending": "Uploading…",
+    "sent": "Thanks! We received your artwork for order {order}. We will email you if anything needs attention.",
+    "fallback": "Online upload is not available right now. Your email app will open: attach your files and send.",
+    "failed": "Upload failed. Use the email button below instead.",
+    "need_order": "Enter your order number and email."
   },
   "design_service": {
     "legend": "Design help (optional)",

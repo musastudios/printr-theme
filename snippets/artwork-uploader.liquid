@@ -1,14 +1,20 @@
 {% doc %}
   Artwork upload + client-side preflight studio. Files are attached to the line item
   through native line item property file inputs associated with the product form.
-  @param {product} product - Product being configured
+  @param {product} [product] - Product being configured (omit on the upload-artwork page)
   @param {string} section_id - Section id (used to target ProductForm-<section_id>)
-  @param {object} block - Block with uploader settings
+  @param {object} [block] - Block with uploader settings
+  @param {string} [form_id] - Form to attach to (defaults to ProductForm-<section_id>)
+  @param {boolean} [standalone] - Post-checkout upload page: no send-later, QA or cart gate extras
+  @param {string} [terms_url] - Artwork terms page URL
   @example
   {% render 'artwork-uploader', product: product, section_id: section.id, block: block %}
 {% enddoc %}
 {%- liquid
-  assign form_id = 'ProductForm-' | append: section_id
+  if form_id == blank
+    assign form_id = 'ProductForm-' | append: section_id
+  endif
+  assign terms_url = terms_url | default: block.settings.terms_url | default: settings.artwork_terms_url | default: '/pages/artwork-terms'
   assign uid = 'AU-' | append: section_id
   assign mf = product.metafields.custom
   assign sides = mf.sides.value | default: block.settings.sides | default: 1
@@ -41,6 +47,8 @@
   data-variant="{{ product.selected_or_first_available_variant.id }}"
   data-fee-variant="{{ block.settings.qa_product.selected_or_first_available_variant.id }}"
   data-product-title="{{ product.title | escape }}"
+  data-section="{{ section_id }}"
+  {% if standalone %}data-standalone{% endif %}
 >
   <script type="application/json" data-au-variants>
     [
@@ -90,38 +98,52 @@
       "pages_mismatch": {{ 'artwork.pages_mismatch' | t | json }},
       "fold_label": {{ 'artwork.fold_label' | t | json }},
       "confirm_needed": {{ 'artwork.confirm_needed' | t | json }},
-      "brief_help": {{ 'artwork.brief_help' | t | json }}
+      "brief_help": {{ 'artwork.brief_help' | t | json }},
+      "policy_required": {{ 'artwork.policy_required' | t | json }},
+      "art_required": {{ 'artwork.art_required' | t | json }},
+      "gate_ok": {{ 'artwork.gate_ok' | t | json }},
+      "buy_now_error": {{ 'artwork.buy_now_error' | t | json }}
     }
   </script>
 
   <div class="au__summary">
-    <p class="au__title h5">{{ 'artwork.title' | t }}</p>
-    <fieldset class="au__choice" data-au-choice>
-      <legend class="visually-hidden">{{ 'artwork.choice_legend' | t }}</legend>
-      <label><input type="radio" name="au-mode-{{ section_id }}" value="upload" data-au-mode checked> {{ 'artwork.mode_upload' | t }}</label>
-      <label><input type="radio" name="au-mode-{{ section_id }}" value="later" data-au-mode> {{ 'artwork.mode_later' | t }}</label>
-    </fieldset>
+    <p class="au__step">{{ 'artwork.step_label' | t }}</p>
+    <p class="au__title h4">{{ 'artwork.title' | t }}</p>
     <div class="au__later" data-au-brief hidden>
       <p data-au-brief-text></p>
       {%- if block.settings.qa_product != blank -%}<p data-au-brief-qa>{{ 'artwork.brief_qa_included' | t }}</p>{%- endif -%}
     </div>
-    <div class="au__later" data-au-later hidden>
-      <p>{{ 'artwork.later_help' | t }}</p>
-      <label class="au__confirm"><input type="checkbox" data-au-email-confirm> {{ 'artwork.later_confirm' | t }}</label>
-      <input type="hidden" name="properties[Artwork]" value="Will send after checkout" form="{{ form_id }}" data-au-later-prop disabled>
+    <div class="au__upload" data-au-upload-ui>
+      <button type="button" class="au__cta" data-au-open aria-haspopup="dialog" aria-controls="{{ uid }}-dialog" aria-describedby="{{ uid }}-count">
+        <svg class="au__cta-icon" viewBox="0 0 24 24" width="32" height="32" aria-hidden="true" focusable="false"><path d="M12 16V4m0 0-5 5m5-5 5 5M4 16v3a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-3" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <span class="au__cta-main">{{ 'artwork.cta' | t }}</span>
+        <span class="au__cta-sub">{{ 'artwork.cta_sub' | t }}</span>
+      </button>
+      <p class="au__count" id="{{ uid }}-count" data-au-count></p>
+      <p class="au__template" data-au-template-label></p>
     </div>
-    {%- if block.settings.qa_product != blank -%}
-      <label class="au__qa" data-au-qa-row>
-        <input type="checkbox" data-au-qa>
-        <span><strong>{{ 'artwork.qa_label' | t }} (+{%- if block.settings.qa_product != blank -%}{{ block.settings.qa_product.price | money }}{%- endif -%})</strong> <span class="au__qa-badge" data-au-qa-badge hidden>{{ 'artwork.qa_recommended_badge' | t }}</span><br><small>{{ 'artwork.qa_help' | t }}</small></span>
+    {%- unless standalone -%}
+      <label class="au__check" data-au-later-row>
+        <input type="checkbox" data-au-later-toggle>
+        <span>{{ 'artwork.later_toggle' | t }}</span>
       </label>
-    {%- endif -%}
-    <div data-au-upload-ui>
-    <p class="au__count" data-au-count></p>
-    <p class="au__template" data-au-template-label></p>
-    <button type="button" class="button au__open" data-au-open aria-haspopup="dialog" aria-controls="{{ uid }}-dialog">{{ 'artwork.open_studio' | t }}</button>
-    </div>
-    <p class="au__status" data-au-status aria-live="polite"></p>
+      <div class="au__later" data-au-later hidden>
+        <p>{{ 'artwork.later_help' | t }}</p>
+        <input type="hidden" name="properties[Artwork]" value="Will send after checkout" form="{{ form_id }}" data-au-later-prop disabled>
+      </div>
+      {%- if block.settings.qa_product != blank -%}
+        <label class="au__qa" data-au-qa-row>
+          <input type="checkbox" data-au-qa>
+          <span><strong>{{ 'artwork.qa_label' | t }} (+{{ block.settings.qa_product.price | money }})</strong> <span class="au__qa-badge" data-au-qa-badge hidden>{{ 'artwork.qa_recommended_badge' | t }}</span><br><small>{{ 'artwork.qa_help' | t }}</small></span>
+        </label>
+      {%- endif -%}
+    {%- endunless -%}
+    <label class="au__check au__policy">
+      <input type="checkbox" data-au-policy aria-required="true">
+      <span>{{ 'artwork.policy_html' | t: url: terms_url }}</span>
+    </label>
+    <input type="hidden" name="properties[Artwork terms]" form="{{ form_id }}" data-au-policy-prop disabled>
+    <p class="au__status" id="{{ uid }}-status" data-au-status aria-live="polite"></p>
   </div>
 
   <dialog class="au__dialog" id="{{ uid }}-dialog" aria-labelledby="{{ uid }}-heading">
@@ -216,15 +238,26 @@
 <script src="{{ 'artwork-uploader.js' | asset_url }}" type="module" defer="defer"></script>
 {% stylesheet %}
   .au { display: block; margin-bottom: 1.6rem; }
-  .au__summary { border: 1px solid rgb(var(--color-border)); border-radius: var(--radius); padding: 1.6rem; display: grid; gap: .8rem; }
+  .au__summary { border: 3px solid rgb(var(--color-foreground)); border-radius: var(--radius); padding: 1.6rem; display: grid; gap: 1rem; }
+  .au__step { margin: 0; font-size: 1.2rem; font-weight: 700; letter-spacing: .04em; text-transform: uppercase; color: var(--m); }
+  .au__cta { display: grid; justify-items: center; gap: .4rem; width: 100%; min-height: 12rem; padding: 2rem 1.6rem; border: 3px dashed rgb(var(--color-foreground)); border-radius: var(--radius-button); background: rgba(var(--color-accent), .08); color: inherit; font: inherit; text-align: center; cursor: pointer; transition: background .2s; }
+  .au__cta:hover, .au__cta.is-over { background: rgba(var(--color-accent), .18); }
+  .au__cta:focus-visible { outline: 3px solid rgb(var(--color-accent)); outline-offset: 3px; }
+  .au__cta-main { font-size: 2rem; font-weight: 800; }
+  .au__cta-sub { font-size: 1.3rem; opacity: .8; }
+  .au__check { display: flex; gap: .8rem; align-items: flex-start; cursor: pointer; font-size: 1.4rem; }
+  .au__check input, .au__qa input { width: 2rem; height: 2rem; flex: none; margin: .1rem 0 0; padding: 0; accent-color: rgb(var(--color-foreground)); }
+  .au__policy { border-top: 1px solid rgb(var(--color-border)); padding-top: 1rem; }
+  .au.is-ready .au__summary { border-color: #1a9d55; }
+  .au.is-ready .au__status { color: #1a7a43; }
+  [data-au-later-row][hidden] { display: none; }
   .au__title, .au__count, .au__template, .au__status { margin: 0; }
   .au__count, .au__template { font-size: 1.4rem; opacity: .8; }
   .au__status:empty { display: none; }
-  .au__choice { border: 0; padding: 0; margin: 0; display: grid; gap: .6rem; }
-  .au__choice label, .au__qa { display: flex; gap: .8rem; align-items: flex-start; cursor: pointer; }
+  .au__qa { display: flex; gap: .8rem; align-items: flex-start; cursor: pointer; }
   .au__later { font-size: 1.4rem; display: grid; gap: .8rem; padding: 1rem; border-radius: var(--radius); background: rgba(0,0,0,.03); }
   .au__later p { margin: 0; }
-  .au__later[hidden], .au__choice[hidden], .au__qa[hidden], [data-au-upload-ui][hidden] { display: none; }
+  .au__later[hidden], .au__qa[hidden], [data-au-upload-ui][hidden] { display: none; }
   .au__qa { font-size: 1.4rem; border-top: 1px solid rgb(var(--color-border)); padding-top: .8rem; }
   .au__qa-badge { display: inline-block; padding: 0 .6rem; border-radius: 1rem; background: rgb(var(--color-accent)); color: #fff; font-size: 1.1rem; }
   .au__qa-badge[hidden] { display: none; }

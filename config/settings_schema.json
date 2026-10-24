@@ -371,5 +371,29 @@
         "label": "TikTok"
       }
     ]
+  },
+  {
+    "name": "Artwork uploads",
+    "settings": [
+      {
+        "type": "text",
+        "id": "artwork_terms_url",
+        "label": "Artwork terms page URL",
+        "default": "/pages/artwork-terms",
+        "info": "Linked from the required artwork upload terms checkbox."
+      },
+      {
+        "type": "text",
+        "id": "artwork_upload_endpoint",
+        "label": "Post-checkout upload endpoint",
+        "info": "HTTPS URL (e.g. Cloudflare Worker) that receives order number, email and files from /pages/upload-artwork. Empty = email fallback."
+      },
+      {
+        "type": "text",
+        "id": "artwork_email",
+        "label": "Artwork email",
+        "default": "shopprintr@gmail.com"
+      }
+    ]
   }
 ]
