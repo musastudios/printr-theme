@@ -288,9 +288,17 @@
       <section class="au__files" aria-labelledby="{{ uid }}-uph">
         <h3 id="{{ uid }}-uph" class="au__h2">{{ 'artwork.files_heading' | t }}</h3>
         <p class="au__cnt" data-au-sides-count></p>
-        <div class="au__tiles">
-          <div class="au-fc" data-au-tile="front"{% if 1 == 2 and sides < 2 %} hidden{% endif %}>
-            <div class="au-fc__head"><strong>{{ 'artwork.front' | t }}</strong><span data-au-side-badge="front"></span></div>
+        <div class="au__tiles" role="tablist" aria-orientation="vertical" aria-label="{{ 'artwork.files_heading' | t }}">
+          <div class="au-fc" data-au-tile="front">
+            <button type="button" class="au-fc__sel" role="tab" id="{{ uid }}-sel-front" aria-selected="true" aria-controls="{{ uid }}-panel" data-au-sel="front">
+              <span class="au-thumb" data-au-sel-thumb>{% render 'au-icon', name: 'file-image', size: 22 %}</span>
+              <span class="au-fc__meta">
+                <span class="au-fc__top"><strong>{{ 'artwork.front' | t }}</strong><span class="au-sr">, {{ 'artwork.front_side' | t }}</span><span class="au-fc__badge" data-au-side-badge="front"></span></span>
+                <span class="au-fc__name" data-au-filename></span>
+                <span class="au-fc__sub" data-au-filemeta></span>
+                <span class="au-bar au-bar--sm" data-au-filebar hidden><i></i></span>
+              </span>
+            </button>
             <label class="au-dz" data-au-dz="front">
               {% render 'au-icon', name: 'upload' %}
               <span class="au-dz__main">{{ 'artwork.drop_main' | t }}</span>
@@ -305,22 +313,21 @@
                 data-au-input="front"
               >
             </label>
-            <div class="au-fc__file" data-au-file="front" hidden>
-              <div class="au-fc__row">
-                <span class="au-thumb">{% render 'au-icon', name: 'file-image', size: 22 %}</span>
-                <span class="au-fc__meta"><span class="au-fc__name" data-au-filename></span><span data-au-filemeta></span><span class="au-bar au-bar--sm" data-au-filebar hidden><i></i></span></span>
-              </div>
-              <div class="au-fc__acts">
-                <button type="button" class="au-btn au-btn--ghost au-btn--sm" data-au-replace="front">{% render 'au-icon', name: 'replace' %}{{ 'artwork.fix_replace' | t }}</button>
-                <span class="au-rel">
-                  <button type="button" class="au-btn au-btn--ghost au-btn--icon" data-au-remove="front" aria-label="{{ 'artwork.remove_front' | t }}" aria-describedby="{{ uid }}-tip-rm-front">{% render 'au-icon', name: 'trash-2' %}</button>
-                  <span class="au-tip" role="tooltip" id="{{ uid }}-tip-rm-front">{{ 'artwork.remove' | t }}</span>
-                </span>
-              </div>
+            <div class="au-fc__acts" data-au-file="front" hidden>
+              <button type="button" class="au-btn au-btn--ghost au-btn--sm" data-au-replace="front">{% render 'au-icon', name: 'replace' %}{{ 'artwork.fix_replace' | t }}</button>
+              <button type="button" class="au-btn au-btn--ghost au-btn--sm au-btn--danger" data-au-remove="front" aria-label="{{ 'artwork.remove_front' | t }}">{% render 'au-icon', name: 'trash-2' %}<span aria-hidden="true">{{ 'artwork.remove' | t }}</span></button>
             </div>
           </div>
-          <div class="au-fc" data-au-tile="back"{% if 2 == 2 and sides < 2 %} hidden{% endif %}>
-            <div class="au-fc__head"><strong>{{ 'artwork.back' | t }}</strong><span data-au-side-badge="back"></span></div>
+          <div class="au-fc" data-au-tile="back"{% if sides < 2 %} hidden{% endif %}>
+            <button type="button" class="au-fc__sel" role="tab" id="{{ uid }}-sel-back" aria-selected="false" aria-controls="{{ uid }}-panel" tabindex="-1" data-au-sel="back">
+              <span class="au-thumb" data-au-sel-thumb>{% render 'au-icon', name: 'file-image', size: 22 %}</span>
+              <span class="au-fc__meta">
+                <span class="au-fc__top"><strong>{{ 'artwork.back' | t }}</strong><span class="au-sr">, {{ 'artwork.back_side' | t }}</span><span class="au-fc__badge" data-au-side-badge="back"></span></span>
+                <span class="au-fc__name" data-au-filename></span>
+                <span class="au-fc__sub" data-au-filemeta></span>
+                <span class="au-bar au-bar--sm" data-au-filebar hidden><i></i></span>
+              </span>
+            </button>
             <label class="au-dz" data-au-dz="back">
               {% render 'au-icon', name: 'upload' %}
               <span class="au-dz__main">{{ 'artwork.drop_main' | t }}</span>
@@ -335,18 +342,9 @@
                 data-au-input="back"
               >
             </label>
-            <div class="au-fc__file" data-au-file="back" hidden>
-              <div class="au-fc__row">
-                <span class="au-thumb">{% render 'au-icon', name: 'file-image', size: 22 %}</span>
-                <span class="au-fc__meta"><span class="au-fc__name" data-au-filename></span><span data-au-filemeta></span><span class="au-bar au-bar--sm" data-au-filebar hidden><i></i></span></span>
-              </div>
-              <div class="au-fc__acts">
-                <button type="button" class="au-btn au-btn--ghost au-btn--sm" data-au-replace="back">{% render 'au-icon', name: 'replace' %}{{ 'artwork.fix_replace' | t }}</button>
-                <span class="au-rel">
-                  <button type="button" class="au-btn au-btn--ghost au-btn--icon" data-au-remove="back" aria-label="{{ 'artwork.remove_back' | t }}" aria-describedby="{{ uid }}-tip-rm-back">{% render 'au-icon', name: 'trash-2' %}</button>
-                  <span class="au-tip" role="tooltip" id="{{ uid }}-tip-rm-back">{{ 'artwork.remove' | t }}</span>
-                </span>
-              </div>
+            <div class="au-fc__acts" data-au-file="back" hidden>
+              <button type="button" class="au-btn au-btn--ghost au-btn--sm" data-au-replace="back">{% render 'au-icon', name: 'replace' %}{{ 'artwork.fix_replace' | t }}</button>
+              <button type="button" class="au-btn au-btn--ghost au-btn--sm au-btn--danger" data-au-remove="back" aria-label="{{ 'artwork.remove_back' | t }}">{% render 'au-icon', name: 'trash-2' %}<span aria-hidden="true">{{ 'artwork.remove' | t }}</span></button>
             </div>
           </div>
         </div>
@@ -357,16 +355,17 @@
 
       <section class="au__stage" aria-label="{{ 'artwork.preview' | t }}">
         <div class="au__seg">
-          <div class="au__tabs" role="tablist" aria-label="{{ 'artwork.preview' | t }}">
+          <div class="au__tabs au__tabs--m" role="tablist" aria-label="{{ 'artwork.preview' | t }}">
             <button type="button" role="tab" id="{{ uid }}-tab-front" aria-selected="true" aria-controls="{{ uid }}-panel" data-au-tab="front">{% render 'au-icon', name: 'flip-horizontal-2' %}<span class="au-sr">{{ 'artwork.front_side' | t }}</span><span aria-hidden="true">{{ 'artwork.front' | t }}</span><span data-au-tab-badge="front"></span></button>
             <button type="button" role="tab" id="{{ uid }}-tab-back" aria-selected="false" aria-controls="{{ uid }}-panel" tabindex="-1" data-au-tab="back"{% if sides < 2 %} hidden{% endif %}>{% render 'au-icon', name: 'flip-horizontal-2' %}<span class="au-sr">{{ 'artwork.back_side' | t }}</span><span aria-hidden="true">{{ 'artwork.back' | t }}</span><span data-au-tab-badge="back"></span></button>
           </div>
+          <p class="au__viewing" data-au-viewing aria-hidden="true"></p>
           <button type="button" class="au-btn au-btn--outline au__3d au-hide-m" data-au-act="3d" aria-pressed="false">{% render 'au-icon', name: 'box' %}{{ 'artwork.view_3d' | t }}</button>
         </div>
         <div class="au__tb" role="toolbar" aria-label="{{ 'artwork.tools' | t }}" aria-controls="{{ uid }}-panel">
           <button type="button" class="au-btn au-btn--tool" data-au-act="fit" aria-label="{{ 'artwork.fix_fit' | t }}">{% render 'au-icon', name: 'scan' %}<span aria-hidden="true">{{ 'artwork.tool_fit' | t | split: ' ' | first }}</span></button>
           <button type="button" class="au-btn au-btn--tool" data-au-act="rotate" aria-label="{{ 'artwork.tool_rotate' | t }}" tabindex="-1">{% render 'au-icon', name: 'rotate-cw' %}<span aria-hidden="true">{{ 'artwork.tool_rotate' | t | split: ' ' | first }}</span></button>
-          <button type="button" class="au-btn au-btn--tool" data-au-act="undo" tabindex="-1">{% render 'au-icon', name: 'undo-2' %}{{ 'artwork.tool_undo' | t }}</button>
+          <button type="button" class="au-btn au-btn--tool" data-au-act="undo" aria-label="{{ 'artwork.tool_undo' | t }}" tabindex="-1">{% render 'au-icon', name: 'undo-2' %}<span aria-hidden="true">{{ 'artwork.tool_undo' | t }}</span></button>
           <span class="au__zoom">
             <span class="au-rel">
               <button type="button" class="au-btn au-btn--outline au-btn--icon" data-au-act="zoom-out" aria-label="{{ 'artwork.zoom_out' | t }}" aria-describedby="{{ uid }}-tip-zo" tabindex="-1">{% render 'au-icon', name: 'zoom-out' %}</button>
@@ -394,8 +393,8 @@
             </div>
           </span>
         </div>
-        <div class="au__canvas-wrap" id="{{ uid }}-panel" role="tabpanel" aria-labelledby="{{ uid }}-tab-front" data-au-wrap>
-          <canvas class="au__canvas" data-au-canvas tabindex="0" role="img" aria-label="{{ 'artwork.canvas_label' | t }}"></canvas>
+        <div class="au__canvas-wrap" id="{{ uid }}-panel" role="tabpanel" aria-labelledby="{{ uid }}-sel-front" data-au-wrap>
+          <div class="au__scroller" data-au-scroller><canvas class="au__canvas" data-au-canvas tabindex="0" role="img" aria-label="{{ 'artwork.canvas_label' | t }}"></canvas></div>
           <span class="au__chip" data-au-scale-chip hidden>{% render 'au-icon', name: 'ruler', size: 16 %}<span></span></span>
           <div class="au__drop" data-au-drop>
             {% render 'au-icon', name: 'upload', size: 28 %}
@@ -417,6 +416,7 @@
           </div>
           <div class="au__errbar" data-au-errbar hidden>{% render 'au-icon', name: 'circle-x' %}<span data-au-errbar-text></span></div>
         </div>
+        <div class="au__foot-stage">
         <ul class="au__legend" data-au-legend>
           <li data-lg="bleed"><i class="au-lg au-lg--bleed"></i>{{ 'artwork.lg_bleed' | t }}</li>
           <li data-lg="cut"><i class="au-lg au-lg--cut"></i>{{ 'artwork.lg_cut' | t }}</li>
@@ -427,6 +427,7 @@
           <li data-lg="sleeve" hidden><i class="au-lg au-lg--sleeve"></i>{{ 'artwork.lg_sleeve' | t }}</li>
         </ul>
         <p class="au__hint">{% render 'au-icon', name: 'move', size: 16 %}{{ 'artwork.hint' | t }}</p>
+        </div>
       </section>
 
       <section class="au__pre" aria-labelledby="{{ uid }}-pfh">

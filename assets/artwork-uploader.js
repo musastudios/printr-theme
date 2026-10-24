@@ -114,12 +114,19 @@ const reduced = () => window.matchMedia?.('(prefers-reduced-motion: reduce)').ma
 const wait = (ms) => new Promise((r) => setTimeout(r, reduced() ? 0 : ms));
 const SIDES = ['front', 'back'];
 const el = (tag, cls, html) => { const e = document.createElement(tag); if (cls) e.className = cls; if (html !== undefined) e.innerHTML = html; return e; };
+/* Shopify's `t` filter HTML-escapes non-_html keys, so `| t | json` ships &quot; / &#39; literally. Decode once here. */
+export function decodeEntities(v) {
+  if (typeof v !== 'string' || !v.includes('&')) return v;
+  const ta = document.createElement('textarea'); ta.innerHTML = v; return ta.value;
+}
+const esc = (v) => String(v ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+const FOLD_OPT = /(?:tri|z|half|bi|letter)[- ]?fold|folded/i;
 const LEVEL_RANK = { ok: 0, review: 1, wait: 1, run: 1, warn: 2, err: 3 };
 
 class ArtworkUploader extends HTMLElement {
   connectedCallback() {
     const $ = (s) => this.querySelector(s);
-    this.t = JSON.parse($('[data-au-strings]').textContent);
+    this.t = Object.fromEntries(Object.entries(JSON.parse($('[data-au-strings]').textContent)).map(([k, v]) => [k, decodeEntities(v)]));
     this.variants = JSON.parse($('[data-au-variants]').textContent);
     const pj = $('[data-au-profile]'); try { this.profile = pj ? JSON.parse(pj.textContent) : {}; } catch (e) { this.profile = {}; }
     this.cfg = {
@@ -169,6 +176,10 @@ class ArtworkUploader extends HTMLElement {
     const p = this.profile || {};
     const sp = { ...(this.pickSpec(v) || {}) };
     if (!sp.special && p.mode) sp.special = p.mode;
+    // A fold chosen in a variant option (e.g. Finish "… · Tri-Fold (Letter)") turns a flat profile into a folded piece.
+    const foldOpt = (v?.options || []).find((o) => FOLD_OPT.test(String(o)));
+    this.foldFromOption = !!foldOpt && !parseSpecial(sp.special).has('folds');
+    if (this.foldFromOption) sp.special = [...parseSpecial(sp.special)].concat(String(foldOpt).match(FOLD_OPT)[0]);
     if (!sp.formats && p.formats) sp.formats = p.formats;
     if (!parseSpecial(sp.special).has('apparel_area')) { const os = sidesFromOptions(v?.options); if (os) sp.sides = os; }
     this.spec = sp;
@@ -196,12 +207,13 @@ class ArtworkUploader extends HTMLElement {
     this.cfg.minDpi = this.cfg.warnDpi;
     this.querySelector('[data-au-tile="back"]').hidden = this.cfg.sides < 2;
     this.querySelector('[data-au-tab="back"]').hidden = this.cfg.sides < 2;
+    this.querySelector('[data-au-sel="back"]').hidden = this.cfg.sides < 2;
     if (this.cfg.sides < 2 && this.active === 'back') this.active = 'front';
     const accept = this.cfg.formats.map((f) => `.${f}`).join(',');
     this.querySelectorAll('[data-au-input]').forEach((i) => { i.accept = accept; });
     const fmts = this.cfg.formats.filter((f) => f !== 'jpeg' && f !== 'tiff').join(', ').toUpperCase();
     this.querySelectorAll('[data-au-formats]').forEach((e) => { e.textContent = fmt(this.t.drop_formats, { formats: fmts, max: r2(this.cfg.maxBytes / 1048576) }); });
-    const guide = [p.guidance, sp.notes].filter(Boolean).join('\n');
+    const guide = [decodeEntities(p.guidance), decodeEntities(sp.notes), this.foldFromOption ? fmt(this.t.folds, { n: special.panelCount || 2 }) : ''].filter(Boolean).join('\n');
     this.querySelectorAll('[data-au-guidance]').forEach((e) => { e.textContent = guide; e.hidden = !guide; });
     this.querySelectorAll('[data-au-template-link]').forEach((tl) => { tl.href = p.template_url || '#'; tl.hidden = !p.template_url; });
   }
@@ -254,15 +266,20 @@ class ArtworkUploader extends HTMLElement {
     // Design Service selector: a paid tier means the customer sends a brief after checkout (no upload gate) and QA is included.
     document.addEventListener('design:change', (e) => { if (e.detail.formId === this.dataset.formId) { this.design = e.detail; this.update(); } });
     // tabs: click + roving arrow keys
-    const tabs = () => [...q('[data-au-tab]')].filter((b) => !b.hidden);
-    q('[data-au-tab]').forEach((b) => {
-      b.addEventListener('click', () => this.tab(b.dataset.auTab));
-      b.addEventListener('keydown', (e) => {
-        const l = tabs(); let i = l.indexOf(b);
-        if (e.key === 'ArrowRight') i = (i + 1) % l.length; else if (e.key === 'ArrowLeft') i = (i - 1 + l.length) % l.length; else if (e.key === 'Home') i = 0; else if (e.key === 'End') i = l.length - 1; else return;
-        e.preventDefault(); l[i].focus(); this.tab(l[i].dataset.auTab);
+    // Two tablists drive the same panel: side cards (desktop, vertical) and the compact segmented control (mobile).
+    [['[data-au-tab]', 'auTab'], ['[data-au-sel]', 'auSel']].forEach(([sel, key]) => {
+      const tabs = () => [...q(sel)].filter((b) => !b.hidden && !b.closest('[hidden]'));
+      q(sel).forEach((b) => {
+        b.addEventListener('click', () => this.tab(b.dataset[key]));
+        b.addEventListener('keydown', (e) => {
+          const l = tabs(); let i = l.indexOf(b);
+          if (e.key === 'ArrowRight' || e.key === 'ArrowDown') i = (i + 1) % l.length; else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') i = (i - 1 + l.length) % l.length; else if (e.key === 'Home') i = 0; else if (e.key === 'End') i = l.length - 1; else return;
+          e.preventDefault(); l[i].focus(); this.tab(l[i].dataset[key]);
+        });
       });
     });
+    // clicking empty card space also selects that side
+    q('[data-au-tile]').forEach((t) => t.addEventListener('click', (e) => { if (!e.target.closest('button,label,input,a')) this.tab(t.dataset.auTile); }));
     // toolbar: roving tabindex across its direct controls
     const tb = this.querySelector('[role=toolbar]');
     const tbItems = () => [...tb.querySelectorAll('button')].filter((b) => !b.closest('[role=menu]') && b.offsetParent !== null);
@@ -326,6 +343,7 @@ class ArtworkUploader extends HTMLElement {
       else if (!e.ctrlKey && !e.metaKey && e.key.toLowerCase() === 'r' && this.side.source) { e.preventDefault(); this.act('rotate'); }
     });
     window.addEventListener('resize', () => this.dialog.open && this.draw());
+    if (window.ResizeObserver) { let raf = 0; new ResizeObserver(() => { cancelAnimationFrame(raf); raf = requestAnimationFrame(() => this.dialog.open && this.draw()); }).observe(this.wrap); }
   }
   get qa() { return !this.qaHidden && !!this.querySelector('[data-au-qa]')?.checked && !!this.dataset.feeVariant; }
   get brief() { return !!(this.design && this.design.paid); }
@@ -353,8 +371,9 @@ class ArtworkUploader extends HTMLElement {
   get side() { return this.state[this.active]; }
   tab(name) {
     this.active = name;
-    this.querySelectorAll('[data-au-tab]').forEach((b) => { const on = b.dataset.auTab === name; b.setAttribute('aria-selected', String(on)); b.tabIndex = on ? 0 : -1; });
-    this.wrap.setAttribute('aria-labelledby', this.querySelector(`[data-au-tab="${name}"]`).id);
+    this.querySelectorAll('[data-au-tab],[data-au-sel]').forEach((b) => { const on = (b.dataset.auTab || b.dataset.auSel) === name; b.setAttribute('aria-selected', String(on)); b.tabIndex = on ? 0 : -1; });
+    const mobile = window.matchMedia?.('(max-width: 639px)').matches;
+    this.wrap.setAttribute('aria-labelledby', this.querySelector(mobile ? `[data-au-tab="${name}"]` : `[data-au-sel="${name}"]`).id);
     this.update();
   }
   push() { const s = this.side; s.history.push({ rot: s.rot, scale: s.scale, x: s.x, y: s.y }); if (s.history.length > 50) s.history.shift(); }
@@ -611,7 +630,7 @@ class ArtworkUploader extends HTMLElement {
     rows.push(row('size', this.t.ck_size, doc ? fmt(this.t.ck_size_detail, { w: r2(doc.w), h: r2(doc.h) }) : this.t.no_template, ['pdf_ok', 'pdf_no_bleed', 'pdf_size', 'orientation', 'no_template'], s.source || s.pdf ? 'ok' : 'review', (h) => (h.some((i) => i.key === 'orientation') ? 'autorotate' : 'replace')));
     if (s.pdf) rows.push({ id: 'dpi', label: this.t.ck_dpi, detail: this.t.ck_dpi_vector, st: 'review' });
     else rows.push(row('dpi', this.t.ck_dpi, fmt(this.t.ck_dpi_detail, { dpi: this.cfg.warnDpi }), ['dpi_ok', 'dpi_low', 'dpi_too_low'], s.source ? 'ok' : 'review', 'replace'));
-    if (!s.pdf && s.source) rows.push(row('ratio', this.t.ck_ratio, `${r2(s.pxW / s.pxH)}`, ['aspect'], 'ok', 'fit'));
+    if (!s.pdf && s.source) { const rot = s.rot % 180 !== 0; const ar = rot ? s.pxH / s.pxW : s.pxW / s.pxH; rows.push(row('ratio', this.t.ck_ratio, doc ? `${r2(ar)} · ${this.t.template_short} ${r2(doc.w / doc.h)}` : `${r2(ar)}`, ['aspect'], 'ok', 'fit')); }
     if (sp.has('apparel_area')) {
       rows.push(row('area', this.t.ck_area, this.t.lg_area, ['apparel'], 'ok', 'fit'));
       rows.push({ id: 'bg', label: this.t.ck_bg, detail: '', st: s.ext === 'png' ? 'ok' : 'review' });
@@ -643,7 +662,7 @@ class ArtworkUploader extends HTMLElement {
     if (w) return { cls: 'warn', label: fmt(w === 1 ? this.t.badge_warn_one : this.t.badge_warn, { n: w }), ic: 'triangle-alert', dot: 'warn' };
     return { cls: 'ok', label: this.t.badge_ready, ic: 'circle-check', dot: 'ok' };
   }
-  badge(st) { return `<span class="au-badge au-badge--${st.cls}">${icon(st.ic, 14, st.cls === 'run' ? 'au-spin' : '')}${st.label}</span>`; }
+  badge(st) { return `<span class="au-badge au-badge--${st.cls}">${icon(st.ic, 14, st.cls === 'run' ? 'au-spin' : '')}<span>${esc(st.label)}</span></span>`; }
   renderProgress() {
     const s = this.side; const bar = this.querySelector('[data-au-up-bar]');
     bar.setAttribute('aria-valuenow', s.progress); bar.style.setProperty('--p', `${s.progress}%`);
@@ -662,7 +681,11 @@ class ArtworkUploader extends HTMLElement {
     const name = this.spec?.label || this.profile?.name;
     const specLine = name && this.trim ? fmt(this.t.spec_line, { name, w: r2(this.trim.w), h: r2(this.trim.h), sides: needed, dpi: this.cfg.minDpi }) : '';
     this.querySelector('[data-au-template-label]').textContent = specLine ? `${specLine}. ${tpl}` : tpl;
-    this.querySelector('[data-au-eyebrow]').textContent = [this.dataset.productTitle, specLine.replace(/^[^:]*:\s*/, '') || (this.trim ? `${r2(this.trim.w)}" × ${r2(this.trim.h)}"` : '')].filter(Boolean).join(' · ');
+    const title = decodeEntities(this.dataset.productTitle || ''); const ts = parseSize(title);
+    const titleHasSize = ts && this.trim && ((Math.abs(ts.w - this.trim.w) < 0.01 && Math.abs(ts.h - this.trim.h) < 0.01) || (Math.abs(ts.w - this.trim.h) < 0.01 && Math.abs(ts.h - this.trim.w) < 0.01));
+    let specTail = specLine.replace(/^[^:]*:\s*/, '') || (this.trim ? `${r2(this.trim.w)}" × ${r2(this.trim.h)}"` : '');
+    if (titleHasSize) specTail = specTail.split(' · ').slice(1).join(' · ');
+    const eb = this.querySelector('[data-au-eyebrow]'); eb.textContent = [title, specTail].filter(Boolean).join(' · '); eb.title = eb.textContent;
     const n = this.counts();
     // product card
     this.classList.toggle('has-art', n.any);
@@ -682,26 +705,26 @@ class ArtworkUploader extends HTMLElement {
     // tiles + tab badges
     SIDES.forEach((k) => {
       const tile = this.querySelector(`[data-au-tile="${k}"]`); const s = this.state[k]; const st = this.sideStatus(k);
-      tile.classList.toggle('is-done', !!s.file); tile.classList.toggle('is-active', k === this.active && !s.file);
+      tile.classList.toggle('is-done', !!s.file); tile.classList.toggle('is-active', k === this.active);
       ['ok', 'warn', 'err'].forEach((c) => tile.classList.toggle(`is-${c}`, st.cls === c));
       this.querySelector(`[data-au-side-badge="${k}"]`).innerHTML = this.badge(st);
       tile.querySelector('.au-dz').hidden = !!s.file;
       tile.querySelector('[data-au-file]').hidden = !s.file;
-      if (s.file) {
-        tile.querySelector('[data-au-filename]').textContent = s.file.name;
-        tile.querySelector('[data-au-filemeta]').textContent = `${s.ext.toUpperCase()} · ${r2(s.file.size / 1048576)} MB${s.pxW && !s.pdf ? ` · ${s.pxW}×${s.pxH}px` : ''}`;
-        const th = tile.querySelector('.au-thumb'); if (s.source) this.thumb(th, s); else th.innerHTML = icon('file-image', 22);
-      }
+      const fnEl = tile.querySelector('[data-au-filename]'); const th = tile.querySelector('.au-thumb');
+      fnEl.textContent = s.file ? s.file.name : this.t.badge_needed; fnEl.title = s.file ? s.file.name : '';
+      tile.querySelector('[data-au-filemeta]').textContent = s.file ? `${s.ext.toUpperCase()} · ${r2(s.file.size / 1048576)} MB${s.pxW && !s.pdf ? ` · ${s.pxW}×${s.pxH}px` : ''}` : '';
+      if (s.file && s.source) this.thumb(th, s); else if (th.dataset.for !== '') { th.innerHTML = icon('file-image', 22); th.dataset.for = ''; }
       const tb = this.querySelector(`[data-au-tab-badge="${k}"]`);
       tb.innerHTML = st.dot ? this.badge(st) : '';
     });
     // checklist + notes for the active side
+    const vw = this.querySelector('[data-au-viewing]'); if (vw) vw.textContent = this.t[`${this.active}_side`];
     const s = this.side; const { rows, notes } = this.checklist(this.active);
     const ck = this.querySelector('[data-au-checklist]'); ck.replaceChildren();
     const ICON_FOR = { ok: 'circle-check', warn: 'triangle-alert', err: 'circle-x', wait: 'circle-dashed', run: 'loader-circle', review: 'eye' };
     rows.forEach((r) => {
       const li = el('li'); li.dataset.ck = r.id; li.tabIndex = -1;
-      li.innerHTML = `<span class="au-ic--${r.st}">${icon(ICON_FOR[r.st], 20, r.st === 'run' ? 'au-spin' : '')}</span><span><b></b><small></small></span><span class="au__st au__st--${r.st}">${this.t[`st_${r.st}`]}</span>`;
+      li.innerHTML = `<span class="au-ic--${r.st}">${icon(ICON_FOR[r.st], 20, r.st === 'run' ? 'au-spin' : '')}</span><span><b></b><small></small></span><span class="au__st au__st--${r.st}">${esc(this.t[`st_${r.st}`])}</span>`;
       li.querySelector('b').textContent = r.label; li.querySelector('small').textContent = r.detail || '';
       if (r.fix) {
         const map = { fit: ['scan', this.t.fix_fit], replace: ['replace', this.t.fix_replace], autorotate: ['rotate-cw', this.t.auto_rotate] }; const [ic, label] = map[r.fix];
@@ -762,7 +785,8 @@ class ArtworkUploader extends HTMLElement {
   /** Small preview of the art in a thumb slot (cached per source). */
   thumb(slot, s) {
     if (!s.thumbUrl) { const c = document.createElement('canvas'); const k = 96 / Math.max(s.pxW, s.pxH); c.width = Math.max(1, Math.round(s.pxW * k)); c.height = Math.max(1, Math.round(s.pxH * k)); c.getContext('2d').drawImage(s.source, 0, 0, c.width, c.height); s.thumbUrl = c.toDataURL(); }
-    slot.innerHTML = `<img src="${s.thumbUrl}" alt="">`;
+    if (slot.dataset.for === s.thumbUrl.slice(-32)) return;
+    slot.innerHTML = `<img src="${s.thumbUrl}" alt="">`; slot.dataset.for = s.thumbUrl.slice(-32);
   }
   writeProps(issues) {
     const has = this.state.front.file || this.state.back.file;
@@ -779,10 +803,10 @@ class ArtworkUploader extends HTMLElement {
   draw() {
     if (!this.dialog.open) return;
     const doc = this.doc || { w: 3.5, h: 2 }; const ctx = this.ctx; const dpr = window.devicePixelRatio || 1;
-    const avail = Math.max(200, this.wrap.clientWidth - 32) * this.zoom; const maxH = Math.max(220, Math.min(window.innerHeight * 0.5, 520)) * this.zoom;
+    const box = this.wrap.getBoundingClientRect(); const avail = Math.max(160, box.width - 32) * this.zoom; const maxH = Math.max(160, box.height - 32) * this.zoom;
     const pad = 20 * dpr; const ppi = Math.min((avail * dpr - 2 * pad) / doc.w, (maxH * dpr - 2 * pad) / doc.h); this.ppi = ppi;
     const W = Math.round(doc.w * ppi + 2 * pad); const H = Math.round(doc.h * ppi + 2 * pad);
-    this.canvas.width = W; this.canvas.height = H; this.canvas.style.width = `${W / dpr}px`;
+    this.canvas.width = W; this.canvas.height = H; this.canvas.style.width = `${W / dpr}px`; this.canvas.style.height = `${H / dpr}px`;
     ctx.clearRect(0, 0, W, H); ctx.fillStyle = '#fff'; ctx.fillRect(pad, pad, doc.w * ppi, doc.h * ppi);
     const s = this.side; const b = this.cfg.bleed * ppi; const sf = (this.cfg.bleed + this.cfg.safe) * ppi;
     const sp = this.cfg.special; const ap = sp.has('apparel_area'); const die = sp.has('die_cut');
