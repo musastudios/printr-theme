@@ -25,7 +25,7 @@
   .compare-bar { position: fixed; inset: auto 0 0; z-index: 40; border-top: 2px solid rgb(var(--color-foreground)); box-shadow: 0 -10px 30px rgba(0,0,0,.08); transition: translate .35s cubic-bezier(.2,.7,.2,1); }
   .compare-bar[hidden] { display: none; }
   .compare-bar[collapsed] { translate: 0 calc(100% - 4.8rem - env(safe-area-inset-bottom, 0px)); }
-  .compare-bar__inner { display: grid; gap: 1.2rem; align-items: center; padding-block: .8rem calc(1.6rem + env(safe-area-inset-bottom, 0px)); max-height: calc(100vh - 6rem); max-height: calc(100dvh - 6rem); overflow-y: auto; }
+  .compare-bar__inner { display: grid; gap: 1.2rem; align-items: center; padding-block: 1.2rem calc(2rem + env(safe-area-inset-bottom, 0px)); max-height: calc(100vh - 6rem); max-height: calc(100dvh - 6rem); overflow-y: auto; }
   .compare-bar__toggle { background: none; border: 0; padding: 0; min-height: 3.2rem; display: flex; align-items: center; gap: .8rem; cursor: pointer; color: inherit; font: inherit; }
   .count-pill { min-width: 2.2rem; padding: 0 .6rem; border-radius: 99px; background: var(--m); color: #fff; font-size: 1.2rem; }
   .compare-bar__items { display: grid; grid-template-columns: repeat(auto-fill, minmax(16rem, 1fr)); gap: 1.2rem; list-style: none; margin: 0; padding: 0; align-items: center; }
@@ -38,7 +38,7 @@
   .compare-bar__actions .button { white-space: nowrap; }
   @media (min-width: 990px) {
     .compare-bar[collapsed] { translate: none; }
-    .compare-bar__inner { grid-template-columns: auto minmax(0, 1fr) auto; gap: 2.4rem; padding-block: 1.2rem calc(1.2rem + env(safe-area-inset-bottom, 0px)); }
+    .compare-bar__inner { grid-template-columns: auto minmax(0, 1fr) auto; gap: 2.4rem; padding-block: 1.6rem calc(2rem + env(safe-area-inset-bottom, 0px)); }
     .compare-bar__items { grid-template-columns: repeat(4, minmax(0, 1fr)); }
   }
   .compare-modal__scroll { overflow: auto; max-height: 70vh; }
