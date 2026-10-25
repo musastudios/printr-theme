@@ -17,11 +17,7 @@
         },
         "tiers": {
           "type": "tier_pricing",
-          "settings": {
-            "radio_products": [
-              "bc-pearl-3-5-x-4"
-            ]
-          }
+          "settings": {}
         },
         "turn": {
           "type": "turnaround"

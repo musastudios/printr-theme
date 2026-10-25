@@ -1,11 +1,10 @@
 {% doc %}
-  Quantity-tier price table for print products. Lists every variant that shares the
+  Quantity-tier price picker (v6 radio rows) for print products. Lists every variant that shares the
   currently selected options except the quantity option, with total, unit price and savings.
   Works when the product has an option named "Quantity" or "Cantidad" whose values start with a number (e.g. "250", "500 cards").
   Falls back to the product metafield custom.price_tiers (multi-line text "qty:price" per line) for products without a quantity option.
   @param {product} product - The product
   @param {variant} variant - The currently selected variant
-  @param {boolean} [radio] - Render selectable radio rows (quantity picker) instead of the classic table
   @example
   {% render 'tier-pricing', product: product, variant: product.selected_or_first_available_variant %}
 {% enddoc %}
@@ -23,7 +22,6 @@
   {%- liquid
     assign first_unit = nil
   -%}
-  {%- if radio -%}
   <div class="tiers tiers--radio" data-swap="tiers">
     <h2 class="tiers__heading slug" id="TiersHeading-{{ product.id }}">{{ 'products.product.tiers.heading' | t }}</h2>
     <div class="tiers__head" aria-hidden="true">
@@ -91,78 +89,6 @@
       {%- endfor -%}
     </fieldset>
   </div>
-  {%- else -%}
-  <div class="tiers" data-swap="tiers">
-    <h2 class="tiers__heading slug">{{ 'products.product.tiers.heading' | t }}</h2>
-    <table class="tiers__table">
-      <thead>
-        <tr>
-          <th scope="col">{{ 'products.product.tiers.quantity' | t }}</th>
-          <th scope="col">{{ 'products.product.tiers.total' | t }}</th>
-          <th scope="col">{{ 'products.product.tiers.per_unit' | t }}</th>
-          <th scope="col"><span class="visually-hidden">{{ 'products.product.tiers.select' | t }}</span></th>
-        </tr>
-      </thead>
-      <tbody>
-        {%- for value in qty_option.values -%}
-          {%- liquid
-            assign match = nil
-            for v in product.variants
-              assign ok = true
-              for opt in v.options
-                if forloop.index0 == qty_index
-                  if opt != value
-                    assign ok = false
-                  endif
-                else
-                  assign cur = variant.options[forloop.index0]
-                  if opt != cur
-                    assign ok = false
-                  endif
-                endif
-              endfor
-              if ok
-                assign match = v
-                break
-              endif
-            endfor
-          -%}
-          {%- if match -%}
-            {%- liquid
-              assign units = value | remove: ',' | split: ' ' | first | plus: 0
-              assign unit_cents = 0
-              if units > 0
-                assign unit_cents = match.price | times: 1.0 | divided_by: units
-              endif
-              if first_unit == nil
-                assign first_unit = unit_cents
-              endif
-              assign saving = 0
-              if first_unit > 0 and unit_cents < first_unit
-                assign saving = first_unit | minus: unit_cents | times: 100 | divided_by: first_unit | round
-              endif
-            -%}
-            <tr{% if match.id == variant.id %} class="is-current" aria-current="true"{% endif %}>
-              <th scope="row">{{ value }}</th>
-              <td>{{ match.price | money }}</td>
-              <td>
-                {%- if units > 0 -%}{{ unit_cents | round | money }}{%- endif -%}
-                {%- if saving > 0 -%} <span class="badge badge--new">{{ 'products.product.tiers.save' | t: percent: saving }}</span>{%- endif -%}
-              </td>
-              <td>
-                {%- unless match.id == variant.id -%}
-                  <button type="button" class="link-button" data-tier-select="{{ value.id }}" {% unless match.available %}disabled{% endunless %}>{{ 'products.product.tiers.select' | t }}<span class="visually-hidden"> {{ value }}</span></button>
-                {%- else -%}
-                  {% render 'icon', name: 'check' %}
-                {%- endunless -%}
-              </td>
-            </tr>
-          {%- endif -%}
-        {%- endfor -%}
-      </tbody>
-    </table>
-  </div>
-  {%- endif -%}
 {%- elsif product.metafields.custom.price_tiers != blank -%}
   {%- assign lines = product.metafields.custom.price_tiers.value | newline_to_br | split: '<br />' -%}
   <div class="tiers" data-swap="tiers">

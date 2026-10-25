@@ -2,7 +2,7 @@
   Renders a product or variant price, with compare-at and unit price.
   @param {product} product - The product
   @param {variant} [variant] - Optional variant; defaults to selected or first available
-  @param {boolean} [show_from] - Show "From" price when prices vary
+  @param {boolean} [show_from] - Show "From" (custom.from_price metafield, else cheapest available variant with price > 0) when real prices differ
   @example
   {% render 'price', product: product, show_from: true %}
 {% enddoc %}
@@ -10,13 +10,38 @@
   assign target = variant | default: product.selected_or_first_available_variant
   assign price = target.price
   assign compare = target.compare_at_price
-  if show_from and product.price_varies
-    assign price = product.price_min
-    assign compare = nil
+  assign use_from = false
+  if show_from
+    assign from_cents = nil
+    assign mf_from = product.metafields.custom.from_price.value
+    if mf_from != blank and mf_from > 0
+      assign from_cents = mf_from | times: 100 | round
+    else
+      for v in product.variants
+        if v.available and v.price > 0
+          if from_cents == nil or v.price < from_cents
+            assign from_cents = v.price
+          endif
+        endif
+      endfor
+    endif
+    if from_cents != nil
+      assign max_real = 0
+      for v in product.variants
+        if v.available and v.price > max_real
+          assign max_real = v.price
+        endif
+      endfor
+      if max_real > from_cents or mf_from != blank
+        assign use_from = true
+        assign price = from_cents
+        assign compare = nil
+      endif
+    endif
   endif
 -%}
 <div class="price">
-  {%- if show_from and product.price_varies -%}
+  {%- if use_from -%}
     {%- assign price_formatted = price | money -%}
     <span>{{ 'products.product.from_price' | t: price: price_formatted }}</span>
   {%- elsif compare > price -%}

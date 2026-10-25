@@ -12,8 +12,13 @@
   assign color_option = nil
   for option in product.options_with_values
     assign oname = option.name | downcase
-    if oname == 'color' or oname == 'colour' or oname == 'finish' or oname == 'acabado'
-      assign color_option = option
+    if oname == 'color' or oname == 'colour' or oname contains 'color de'
+      for value in option.values
+        if value.swatch.color or value.swatch.image
+          assign color_option = option
+          break
+        endif
+      endfor
     endif
   endfor
 -%}
@@ -73,7 +78,7 @@
             {%- endform -%}
           </product-form>
         {%- else -%}
-          <button type="button" class="button button--secondary" data-quick-view="{{ product.url }}">{{ 'products.product.choose_options' | t }}</button>
+          <a href="{{ product.url }}" class="button button--secondary">{{ 'products.product.order_product' | t }}</a>
         {%- endif -%}
       {%- endif -%}
     </div>
