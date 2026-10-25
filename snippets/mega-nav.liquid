@@ -200,7 +200,7 @@
                     While a single group has only a few live links (collections still missing), show them as a thumb row instead of loose links; columns come back automatically once there are more.
                   endcomment
                   assign thumb_row = false
-                  if mtype == 'mega_columns' and ngroups == 1 and l3_total > 0 and l3_total <= 4
+                  if mtype == 'mega_columns' and mega.settings.thumb_row and ngroups == 1 and l3_total > 0 and l3_total <= 4
                     assign thumb_row = true
                     assign flow = false
                   endif
@@ -240,6 +240,10 @@
                             <li>{% render 'mega-thumb', title: titles[k], url: urls[k], handle: handles[k], img_product: imgs[k], sizes: '(min-width: 1280px) 180px, 15vw' %}</li>
                           {%- endfor -%}
                         </ul>
+                        {%- assign mine_list = mine | split: ',' -%}
+                        {%- if mine_list.size > 0 -%}
+                          <ul role="list">{%- for l in mine_list -%}{%- assign li = l | plus: 0 -%}<li><a class="mega__lone" href="{{ urls[li] | strip }}">{{ titles[li] | escape }}</a></li>{%- endfor -%}</ul>
+                        {%- endif -%}
                       </div>
                     {%- else -%}
                       {% render 'mega-col', j: gj, e: e, depths: depths, titles: titles, urls: urls, vis: vis, flow: flow, lones: mine %}
