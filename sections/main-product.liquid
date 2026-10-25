@@ -1,14 +1,22 @@
 {%- liquid
   assign variant = product.selected_or_first_available_variant
   assign has_art = false
+  assign tier_radio = false
   for b in section.blocks
     if b.type == 'artwork_uploader'
       assign has_art = true
     endif
+    if b.type == 'tier_pricing'
+      for rp in b.settings.radio_products
+        if rp.id == product.id
+          assign tier_radio = true
+        endif
+      endfor
+    endif
   endfor
   assign media_list = product.media
 -%}
-<div class="section product color-{{ section.settings.color_scheme }}" data-selected-variant="{{ variant.id }}" data-product-handle="{{ product.handle }}">
+<div class="section product{% if tier_radio %} product--tier-radio{% endif %} color-{{ section.settings.color_scheme }}" data-selected-variant="{{ variant.id }}" data-product-handle="{{ product.handle }}">
   <div class="page-width product__grid">
     <div class="product__media" data-swap="media">
       {%- assign featured = variant.featured_media | default: product.featured_media -%}
@@ -55,7 +63,7 @@
           {%- when 'variant_picker' -%}
             <div {{ block.shopify_attributes }}>{% render 'variant-picker', product: product, section_id: section.id %}</div>
           {%- when 'tier_pricing' -%}
-            <div {{ block.shopify_attributes }}>{% render 'tier-pricing', product: product, variant: variant %}</div>
+            <div {{ block.shopify_attributes }}>{% render 'tier-pricing', product: product, variant: variant, radio: tier_radio %}</div>
           {%- when 'buy_buttons' -%}
             <div id="BuyBlock-{{ section.id }}" {{ block.shopify_attributes }}>{% render 'product-buy', variant: variant, section_id: section.id, show_artwork: block.settings.show_artwork, show_dynamic_checkout: block.settings.show_dynamic_checkout, custom_buy_now: has_art %}</div>
           {%- when 'artwork_uploader' -%}
@@ -144,6 +152,13 @@
   .sticky-buy__title { flex: 1; display: grid; font-weight: 600; font-size: 1.4rem; min-width: 0; }
   body:has(compare-bar:not([hidden])) .sticky-buy { bottom: 4.8rem; }
   [aria-busy=true] { opacity: .6; transition: opacity .2s; }
+  .product--tier-radio .product-buy__submit, .product--tier-radio .sticky-buy .button { --cta-shadow: 3px 3px 0 #3DB9E8, 5px 5px 0 #000; background: #B0145F; color: #fff; border: 2px solid #000; border-radius: 999px; box-shadow: var(--cta-shadow); font-family: var(--font-heading-family); font-weight: 700; letter-spacing: .12em; text-transform: uppercase; transition: transform .12s, box-shadow .12s; }
+  .product--tier-radio .product-buy__submit:hover, .product--tier-radio .sticky-buy .button:hover { transform: translate(-1px, -1px); box-shadow: 4px 4px 0 #3DB9E8, 6px 6px 0 #000; }
+  .product--tier-radio .product-buy__submit:focus-visible { outline: 2px solid #000; outline-offset: 3px; }
+  .product--tier-radio .product-buy__now { border: 2px solid #000; border-radius: 999px; box-shadow: 3px 3px 0 #000; transition: transform .12s, box-shadow .12s; }
+  .product--tier-radio .product-buy__now:hover { transform: translate(-1px, -1px); box-shadow: 4px 4px 0 #000; }
+  .product--tier-radio .product-buy__submit[disabled], .product--tier-radio .product-buy__submit[aria-disabled="true"], .product--tier-radio .product-buy__now[disabled], .product--tier-radio .product-buy__now[aria-disabled="true"] { transform: none; box-shadow: var(--cta-shadow, 3px 3px 0 #000); }
+  @media (prefers-reduced-motion: reduce) { .product--tier-radio .product-buy__submit, .product--tier-radio .product-buy__now { transition: none; } }
 {% endstylesheet %}
 {% schema %}
 {
@@ -158,7 +173,9 @@
     { "type": "price", "name": "Price", "limit": 1 },
     { "type": "sku", "name": "SKU", "limit": 1 },
     { "type": "variant_picker", "name": "Variant picker", "limit": 1 },
-    { "type": "tier_pricing", "name": "Quantity tier pricing", "limit": 1 },
+    { "type": "tier_pricing", "name": "Quantity tier pricing", "limit": 1, "settings": [
+      { "type": "product_list", "id": "radio_products", "label": "Products with radio rows", "limit": 25, "info": "These products show selectable quantity rows with save badges and the 3D Add to cart button. Other products keep the classic table." }
+    ] },
     { "type": "turnaround", "name": "Production time", "limit": 1, "settings": [{ "type": "text", "id": "text", "label": "Default production time", "default": "5–7 business days" }] },
     { "type": "buy_buttons", "name": "Buy buttons", "limit": 1, "settings": [
       { "type": "checkbox", "id": "show_artwork", "label": "Show artwork notes field", "default": true },

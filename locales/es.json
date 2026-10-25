@@ -90,7 +90,10 @@
         "per_unit": "Por unidad",
         "save": "Ahorra {{ percent }}%",
         "select": "Elegir",
-        "each": "{{ price }} c/u"
+        "each": "{{ price }} c/u",
+        "savings": "Ahorro",
+        "best_value": "Mejor valor",
+        "each_label": "C/u"
       },
       "upload": {
         "label": "Notas o enlace del arte",

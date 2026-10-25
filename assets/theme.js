@@ -230,6 +230,19 @@ document.addEventListener('click', (e) => {
   }
 });
 
+/* Tier table (radio rows): choosing a row selects that quantity option, which swaps the variant used by Add to cart */
+document.addEventListener('change', (e) => {
+  const r = e.target.closest?.('[data-tier-radio]');
+  if (!r || !r.checked) return;
+  const valueId = r.dataset.tierRadio;
+  const input = document.querySelector(`variant-picker [data-option-value-id="${valueId}"]`) || document.querySelector(`[data-option-value-id="${valueId}"]`);
+  if (!input) return;
+  if (input.tagName === 'OPTION') { input.selected = true; input.closest('select').dispatchEvent(new Event('change', { bubbles: true })); }
+  else { input.checked = true; input.dispatchEvent(new Event('change', { bubbles: true })); }
+  // The tier table is re-rendered after the variant swap; return focus to the chosen row.
+  document.addEventListener('variant:change', () => document.querySelector(`[data-tier-radio="${valueId}"]`)?.focus({ preventScroll: true }), { once: true });
+});
+
 /* Predictive search */
 class PredictiveSearch extends HTMLElement {
   connectedCallback() {

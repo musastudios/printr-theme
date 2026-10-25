@@ -90,7 +90,10 @@
         "per_unit": "Per unit",
         "save": "Save {{ percent }}%",
         "select": "Select",
-        "each": "{{ price }} each"
+        "each": "{{ price }} each",
+        "savings": "Savings",
+        "best_value": "Best value",
+        "each_label": "Each"
       },
       "upload": {
         "label": "Artwork notes or file link",
