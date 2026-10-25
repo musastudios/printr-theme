@@ -297,7 +297,9 @@
       "all_categories": "All Categories",
       "sign_in": "Sign in / Register",
       "view_all": "View all {{ title }}",
-      "shop_all": "Shop all {{ title }}"
+      "shop_all": "Shop all {{ title }}",
+      "track_order": "Track order",
+      "show_menu": "Show {{ title }} menu"
     },
     "category_circles": {
       "heading": "Shop by category",

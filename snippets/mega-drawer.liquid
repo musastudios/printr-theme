@@ -55,6 +55,7 @@
         <details class="mobile-menu__acc">
           <summary class="mobile-menu__l1{% if is_sale %} is-sale{% endif %}">{{ titles[i] | escape }}<span class="mobile-menu__pm" aria-hidden="true"></span></summary>
           <div class="mobile-menu__panel">
+            <a class="mobile-menu__viewall-top" href="{{ url | default: routes.all_products_collection_url }}">{{ 'sections.header.view_all' | t: title: titles[i] }}<span aria-hidden="true">→</span></a>
             {%- if mega.type == 'mega_showroom' -%}
               {%- assign first_tab = true -%}
               <mega-showroom class="mobile-showroom">

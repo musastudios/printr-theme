@@ -1,6 +1,20 @@
 <div class="breadcrumbs-section">{% render 'breadcrumbs' %}</div>
 {% stylesheet %}
-  .breadcrumbs-section { padding-top: 2rem; }
+  .breadcrumbs-section { background: transparent; padding: 2rem 0 0; }
+  .breadcrumbs { font-size: 1.3rem; font-weight: 500; line-height: 1.4; color: #5E5E5E; }
+  .breadcrumbs ol { display: flex; flex-wrap: nowrap; align-items: center; list-style: none; padding: 0; margin: 0; font-size: 1.3rem; overflow: hidden; }
+  .breadcrumbs li { display: inline-flex; align-items: center; white-space: nowrap; min-width: 0; }
+  .breadcrumbs li:last-child { overflow: hidden; }
+  .breadcrumbs li + li::before { content: "›"; margin: 0 .8rem; font-size: 1.2rem; color: #9A968C; opacity: 1; }
+  .breadcrumbs a { color: #5E5E5E; text-decoration: none; }
+  .breadcrumbs a:hover { text-decoration: underline; text-underline-offset: 3px; }
+  .breadcrumbs a:focus-visible { outline: 2px solid #000; outline-offset: 2px; }
+  .breadcrumbs [aria-current] { color: #000; font-weight: 600; overflow: hidden; text-overflow: ellipsis; }
+  .breadcrumbs__back { display: none; }
+  @media (max-width: 749px) {
+    .breadcrumbs__full { display: none !important; }
+    .breadcrumbs__back { display: inline-flex; gap: .4rem; }
+  }
 {% endstylesheet %}
 {% schema %}
 { "name": "Breadcrumbs", "settings": [], "presets": [{ "name": "Breadcrumbs" }] }

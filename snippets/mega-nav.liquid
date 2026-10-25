@@ -61,9 +61,10 @@
     -%}
     <li class="header__item{% if kids > 0 %} has-mega{% endif %}" data-mega="{{ mtype }}">
       {%- if kids > 0 -%}
-        <button type="button" class="header__link{% if is_current %} is-current{% endif %}{% if is_sale %} is-sale{% endif %}" data-l1 aria-expanded="false" aria-controls="{{ pid }}" aria-haspopup="true">
-          {{- titles[i] | escape -}}{% render 'icon', name: 'chevron-down' %}
-        </button>
+        <span class="header__split">
+          <a href="{{ url | default: routes.all_products_collection_url }}" class="header__link{% if is_current %} is-current{% endif %}{% if is_sale %} is-sale{% endif %}" data-l1-link{% if is_current %} aria-current="page"{% endif %}>{{ titles[i] | escape }}</a>
+          <button type="button" class="header__disclosure" data-l1 aria-expanded="false" aria-controls="{{ pid }}" aria-label="{{ 'sections.header.show_menu' | t: title: titles[i] | escape }}">{% render 'icon', name: 'chevron-down' %}</button>
+        </span>
         <div id="{{ pid }}" class="mega mega--{{ mtype }}" hidden {{ mega.shopify_attributes }}>
           <div class="page-width mega__wrap">
             {%- case mtype -%}

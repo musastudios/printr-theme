@@ -47,18 +47,35 @@
     if row == blank
       continue
     endif
-    assign f = row | append: '| | | | ' | split: '|'
+    assign f = row | append: '| | | | | ' | split: '|'
     assign hh = f[2] | strip
     assign uu = f[3] | strip
+    assign direct = f[5] | strip
     assign cc = ''
+    assign found = false
     if hh != blank
       assign col = collections[hh]
       if col.id != blank
+        assign found = true
         assign cc = col.products_count | append: ''
         if uu == blank
           assign uu = col.url
         endif
+        comment
+          Sub-rows link straight to the product when the collection holds exactly one; custom.nav_link (collection metafield) wins over both.
+        endcomment
+        if f[0] != '1'
+          assign nav_link = col.metafields.custom.nav_link.value | default: col.metafields.custom.nav_link | strip
+          if nav_link != blank
+            assign uu = nav_link
+          elsif col.products_count == 1
+            assign uu = col.products.first.url
+          endif
+        endif
       endif
+    endif
+    if found == false and direct != blank and f[0] != '1'
+      assign uu = '/products/' | append: direct
     endif
     assign d_s = d_s | append: rs | append: f[0]
     assign t_s = t_s | append: rs | append: f[1]
@@ -187,9 +204,7 @@
       <button type="button" class="icon-button header__search-toggle" data-drawer-open="SearchDrawer" aria-controls="SearchDrawer" aria-expanded="false">
         {% render 'icon', name: 'search' %}<span class="visually-hidden">{{ 'accessibility.search' | t }}</span>
       </button>
-      {%- if section.settings.store_link != blank -%}
-        <a class="header__action" href="{{ section.settings.store_link }}">{% render 'icon', name: 'pin' %}<span>{{ section.settings.store_label | escape }}</span></a>
-      {%- endif -%}
+      <a class="header__action" href="{{ routes.account_url }}">{% render 'icon', name: 'package' %}<span>{{ 'sections.header.track_order' | t }}</span></a>
       {%- if shop.customer_accounts_enabled -%}
         <div class="header__action header__action--account">
           <shopify-account class="header__account" menu="{{ section.settings.customer_account_menu }}">
@@ -231,7 +246,7 @@
     {% render 'mega-drawer', depths: m_depths, titles: m_titles, handles: m_handles, urls: m_urls, imgs: m_imgs, vis: m_vis, counts: m_counts, blocks: section.blocks, highlight: section.settings.highlight_item, art_only: section.settings.demo_tree %}
     <div class="mobile-menu__footer">
       {%- if shop.customer_accounts_enabled -%}<a href="{{ routes.account_url }}">{% render 'icon', name: 'account' %}{{ 'sections.header.sign_in' | t }}</a>{%- endif -%}
-      {%- if section.settings.store_link != blank -%}<a href="{{ section.settings.store_link }}">{% render 'icon', name: 'pin' %}{{ section.settings.store_label | escape }}</a>{%- endif -%}
+      <a href="{{ routes.account_url }}">{% render 'icon', name: 'package' %}{{ 'sections.header.track_order' | t }}</a>
     </div>
   </div>
 </drawer-panel>
@@ -292,7 +307,12 @@
   .header__link { display: inline-flex; align-items: center; gap: .4rem; font: inherit; font-weight: 700; font-size: 1.5rem; text-decoration: none; cursor: pointer; padding: 1.4rem 0; color: inherit; background: none; border: 0; border-bottom: 2px solid transparent; border-radius: 0; margin-bottom: -1px; }
   .header__link .icon { width: 1.4rem; height: 1.4rem; }
   .header__link:hover, .header__link:focus-visible, .header__link.is-current, .header__link[aria-expanded="true"] { border-bottom-color: #000; }
-  .header__link[aria-expanded="true"] .icon { rotate: 180deg; }
+  .header__split { display: inline-flex; align-items: center; gap: .2rem; }
+  .header__disclosure { display: inline-grid; place-items: center; width: 2.4rem; height: 2.4rem; padding: 0; border: 0; background: none; color: inherit; cursor: pointer; border-radius: 4px; }
+  .header__disclosure .icon { width: 1.4rem; height: 1.4rem; }
+  .header__disclosure[aria-expanded="true"] .icon { rotate: 180deg; }
+  .header__item.is-open .header__link { border-bottom-color: #000; }
+  .header__disclosure:focus-visible { outline: 2px solid #000; outline-offset: 2px; }
   .header__link:focus-visible, .mega a:focus-visible, .mega button:focus-visible, .mobile-menu :focus-visible { outline: 2px solid #000; outline-offset: 2px; }
   .header__link.is-sale, .mobile-menu .is-sale { color: #D4145A; }
   .mega { position: absolute; left: 0; right: 0; top: 100%; z-index: 30; background: #fff; color: #000; border-top: 1px solid #000; border-bottom: 2px solid #000; }
@@ -314,7 +334,8 @@
   .mega__viewall { grid-column: 1 / -1; font-weight: 700; font-size: 1.4rem; }
   .mega__showroom { flex: 1; display: grid; grid-template-columns: 24rem minmax(0, 1fr); gap: 0 3.2rem; }
   .mega__tabs { grid-row: 1 / span 20; display: flex; flex-direction: column; gap: .2rem; }
-  .mega__tabs [role=tab] { display: flex; justify-content: space-between; align-items: center; text-align: left; font: inherit; font-weight: 700; font-size: 1.4rem; padding: .9rem 1.2rem; background: none; border: 0; border-left: 3px solid transparent; color: inherit; cursor: pointer; border-radius: 0; }
+  .mega__tabs [role=tab] { display: flex; justify-content: space-between; align-items: center; text-align: left; font: inherit; font-weight: 700; font-size: 1.4rem; padding: .9rem 1.2rem; background: none; border: 0; border-left: 3px solid transparent; color: inherit; cursor: pointer; border-radius: 8px; transition: background .15s; }
+  .mega__tabs [role=tab]:hover { background: #F9F7F1; }
   .mega__tabs [role=tab] .icon { width: 1.2rem; height: 1.2rem; opacity: .5; }
   .mega__tabs [aria-selected=true] { background: #F9F7F1; border-left-color: #000; }
   .mega__tabs .mega__viewall { margin-top: 1.6rem; padding-left: 1.2rem; }
@@ -326,7 +347,7 @@
   .mega__thead a { font-weight: 700; font-size: 1.3rem; }
   .mega__thumbs { list-style: none; padding: 0; margin: 0; display: grid; grid-template-columns: repeat(var(--cols, 4), minmax(0, 1fr)); gap: 1.6rem; }
   .mega__thumb { display: grid; gap: .6rem; text-align: center; font-size: 1.3rem; font-weight: 600; }
-  .mega__thumb-media, .mobile-showroom__grid .mega__thumb-media { display: block; aspect-ratio: var(--ratio, 1 / 1); background: #F9F7F1; border: 1px solid #E6E3DA; overflow: hidden; }
+  .mega__thumb-media, .mobile-showroom__grid .mega__thumb-media { display: block; aspect-ratio: var(--ratio, 1 / 1); background: #F9F7F1; border: 0; border-radius: 8px; overflow: hidden; }
   .mega__thumb-media img { width: 100%; height: 100%; object-fit: cover; display: block; }
   .mega__thumb-ph { width: 100%; height: 100%; display: block; fill: #C9C5BA; background: #F9F7F1; }
   .mega__thumb:hover .mega__thumb-label { text-decoration: underline; text-underline-offset: 3px; }
@@ -370,6 +391,7 @@
   .mobile-showroom [role=tabpanel][hidden] { display: none; }
   .mobile-showroom__grid { display: grid !important; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1.2rem; }
   .mobile-showroom__grid .mega__thumb-label { font-size: 1.2rem; overflow-wrap: normal; word-break: normal; hyphens: none; }
+  .mobile-menu__viewall-top { display: flex; justify-content: space-between; align-items: center; min-height: 4.4rem; margin-bottom: 1.2rem; padding: 0 1.4rem; font-weight: 700; font-size: 1.4rem; color: #000; text-decoration: none; background: #fff; border: 2px solid #000; border-radius: 8px; }
   .mobile-menu .mega__thumb { display: grid; gap: .6rem; text-align: center; }
   .mobile-menu .mega__thumb-media img { width: 100%; height: 100%; object-fit: cover; display: block; }
   .mega__promo--compact { margin-top: 1.6rem; }

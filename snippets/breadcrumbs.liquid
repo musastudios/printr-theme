@@ -1,21 +1,40 @@
 {% doc %}
-  Accessible breadcrumb trail for the current page.
+  Accessible breadcrumb trail for the current page. On narrow screens only a "‹ Parent" link is shown.
   @example
   {% render 'breadcrumbs' %}
 {% enddoc %}
+{%- liquid
+  assign crumb_col = collection
+  if product and crumb_col == blank
+    assign crumb_col = product.collections | where: 'handle', 'business-cards' | first
+    if crumb_col == blank
+      assign crumb_col = product.collections.first
+    endif
+  endif
+  assign parent_url = routes.root_url
+  assign parent_title = 'general.home' | t
+  if product and crumb_col
+    assign parent_url = crumb_col.url
+    assign parent_title = crumb_col.title
+  elsif article
+    assign parent_url = blog.url
+    assign parent_title = blog.title
+  endif
+-%}
 <nav class="breadcrumbs page-width" aria-label="{{ 'general.breadcrumbs' | t }}">
-  <ol>
+  <ol class="breadcrumbs__full">
     <li><a href="{{ routes.root_url }}">{{ 'general.home' | t }}</a></li>
-    {%- if collection -%}
-      <li><a href="{{ collection.url }}" {% unless product %}aria-current="page"{% endunless %}>{{ collection.title }}</a></li>
-    {%- endif -%}
     {%- if product -%}
-      <li><span aria-current="page">{{ product.title }}</span></li>
+      {%- if crumb_col -%}<li><a href="{{ crumb_col.url }}">{{ crumb_col.title | escape }}</a></li>{%- endif -%}
+      <li><span aria-current="page">{{ product.title | escape }}</span></li>
+    {%- elsif collection -%}
+      <li><span aria-current="page">{{ collection.title | escape }}</span></li>
     {%- elsif article -%}
-      <li><a href="{{ blog.url }}">{{ blog.title }}</a></li>
-      <li><span aria-current="page">{{ article.title }}</span></li>
+      <li><a href="{{ blog.url }}">{{ blog.title | escape }}</a></li>
+      <li><span aria-current="page">{{ article.title | escape }}</span></li>
     {%- elsif page -%}
-      <li><span aria-current="page">{{ page.title }}</span></li>
+      <li><span aria-current="page">{{ page.title | escape }}</span></li>
     {%- endif -%}
   </ol>
+  <a class="breadcrumbs__back" href="{{ parent_url }}"><span aria-hidden="true">‹</span> {{ parent_title | escape }}</a>
 </nav>
