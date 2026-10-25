@@ -55,7 +55,7 @@
             "promo_product_fallback": "br-half-fold-8-5x11",
             "promo_badge_fallback": "New",
             "promo_badge_color": "cyan",
-            "promo_cta": "Shop now"
+            "promo_cta": "Shop now", "promo_title_fallback": "Half Fold Brochures", "promo_asset_fallback": "promo-fold-half.webp", "promo_url_fallback": "/collections/brochures"
           }
         },
         "signs": {

@@ -306,6 +306,8 @@
   .mega__cols--flow .mega__col--flow li { break-inside: avoid; margin-bottom: .8rem; }
   .mega__col ul { list-style: none; padding: 0; margin: 1rem 0 0; display: grid; gap: .8rem; }
   .mega__col ul a { font-size: 1.4rem; }
+  .mega__col ul a.mega__lone { font-size: 1.5rem; font-weight: 700; }
+  .mega__cols--thumbs .mega__thumbs { grid-column: 1 / -1; margin-top: 1.2rem; }
   .mega__col ul a:hover, .mega__viewall:hover, .mega__thead a:hover { text-decoration: underline; text-underline-offset: 3px; }
   .mega__title, .mega__eyebrow { display: block; font-size: 1.15rem; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; margin: 0; }
   .mega__viewall { grid-column: 1 / -1; font-weight: 700; font-size: 1.4rem; }
@@ -357,7 +359,9 @@
   .mobile-menu__l3 a, .mobile-menu__viewall { display: flex; align-items: center; min-height: 4.4rem; font-weight: 500; }
   .mobile-menu__viewall { font-weight: 700 !important; text-decoration: underline !important; text-underline-offset: 3px; }
   .mobile-showroom { display: block; }
-  .mobile-showroom__chips { display: flex; gap: .8rem; overflow-x: auto; padding: .2rem .2rem 1.2rem; scrollbar-width: none; }
+  .mobile-showroom__chips { display: flex; gap: .8rem; overflow-x: auto; padding: .2rem 0 1.2rem .2rem; scrollbar-width: none; scroll-snap-type: x mandatory; -webkit-mask-image: linear-gradient(to right, #000 calc(100% - 24px), transparent); mask-image: linear-gradient(to right, #000 calc(100% - 24px), transparent); }
+  .mobile-showroom__chips::-webkit-scrollbar { display: none; }
+  .mobile-showroom__chips [role=tab] { scroll-snap-align: start; }
   .mobile-showroom__chips [role=tab] { flex: none; min-height: 4.4rem; padding: 0 1.4rem; font: inherit; font-size: 1.3rem; font-weight: 700; background: #fff; color: #000; border: 2px solid #000; border-radius: 0; cursor: pointer; white-space: nowrap; }
   .mobile-showroom__chips [aria-selected=true] { background: #000; color: #fff; }
   .mobile-showroom [role=tabpanel][hidden] { display: none; }
@@ -417,7 +421,10 @@
       { "type": "image_picker", "id": "promo_image_fallback", "label": "Fallback promo image" },
       { "type": "text", "id": "promo_badge_fallback", "default": "Premium", "label": "Fallback badge" },
       { "type": "select", "id": "promo_badge_color", "label": "Fallback badge color", "default": "yellow", "options": [ { "value": "cyan", "label": "Cyan" }, { "value": "yellow", "label": "Yellow" }, { "value": "magenta", "label": "Magenta" } ] },
-      { "type": "text", "id": "promo_cta", "default": "Shop now", "label": "CTA label" }
+      { "type": "text", "id": "promo_cta", "default": "Shop now", "label": "CTA label" },
+      { "type": "text", "id": "promo_title_fallback", "label": "Fallback promo title", "info": "Shown when no promo product is live." },
+      { "type": "text", "id": "promo_asset_fallback", "label": "Fallback theme asset file" },
+      { "type": "url", "id": "promo_url_fallback", "label": "Fallback promo link" }
     ] },
     { "type": "mega_compact", "name": "Mega: compact + promo", "settings": [
       { "type": "text", "id": "menu_item", "label": "Menu item title (exact)" },

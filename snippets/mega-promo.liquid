@@ -1,5 +1,5 @@
 {%- comment -%}
-  Promo card. Order: promo_card block (override) > collection metafields (custom.mega_*) > block fallbacks > nothing.
+  Promo card. Order: promo_card block (override) > collection metafields (custom.mega_*) > block fallbacks > block text fallback (title + theme asset, shown even when no product is live) > nothing.
   A product promo is hidden when the product is unavailable.
   Params: collection, block, override, allow_fallback, id, compact, fallback_handle (per-tab fallback product handle)
 {%- endcomment -%}
@@ -11,6 +11,7 @@
   assign heading = ''
   assign text = ''
   assign href = ''
+  assign asset = ''
   assign cta = block.settings.promo_cta | default: 'Shop now'
   if override
     assign img = override.settings.image
@@ -55,6 +56,15 @@
     else
       assign heading = ''
     endif
+    if heading == blank and allow_fallback and block.settings.promo_title_fallback != blank
+      assign heading = block.settings.promo_title_fallback
+      assign href = block.settings.promo_url_fallback
+      assign asset = block.settings.promo_asset_fallback | strip
+      assign img = block.settings.promo_image_fallback
+      assign badge = block.settings.promo_badge_fallback
+      assign color = block.settings.promo_badge_color
+      assign text = ''
+    endif
   endif
   assign color = color | default: 'yellow' | downcase
 -%}
@@ -64,6 +74,8 @@
       <span class="mega__promo-media">
         {%- if img != blank -%}
           {{ img | image_url: width: 600 | image_tag: loading: 'lazy', widths: '400, 600', sizes: '(min-width: 990px) 300px, 40vw', alt: '' }}
+        {%- elsif asset != blank -%}
+          <img src="{{ asset | asset_url }}" alt="" loading="lazy" width="1200" height="1200">
         {%- endif -%}
         {%- if badge != blank -%}<span class="badge-3d badge--{{ color }}">{{ badge | escape }}</span>{%- endif -%}
       </span>

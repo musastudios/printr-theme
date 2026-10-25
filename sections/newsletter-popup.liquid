@@ -1,7 +1,7 @@
 {%- if section.settings.enable -%}
   {%- form 'customer', id: 'PopupForm', class: 'popup__form' -%}
     {%- assign success = form.posted_successfully? -%}
-    <newsletter-popup data-delay="{{ section.settings.delay }}" data-frequency="{{ section.settings.frequency }}" data-exit-intent="{{ section.settings.exit_intent }}" data-success="{{ success }}">
+    <newsletter-popup data-delay="{{ section.settings.delay }}" data-frequency="{{ section.settings.frequency }}" data-exit-intent="{{ section.settings.exit_intent }}" data-success="{{ success }}" data-home="{% if request.page_type == 'index' %}true{% else %}false{% endif %}">
       <dialog class="modal popup color-{{ section.settings.color_scheme }}" aria-labelledby="PopupTitle">
         <div class="popup__grid crop">
           {%- if section.settings.image -%}
@@ -37,6 +37,7 @@
 {%- endif -%}
 {% stylesheet %}
   .popup { padding: 0; max-width: min(88rem, calc(100vw - 3.2rem)); }
+  .popup[open] { position: fixed; inset: 0; margin: auto; max-height: calc(100vh - 3.2rem); overflow: auto; z-index: 50; box-shadow: 0 0 0 100vmax rgba(0, 0, 0, .5); }
   .popup__grid { display: grid; }
   .popup__media img { height: 100%; object-fit: cover; }
   .popup__body { position: relative; padding: clamp(3.2rem, 5vw, 5.6rem); display: grid; gap: 1.2rem; align-content: center; }

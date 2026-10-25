@@ -153,9 +153,60 @@
                   if mtype == 'mega_compact' or mtype == 'dropdown'
                     assign ncols = 1
                   endif
+                  comment
+                    Split visible L2s into groups (have visible L3s) and lones (no visible L3s).
+                    A lone never becomes its own column: it joins the previous group (or the first one) as a bold link.
+                  endcomment
+                  assign groups = ''
+                  assign lone_idx = ''
+                  assign lone_own = ''
+                  assign last_g = ''
+                  assign l3_total = 0
+                  for j in (s..e)
+                    if depths[j] != '2' or vis[j] != '1'
+                      continue
+                    endif
+                    assign k1 = j | plus: 1
+                    assign c3 = 0
+                    if k1 <= e
+                      for k in (k1..e)
+                        if depths[k] != '3'
+                          break
+                        endif
+                        if vis[k] == '1'
+                          assign c3 = c3 | plus: 1
+                        endif
+                      endfor
+                    endif
+                    assign l3_total = l3_total | plus: c3
+                    if c3 > 0
+                      assign groups = groups | append: j | append: ','
+                      assign last_g = j | append: ''
+                    else
+                      assign lone_idx = lone_idx | append: j | append: ','
+                      assign lone_own = lone_own | append: last_g | append: ';'
+                    endif
+                  endfor
+                  assign group_list = groups | split: ','
+                  assign lone_list = lone_idx | split: ','
+                  assign own_list = lone_own | split: ';'
+                  assign first_g = group_list.first | append: ''
+                  assign ngroups = group_list.size
                   assign flow = false
-                  if kids == 1 and ncols > 1
+                  if ngroups == 1 and ncols > 1
                     assign flow = true
+                  endif
+                  comment
+                    While a single group has only a few live links (collections still missing), show them as a thumb row instead of loose links; columns come back automatically once there are more.
+                  endcomment
+                  assign thumb_row = false
+                  if mtype == 'mega_columns' and ngroups == 1 and l3_total > 0 and l3_total <= 4
+                    assign thumb_row = true
+                    assign flow = false
+                  endif
+                  assign gcols = ncols
+                  if flow == false and ngroups < ncols
+                    assign gcols = ngroups | at_least: 1
                   endif
                   assign pc = mega.settings.promo_collection | default: src
                   assign show_promo = true
@@ -166,10 +217,39 @@
                     assign show_promo = false
                   endif
                 -%}
-                <div class="mega__cols{% if flow %} mega__cols--flow{% endif %}" style="--cols: {{ ncols }}">
-                  {%- for j in (s..e) -%}
-                    {%- if depths[j] == '2' and vis[j] == '1' -%}{% render 'mega-col', j: j, e: e, depths: depths, titles: titles, urls: urls, vis: vis, flow: flow %}{%- endif -%}
+                <div class="mega__cols{% if flow %} mega__cols--flow{% endif %}{% if thumb_row %} mega__cols--thumbs{% endif %}" style="--cols: {{ gcols }}">
+                  {%- for g in group_list -%}
+                    {%- liquid
+                      assign gj = g | plus: 0
+                      assign mine = ''
+                      for l in lone_list
+                        assign o = own_list[forloop.index0] | default: first_g
+                        if o == g
+                          assign mine = mine | append: l | append: ','
+                        endif
+                      endfor
+                    -%}
+                    {%- if thumb_row -%}
+                      {%- assign tk1 = gj | plus: 1 -%}
+                      <div class="mega__col">
+                        <a class="mega__title" href="{{ urls[gj] | strip }}">{{ titles[gj] | escape }}</a>
+                        <ul class="mega__thumbs" role="list" style="--cols: 4">
+                          {%- for k in (tk1..e) -%}
+                            {%- if depths[k] != '3' -%}{%- break -%}{%- endif -%}
+                            {%- if vis[k] != '1' -%}{%- continue -%}{%- endif -%}
+                            <li>{% render 'mega-thumb', title: titles[k], url: urls[k], handle: handles[k], img_product: imgs[k], sizes: '(min-width: 1280px) 180px, 15vw' %}</li>
+                          {%- endfor -%}
+                        </ul>
+                      </div>
+                    {%- else -%}
+                      {% render 'mega-col', j: gj, e: e, depths: depths, titles: titles, urls: urls, vis: vis, flow: flow, lones: mine %}
+                    {%- endif -%}
                   {%- endfor -%}
+                  {%- if ngroups == 0 and lone_list.size > 0 -%}
+                    <div class="mega__col"><ul role="list">
+                      {%- for l in lone_list -%}{%- assign li = l | plus: 0 -%}<li><a class="mega__lone" href="{{ urls[li] | strip }}">{{ titles[li] | escape }}</a></li>{%- endfor -%}
+                    </ul></div>
+                  {%- endif -%}
                   <a class="mega__viewall" href="{{ url }}">{{ 'sections.header.view_all' | t: title: titles[i] }} →</a>
                 </div>
                 {%- if show_promo -%}

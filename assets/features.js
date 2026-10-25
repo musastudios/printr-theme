@@ -192,23 +192,48 @@ customElements.define('load-more', LoadMore);
 
 /* ---------- newsletter popup (frequency-capped) ---------- */
 class NewsletterPopup extends HTMLElement {
+  /* Non-modal dialog (show, not showModal) so it stays below drawers (z-index 50 < drawer 60).
+     Never opens while the menu/cart/search drawer, header search or a mega menu is open.
+     Mobile: home page only, after 20s or 50% scroll. */
+  busy() {
+    return !!document.querySelector('drawer-panel[open], dialog[open], .mega-open, [data-search-input][aria-expanded="true"], .header__item.has-mega > button[aria-expanded="true"]');
+  }
+  show() {
+    this.dialog.show();
+    this.dialog.classList.add('is-open');
+  }
   connectedCallback() {
     this.dialog = this.querySelector('dialog');
     const key = 'printr-popup';
     const days = Number(this.dataset.frequency || 7);
     const last = Number(localStorage.getItem(key) || 0);
     const success = this.dataset.success === 'true';
-    const close = () => { this.dialog.close(); localStorage.setItem(key, Date.now()); };
+    const close = () => { this.dialog.classList.remove('is-open'); this.dialog.close(); localStorage.setItem(key, Date.now()); };
     this.dialog.addEventListener('click', (e) => { if (e.target === this.dialog || e.target.closest('[data-close]')) close(); });
-    this.dialog.addEventListener('cancel', () => localStorage.setItem(key, Date.now()));
-    if (success) { this.dialog.showModal(); localStorage.setItem(key, Date.now() + 3650 * 864e5); return; }
+    document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && this.dialog.open) close(); });
+    /* A drawer opening over the popup hides it (no frequency write); it comes back later only via a new page view. */
+    new MutationObserver(() => { if (this.dialog.open && document.querySelector('drawer-panel[open]')) { this.dialog.classList.remove('is-open'); this.dialog.close(); } })
+      .observe(document.body, { subtree: true, attributes: true, attributeFilter: ['open'] });
+    if (success) { this.show(); localStorage.setItem(key, Date.now() + 3650 * 864e5); return; }
     if (window.Shopify && window.Shopify.designMode) return;
     if (Date.now() - last < days * 864e5) return;
-    const open = () => { if (!document.querySelector('dialog[open]')) this.dialog.showModal(); cleanup(); };
-    const timer = setTimeout(open, Number(this.dataset.delay || 8) * 1000);
+    const mobile = window.matchMedia('(max-width: 749px)').matches;
+    if (mobile && this.dataset.home !== 'true') return;
+    let done = false;
+    const open = () => {
+      if (done) return;
+      if (this.busy()) { setTimeout(open, 3000); return; }
+      done = true; cleanup(); this.show();
+    };
+    const timer = setTimeout(open, (mobile ? 20 : Number(this.dataset.delay || 8)) * 1000);
     const onLeave = (e) => { if (e.clientY <= 0) open(); };
-    const cleanup = () => { clearTimeout(timer); document.removeEventListener('mouseout', onLeave); };
-    if (this.dataset.exitIntent === 'true') document.addEventListener('mouseout', onLeave);
+    const onScroll = () => {
+      const max = document.documentElement.scrollHeight - window.innerHeight;
+      if (max > 0 && window.scrollY / max >= 0.5) open();
+    };
+    const cleanup = () => { clearTimeout(timer); document.removeEventListener('mouseout', onLeave); window.removeEventListener('scroll', onScroll); };
+    if (mobile) window.addEventListener('scroll', onScroll, { passive: true });
+    else if (this.dataset.exitIntent === 'true') document.addEventListener('mouseout', onLeave);
   }
 }
 customElements.define('newsletter-popup', NewsletterPopup);
