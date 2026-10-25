@@ -41,12 +41,15 @@
     .compare-bar__inner { grid-template-columns: auto minmax(0, 1fr) auto; gap: 2.4rem; padding-block: 1.6rem calc(2rem + env(safe-area-inset-bottom, 0px)); }
     .compare-bar__items { grid-template-columns: repeat(4, minmax(0, 1fr)); }
   }
-  .compare-modal__scroll { overflow: auto; max-height: 70vh; }
-  .compare-table { border-collapse: collapse; width: 100%; min-width: 60rem; font-size: 1.4rem; }
-  .compare-table th, .compare-table td { padding: 1.2rem; border-bottom: 1px solid rgb(var(--color-border)); text-align: left; vertical-align: top; }
-  .compare-table thead th { width: 22%; }
-  .compare-table tbody th { position: sticky; left: 0; background: rgb(var(--color-background)); font-weight: 600; white-space: nowrap; }
+  .compare-modal__scroll { overflow: auto; max-height: 70vh; -webkit-overflow-scrolling: touch; overscroll-behavior-x: contain; --label-w: 10.4rem; --col-w: 14rem; }
+  .compare-table { border-collapse: separate; border-spacing: 0; table-layout: fixed; width: max(100%, calc(var(--label-w) + var(--cols, 2) * var(--col-w))); font-size: 1.4rem; }
+  .compare-table__label-col { width: var(--label-w); }
+  .compare-table th, .compare-table td { padding: 1.2rem; border-bottom: 1px solid rgb(var(--color-border)); text-align: left; vertical-align: top; overflow-wrap: anywhere; word-break: break-word; min-width: 0; }
+  .compare-table thead th, .compare-table td { min-width: var(--col-w); }
+  .compare-table .compare-product img { max-width: 100%; height: auto; }
+  .compare-table tbody th, .compare-table .compare-table__corner { position: sticky; left: 0; z-index: 1; width: var(--label-w); min-width: var(--label-w); max-width: var(--label-w); background: rgb(var(--color-background)); font-weight: 600; white-space: normal; box-shadow: 1px 0 0 rgb(var(--color-border)); }
   .compare-table tr.is-diff td { background: rgba(255, 242, 0, .18); }
+  @media (min-width: 750px) { .compare-modal__scroll { --label-w: 16rem; --col-w: 20rem; } }
   .diff-key { display: inline-block; width: 1.2rem; height: 1.2rem; background: rgba(255, 242, 0, .6); margin-right: .6rem; vertical-align: middle; }
 {% endstylesheet %}
 {% schema %}

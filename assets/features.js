@@ -127,13 +127,14 @@ class CompareBar extends HTMLElement {
     const labels = JSON.parse(this.dataset.labels || '{}');
     const rows = [];
     this.columns.forEach((col) => col.querySelectorAll('[data-row]').forEach((c) => { if (!rows.find((r) => r.key === c.dataset.row)) rows.push({ key: c.dataset.row, label: c.dataset.label || labels[c.dataset.row] || c.dataset.row }); }));
-    const head = `<thead><tr><td></td>${this.columns.map((c) => `<th scope="col">${c.querySelector('[data-row="product"]').innerHTML}<button type="button" class="link" data-remove="${c.dataset.handle}">${t('remove')}</button></th>`).join('')}</tr></thead>`;
+    const cg = `<colgroup><col class="compare-table__label-col">${this.columns.map(() => '<col class="compare-table__col">').join('')}</colgroup>`;
+    const head = `<thead><tr><td class="compare-table__corner"></td>${this.columns.map((c) => `<th scope="col">${c.querySelector('[data-row="product"]').innerHTML}<button type="button" class="link" data-remove="${c.dataset.handle}">${t('remove')}</button></th>`).join('')}</tr></thead>`;
     const body = rows.filter((r) => r.key !== 'product').map((r) => {
       const vals = this.columns.map((c) => c.querySelector(`[data-row="${CSS.escape(r.key)}"]`)?.innerHTML.trim() || '—');
       const differs = new Set(vals).size > 1;
       return `<tr class="${differs ? 'is-diff' : ''}"><th scope="row">${r.label}</th>${vals.map((v) => `<td>${v}</td>`).join('')}</tr>`;
     }).join('');
-    this.table.innerHTML = `<table class="compare-table">${head}<tbody>${body}</tbody></table>`;
+    this.table.innerHTML = `<table class="compare-table" style="--cols: ${this.columns.length}">${cg}${head}<tbody>${body}</tbody></table>`;
     if (!this.dialog.open) this.dialog.showModal();
   }
 }
