@@ -11,12 +11,11 @@
     <div data-row="price">{% render 'price', product: product, show_from: true %}</div>
     <div data-row="availability">{%- if product.available -%}{{ 'products.compare.in_stock' | t }}{%- else -%}{{ 'products.product.sold_out' | t }}{%- endif -%}</div>
     <div data-row="type">{{ product.type | default: '—' | escape }}</div>
-    <div data-row="vendor">{{ product.vendor | default: '—' | escape }}</div>
     {%- for option in product.options_with_values -%}
       <div data-row="option:{{ option.name | handle }}" data-label="{{ option.name | escape }}">{{ option.values | join: ', ' }}</div>
     {%- endfor -%}
     <div data-row="turnaround">{{ product.metafields.custom.turnaround.value | default: '—' }}</div>
-    <div data-row="description">{{ product.description | strip_html | truncatewords: 30 }}</div>
+    <div data-row="description">{{ product.description | replace: 'Caguas Copy', 'PRINTR' | strip_html | truncatewords: 30 }}</div>
     <div data-row="sku">{{ v.sku | default: '—' }}</div>
   </div>
 {%- endif -%}

@@ -52,7 +52,6 @@
             {%- continue -%}
           {%- when 'title' -%}
             <div {{ block.shopify_attributes }}>
-              {%- if product.vendor != blank -%}<span class="slug">{{ product.vendor }}</span>{%- endif -%}
               <h1 class="product__title h2">{{ product.title | escape }}</h1>
             </div>
           {%- when 'price' -%}
@@ -97,7 +96,7 @@
     </div>
   </sticky-buy>
 {%- endif -%}
-<script type="application/ld+json">{{ product | structured_data }}</script>
+{% render 'product-json-ld', product: product %}
 {% stylesheet %}
   .product__grid { display: grid; gap: clamp(3rem, 5vw, 7rem); }
   @media (min-width: 990px) { .product__grid { grid-template-columns: 1.2fr 1fr; grid-template-rows: auto 1fr; } .product__media { grid-column: 1; grid-row: 1; } .product__info { grid-column: 2; grid-row: 1 / span 2; position: sticky; top: 10rem; align-self: start; } .product__details { grid-column: 1; grid-row: 2; align-self: start; } }
