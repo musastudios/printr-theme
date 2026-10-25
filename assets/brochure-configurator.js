@@ -126,9 +126,11 @@
       this.schema = this.adapter.getSchema(product);
       this.engine = createEngine(this.schema, this.adapter.getRules());
       this.sel = this.engine.resolve({}).sel;
+      const tl = this.schema.turnarounds; this.turn = tl && tl.length ? (tl.find((x) => x.default) || tl[0]).v : null;
       this.addEventListener('change', (e) => {
         if (e.target.matches('[data-bc-proof]')) { const qa = this.uploaderQa(); if (qa) { qa.checked = e.target.checked; qa.dispatchEvent(new Event('change', { bubbles: true })); } this.apply(); return; }
-        if (e.target.matches('[data-bc-sample]')) { this.apply(); return; }
+        if (e.target.matches('[data-bc-sample], [data-bc-addon]')) { this.apply(); return; }
+        if (e.target.matches('[data-bc-turn-opt]')) { this.turn = e.target.value; this.apply(); return; }
         const r = e.target.closest('[data-bc-key]'); if (!r) return;
         this.choose(r.dataset.bcKey, r.value);
       });
@@ -147,6 +149,17 @@
       if (ex.proof && this.dataset.qaVariant && !this.uploaderQa()) items.push({ id: Number(this.dataset.qaVariant), quantity: 1 });
       if (!items.length || this.dataset.state !== 'ready') return;
       fetch(`${(root.Shopify && root.Shopify.routes && root.Shopify.routes.root) || '/'}cart/add.js`, { method: 'POST', keepalive: true, headers: { 'Content-Type': 'application/json', Accept: 'application/json' }, body: JSON.stringify({ items }) }).catch(() => {});
+    }
+    /** Optional add-ons (type 'option') shown only when their `when` matches the selection; recorded as line properties. */
+    addons() { return (this.schema.addons || []).filter((a) => a.type === 'option' && matches(a.when, this.sel)); }
+    turnaround() { const tl = this.schema.turnarounds; return tl && tl.length ? tl.find((x) => x.v === this.turn) || tl[0] : this.schema.turnaround; }
+    renderExtras() {
+      const uid = this.dataset.section || 'bc'; const tl = this.schema.turnarounds; const tbox = this.querySelector('[data-bc-turn]');
+      if (tl && tl.length && tbox) tbox.innerHTML = tl.map((x) => `<label class="bc-turn"><input type="radio" name="bc-${uid}-turn" value="${esc(x.v)}" data-bc-turn-opt ${x.v === this.turn ? 'checked' : ''}><span>${esc(this.L(x.label))}</span></label>`).join(' ');
+      const abox = this.querySelector('[data-bc-addons]'); if (!abox) return;
+      const on = new Set([...abox.querySelectorAll('[data-bc-addon]:checked')].map((i) => i.value)); const list = this.addons();
+      abox.innerHTML = list.length ? `<h3 class="bc-sec__title bc-sec__title--sm">${esc(this.t.options || '')}</h3>` + list.map((a) => `<label class="bc-check"><input type="checkbox" data-bc-addon value="${esc(a.key)}" ${on.has(a.key) ? 'checked' : ''}><span>${esc(this.L(a.label))}</span></label>`).join('') : '';
+      abox.hidden = !list.length;
     }
     L(o) { return o && typeof o === 'object' ? (o[this.lang] || o.en) : o; }
     get form() { return document.getElementById(this.dataset.formId); }
@@ -173,6 +186,7 @@
           <div class="bc-select"><select id="${id}" data-bc-key="${g.key}" required>${opts}</select><span class="bc-select__ic" aria-hidden="true">${this.icon('chevron')}</span></div></div>`;
       }).join('');
       this.renderTiers();
+      this.renderExtras();
       this.load();
       const note = this.querySelector('[data-bc-note]');
       const names = reset.map((k) => { const g = this.schema.groups.find((x) => x.key === k); return g ? this.label(g) : this.t.quantity; });
@@ -207,11 +221,14 @@
       const form = this.form; const sel = this.sel;
       const p = this.adapter.getPrice(sel); const v = p.variant;
       const sellable = !!(v && v.available && p.price != null);
-      const spec = { ...sel, config: configCode(this.schema, sel), turnaround: this.schema.turnaround && this.schema.turnaround.v };
+      const spec = { ...sel, config: configCode(this.schema, sel), turnaround: this.turnaround() && this.turnaround().v };
       const props = {};
       this.schema.groups.forEach((g) => { const x = g.values.find((y) => y.v === sel[g.key]); props[this.label(g)] = this.valueLabel(g, x); });
       props[this.t.quantity] = String(sel.qty);
-      if (this.schema.turnaround) props[this.t.turnaround] = this.L(this.schema.turnaround.label);
+      if (this.turnaround()) props[this.t.turnaround] = this.L(this.turnaround().label);
+      const picked = this.querySelectorAll('[data-bc-addon]:checked'); const addons = [];
+      picked.forEach((i) => { const a = this.addons().find((x) => x.key === i.value); if (a) { props[this.L(a.label)] = this.t.yes; addons.push(a.key); } });
+      if (addons.length) spec.addons = addons;
       const ex = this.extras();
       if (ex.sample) props[this.t.sample] = this.dataset.sampleVariant ? this.t.yes : `${this.t.yes} (+$9.99 ${this.t.invoiced})`;
       if (ex.proof) props[this.t.proof] = this.dataset.qaVariant || this.uploaderQa() ? this.t.yes : `${this.t.yes} (+$5.00 ${this.t.invoiced})`;

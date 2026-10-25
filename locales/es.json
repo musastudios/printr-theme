@@ -121,6 +121,7 @@
         "total_price": "Precio total",
         "next_day": "Próximo día laborable",
         "samples": "Muestras del trabajo",
+        "options": "Opciones",
         "sample": "Muestra del trabajo",
         "sample_label": "Muestra del trabajo terminado (por juego) +{{ price }}",
         "proofs": "Pruebas digitales",

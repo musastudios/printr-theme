@@ -72,6 +72,7 @@
       "quote_subject": {{ 'products.product.configurator.quote_subject' | t: product: product.title | json }},
       "reset": {{ 'products.product.configurator.reset' | t: options: '__OPTS__' | json }},
       "error": {{ 'products.product.configurator.error' | t | json }},
+      "options": {{ 'products.product.configurator.options' | t | json }},
       "sample": {{ 'products.product.configurator.sample' | t | json }},
       "yes": {{ 'products.product.configurator.yes' | t | json }},
       "proof": {{ 'products.product.configurator.proof' | t | json }},
@@ -114,10 +115,11 @@
     </div>
     <div class="bc-sec">
       <h3 class="bc-sec__title" id="BcTurn-{{ section_id }}">{% render 'au-icon', name: 'clock', size: 18 %}{{ 'products.product.configurator.turnaround' | t }}<span class="bc-req" aria-hidden="true">*</span></h3>
-      <div role="radiogroup" aria-labelledby="BcTurn-{{ section_id }}">
+      <div role="radiogroup" aria-labelledby="BcTurn-{{ section_id }}" data-bc-turn>
         <label class="bc-turn"><input type="radio" name="bc-{{ section_id }}-turn" value="NBD" checked><span>{{ 'products.product.configurator.next_day' | t }}</span></label>
       </div>
     </div>
+    <div class="bc-sec" data-bc-addons hidden></div>
     <div class="bc-sec bc-sec--checks">
       <div>
         <h3 class="bc-sec__title bc-sec__title--sm">{{ 'products.product.configurator.samples' | t }}</h3>

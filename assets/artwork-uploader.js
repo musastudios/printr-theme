@@ -127,7 +127,7 @@ export function expandOptions(options) {
   const out = [];
   (options || []).forEach((o) => {
     out.push(o);
-    const m = String(o).match(/^[A-Z0-9]+-(\d)(\d)-[A-Z]+-([A-Z]+)$/);
+    const m = String(o).match(/^[A-Z0-9]+-(\d)(\d)-[A-Z]+(?:-([A-Z]+))?$/);
     if (m) { out.push(`${m[1]}/${m[2]} color`); if (CODE_FOLD[m[3]]) out.push(CODE_FOLD[m[3]]); }
   });
   return out;

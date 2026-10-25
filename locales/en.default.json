@@ -121,6 +121,7 @@
         "total_price": "Total price",
         "next_day": "Next business day",
         "samples": "Job samples",
+        "options": "Options",
         "sample": "Job sample",
         "sample_label": "Sample of completed job (per set) +{{ price }}",
         "proofs": "Digital proofs",
