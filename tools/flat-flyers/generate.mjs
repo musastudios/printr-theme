@@ -20,10 +20,11 @@ function supplierRef(size, stock, cs, coat) {
   const code = size === '8.5x11' && pub.has(nhp) ? nhp : `${base}-NF`;
   return { ref: `flat-flyers-brochures-${code}`, inPublicList: pub.has(code), verified: code === '100GLB-FLUV-11X17-C-44-UV-NF' };
 }
-// cost x2 from portal export (4/4 only for now; 4/0 and 4/1 stay $0 = quote)
-const CSV_STOCK = { '100LB Gloss Book|Aqueous': 'GB100-44-AQ', '100LB Gloss Book|UV': 'GB100-44-UV', '100LB Gloss Cover|Satin': 'GC100-44-SAT', '100LB Matte Book|None': 'MB100-44-NC' };
+// cost x2 from portal exports (4/4, 4/0, 4/1)
+const CSV_STOCK = { '100LB Gloss Book|Aqueous': ['GB100', 'AQ'], '100LB Gloss Book|UV': ['GB100', 'UV'], '100LB Gloss Cover|Satin': ['GC100', 'SAT'], '100LB Matte Book|None': ['MB100', 'NC'] };
 const PORTAL = new Map();
-readFileSync(dir + 'portal-prices-44.csv', 'utf8').trim().split('\n').slice(1).forEach((l) => { const [sku, size, stock, coat, , qty, , p2] = l.split(','); PORTAL.set(`${size}|${CSV_STOCK[`${stock}|${coat}`]}|${qty}`, { p: Number(p2), sku }); });
+for (const f of ['portal-prices-44.csv', 'portal-prices-40-41.csv'])
+  readFileSync(dir + f, 'utf8').trim().split('\n').slice(1).forEach((l) => { const [sku, size, stock, coat, colorspec, qty, , p2] = l.split(','); const [st, co] = CSV_STOCK[`${stock}|${coat}`]; PORTAL.set(`${size}|${st}-${colorspec.replace('/', '')}-${co}|${qty}`, { p: Number(p2), sku }); });
 // Matte Book starts at 500
 const qtyOk = (stock, q) => !(stock === 'MB100' && q < 500);
 
@@ -90,8 +91,9 @@ for (const c of configs) {
     csv.push([c.size, c.code, q, p, r.ref, r.inPublicList, r.verified].join(','));
   });
 }
+const allReal = variants.every((v) => Number(v.price) > 0);
 const uniq = (a) => [...new Set(a)];
-const input = { title: 'Flat Flyers', handle: 'flat-flyers', status: 'DRAFT', templateSuffix: 'flat-flyers', tags: ['needs-price', 'configurator'], vendor: 'PRINTR',
+const input = { title: 'Flat Flyers', handle: 'flat-flyers', status: 'DRAFT', templateSuffix: 'flat-flyers', tags: allReal ? ['configurator'] : ['needs-price', 'configurator'], vendor: 'PRINTR',
   productOptions: [{ name: 'Size', values: uniq(configs.map((c) => c.size)).map((name) => ({ name })) }, { name: 'Qty', values: QTY.map((q) => ({ name: String(q) })) }, { name: 'Config', values: uniq(configs.map((c) => c.code)).map((name) => ({ name })) }],
   variants };
 writeFileSync(dir + 'config.json', JSON.stringify(config));
