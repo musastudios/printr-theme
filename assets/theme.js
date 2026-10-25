@@ -296,6 +296,8 @@ class TabsComponent extends HTMLElement {
       t.addEventListener('keydown', (e) => {
         if (e.key === 'ArrowRight') { this.select((i + 1) % this.tabs.length, true); }
         if (e.key === 'ArrowLeft') { this.select((i - 1 + this.tabs.length) % this.tabs.length, true); }
+        if (e.key === 'Home') { e.preventDefault(); this.select(0, true); }
+        if (e.key === 'End') { e.preventDefault(); this.select(this.tabs.length - 1, true); }
       });
     });
   }

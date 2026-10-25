@@ -182,6 +182,14 @@
       "name": "Nombre del destinatario",
       "message": "Mensaje (máx. 200 caracteres)",
       "send_on": "Enviar el"
+    },
+    "info": {
+      "tabs_label": "Información del producto",
+      "tab_details": "Detalles",
+      "tab_description": "Descripción",
+      "tab_specs": "Especificaciones",
+      "tab_templates": "Plantillas",
+      "templates_intro": "Descarga la plantilla de impresión del tamaño seleccionado y coloca tu arte dentro del área segura."
     }
   },
   "collections": {

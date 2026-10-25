@@ -182,6 +182,14 @@
       "name": "Recipient name",
       "message": "Message (200 characters max)",
       "send_on": "Send on"
+    },
+    "info": {
+      "tabs_label": "Product information",
+      "tab_details": "Details",
+      "tab_description": "Description",
+      "tab_specs": "Specs",
+      "tab_templates": "Templates",
+      "templates_intro": "Download the print template for the selected size and place your artwork inside the safe area."
     }
   },
   "collections": {

@@ -84,47 +84,7 @@
       {%- endfor -%}
     </div>
     <div class="product__details">
-      {%- for block in section.blocks -%}
-        {%- case block.type -%}
-          {%- when 'description' -%}
-            <div class="rte product__description" {{ block.shopify_attributes }}>{{ product.description }}</div>
-          {%- when 'collapsible' -%}
-            <details class="product__accordion" {{ block.shopify_attributes }}>
-              <summary>{{ block.settings.heading | escape }}</summary>
-              <div class="rte">{{ block.settings.content }}{{ block.settings.page.content }}</div>
-            </details>
-          {%- when 'pickup' -%}
-            <pickup-availability data-variant-id="{{ variant.id }}" {{ block.shopify_attributes }}></pickup-availability>
-          {%- when 'actions' -%}
-            <div class="product__actions" {{ block.shopify_attributes }}>
-              {%- if settings.enable_wishlist -%}<button type="button" class="link product__action" data-wishlist-toggle="{{ product.handle }}" aria-pressed="false">{% render 'icon', name: 'heart' %}{{ 'products.wishlist.save' | t }}</button>{%- endif -%}
-              {%- if settings.enable_compare -%}<button type="button" class="link product__action" data-compare-toggle="{{ product.handle }}" aria-pressed="false">{% render 'icon', name: 'compare' %}{{ 'products.compare.label' | t }}</button>{%- endif -%}
-              <a class="link product__action" href="mailto:?subject={{ product.title | url_encode }}&body={{ shop.url | append: product.url | url_encode }}">{% render 'icon', name: 'mail' %}{{ 'products.product.share' | t }}</a>
-            </div>
-          {%- when 'tabs' -%}
-            <tabs-component class="product__tabs" {{ block.shopify_attributes }}>
-              <div class="tabs__list" role="tablist">
-                {%- for n in (1..3) -%}
-                  {%- capture key %}tab_{{ n }}{% endcapture -%}
-                  {%- capture ckey %}tab_{{ n }}_content{% endcapture -%}
-                  {%- if block.settings[key] != blank -%}
-                    <button type="button" role="tab" id="PTab-{{ block.id }}-{{ n }}" aria-controls="PPanel-{{ block.id }}-{{ n }}" aria-selected="{% if n == 1 %}true{% else %}false{% endif %}" tabindex="{% if n == 1 %}0{% else %}-1{% endif %}">{{ block.settings[key] | escape }}</button>
-                  {%- endif -%}
-                {%- endfor -%}
-              </div>
-              {%- for n in (1..3) -%}
-                {%- capture key %}tab_{{ n }}{% endcapture -%}
-                {%- capture ckey %}tab_{{ n }}_content{% endcapture -%}
-                {%- if block.settings[key] != blank -%}
-                  <div class="rte" role="tabpanel" tabindex="0" id="PPanel-{{ block.id }}-{{ n }}" aria-labelledby="PTab-{{ block.id }}-{{ n }}" {% unless n == 1 %}hidden{% endunless %}>
-                    {%- if n == 1 and block.settings.tab_1_use_description -%}{{ product.description }}{%- else -%}{{ block.settings[ckey] }}{%- endif -%}
-                  </div>
-                {%- endif -%}
-              {%- endfor -%}
-            </tabs-component>
-        {%- endcase -%}
-      {%- endfor -%}
-      {% render 'product-templates', product: product, variant: variant %}
+      {% render 'product-info-tabs', product: product, variant: variant, section: section %}
     </div>
   </div>
 </div>
@@ -142,8 +102,6 @@
   .product__grid { display: grid; gap: clamp(3rem, 5vw, 7rem); }
   @media (min-width: 990px) { .product__grid { grid-template-columns: 1.2fr 1fr; grid-template-rows: auto 1fr; } .product__media { grid-column: 1; grid-row: 1; } .product__info { grid-column: 2; grid-row: 1 / span 2; position: sticky; top: 10rem; align-self: start; } .product__details { grid-column: 1; grid-row: 2; align-self: start; } }
   .product__details { display: flex; flex-direction: column; gap: 2.4rem; min-width: 0; }
-  .product__tpl { display: inline-flex; align-items: center; gap: .8rem; font-weight: 600; }
-  .product__tpl svg { width: 1.8rem; height: 1.8rem; }
   .product__info { display: flex; flex-direction: column; gap: 2.4rem; }
   .product__thumbs { list-style: none; padding: 0; margin: 1.6rem 0 0; display: grid; grid-template-columns: 1fr 1fr; gap: 1.6rem; }
   .product__price .price { font-size: 2.6rem; }
