@@ -5,6 +5,7 @@
   @param {boolean} [show_artwork] - Show artwork notes field
   @param {boolean} [show_dynamic_checkout] - Show accelerated checkout buttons
   @param {boolean} [custom_buy_now] - Replace accelerated checkout with a theme Buy it now (cart/add then /checkout) so artwork files and linked lines are kept
+  @param {boolean} [inline_ctas] - Put Add to cart and the custom Buy it now in one CTA row (side by side on desktop, stacked on mobile)
   @example
   {% render 'product-buy', product: product, variant: variant, section_id: section.id %}
 {% enddoc %}
@@ -36,21 +37,39 @@
         <input id="Qty-{{ section_id }}" type="number" name="quantity" value="1" min="1" step="1" inputmode="numeric">
         <button type="button" name="plus">+<span class="visually-hidden">{{ 'products.product.increase' | t }}</span></button>
       </quantity-input>
-      <button type="submit" class="button product-buy__submit" {% unless variant.available %}disabled{% endunless %}>
-        {%- if variant == nil -%}
-          {{ 'products.product.unavailable' | t }}
-        {%- elsif variant.available -%}
-          {{ 'products.product.add_to_cart' | t }}
-        {%- else -%}
-          {{ 'products.product.sold_out' | t }}
-        {%- endif -%}
-      </button>
+      {%- unless inline_ctas and show_dynamic_checkout and custom_buy_now -%}
+        <button type="submit" class="button product-buy__submit" {% unless variant.available %}disabled{% endunless %}>
+          {%- if variant == nil -%}
+            {{ 'products.product.unavailable' | t }}
+          {%- elsif variant.available -%}
+            {{ 'products.product.add_to_cart' | t }}
+          {%- else -%}
+            {{ 'products.product.sold_out' | t }}
+          {%- endif -%}
+        </button>
+      {%- endunless -%}
     </div>
+    {%- if inline_ctas and show_dynamic_checkout and custom_buy_now -%}
+      <div class="product-buy__ctas">
+        <button type="submit" class="button product-buy__submit" {% unless variant.available %}disabled{% endunless %}>
+          {%- if variant == nil -%}
+            {{ 'products.product.unavailable' | t }}
+          {%- elsif variant.available -%}
+            {{ 'products.product.add_to_cart' | t }}
+          {%- else -%}
+            {{ 'products.product.sold_out' | t }}
+          {%- endif -%}
+        </button>
+        <button type="button" class="button button--secondary button--full product-buy__now" data-buy-now {% unless variant.available %}disabled{% endunless %}>{{ 'artwork.buy_now' | t }}</button>
+      </div>
+    {%- endif -%}
     <p class="form-error" role="alert" data-form-error hidden></p>
     <div class="product-buy__installments">{{ form | payment_terms }}</div>
     {%- if show_dynamic_checkout -%}
       {%- if custom_buy_now -%}
-        <button type="button" class="button button--secondary button--full product-buy__now" data-buy-now {% unless variant.available %}disabled{% endunless %}>{{ 'artwork.buy_now' | t }}</button>
+        {%- unless inline_ctas -%}
+          <button type="button" class="button button--secondary button--full product-buy__now" data-buy-now {% unless variant.available %}disabled{% endunless %}>{{ 'artwork.buy_now' | t }}</button>
+        {%- endunless -%}
       {%- else -%}
         {{ form | payment_button }}
       {%- endif -%}
@@ -60,6 +79,9 @@
 {% stylesheet %}
   .product-buy__row { display: flex; gap: 1rem; }
   .product-buy__submit { flex: 1; }
+  .product-buy__ctas { display: flex; gap: 1.6rem; margin-top: 1.6rem; }
+  .product-buy__ctas > .button { flex: 1 1 0; min-width: 0; margin: 0; }
+  @media (max-width: 749px) { .product-buy__ctas { flex-direction: column; gap: 1.4rem; } }
   .product-buy__installments:empty { display: none; }
   .product-buy__installments { margin-top: 1.2rem; font-size: 1.4rem; }
   .gift-recipient { margin-bottom: 1.6rem; }
