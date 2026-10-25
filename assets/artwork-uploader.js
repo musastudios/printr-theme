@@ -132,6 +132,26 @@ export function expandOptions(options) {
   });
   return out;
 }
+
+/* Die-cut silhouettes, normalised to the cut box (0..1, pole on the left). Traced from the PRINTR flag templates. */
+const SHAPE_POLY = {"feather":[[0.856,0.0],[0.665,0.017],[0.55,0.034],[0.464,0.051],[0.396,0.068],[0.34,0.085],[0.294,0.102],[0.257,0.119],[0.227,0.136],[0.201,0.152],[0.18,0.169],[0.162,0.186],[0.147,0.203],[0.134,0.22],[0.124,0.237],[0.115,0.254],[0.107,0.271],[0.101,0.288],[0.096,0.305],[0.091,0.322],[0.087,0.339],[0.084,0.356],[0.081,0.373],[0.079,0.39],[0.077,0.407],[0.076,0.424],[0.074,0.44],[0.073,0.457],[0.071,0.474],[0.07,0.491],[0.068,0.508],[0.067,0.525],[0.065,0.542],[0.063,0.559],[0.061,0.576],[0.06,0.593],[0.059,0.61],[0.057,0.627],[0.056,0.644],[0.054,0.661],[0.053,0.678],[0.052,0.695],[0.05,0.712],[0.049,0.729],[0.047,0.746],[0.047,0.763],[0.045,0.78],[0.044,0.796],[0.043,0.813],[0.042,0.83],[0.041,0.847],[0.04,0.864],[0.039,0.881],[0.039,0.898],[0.038,0.915],[0.037,0.932],[0.036,0.949],[0.036,0.966],[0.036,0.983],[0.0,1.0],[0.982,1.0],[0.982,0.983],[0.982,0.966],[0.982,0.949],[0.982,0.932],[0.982,0.915],[0.982,0.898],[0.982,0.881],[0.982,0.864],[0.982,0.847],[0.982,0.83],[0.982,0.813],[0.982,0.796],[0.982,0.78],[0.982,0.763],[0.982,0.746],[0.982,0.729],[0.982,0.712],[0.982,0.695],[0.982,0.678],[0.982,0.661],[0.982,0.644],[0.982,0.627],[0.982,0.61],[0.982,0.593],[0.982,0.576],[0.982,0.559],[0.982,0.542],[0.982,0.525],[0.982,0.508],[0.982,0.491],[0.982,0.474],[0.982,0.457],[0.982,0.44],[0.982,0.424],[0.982,0.407],[0.982,0.39],[0.982,0.373],[0.982,0.356],[0.982,0.339],[0.982,0.322],[0.982,0.305],[0.982,0.288],[0.982,0.271],[0.982,0.254],[0.982,0.237],[0.982,0.22],[0.982,0.203],[0.982,0.186],[0.982,0.169],[0.982,0.152],[0.982,0.136],[0.982,0.119],[0.982,0.102],[0.982,0.085],[0.982,0.068],[0.982,0.051],[0.982,0.034],[0.986,0.017],[0.908,0.0]],"teardrop":[[0.484,0.0],[0.344,0.017],[0.28,0.034],[0.23,0.051],[0.19,0.068],[0.156,0.085],[0.127,0.102],[0.102,0.119],[0.084,0.135],[0.069,0.152],[0.056,0.169],[0.046,0.186],[0.039,0.203],[0.032,0.22],[0.026,0.237],[0.021,0.254],[0.017,0.271],[0.013,0.288],[0.01,0.305],[0.008,0.322],[0.006,0.339],[0.004,0.356],[0.003,0.373],[0.002,0.39],[0.001,0.407],[0.001,0.424],[0.0,0.44],[0.0,0.457],[0.0,0.475],[0.0,0.491],[0.0,0.508],[0.001,0.525],[0.001,0.542],[0.001,0.559],[0.002,0.576],[0.002,0.593],[0.002,0.61],[0.002,0.627],[0.003,0.644],[0.003,0.661],[0.003,0.678],[0.004,0.695],[0.004,0.712],[0.004,0.729],[0.004,0.746],[0.005,0.762],[0.005,0.78],[0.005,0.797],[0.006,0.813],[0.007,0.83],[0.007,0.847],[0.007,0.864],[0.008,0.881],[0.008,0.898],[0.009,0.915],[0.009,0.932],[0.009,0.949],[0.01,0.966],[0.009,0.983],[0.071,1.0],[0.096,1.0],[0.166,0.983],[0.181,0.966],[0.199,0.949],[0.217,0.932],[0.235,0.915],[0.252,0.898],[0.27,0.881],[0.288,0.864],[0.306,0.847],[0.324,0.83],[0.342,0.813],[0.359,0.797],[0.377,0.78],[0.395,0.762],[0.413,0.746],[0.431,0.729],[0.449,0.712],[0.466,0.695],[0.484,0.678],[0.502,0.661],[0.52,0.644],[0.538,0.627],[0.556,0.61],[0.573,0.593],[0.591,0.576],[0.609,0.559],[0.627,0.542],[0.645,0.525],[0.662,0.508],[0.681,0.491],[0.699,0.475],[0.716,0.457],[0.734,0.44],[0.752,0.424],[0.77,0.407],[0.787,0.39],[0.805,0.373],[0.823,0.356],[0.841,0.339],[0.859,0.322],[0.877,0.305],[0.895,0.288],[0.912,0.271],[0.931,0.254],[0.948,0.237],[0.966,0.22],[0.985,0.203],[0.997,0.186],[0.998,0.169],[0.986,0.152],[0.969,0.135],[0.951,0.119],[0.929,0.102],[0.904,0.085],[0.873,0.068],[0.836,0.051],[0.786,0.034],[0.716,0.017],[0.572,0.0]]};
+/** Shape key from spec.detail.shape / handle / product title: circle, oval, leaf, feather, teardrop or '' (rect). */
+export function shapeKey(spec, title) {
+  const d = spec && spec.detail; const hay = `${(d && d.shape) || ''} ${(spec && spec.handle) || ''} ${title || ''}`.toLowerCase();
+  for (const k of ['circle', 'oval', 'leaf', 'feather', 'teardrop']) if (hay.includes(k)) return k;
+  if (/round(?!ed)/.test(hay)) return 'circle';
+  return '';
+}
+/** Trace shape k into ctx inside box (x,y,w,h), shrunk by inset px; mirror flips the pole side. */
+function shapePath(ctx, k, x, y, w, h, inset, mirror) {
+  const X = x + inset; const Y = y + inset; const W = Math.max(1, w - 2 * inset); const H = Math.max(1, h - 2 * inset);
+  ctx.beginPath();
+  if (k === 'circle' || k === 'oval') { ctx.ellipse(X + W / 2, Y + H / 2, W / 2, H / 2, 0, 0, Math.PI * 2); return; }
+  if (k === 'leaf') { const r = Math.min(W, H) * 0.5; if (ctx.roundRect) ctx.roundRect(X, Y, W, H, [r, 0, r, 0]); else ctx.rect(X, Y, W, H); return; }
+  const poly = SHAPE_POLY[k];
+  if (poly) { poly.forEach(([px, py], i) => { const fx = X + (mirror ? 1 - px : px) * W; const fy = Y + py * H; if (i) ctx.lineTo(fx, fy); else ctx.moveTo(fx, fy); }); ctx.closePath(); return; }
+  ctx.rect(X, Y, W, H);
+}
 const LEVEL_RANK = { ok: 0, review: 1, wait: 1, run: 1, warn: 2, err: 3 };
 
 class ArtworkUploader extends HTMLElement {
@@ -244,7 +264,7 @@ class ArtworkUploader extends HTMLElement {
   setVariant(id, options) {
     // product.variants caps at 250 in Liquid; callers may pass the variant's options for ids outside that list.
     const v = this.variants.find((x) => String(x.id) === String(id)) || (Array.isArray(options) && options.length ? { id, options } : this.variants[0]);
-    this.resolveSpec(v);
+    this.variantOptions = v?.options || []; this.resolveSpec(v);
     let size = this.cfg.trimW && this.cfg.trimH ? { w: this.cfg.trimW, h: this.cfg.trimH } : null;
     if (!size && v) {
       if (this.cfg.sizeIndex >= 0) size = parseSize(v.options[this.cfg.sizeIndex]);
@@ -844,14 +864,21 @@ class ArtworkUploader extends HTMLElement {
     const rr = (inset, r) => { const x = pad + inset; const y = pad + inset; const w = doc.w * ppi - 2 * inset; const h = doc.h * ppi - 2 * inset; ctx.beginPath(); ctx.roundRect ? ctx.roundRect(x, y, w, h, r) : ctx.rect(x, y, w, h); };
     const dieR = Math.min(doc.w, doc.h) * ppi * 0.12;
     // mask outside the cut line (contour for die-cut)
-    if (!ap) { ctx.save(); ctx.fillStyle = `rgba(255,255,255,${this.mask})`; ctx.beginPath(); ctx.rect(0, 0, W, H); if (die && ctx.roundRect) ctx.roundRect(pad + b, pad + b, doc.w * ppi - 2 * b, doc.h * ppi - 2 * b, dieR); else ctx.rect(pad + b, pad + b, doc.w * ppi - 2 * b, doc.h * ppi - 2 * b); ctx.fill('evenodd'); ctx.restore(); }
+    const shape = shapeKey(this.spec, this.dataset.productTitle); const mirror = expandOptions(this.variantOptions).some((o) => /right/i.test(String(o)));
+    const cutPath = (inset) => shapePath(ctx, shape, pad, pad, doc.w * ppi, doc.h * ppi, inset, mirror);
+    if (!ap) { ctx.save(); ctx.fillStyle = `rgba(255,255,255,${this.mask})`; if (shape) cutPath(b); else ctx.beginPath(); if (!shape) { if (die && ctx.roundRect) ctx.roundRect(pad + b, pad + b, doc.w * ppi - 2 * b, doc.h * ppi - 2 * b, dieR); else ctx.rect(pad + b, pad + b, doc.w * ppi - 2 * b, doc.h * ppi - 2 * b); } ctx.rect(0, 0, W, H); ctx.fill('evenodd'); ctx.restore(); }
     const line = (color, width, dash, path) => { ctx.save(); ctx.strokeStyle = color; ctx.lineWidth = width * dpr; ctx.setLineDash(dash.map((d) => d * dpr)); path(); ctx.stroke(); ctx.restore(); };
     const label = (txt, x, y, bg = '#000', fg = '#fff') => { ctx.save(); ctx.font = `700 ${11 * dpr}px system-ui, sans-serif`; const w = ctx.measureText(txt).width + 10 * dpr; ctx.fillStyle = bg; ctx.fillRect(x, y, w, 16 * dpr); ctx.fillStyle = fg; ctx.textBaseline = 'middle'; ctx.fillText(txt, x + 5 * dpr, y + 8 * dpr); ctx.restore(); };
     if (ap) {
       if (this.showGuides) { line(COLORS.safe, 1.5, [6, 4], () => rr(0, 0)); label(this.t.lg_area, pad + 6 * dpr, pad + 6 * dpr, COLORS.safe); }
     } else {
-      if (this.showGuides) { line(COLORS.bleed, 1.5, [4, 3], () => rr(0, 0)); line(COLORS.safe, 1.5, [6, 4], () => rr(sf, die ? Math.max(0, dieR - this.cfg.safe * ppi) : 0)); }
-      if (this.showCut) { if (die) line('#FB56D6', 3, [], () => rr(b, dieR)); else line(COLORS.cut, 2, [], () => rr(b, 0)); }
+      if (shape) {
+        if (this.showGuides) { line(COLORS.bleed, 1.5, [4, 3], () => cutPath(0)); line(COLORS.safe, 1.5, [6, 4], () => cutPath(sf)); }
+        if (this.showCut) line('#FB56D6', 3, [], () => cutPath(b));
+      } else {
+        if (this.showGuides) { line(COLORS.bleed, 1.5, [4, 3], () => rr(0, 0)); line(COLORS.safe, 1.5, [6, 4], () => rr(sf, die ? Math.max(0, dieR - this.cfg.safe * ppi) : 0)); }
+        if (this.showCut) { if (die) line('#FB56D6', 3, [], () => rr(b, dieR)); else line(COLORS.cut, 2, [], () => rr(b, 0)); }
+      }
     }
     if (sp.has('folds') && this.trim && this.showGuides) {
       foldPositions(this.cfg.panels, sp.panelCount, this.trim.w).forEach((fx) => {
@@ -859,11 +886,11 @@ class ArtworkUploader extends HTMLElement {
         label(this.t.lg_fold, x - 16 * dpr, pad + doc.h * ppi - 22 * dpr);
       });
     }
-    const sleeve = num(this.spec?.sleeve_in);
+    const sleeve = num(this.spec?.sleeve_in) ?? num(this.spec?.detail?.sleeve_in) ?? (this.spec?.detail?.pole_sleeve && (shape === 'feather' || shape === 'teardrop') ? 3 : null);
     if (sleeve && this.showGuides) {
-      const w = sleeve * ppi; ctx.save(); ctx.beginPath(); ctx.rect(pad, pad, w, doc.h * ppi); ctx.clip(); ctx.strokeStyle = 'rgba(0,0,0,.55)'; ctx.lineWidth = 1.5 * dpr;
-      for (let i = -doc.h * ppi; i < w + doc.h * ppi; i += 8 * dpr) { ctx.beginPath(); ctx.moveTo(pad + i, pad); ctx.lineTo(pad + i + doc.h * ppi, pad + doc.h * ppi); ctx.stroke(); }
-      ctx.restore(); label(this.t.lg_sleeve, pad + 4 * dpr, pad + 6 * dpr);
+      const w = sleeve * ppi; const sx = mirror ? pad + doc.w * ppi - b - w : pad + b; ctx.save(); if (shape) { cutPath(b); ctx.clip(); } ctx.beginPath(); ctx.rect(sx, pad, w, doc.h * ppi); ctx.clip(); ctx.strokeStyle = 'rgba(0,0,0,.55)'; ctx.lineWidth = 1.5 * dpr;
+      for (let i = -doc.h * ppi; i < w + doc.h * ppi; i += 8 * dpr) { ctx.beginPath(); ctx.moveTo(sx + i - doc.h * ppi, pad); ctx.lineTo(sx + i, pad + doc.h * ppi); ctx.stroke(); }
+      ctx.restore(); label(this.t.lg_sleeve, sx + 2 * dpr, pad + doc.h * ppi * 0.5);
     }
     // large-format scale chip: real inches vs on-screen inches (96 CSS px per inch)
     const chip = this.querySelector('[data-au-scale-chip]');
