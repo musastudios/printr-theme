@@ -94,8 +94,8 @@
   /* Mobile chip row fades: left fade once scrolled, no right fade at the end. */
   const chipFade = (el) => {
     const upd = () => {
-      el.classList.toggle('is-start', el.scrollLeft > 1);
-      el.classList.toggle('is-end', el.scrollLeft + el.clientWidth >= el.scrollWidth - 2);
+      el.classList.toggle('is-start', el.scrollLeft > 8);
+      el.classList.toggle('is-end', el.scrollLeft + el.clientWidth >= el.scrollWidth - 8);
     };
     el.addEventListener('scroll', upd, { passive: true });
     window.addEventListener('resize', upd);
