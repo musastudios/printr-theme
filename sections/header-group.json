@@ -14,8 +14,94 @@
         "store_link": "/pages/contact",
         "store_label": "Find a store",
         "customer_account_menu": "customer-account-main-menu",
-        "mega_collection": "all-print-products"
-      }
+        "demo_tree": false,
+        "show_empty_highlight": false
+      },
+      "blocks": {
+        "printing": {
+          "type": "mega_showroom",
+          "settings": {
+            "menu_item": "Printing",
+            "thumbs_per_row": 4,
+            "thumb_ratio": "1/1",
+            "show_promo": true,
+            "promo_product_fallback": "bc-pearl-2-x-3-5-us-standard",
+            "promo_product_default": "bc-pearl-2-x-3-5-us-standard",
+            "promo_badge_fallback": "Premium",
+            "promo_badge_color": "yellow",
+            "promo_cta": "Shop now",
+            "view_all_url": "/collections/all-print-products"
+          }
+        },
+        "business_cards": {
+          "type": "mega_showroom",
+          "settings": {
+            "menu_item": "Business Cards",
+            "thumbs_per_row": 5,
+            "thumb_ratio": "1/1",
+            "show_promo": true,
+            "promo_product_fallback": "bc-raised-foil-2-x-3-5-us-standard",
+            "promo_product_default": "bc-pearl-2-x-3-5-us-standard",
+            "promo_badge_fallback": "Best seller",
+            "promo_badge_color": "magenta",
+            "promo_cta": "Shop now",
+            "view_all_url": "/collections/business-cards"
+          }
+        },
+        "marketing": {
+          "type": "mega_columns",
+          "settings": {
+            "menu_item": "Marketing",
+            "columns": 3,
+            "show_promo": true,
+            "promo_product_fallback": "br-half-fold-8-5x11",
+            "promo_badge_fallback": "New",
+            "promo_badge_color": "cyan",
+            "promo_cta": "Shop now", "thumb_row": true, "promo_title_fallback": "Half Fold Brochures", "promo_asset_fallback": "promo-fold-half.webp", "promo_url_fallback": "/collections/brochures"
+          }
+        },
+        "signs": {
+          "type": "mega_columns",
+          "settings": {
+            "menu_item": "Signs & Banners",
+            "columns": 4,
+            "show_promo": true,
+            "promo_product_fallback": "fg-feather-24x81",
+            "promo_badge_fallback": "Event ready",
+            "promo_badge_color": "cyan",
+            "promo_cta": "Shop now"
+          }
+        },
+        "labels": {
+          "type": "mega_columns",
+          "settings": {
+            "menu_item": "Labels & Stickers",
+            "columns": 3,
+            "show_promo": true,
+            "promo_product_fallback": "st-rect-2x3-5",
+            "promo_badge_fallback": "Popular",
+            "promo_badge_color": "cyan",
+            "promo_cta": "Shop now"
+          }
+        },
+        "packaging": {
+          "type": "mega_compact",
+          "settings": {
+            "menu_item": "Packaging",
+            "promo_badge_fallback": "New",
+            "promo_badge_color": "magenta",
+            "promo_cta": "Shop now"
+          }
+        }
+      },
+      "block_order": [
+        "printing",
+        "business_cards",
+        "marketing",
+        "signs",
+        "labels",
+        "packaging"
+      ]
     },
     "topbar": {
       "type": "topbar",

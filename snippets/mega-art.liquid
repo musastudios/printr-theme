@@ -1,0 +1,24 @@
+{%- comment -%} Maps a product handle to our own menu art (theme asset from printr-art). Outputs the asset filename or nothing. promo: true prefers the promo art. {%- endcomment -%}
+{%- liquid
+  assign h = h | strip
+  assign out = ''
+  if h contains '-2-x-3-5-us-standard' and h contains 'bc-'
+    assign s = h | remove_first: 'bc-' | remove: '-2-x-3-5-us-standard'
+    assign out = 'mm-bc-' | append: s | append: '.webp'
+    if promo and s == 'pearl'
+      assign out = 'mm-bc-boutique-pearl.webp'
+    endif
+  else
+    case h
+      when 'st-rect-2x3-5'
+        assign out = 'mm-st-rect.webp'
+      when 'st-bumper-4x12'
+        assign out = 'mm-st-bumper.webp'
+      when 'fg-feather-24x81'
+        assign out = 'mm-fg-feather.webp'
+      when 'br-half-fold-8-5x11'
+        assign out = 'promo-fold-half.webp'
+    endcase
+  endif
+  echo out
+-%}

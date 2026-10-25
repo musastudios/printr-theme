@@ -192,23 +192,74 @@ customElements.define('load-more', LoadMore);
 
 /* ---------- newsletter popup (frequency-capped) ---------- */
 class NewsletterPopup extends HTMLElement {
+  /* Non-modal dialog (show, not showModal) so it stays below drawers (z-index 50 < drawer 60).
+     Never opens while the menu/cart/search drawer, header search or a mega menu is open.
+     Mobile: home page only, after 20s or 50% scroll. */
+  busy() {
+    return !!document.querySelector('drawer-panel[open], dialog[open], .mega-open, [data-search-input][aria-expanded="true"], .header__item.has-mega > button[aria-expanded="true"]');
+  }
+  focusables() {
+    return [...this.dialog.querySelectorAll('a[href], button:not([disabled]), input:not([disabled]):not([type=hidden]), select, textarea, [tabindex]:not([tabindex="-1"])')]
+      .filter((el) => el.offsetParent !== null || el === document.activeElement);
+  }
+  show() {
+    this.returnTo = document.activeElement;
+    this.dialog.show();
+    this.dialog.classList.add('is-open');
+    const f = this.focusables();
+    (this.dialog.querySelector('input[type=email]') || f[0] || this.dialog).focus();
+  }
+  hide(persist) {
+    if (!this.dialog.open) return;
+    this.dialog.classList.remove('is-open');
+    this.dialog.close();
+    if (persist) localStorage.setItem('printr-popup', Date.now());
+    if (this.returnTo && this.returnTo.isConnected && typeof this.returnTo.focus === 'function') this.returnTo.focus();
+    this.returnTo = null;
+  }
+  trap(e) {
+    if (e.key !== 'Tab' || !this.dialog.open) return;
+    const f = this.focusables();
+    if (!f.length) { e.preventDefault(); return; }
+    const first = f[0], last = f[f.length - 1];
+    if (e.shiftKey && (document.activeElement === first || !this.dialog.contains(document.activeElement))) { e.preventDefault(); last.focus(); }
+    else if (!e.shiftKey && (document.activeElement === last || !this.dialog.contains(document.activeElement))) { e.preventDefault(); first.focus(); }
+  }
   connectedCallback() {
     this.dialog = this.querySelector('dialog');
     const key = 'printr-popup';
     const days = Number(this.dataset.frequency || 7);
     const last = Number(localStorage.getItem(key) || 0);
     const success = this.dataset.success === 'true';
-    const close = () => { this.dialog.close(); localStorage.setItem(key, Date.now()); };
+    const close = () => this.hide(true);
     this.dialog.addEventListener('click', (e) => { if (e.target === this.dialog || e.target.closest('[data-close]')) close(); });
-    this.dialog.addEventListener('cancel', () => localStorage.setItem(key, Date.now()));
-    if (success) { this.dialog.showModal(); localStorage.setItem(key, Date.now() + 3650 * 864e5); return; }
+    document.addEventListener('keydown', (e) => {
+      if (!this.dialog.open) return;
+      if (e.key === 'Escape') { e.preventDefault(); close(); } else this.trap(e);
+    });
+    /* A drawer opening over the popup hides it (no frequency write); it comes back later only via a new page view. */
+    new MutationObserver(() => { if (this.dialog.open && document.querySelector('drawer-panel[open]')) { this.returnTo = null; this.hide(false); } })
+      .observe(document.body, { subtree: true, attributes: true, attributeFilter: ['open'] });
+    if (success) { this.show(); localStorage.setItem(key, Date.now() + 3650 * 864e5); return; }
     if (window.Shopify && window.Shopify.designMode) return;
     if (Date.now() - last < days * 864e5) return;
-    const open = () => { if (!document.querySelector('dialog[open]')) this.dialog.showModal(); cleanup(); };
-    const timer = setTimeout(open, Number(this.dataset.delay || 8) * 1000);
+    const mobile = window.matchMedia('(max-width: 749px)').matches;
+    if (mobile && this.dataset.home !== 'true') return;
+    let done = false;
+    const open = () => {
+      if (done) return;
+      if (this.busy()) { setTimeout(open, 3000); return; }
+      done = true; cleanup(); this.show();
+    };
+    const timer = setTimeout(open, (mobile ? 20 : Number(this.dataset.delay || 8)) * 1000);
     const onLeave = (e) => { if (e.clientY <= 0) open(); };
-    const cleanup = () => { clearTimeout(timer); document.removeEventListener('mouseout', onLeave); };
-    if (this.dataset.exitIntent === 'true') document.addEventListener('mouseout', onLeave);
+    const onScroll = () => {
+      const max = document.documentElement.scrollHeight - window.innerHeight;
+      if (max > 0 && window.scrollY / max >= 0.5) open();
+    };
+    const cleanup = () => { clearTimeout(timer); document.removeEventListener('mouseout', onLeave); window.removeEventListener('scroll', onScroll); };
+    if (mobile) window.addEventListener('scroll', onScroll, { passive: true });
+    else if (this.dataset.exitIntent === 'true') document.addEventListener('mouseout', onLeave);
   }
 }
 customElements.define('newsletter-popup', NewsletterPopup);

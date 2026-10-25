@@ -1,0 +1,138 @@
+{%- comment -%}
+  Preview-only IA (STORE_PLAN.md section 5), used when the header setting
+  "Preview planned menu" is on. One row per line: depth|title|collection handle|fallback url|thumb product handle (or asset:<file> for a theme asset thumb).
+  A row whose collection does not exist yet uses the fallback url (an existing collection filtered by tag);
+  with no fallback it counts as empty and is hidden, exactly as it will be once created with 0 products.
+{%- endcomment -%}
+{%- capture tree -%}
+1|Printing|all-print-products||asset:mm-cat-all-print-products.webp
+2|Premium Cards|premium-cards|/collections/business-cards|bc-pearl-2-x-3-5-us-standard
+3|Black Edge|premium-cards-black-edge|/collections/business-cards/black-edge|bc-black-edge-2-x-3-5-us-standard
+3|Brown Kraft|premium-cards-brown-kraft|/collections/business-cards/brown-kraft|bc-brown-kraft-2-x-3-5-us-standard
+3|Dual Raised|premium-cards-dual-raised|/collections/business-cards/dual-raised|bc-dual-raised-2-x-3-5-us-standard
+3|Foil|premium-cards-foil|/collections/business-cards/foil-worx|bc-foil-worx-2-x-3-5-us-standard
+3|Natural|premium-cards-natural|/collections/business-cards/natural|bc-natural-2-x-3-5-us-standard
+3|Painted Edge|premium-cards-painted-edge|/collections/business-cards/painted-edge|bc-painted-edge-2-x-3-5-us-standard
+3|Pearl|premium-cards-pearl|/collections/business-cards/pearl|bc-pearl-2-x-3-5-us-standard
+3|Raised Foil|premium-cards-raised-foil|/collections/business-cards/raised-foil|bc-raised-foil-2-x-3-5-us-standard
+3|Raised Spot UV|premium-cards-raised-spot-uv|/collections/business-cards/raised-spot-uv|bc-raised-spot-uv-2-x-3-5-us-standard
+3|Silk|premium-cards-silk|/collections/business-cards/silk|bc-silk-2-x-3-5-us-standard
+3|Suede|premium-cards-suede|/collections/business-cards/suede|bc-suede-2-x-3-5-us-standard
+2|Business Cards|business-cards||bc-raised-foil-2-x-3-5-us-standard
+3|Standard|business-cards-standard|/collections/business-cards/standard|asset:bc-type-standard.webp
+3|Circle|business-cards-circle|/collections/business-cards/circle|asset:bc-type-circle.webp
+3|Oval|business-cards-oval|/collections/business-cards/oval|asset:bc-type-oval.webp
+3|Leaf|business-cards-leaf|/collections/business-cards/leaf|asset:bc-type-leaf.webp
+3|Fold-over|business-cards-fold-over|/collections/business-cards/fold-over|asset:bc-type-fold-over.webp
+3|Linen|business-cards-linen|/collections/business-cards/linen-uncoated|asset:bc-type-linen.webp
+3|Magnet|business-cards-magnet|/collections/business-cards/magnet|asset:bc-type-magnet.webp
+3|Plastic|business-cards-plastic|/collections/business-cards/plastic|asset:bc-type-plastic.webp
+3|Tear-Resistant|business-cards-tear-resistant|/collections/business-cards|asset:bc-type-tear-resistant.webp
+2|Marketing Products|marketing-products|/collections/postcards|asset:mm-cat-flyers.webp
+3|Postcards|postcards||asset:mm-cat-postcards.webp
+3|Flyers and Brochures|flyers-brochures|/collections/brochures|asset:mega-collection-brochures.webp
+2|Signs & Banners|signs-banners|/collections/signs|asset:mm-cat-signs.webp
+3|Signs|signs||asset:mm-cat-signs.webp
+3|Large Format Posters|large-format-posters||
+3|Banners & Flags|banners-flags|/collections/banners|asset:mm-cat-banners.webp
+3|Adhesive Graphics|adhesive-graphics||
+3|Vehicle Magnets|vehicle-magnets||
+3|Display and Events|display-events|/collections/banners|fg-feather-24x81
+2|Labels & Stickers|labels-stickers|/collections/stickers-labels|st-rect-2x3-5
+3|Roll Labels|roll-labels||
+3|Stickers|stickers|/collections/stickers-labels/stickers|st-rect-2x3-5
+3|Bumper Stickers|bumper-stickers|/collections/stickers-labels/adhesive-vinyl-bumper-sticker|st-bumper-4x12
+2|Packaging|packaging||
+3|Boxes|boxes||
+3|Packaging Tags & Cards|packaging-tags-cards||
+2|Promo Products|promo-products||
+2|Direct Mail|direct-mail||
+2|Apparel|apparel||asset:mm-cat-apparel.webp
+2|Design Services||/pages/design-services|asset:design-service-icon.png
+1|Business Cards|business-cards||
+2|Business Cards|business-cards||bc-raised-foil-2-x-3-5-us-standard
+3|Standard|business-cards-standard|/collections/business-cards/standard|asset:bc-type-standard.webp
+3|Circle|business-cards-circle|/collections/business-cards/circle|asset:bc-type-circle.webp
+3|Oval|business-cards-oval|/collections/business-cards/oval|asset:bc-type-oval.webp
+3|Leaf|business-cards-leaf|/collections/business-cards/leaf|asset:bc-type-leaf.webp
+3|Fold-over|business-cards-fold-over|/collections/business-cards/fold-over|asset:bc-type-fold-over.webp
+3|Linen|business-cards-linen|/collections/business-cards/linen-uncoated|asset:bc-type-linen.webp
+3|Magnet|business-cards-magnet|/collections/business-cards/magnet|asset:bc-type-magnet.webp
+3|Plastic|business-cards-plastic|/collections/business-cards/plastic|asset:bc-type-plastic.webp
+3|Tear-Resistant|business-cards-tear-resistant|/collections/business-cards|asset:bc-type-tear-resistant.webp
+2|Premium Cards|premium-cards|/collections/business-cards|bc-pearl-2-x-3-5-us-standard
+3|Black Edge|premium-cards-black-edge|/collections/business-cards/black-edge|bc-black-edge-2-x-3-5-us-standard
+3|Brown Kraft|premium-cards-brown-kraft|/collections/business-cards/brown-kraft|bc-brown-kraft-2-x-3-5-us-standard
+3|Dual Raised|premium-cards-dual-raised|/collections/business-cards/dual-raised|bc-dual-raised-2-x-3-5-us-standard
+3|Foil|premium-cards-foil|/collections/business-cards/foil-worx|bc-foil-worx-2-x-3-5-us-standard
+3|Natural|premium-cards-natural|/collections/business-cards/natural|bc-natural-2-x-3-5-us-standard
+3|Painted Edge|premium-cards-painted-edge|/collections/business-cards/painted-edge|bc-painted-edge-2-x-3-5-us-standard
+3|Pearl|premium-cards-pearl|/collections/business-cards/pearl|bc-pearl-2-x-3-5-us-standard
+3|Raised Foil|premium-cards-raised-foil|/collections/business-cards/raised-foil|bc-raised-foil-2-x-3-5-us-standard
+3|Raised Spot UV|premium-cards-raised-spot-uv|/collections/business-cards/raised-spot-uv|bc-raised-spot-uv-2-x-3-5-us-standard
+3|Silk|premium-cards-silk|/collections/business-cards/silk|bc-silk-2-x-3-5-us-standard
+3|Suede|premium-cards-suede|/collections/business-cards/suede|bc-suede-2-x-3-5-us-standard
+1|Marketing|marketing-products|/collections/postcards|
+2|Marketing Products|marketing-products|/collections/postcards|asset:mm-cat-flyers.webp
+3|Postcards|postcards||asset:mm-cat-postcards.webp
+3|Flyers and Brochures|flyers-brochures|/collections/brochures|asset:mega-collection-brochures.webp
+3|Presentation Folders|presentation-folders||
+3|Announcement Cards|announcement-cards||
+3|Booklets|booklets||
+3|Bookmarks|bookmarks||
+3|Calendars|calendars||
+3|Catalogs|catalogs||
+3|Counter Cards|counter-cards||
+3|Door Hangers|door-hangers||
+3|Envelopes|envelopes||
+3|Event Tickets|event-tickets||
+3|Greeting Cards|greeting-cards||
+3|Hang Tags|hang-tags||
+3|Letterheads|letterheads||
+3|Magnets|magnets||
+3|Menus|menus||
+3|NCR Forms|ncr-forms||
+3|Notepads|notepads||
+3|Posters|posters||
+3|Rack Cards|rack-cards||
+3|Sell Sheets|sell-sheets||
+3|Social Cards|social-cards||
+3|Table Tents|table-tents||
+3|Trading Cards|trading-cards||
+1|Signs & Banners|signs-banners|/collections/signs|
+2|Signs|signs||asset:mm-cat-signs.webp
+3|Rigid Signs|rigid-signs|/collections/signs|asset:mm-sg-coro4.webp
+3|Wall Art|wall-art||
+2|Large Format Posters|large-format-posters||
+2|Banners & Flags|banners-flags|/collections/banners|asset:mm-cat-banners.webp
+3|Outdoor Banners|outdoor-banners|/collections/banners|asset:mm-bn-scrim.webp
+3|Indoor Banners|indoor-banners|/collections/banners|asset:mm-bn-ret-std.webp
+3|Flags|flags||asset:mm-cat-flags.webp
+2|Adhesive Graphics|adhesive-graphics||
+3|Floor Graphics|floor-graphics||
+3|Window Graphics|window-graphics||
+3|Wall Decals|wall-decals||
+2|Vehicle Magnets|vehicle-magnets||
+2|Display and Events|display-events|/collections/banners|fg-feather-24x81
+3|Indoor Banner Stands|indoor-banner-stands|/collections/banners|asset:mm-bn-ret-std.webp
+3|Outdoor Banner Stands|outdoor-banner-stands||
+3|Displays|displays||
+3|Table Covers|table-covers||
+3|SEG Fabric Frames|seg-fabric-frames||
+1|Labels & Stickers|labels-stickers|/collections/stickers-labels|
+2|Roll Labels|roll-labels||
+3|By Shape|roll-labels-by-shape||
+3|By Stock|roll-labels-by-stock||
+2|Stickers|stickers|/collections/stickers-labels/stickers|st-rect-2x3-5
+3|Popular|stickers-popular|/collections/stickers-labels/standard-stickers|asset:mm-st-std.webp
+3|By Shape|stickers-by-shape|/collections/stickers-labels/rectangle-stickers|asset:mm-st-round.webp
+2|Bumper Stickers|bumper-stickers|/collections/stickers-labels/adhesive-vinyl-bumper-sticker|st-bumper-4x12
+1|Packaging|packaging||
+2|Boxes|boxes||
+3|Standard Boxes|boxes-standard||
+2|Packaging Tags & Cards|packaging-tags-cards||
+3|Standard|packaging-tags-cards-standard||
+3|Premium|packaging-tags-cards-premium||
+1|Design Services||/pages/design-services|
+{%- endcapture -%}
+{{- tree | strip -}}
