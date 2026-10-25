@@ -198,9 +198,32 @@ class NewsletterPopup extends HTMLElement {
   busy() {
     return !!document.querySelector('drawer-panel[open], dialog[open], .mega-open, [data-search-input][aria-expanded="true"], .header__item.has-mega > button[aria-expanded="true"]');
   }
+  focusables() {
+    return [...this.dialog.querySelectorAll('a[href], button:not([disabled]), input:not([disabled]):not([type=hidden]), select, textarea, [tabindex]:not([tabindex="-1"])')]
+      .filter((el) => el.offsetParent !== null || el === document.activeElement);
+  }
   show() {
+    this.returnTo = document.activeElement;
     this.dialog.show();
     this.dialog.classList.add('is-open');
+    const f = this.focusables();
+    (this.dialog.querySelector('input[type=email]') || f[0] || this.dialog).focus();
+  }
+  hide(persist) {
+    if (!this.dialog.open) return;
+    this.dialog.classList.remove('is-open');
+    this.dialog.close();
+    if (persist) localStorage.setItem('printr-popup', Date.now());
+    if (this.returnTo && this.returnTo.isConnected && typeof this.returnTo.focus === 'function') this.returnTo.focus();
+    this.returnTo = null;
+  }
+  trap(e) {
+    if (e.key !== 'Tab' || !this.dialog.open) return;
+    const f = this.focusables();
+    if (!f.length) { e.preventDefault(); return; }
+    const first = f[0], last = f[f.length - 1];
+    if (e.shiftKey && (document.activeElement === first || !this.dialog.contains(document.activeElement))) { e.preventDefault(); last.focus(); }
+    else if (!e.shiftKey && (document.activeElement === last || !this.dialog.contains(document.activeElement))) { e.preventDefault(); first.focus(); }
   }
   connectedCallback() {
     this.dialog = this.querySelector('dialog');
@@ -208,11 +231,14 @@ class NewsletterPopup extends HTMLElement {
     const days = Number(this.dataset.frequency || 7);
     const last = Number(localStorage.getItem(key) || 0);
     const success = this.dataset.success === 'true';
-    const close = () => { this.dialog.classList.remove('is-open'); this.dialog.close(); localStorage.setItem(key, Date.now()); };
+    const close = () => this.hide(true);
     this.dialog.addEventListener('click', (e) => { if (e.target === this.dialog || e.target.closest('[data-close]')) close(); });
-    document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && this.dialog.open) close(); });
+    document.addEventListener('keydown', (e) => {
+      if (!this.dialog.open) return;
+      if (e.key === 'Escape') { e.preventDefault(); close(); } else this.trap(e);
+    });
     /* A drawer opening over the popup hides it (no frequency write); it comes back later only via a new page view. */
-    new MutationObserver(() => { if (this.dialog.open && document.querySelector('drawer-panel[open]')) { this.dialog.classList.remove('is-open'); this.dialog.close(); } })
+    new MutationObserver(() => { if (this.dialog.open && document.querySelector('drawer-panel[open]')) { this.returnTo = null; this.hide(false); } })
       .observe(document.body, { subtree: true, attributes: true, attributeFilter: ['open'] });
     if (success) { this.show(); localStorage.setItem(key, Date.now() + 3650 * 864e5); return; }
     if (window.Shopify && window.Shopify.designMode) return;

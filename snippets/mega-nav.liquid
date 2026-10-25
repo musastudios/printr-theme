@@ -117,7 +117,7 @@
                         </ul>
                       </div>
                       {%- if mega.settings.show_promo -%}
-                        {% render 'mega-promo', collection: tc, block: mega, allow_fallback: first_tab, fallback_handle: imgs[j], id: pid %}
+                        {% render 'mega-promo', collection: tc, block: mega, allow_fallback: true, fallback_handle: imgs[j], default_product: mega.settings.promo_product_default, id: pid %}
                       {%- endif -%}
                     </div>
                     {%- assign first_tab = false -%}

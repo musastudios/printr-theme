@@ -2,7 +2,7 @@
   {%- form 'customer', id: 'PopupForm', class: 'popup__form' -%}
     {%- assign success = form.posted_successfully? -%}
     <newsletter-popup data-delay="{{ section.settings.delay }}" data-frequency="{{ section.settings.frequency }}" data-exit-intent="{{ section.settings.exit_intent }}" data-success="{{ success }}" data-home="{% if request.page_type == 'index' %}true{% else %}false{% endif %}">
-      <dialog class="modal popup color-{{ section.settings.color_scheme }}" aria-labelledby="PopupTitle">
+      <dialog class="modal popup color-{{ section.settings.color_scheme }}" role="dialog" aria-modal="true" aria-labelledby="PopupTitle">
         <div class="popup__grid crop">
           {%- if section.settings.image -%}
             <div class="popup__media">{%- assign focal = section.settings.image.presentation.focal_point | prepend: 'object-position: ' -%}{{ section.settings.image | image_url: width: 900 | image_tag: loading: 'lazy', widths: '450, 900', sizes: '(min-width: 750px) 40rem, 0px', alt: '', style: focal }}</div>

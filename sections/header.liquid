@@ -298,6 +298,7 @@
   .mega { position: absolute; left: 0; right: 0; top: 100%; z-index: 30; background: #fff; color: #000; border-top: 1px solid #000; border-bottom: 2px solid #000; }
   .mega[hidden] { display: none; }
   .mega__wrap { display: flex; gap: 4rem; padding-block: 3.2rem 3.6rem; align-items: flex-start; }
+  .mega__wrap { max-height: calc(100vh - var(--mega-top, 16rem)); overflow-y: auto; overscroll-behavior: contain; }
   .mega a { color: inherit; text-decoration: none; }
   .mega__cols { flex: 1; display: grid; grid-template-columns: repeat(var(--cols, 4), minmax(0, 1fr)); gap: 2.4rem 3.2rem; align-content: start; }
   .mega--mega_compact .mega__cols, .mega--dropdown .mega__cols { flex: 0 1 28rem; }
@@ -359,7 +360,9 @@
   .mobile-menu__l3 a, .mobile-menu__viewall { display: flex; align-items: center; min-height: 4.4rem; font-weight: 500; }
   .mobile-menu__viewall { font-weight: 700 !important; text-decoration: underline !important; text-underline-offset: 3px; }
   .mobile-showroom { display: block; }
-  .mobile-showroom__chips { display: flex; gap: .8rem; overflow-x: auto; padding: .2rem 0 1.2rem .2rem; scrollbar-width: none; scroll-snap-type: x mandatory; -webkit-mask-image: linear-gradient(to right, #000 calc(100% - 24px), transparent); mask-image: linear-gradient(to right, #000 calc(100% - 24px), transparent); }
+  .mobile-showroom__chips { display: flex; gap: .8rem; overflow-x: auto; padding: .2rem 0 1.2rem .2rem; scrollbar-width: none; scroll-snap-type: x mandatory; --fl: 0px; --fr: 24px; -webkit-mask-image: linear-gradient(to right, transparent, #000 var(--fl), #000 calc(100% - var(--fr)), transparent); mask-image: linear-gradient(to right, transparent, #000 var(--fl), #000 calc(100% - var(--fr)), transparent); }
+  .mobile-showroom__chips.is-start { --fl: 24px; }
+  .mobile-showroom__chips.is-end { --fr: 0px; }
   .mobile-showroom__chips::-webkit-scrollbar { display: none; }
   .mobile-showroom__chips [role=tab] { scroll-snap-align: start; }
   .mobile-showroom__chips [role=tab] { flex: none; min-height: 4.4rem; padding: 0 1.4rem; font: inherit; font-size: 1.3rem; font-weight: 700; background: #fff; color: #000; border: 2px solid #000; border-radius: 0; cursor: pointer; white-space: nowrap; }
@@ -441,7 +444,8 @@
       { "type": "range", "id": "thumbs_per_row", "min": 3, "max": 6, "step": 1, "default": 4, "label": "Thumbs per row" },
       { "type": "select", "id": "thumb_ratio", "options": [ { "value": "1/1", "label": "Square" }, { "value": "4/3", "label": "4:3" } ], "default": "1/1", "label": "Thumb ratio" },
       { "type": "checkbox", "id": "show_promo", "default": true, "label": "Promo per tab", "info": "From each tab collection's custom.mega_* metafields." },
-      { "type": "product", "id": "promo_product_fallback", "label": "Fallback product (first tab)" },
+      { "type": "product", "id": "promo_product_fallback", "label": "Fallback product" },
+      { "type": "product", "id": "promo_product_default", "label": "Panel default promo", "info": "Last resort so every tab has a promo." },
       { "type": "image_picker", "id": "promo_image_fallback", "label": "Fallback promo image" },
       { "type": "text", "id": "promo_badge_fallback", "default": "Premium", "label": "Fallback badge" },
       { "type": "select", "id": "promo_badge_color", "label": "Fallback badge color", "default": "yellow", "options": [ { "value": "cyan", "label": "Cyan" }, { "value": "yellow", "label": "Yellow" }, { "value": "magenta", "label": "Magenta" } ] },

@@ -38,6 +38,7 @@
       b.setAttribute('aria-expanded', String(open));
       p.hidden = !open;
       b.closest('li').classList.toggle('is-open', open);
+      if (open) document.documentElement.style.setProperty('--mega-top', `${Math.max(0, Math.round(p.getBoundingClientRect().top))}px`);
       if (open) this.cur = b; else if (this.cur === b) this.cur = null;
     }
     key(e, b) {
@@ -89,6 +90,19 @@
       if (!fine.matches) this.tabs[i].scrollIntoView({ block: 'nearest', inline: 'nearest' });
     }
   }
+
+  /* Mobile chip row fades: left fade once scrolled, no right fade at the end. */
+  const chipFade = (el) => {
+    const upd = () => {
+      el.classList.toggle('is-start', el.scrollLeft > 1);
+      el.classList.toggle('is-end', el.scrollLeft + el.clientWidth >= el.scrollWidth - 2);
+    };
+    el.addEventListener('scroll', upd, { passive: true });
+    window.addEventListener('resize', upd);
+    new ResizeObserver(upd).observe(el);
+    upd();
+  };
+  document.querySelectorAll('.mobile-showroom__chips').forEach(chipFade);
 
   customElements.define('mega-menu', MegaMenu);
   customElements.define('mega-showroom', MegaShowroom);

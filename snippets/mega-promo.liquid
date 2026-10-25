@@ -1,7 +1,7 @@
 {%- comment -%}
   Promo card. Order: promo_card block (override) > collection metafields (custom.mega_*) > block fallbacks > block text fallback (title + theme asset, shown even when no product is live) > nothing.
   A product promo is hidden when the product is unavailable.
-  Params: collection, block, override, allow_fallback, id, compact, fallback_handle (per-tab fallback product handle)
+  Params: collection, block, override, allow_fallback, id, compact, fallback_handle (per-tab fallback product handle), default_product (panel default promo, last resort so a showroom tab is never empty)
 {%- endcomment -%}
 {%- liquid
   assign p = nil
@@ -55,6 +55,15 @@
       endif
     else
       assign heading = ''
+    endif
+    if heading == blank and default_product != blank and default_product.available
+      assign p = default_product
+      assign heading = p.title
+      assign href = p.url
+      assign img = p.featured_image
+      assign text = p.description | strip_html | truncatewords: 10
+      assign badge = p.metafields.custom.badge.value | default: block.settings.promo_badge_fallback
+      assign color = block.settings.promo_badge_color
     endif
     if heading == blank and allow_fallback and block.settings.promo_title_fallback != blank
       assign heading = block.settings.promo_title_fallback
