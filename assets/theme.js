@@ -188,21 +188,49 @@ function withoutDesign(fd) {
   return out;
 }
 
-/* Variant picker: re-renders the product section via Section Rendering API */
+/* Variant picker: re-renders the product section via Section Rendering API.
+   After a choice it cascades through the LATER option groups: when only one value is still available it is picked,
+   and when the current value is no longer available the first available one is picked (data-ok: 1 available, 2 sold out, 0 no such variant). */
 class VariantPicker extends HTMLElement {
   connectedCallback() {
     this.addEventListener('change', (e) => this.onChange(e));
   }
-  async onChange() {
-    const selected = [...this.querySelectorAll('input:checked, select')].map((el) => el.dataset.optionValueId || el.selectedOptions?.[0]?.dataset.optionValueId).filter(Boolean);
+  static ids(scope) {
+    return [...scope.querySelectorAll('.variant-picker__option')].map((f) => {
+      const el = f.querySelector('input:checked') || f.querySelector('select')?.selectedOptions?.[0];
+      return el?.dataset.optionValueId;
+    });
+  }
+  /** Returns the value id to switch to for this group, or null when the current choice can stay. */
+  static fix(fieldset) {
+    const vals = [...fieldset.querySelectorAll('[data-option-value-id]')];
+    const cur = vals.find((el) => el.checked || el.selected);
+    const ok = vals.filter((el) => el.dataset.ok === '1');
+    const pool = ok.length ? ok : vals.filter((el) => el.dataset.ok === '2');
+    if (!pool.length) return null;
+    if (pool.length === 1 && pool[0] !== cur) return pool[0].dataset.optionValueId;
+    if (!cur || !pool.includes(cur)) return pool[0].dataset.optionValueId;
+    return null;
+  }
+  async onChange(e) {
     const sectionId = this.dataset.section;
     const focusedId = document.activeElement?.dataset?.optionValueId;
-    const url = `${this.dataset.url}?option_values=${selected.join(',')}&section_id=${sectionId}`;
+    const changed = Number(e?.target?.closest?.('.variant-picker__option')?.dataset.optionIndex ?? -1);
     const root = document.getElementById(`shopify-section-${sectionId}`) || this.closest('.qv');
+    const load = async (ids) => parse(await (await fetchSections(`${this.dataset.url}?option_values=${ids.filter(Boolean).join(',')}&section_id=${sectionId}`)).text());
     root?.setAttribute('aria-busy', 'true');
     try {
-      const html = await (await fetchSections(url)).text();
-      const doc = parse(html);
+      let ids = VariantPicker.ids(this);
+      let doc = await load(ids);
+      const total = ids.length;
+      for (let pass = 0; pass < total; pass++) {
+        const groups = [...doc.querySelectorAll('variant-picker .variant-picker__option')];
+        const g = groups.find((f) => Number(f.dataset.optionIndex) > changed && VariantPicker.fix(f));
+        if (!g) break;
+        ids = VariantPicker.ids(doc.querySelector('variant-picker'));
+        ids[Number(g.dataset.optionIndex)] = VariantPicker.fix(g);
+        doc = await load(ids);
+      }
       const variantId = doc.querySelector('[data-selected-variant]')?.dataset.selectedVariant;
       ['[data-swap="price"]', '[data-swap="tiers"]', '[data-swap="buy"]', '[data-swap="picker"]', '[data-swap="media"]', '[data-swap="sku"]'].forEach((sel) => {
         const a = root.querySelector(sel); const b = doc.querySelector(sel);
@@ -407,3 +435,46 @@ class ProductTemplates extends HTMLElement {
   }
 }
 if (!customElements.get('product-templates')) customElements.define('product-templates', ProductTemplates);
+
+/* Share: native share sheet on touch devices, else an accessible dialog (Esc closes, focus trapped and returned). */
+class ProductShare extends HTMLElement {
+  connectedCallback() {
+    this.btn = this.querySelector('.pshare__open'); this.dlg = this.querySelector('[role="dialog"]');
+    this.btn.addEventListener('click', () => this.open());
+    this.querySelector('[data-share-close]').addEventListener('click', () => this.close());
+    this.querySelector('[data-share-copy]').addEventListener('click', () => this.copy());
+    this.dlg.addEventListener('keydown', (e) => this.keys(e));
+    this.outside = (e) => { if (!this.contains(e.target)) this.close(false); };
+  }
+  async open() {
+    const touch = window.matchMedia('(pointer: coarse)').matches;
+    if (touch && navigator.share) {
+      try { await navigator.share({ title: this.dataset.title, url: this.dataset.url }); return; } catch (e) { if (e.name === 'AbortError') return; }
+    }
+    this.dlg.hidden = false; this.btn.setAttribute('aria-expanded', 'true');
+    this.dlg.querySelector('.pshare__opt')?.focus();
+    document.addEventListener('click', this.outside, true);
+  }
+  close(refocus = true) {
+    if (this.dlg.hidden) return;
+    this.dlg.hidden = true; this.btn.setAttribute('aria-expanded', 'false');
+    document.removeEventListener('click', this.outside, true);
+    if (refocus) this.btn.focus();
+  }
+  keys(e) {
+    if (e.key === 'Escape') { e.preventDefault(); this.close(); return; }
+    if (e.key !== 'Tab') return;
+    const f = [...this.dlg.querySelectorAll('a[href], button:not([disabled])')];
+    const first = f[0]; const last = f[f.length - 1];
+    if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
+    else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
+  }
+  async copy() {
+    try { await navigator.clipboard.writeText(this.dataset.url); } catch (e) {
+      const t = document.createElement('textarea'); t.value = this.dataset.url; document.body.append(t); t.select(); document.execCommand('copy'); t.remove();
+    }
+    const toast = this.querySelector('[data-share-toast]'); toast.hidden = false;
+    clearTimeout(this.tt); this.tt = setTimeout(() => { toast.hidden = true; }, 2200);
+  }
+}
+if (!customElements.get('product-share')) customElements.define('product-share', ProductShare);

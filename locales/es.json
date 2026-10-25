@@ -141,7 +141,11 @@
         "colorspec_40": "Color al frente, dorso en blanco",
         "colorspec_44": "Full color ambos lados",
         "colorspec_41": "Color al frente, dorso en negro"
-      }
+      },
+      "share_title": "Compartir este producto",
+      "share_email": "Correo electrónico",
+      "share_copy": "Copiar enlace",
+      "share_copied": "Enlace copiado"
     },
     "compare": {
       "label": "Comparar",

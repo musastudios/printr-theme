@@ -9,19 +9,19 @@
 {%- unless product.has_only_default_variant -%}
   <variant-picker class="variant-picker" data-section="{{ section_id }}" data-url="{{ product.url }}" data-update-url="{{ update_url | default: true }}" data-swap="picker">
     {%- for option in product.options_with_values -%}
-      <fieldset class="variant-picker__option">
+      <fieldset class="variant-picker__option" data-option-index="{{ forloop.index0 }}">
         <legend>{{ option.name }}: <span class="variant-picker__value">{{ option.selected_value }}</span></legend>
         {%- if option.values.size > 8 -%}
           <select id="Option-{{ section_id }}-{{ forloop.index0 }}" aria-label="{{ option.name }}">
             {%- for value in option.values -%}
-              <option value="{{ value | escape }}" data-option-value-id="{{ value.id }}" {% if value.selected %}selected{% endif %}>{{ value }}{% unless value.available %} – {{ 'products.product.unavailable' | t }}{% endunless %}</option>
+              <option value="{{ value | escape }}" data-option-value-id="{{ value.id }}" data-ok="{% if value.exists and value.available %}1{% elsif value.exists %}2{% else %}0{% endif %}" {% if value.selected %}selected{% endif %}>{{ value }}{% unless value.available %} – {{ 'products.product.unavailable' | t }}{% endunless %}</option>
             {%- endfor -%}
           </select>
         {%- else -%}
           <div class="pills">
             {%- for value in option.values -%}
               {%- assign input_id = 'Opt-' | append: section_id | append: '-' | append: option.position | append: '-' | append: forloop.index0 -%}
-              <input type="radio" class="visually-hidden" id="{{ input_id }}" name="{{ option.name | handle }}-{{ section_id }}" value="{{ value | escape }}" data-option-value-id="{{ value.id }}" data-option-focus="{{ value.id }}" {% if value.selected %}checked{% endif %}>
+              <input type="radio" class="visually-hidden" id="{{ input_id }}" name="{{ option.name | handle }}-{{ section_id }}" value="{{ value | escape }}" data-option-value-id="{{ value.id }}" data-option-focus="{{ value.id }}" data-ok="{% if value.exists and value.available %}1{% elsif value.exists %}2{% else %}0{% endif %}" {% if value.selected %}checked{% endif %}>
               <label for="{{ input_id }}" class="pill{% unless value.available %} is-unavailable{% endunless %}{% if value.swatch %} pill--swatch{% endif %}" {% if value.swatch.color %}style="--swatch: {{ value.swatch.color }}"{% endif %}>
                 {%- if value.swatch -%}<span class="swatch" aria-hidden="true" {% if value.swatch.image %}style="background-image: url({{ value.swatch.image | image_url: width: 60 }})"{% endif %}></span>{%- endif -%}
                 <span>{{ value }}</span>

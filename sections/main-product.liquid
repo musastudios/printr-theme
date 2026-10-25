@@ -75,6 +75,12 @@
             <div {{ block.shopify_attributes }}>{% render 'design-service', product: product, section_id: section.id, block: block %}</div>
           {%- when 'turnaround' -%}
             <p class="product__turnaround" {{ block.shopify_attributes }}>{% render 'icon', name: 'clock' %}<span><strong>{{ 'products.product.turnaround' | t }}:</strong> {{ product.metafields.custom.turnaround | default: block.settings.text }}</span></p>
+          {%- when 'actions' -%}
+            <div class="product__actions" {{ block.shopify_attributes }}>
+              {%- if settings.enable_wishlist -%}<button type="button" class="link product__action" data-wishlist-toggle="{{ product.handle }}" aria-pressed="false">{% render 'icon', name: 'heart' %}{{ 'products.wishlist.save' | t }}</button>{%- endif -%}
+              {%- if settings.enable_compare -%}<button type="button" class="link product__action" data-compare-toggle="{{ product.handle }}" aria-pressed="false">{% render 'icon', name: 'compare' %}{{ 'products.compare.label' | t }}</button>{%- endif -%}
+              {% render 'product-share', product: product, section_id: section.id %}
+            </div>
           {%- when 'custom_liquid' -%}
             <div {{ block.shopify_attributes }}>{{ block.settings.custom_liquid }}</div>
           {%- when '@app' -%}

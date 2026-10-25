@@ -141,7 +141,11 @@
         "colorspec_40": "Color front only, white back",
         "colorspec_44": "Full color both sides",
         "colorspec_41": "Color front, black back"
-      }
+      },
+      "share_title": "Share this product",
+      "share_email": "Email",
+      "share_copy": "Copy link",
+      "share_copied": "Link copied"
     },
     "compare": {
       "label": "Compare",
