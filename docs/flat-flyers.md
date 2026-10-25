@@ -3,12 +3,12 @@
 Producto: `flat-flyers` · gid://shopify/Product/15424554008750 · DRAFT · plantilla `product.flat-flyers` · tags `needs-price`, `configurator`.
 Generador: `node tools/flat-flyers/generate.mjs` → `config.json` (metafield `custom.configurator`), `product-set.json`, `supplier-refs.csv`.
 
-## Variantes (504)
+## Variantes (462)
 Opciones `Size | Qty | Config` (patrón Brochures: Config fusionado `STOCK-CS-COAT`).
 - Tamaños: 4x6, 4.25x11, 5.5x8.5, 6x9, 8.5x11, 8.5x14, 11x17, 12x18 · Qty: 100–5000 (6).
 - Config: GB100-{40,44,41}-{AQ,UV}, GC100-{cs}-SAT, MB100-{cs}-NC (12).
-- Exclusiones: 4x6 sin GC100 (9 configs); 6x9 solo GC100-SAT (3). 6×12 + 9 + 3 = 84 configs × 6 = 504.
-- Inventario sin rastreo, política CONTINUE. Precio = costo × 2; solo 11x17 GB100-44-UV tiene precio real (158/278/530/720/1056/1486); el resto $0 = "cotizar".
+- Exclusiones: 4x6 sin GC100 (9 configs); 6x9 solo GC100-SAT (3). 6×12 + 9 + 3 = 84 configs × 6 = 504, menos 42 de Matte Book (MB100) en 100/250 (el papel empieza en 500; regla `mb100-min-500`) = 462.
+- Inventario sin rastreo, política CONTINUE. Precio = costo × 2 del portal (`tools/flat-flyers/portal-prices-44.csv`): las 154 variantes 4/4 tienen precio real; 4/0 y 4/1 siguen en $0 = "cotizar" (pendiente).
 
 ## Configurador
 - Papel siempre visible; acabado depende del papel (reglas `only`). Sin doblez ni nombre de proyecto.
@@ -26,4 +26,4 @@ Formato `flat-flyers-brochures-<STOCK>-<FLcoat>-<SIZE>-C-<CS>-<COAT>[-NHP]-NF`. 
 | MB100 + NC | 100MB | FLUC | UC |
 
 8.5x11 usa `-NHP-NF` (sin perforar) cuando existe en la lista pública (no existe para 100GLB-FLAQ).
-Verificado en portal: solo `flat-flyers-brochures-100GLB-FLUV-11X17-C-44-UV-NF`. Los demás son inferidos (prefijo supuesto; código base presente en la lista pública del proveedor — los 84 aparecen).
+Verificadas en portal: todas las referencias 4/4 (28 códigos; coinciden 100% con el formato inferido). 4/0 y 4/1 (56 códigos) siguen inferidas por el mismo formato; su código base aparece en la lista pública del proveedor.

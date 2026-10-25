@@ -20,8 +20,12 @@ function supplierRef(size, stock, cs, coat) {
   const code = size === '8.5x11' && pub.has(nhp) ? nhp : `${base}-NF`;
   return { ref: `flat-flyers-brochures-${code}`, inPublicList: pub.has(code), verified: code === '100GLB-FLUV-11X17-C-44-UV-NF' };
 }
-// cost x2 (only portal-verified tier set)
-const REAL = { '11x17|GB100-44-UV': [158, 278, 530, 720, 1056, 1486] };
+// cost x2 from portal export (4/4 only for now; 4/0 and 4/1 stay $0 = quote)
+const CSV_STOCK = { '100LB Gloss Book|Aqueous': 'GB100-44-AQ', '100LB Gloss Book|UV': 'GB100-44-UV', '100LB Gloss Cover|Satin': 'GC100-44-SAT', '100LB Matte Book|None': 'MB100-44-NC' };
+const PORTAL = new Map();
+readFileSync(dir + 'portal-prices-44.csv', 'utf8').trim().split('\n').slice(1).forEach((l) => { const [sku, size, stock, coat, , qty, , p2] = l.split(','); PORTAL.set(`${size}|${CSV_STOCK[`${stock}|${coat}`]}|${qty}`, { p: Number(p2), sku }); });
+// Matte Book starts at 500
+const qtyOk = (stock, q) => !(stock === 'MB100' && q < 500);
 
 const configs = [];
 for (const [size] of SIZES) for (const stock of Object.keys(STOCK)) for (const coat of STOCK[stock]) for (const cs of CS)
@@ -54,6 +58,7 @@ const config = {
     { id: '6x9-gc100-only', when: { size: ['6x9'] }, only: { stock: ['GC100'] }, reason: L('Only Gloss Cover at this size', 'Solo Gloss Cover en este tamaño') },
     { id: 'gb100-coatings', when: { stock: ['GB100'] }, only: { coating: ['AQ', 'UV'] }, reason: L('Not available for this paper', 'No disponible para este papel') },
     { id: 'gc100-coatings', when: { stock: ['GC100'] }, only: { coating: ['SAT'] }, reason: L('Not available for this paper', 'No disponible para este papel') },
+    { id: 'mb100-min-500', when: { stock: ['MB100'] }, excludes: { qty: ['100', '250'] }, reason: L('Matte starts at 500', 'Mate desde 500') },
     { id: 'mb100-coatings', when: { stock: ['MB100'] }, only: { coating: ['NC'] }, reason: L('Not available for this paper', 'No disponible para este papel') },
   ],
   turnarounds: [
@@ -70,10 +75,13 @@ const config = {
 };
 const variants = []; const csv = ['size,config,qty,price,supplier_ref,in_public_list,portal_verified'];
 for (const c of configs) {
-  const k = `${c.size}|${c.code}`; const real = REAL[k]; config.prices[k] = {};
-  const r = supplierRef(c.size, c.stock, c.cs, c.coat);
-  QTY.forEach((q, i) => {
-    const p = real ? real[i] : 0;
+  const k = `${c.size}|${c.code}`; config.prices[k] = {};
+  const r0 = supplierRef(c.size, c.stock, c.cs, c.coat);
+  QTY.forEach((q) => {
+    if (!qtyOk(c.stock, q)) return;
+    const pr = PORTAL.get(`${k}|${q}`); const real = !!pr; const p = real ? pr.p : 0;
+    const r = real ? { ref: pr.sku, inPublicList: r0.inPublicList, verified: true } : r0;
+    if (real && pr.sku !== r0.ref) throw new Error(`ref mismatch ${k} ${q}`);
     config.prices[k][q] = { p: real ? p : null, src: real ? 'real' : 'placeholder' };
     variants.push({ optionValues: [{ optionName: 'Size', name: c.size }, { optionName: 'Qty', name: String(q) }, { optionName: 'Config', name: c.code }],
       price: p.toFixed(2), inventoryPolicy: 'CONTINUE', inventoryItem: { tracked: false, requiresShipping: true },
