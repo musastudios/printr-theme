@@ -59,7 +59,7 @@
     async load() { if (!this.config && this.o.url) this.config = await (await fetch(this.o.url)).json(); return this; }
     getSchema() { return this.config; }
     getRules() { return this.config.rules || []; }
-    want(sel) { const m = this.config.options_map || { size: 'Size', qty: 'Qty', config: 'Config' }; return { [m.size]: sel.size, [m.qty]: String(sel.qty), [m.config]: configCode(this.config, sel) }; }
+    want(sel) { const m = this.config.options_map || { size: 'Size', qty: 'Qty', config: 'Config' }; const code = configCode(this.config, sel); const codes = this.product.codes || {}; return { [m.size]: sel.size, [m.qty]: String(sel.qty), [m.config]: Object.prototype.hasOwnProperty.call(codes, code) ? codes[code] : code }; }
     key(sel) { const w = this.want(sel); return this.product.options.filter((n) => n !== this.product.qty).map((n) => `${w[n]}|`).join(''); }
     add(d) { if (d && d.key != null) this.cache.set(d.key, new Map((d.tiers || []).filter((t) => t.id).map((t) => [String(t.qty), t]))); }
     has(sel) { return this.cache.has(this.key(sel)); }

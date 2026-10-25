@@ -34,8 +34,34 @@
     section with ?option_values= to load the variants for any other Size/Config.
   {%- endcomment -%}
   {%- assign qty_name = cfg.options_map.qty | default: 'Qty' -%}
+  {%- assign config_name = cfg.options_map.config | default: 'Config' -%}
+  {%- comment -%}
+    codes: composed config code -> current Config option value name, read from the variant metafield
+    custom.supplier_option_code (JSON keyed by option name). Lets the option values carry readable names
+    while the configurator keeps composing codes; a code missing here falls back to itself in the script.
+    Reads the first 250 variants (Liquid cap), deduped per option value. Every Config value of the
+    configurator products appears within its first 250 variants (checked 2026-10-25).
+  {%- endcomment -%}
+  {%- assign bc_seen = '|' -%}
   <script type="application/json" data-bc-product>
-    {"options":{{ product.options | json }},"qty":{{ qty_name | json }},"values":{
+    {"options":{{ product.options | json }},"qty":{{ qty_name | json }},"codes":{
+      {%- assign bc_first = true -%}
+      {%- for v in product.variants -%}
+        {%- assign bc_name = v.options[0] -%}
+        {%- for o in product.options -%}
+          {%- if o == config_name -%}{%- assign bc_name = v.options[forloop.index0] -%}{%- endif -%}
+        {%- endfor -%}
+        {%- assign bc_tok = '|' | append: bc_name | append: '|' -%}
+        {%- unless bc_seen contains bc_tok -%}
+          {%- assign bc_seen = bc_seen | append: bc_name | append: '|' -%}
+          {%- assign bc_code = v.metafields.custom.supplier_option_code.value[config_name] -%}
+          {%- if bc_code != blank -%}
+            {%- unless bc_first -%},{%- endunless -%}{{ bc_code | json }}:{{ bc_name | json }}
+            {%- assign bc_first = false -%}
+          {%- endif -%}
+        {%- endunless -%}
+      {%- endfor -%}
+    },"values":{
       {%- for option in product.options_with_values -%}
         {{ option.name | json }}:{
           {%- for ov in option.values -%}{{ ov.name | json }}:{{ ov.id }}{%- unless forloop.last -%},{%- endunless -%}{%- endfor -%}
