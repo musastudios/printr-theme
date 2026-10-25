@@ -121,6 +121,17 @@ export function decodeEntities(v) {
 }
 const esc = (v) => String(v ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 const FOLD_OPT = /(?:tri|z|half|bi|letter)[- ]?fold|folded/i;
+// Merged option codes such as "GB100-44-AQ-TRI" (stock-colors-coating-fold) expand to readable hints for fold and sides.
+const CODE_FOLD = { TRI: 'Tri-Fold', HALF: 'Half-Fold', Z: 'Z-Fold' };
+export function expandOptions(options) {
+  const out = [];
+  (options || []).forEach((o) => {
+    out.push(o);
+    const m = String(o).match(/^[A-Z0-9]+-(\d)(\d)-[A-Z]+-([A-Z]+)$/);
+    if (m) { out.push(`${m[1]}/${m[2]} color`); if (CODE_FOLD[m[3]]) out.push(CODE_FOLD[m[3]]); }
+  });
+  return out;
+}
 const LEVEL_RANK = { ok: 0, review: 1, wait: 1, run: 1, warn: 2, err: 3 };
 
 class ArtworkUploader extends HTMLElement {
@@ -177,11 +188,12 @@ class ArtworkUploader extends HTMLElement {
     const sp = { ...(this.pickSpec(v) || {}) };
     if (!sp.special && p.mode) sp.special = p.mode;
     // A fold chosen in a variant option (e.g. Finish "… · Tri-Fold (Letter)") turns a flat profile into a folded piece.
-    const foldOpt = (v?.options || []).find((o) => FOLD_OPT.test(String(o)));
+    const vOpts = expandOptions(v?.options);
+    const foldOpt = vOpts.find((o) => FOLD_OPT.test(String(o)));
     this.foldFromOption = !!foldOpt && !parseSpecial(sp.special).has('folds');
     if (this.foldFromOption) sp.special = [...parseSpecial(sp.special)].concat(String(foldOpt).match(FOLD_OPT)[0]);
     if (!sp.formats && p.formats) sp.formats = p.formats;
-    if (!parseSpecial(sp.special).has('apparel_area')) { const os = sidesFromOptions(v?.options); if (os) sp.sides = os; }
+    if (!parseSpecial(sp.special).has('apparel_area')) { const os = sidesFromOptions(vOpts); if (os) sp.sides = os; }
     this.spec = sp;
     const b = this.base; const special = parseSpecial(sp.special);
     const large = special.has('large_format'); const apparel = special.has('apparel_area');

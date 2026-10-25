@@ -102,7 +102,19 @@
       "turnaround": "Tiempo de producción",
       "quick_view": "Vista rápida de {{ title }}",
       "share": "Compartir",
-      "each": "c/u"
+      "each": "c/u",
+      "configurator": {
+        "heading": "Arma tu folleto",
+        "loading": "Cargando opciones…",
+        "quantity": "Cantidad",
+        "turnaround": "Tiempo de producción",
+        "quote": "Solicitar cotización",
+        "quote_short": "Cotizar",
+        "quote_help": "Esta combinación aún no tiene precio en línea. Envíanos tus especificaciones y te respondemos con una cotización.",
+        "quote_subject": "Solicitud de cotización: {{ product }}",
+        "reset": "Ajustamos para mantener la compatibilidad: {{ options }}",
+        "error": "No pudimos cargar las opciones. Refresca la página o contáctanos."
+      }
     },
     "compare": {
       "label": "Comparar",

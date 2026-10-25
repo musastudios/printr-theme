@@ -1,0 +1,9 @@
+# Supplier portal cost samples (INTERNAL, not shipped to storefront). cost_total in USD.
+size,stock,colorspec,coating,fold,turnaround,qty,cost_total,cost_unit,source_date
+11x17,100LB Gloss Book,4/4,Aqueous,Tri-Fold/Letter Fold,Next Business Day,100,84.48,0.8448,2026-10-25
+11x17,100LB Gloss Book,4/4,Aqueous,Tri-Fold/Letter Fold,Next Business Day,250,141.73,0.5669,2026-10-25
+11x17,100LB Gloss Book,4/4,Aqueous,Tri-Fold/Letter Fold,Next Business Day,500,240.60,0.4812,2026-10-25
+11x17,100LB Gloss Book,4/4,Aqueous,Tri-Fold/Letter Fold,Next Business Day,1000,325.00,0.3250,2026-10-25
+11x17,100LB Gloss Book,4/4,Aqueous,Tri-Fold/Letter Fold,Next Business Day,2500,463.80,0.1855,2026-10-25
+11x17,100LB Gloss Book,4/4,Aqueous,Tri-Fold/Letter Fold,Next Business Day,5000,655.00,0.1310,2026-10-25
+# add-ons: job sample +9.99/set, PDF proof +5.00/set
