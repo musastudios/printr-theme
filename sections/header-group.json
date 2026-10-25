@@ -33,16 +33,17 @@
           }
         },
         "business_cards": {
-          "type": "mega_columns",
+          "type": "mega_showroom",
           "settings": {
             "menu_item": "Business Cards",
-            "columns": 4,
+            "thumbs_per_row": 4,
+            "thumb_ratio": "1/1",
             "show_promo": true,
-            "promo_collection": "business-cards",
             "promo_product_fallback": "bc-raised-foil-2-x-3-5-us-standard",
             "promo_badge_fallback": "Best seller",
             "promo_badge_color": "magenta",
-            "promo_cta": "Shop now"
+            "promo_cta": "Shop now",
+            "view_all_url": "/collections/business-cards"
           }
         },
         "marketing": {

@@ -92,7 +92,7 @@
                       {%- endif -%}
                     </ul>
                     <a class="mobile-menu__viewall" href="{{ urls[j] | strip }}">{{ 'sections.header.view_all' | t: title: titles[j] }} →</a>
-                    {%- if mega.settings.show_promo -%}{% render 'mega-promo', collection: tc, block: mega, allow_fallback: first_tab, compact: true %}{%- endif -%}
+                    {%- if mega.settings.show_promo -%}{% render 'mega-promo', collection: tc, block: mega, allow_fallback: first_tab, fallback_handle: imgs[j], compact: true %}{%- endif -%}
                   </div>
                   {%- assign first_tab = false -%}
                 {%- endfor -%}

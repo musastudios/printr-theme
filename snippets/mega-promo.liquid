@@ -1,7 +1,7 @@
 {%- comment -%}
   Promo card. Order: promo_card block (override) > collection metafields (custom.mega_*) > block fallbacks > nothing.
   A product promo is hidden when the product is unavailable.
-  Params: collection, block, override, allow_fallback, id, compact
+  Params: collection, block, override, allow_fallback, id, compact, fallback_handle (per-tab fallback product handle)
 {%- endcomment -%}
 {%- liquid
   assign p = nil
@@ -26,6 +26,10 @@
       assign badge = collection.metafields.custom.mega_promo_badge.value
       assign color = collection.metafields.custom.mega_badge_color.value
       assign text = collection.metafields.custom.mega_promo_text.value
+    endif
+    assign fh = fallback_handle | strip
+    if p == blank and fh != blank
+      assign p = all_products[fh]
     endif
     if p == blank and allow_fallback
       assign p = block.settings.promo_product_fallback

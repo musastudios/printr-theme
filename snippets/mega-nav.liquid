@@ -99,7 +99,7 @@
                       <div class="mega__tabmain">
                         <div class="mega__thead">
                           <h3>{{ titles[j] | escape }}</h3>
-                          <a href="{{ urls[j] | strip }}">{{ 'sections.header.shop_all' | t: title: titles[j] }}{% if cnt != blank %} ({{ cnt }}){% endif %} →</a>
+                          <a href="{{ urls[j] | strip }}">{{ 'sections.header.view_all' | t: title: titles[j] }}{% if cnt != blank %} ({{ cnt }}){% endif %} →</a>
                         </div>
                         <ul class="mega__thumbs" role="list" style="--cols: {{ tpr }}; --ratio: {{ ratio }}">
                           {%- assign n = 0 -%}
@@ -117,7 +117,7 @@
                         </ul>
                       </div>
                       {%- if mega.settings.show_promo -%}
-                        {% render 'mega-promo', collection: tc, block: mega, allow_fallback: first_tab, id: pid %}
+                        {% render 'mega-promo', collection: tc, block: mega, allow_fallback: first_tab, fallback_handle: imgs[j], id: pid %}
                       {%- endif -%}
                     </div>
                     {%- assign first_tab = false -%}

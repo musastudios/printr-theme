@@ -1,4 +1,4 @@
-{%- comment -%} Nav thumb: custom.nav_thumb, else collection image, else first product image, else the preview fallback product. {%- endcomment -%}
+{%- comment -%} Nav thumb: custom.nav_thumb, else collection image, else first product image, else the preview fallback product, else a placeholder. {%- endcomment -%}
 {%- liquid
   assign h = handle | strip
   assign ip = img_product | strip
@@ -20,6 +20,8 @@
   <span class="mega__thumb-media">
     {%- if img != blank -%}
       {{ img | image_url: width: 320 | image_tag: loading: 'lazy', widths: '160, 240, 320', sizes: sizes, alt: '' }}
+    {%- else -%}
+      {{ 'image' | placeholder_svg_tag: 'mega__thumb-ph' }}
     {%- endif -%}
   </span>
   <span class="mega__thumb-label">{{ title | escape }}</span>
