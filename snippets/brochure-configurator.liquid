@@ -1,0 +1,196 @@
+{% doc %}
+  Brochure configurator: option dropdowns (size, stock, colorspec, coating, fold), run-size price table,
+  turnaround and job sample / digital proof add-ons. Hides any native option picker in the same section.
+  Maps the choice to a real variant (options Size | Qty | Config), writes the hidden variant id and line-item
+  properties into the product form, and fires variant:change for the artwork uploader.
+  Config JSON comes from the product metafield custom.configurator (JSON), else assets/brochure-configurator.json.
+  @param {product} product - The product
+  @param {string} section_id - Section id (form id is ProductForm-<section_id>)
+  @param {object} block - The block (settings.quote_url)
+  @example
+  {% render 'brochure-configurator', product: product, section_id: section.id, block: block %}
+{% enddoc %}
+{%- assign cfg = product.metafields.custom.configurator.value -%}
+<brochure-configurator
+  class="bc"
+  data-section="{{ section_id }}"
+  data-form-id="ProductForm-{{ section_id }}"
+  data-product-url="{{ product.url }}"
+  data-lang="{{ request.locale.iso_code }}"
+  data-locale="{{ request.locale.iso_code }}-US"
+  data-currency="{{ cart.currency.iso_code }}"
+  data-sample-variant="{{ block.settings.sample_product.selected_or_first_available_variant.id }}"
+  data-qa-variant="{{ block.settings.qa_product.selected_or_first_available_variant.id }}"
+  data-quote-url="{{ block.settings.quote_url | default: '/pages/contact' }}"
+  {% if cfg == blank %}data-config-url="{{ 'brochure-configurator.json' | asset_url }}"{% endif %}
+>
+  {%- if cfg != blank -%}
+    <script type="application/json" data-bc-config>{{ cfg | json }}</script>
+  {%- endif -%}
+  {%- comment -%}
+    High-variant safe: product.variants caps at 250, so never loop it. Option value ids come from
+    options_with_values; the run-size rows come from product_option_value.variant on the Qty option
+    (each Qty value combined with the currently selected Size and Config). The script re-fetches this
+    section with ?option_values= to load the variants for any other Size/Config.
+  {%- endcomment -%}
+  {%- assign qty_name = cfg.options_map.qty | default: 'Qty' -%}
+  <script type="application/json" data-bc-product>
+    {"options":{{ product.options | json }},"qty":{{ qty_name | json }},"values":{
+      {%- for option in product.options_with_values -%}
+        {{ option.name | json }}:{
+          {%- for ov in option.values -%}{{ ov.name | json }}:{{ ov.id }}{%- unless forloop.last -%},{%- endunless -%}{%- endfor -%}
+        }{%- unless forloop.last -%},{%- endunless -%}
+      {%- endfor -%}
+    }}
+  </script>
+  <script type="application/json" data-bc-variants>
+    {%- capture bc_key -%}
+      {%- for option in product.options_with_values -%}
+        {%- unless option.name == qty_name -%}{{ option.selected_value }}|{%- endunless -%}
+      {%- endfor -%}
+    {%- endcapture -%}
+    {"key":{{ bc_key | json }},"tiers":[
+      {%- for option in product.options_with_values -%}
+        {%- if option.name == qty_name -%}
+          {%- for ov in option.values -%}
+            {%- assign v = ov.variant -%}
+            {"qty":{{ ov.name | json }},"id":{{ v.id | default: 'null' }},"price":{{ v.price | default: 'null' }},"available":{{ v.available | default: false | json }},"options":{{ v.options | default: '' | json }}}
+            {%- unless forloop.last -%},{%- endunless -%}
+          {%- endfor -%}
+        {%- endif -%}
+      {%- endfor -%}
+    ]}
+  </script>
+  <script type="application/json" data-bc-strings>
+    {
+      "quantity": {{ 'products.product.configurator.quantity' | t | json }},
+      "turnaround": {{ 'products.product.configurator.turnaround' | t | json }},
+      "total": {{ 'products.product.tiers.total' | t | json }},
+      "each": {{ 'products.product.tiers.each_label' | t | json }},
+      "best_value": {{ 'products.product.tiers.best_value' | t | json }},
+      "quote_short": {{ 'products.product.configurator.quote_short' | t | json }},
+      "quote_subject": {{ 'products.product.configurator.quote_subject' | t: product: product.title | json }},
+      "reset": {{ 'products.product.configurator.reset' | t: options: '__OPTS__' | json }},
+      "error": {{ 'products.product.configurator.error' | t | json }},
+      "options": {{ 'products.product.configurator.options' | t | json }},
+      "sample": {{ 'products.product.configurator.sample' | t | json }},
+      "yes": {{ 'products.product.configurator.yes' | t | json }},
+      "proof": {{ 'products.product.configurator.proof' | t | json }},
+      "invoiced": {{ 'products.product.configurator.invoiced' | t | json }},
+      "values": {
+        "colorspec": {
+          "40": {{ 'products.product.configurator.colorspec_40' | t | json }},
+          "44": {{ 'products.product.configurator.colorspec_44' | t | json }},
+          "41": {{ 'products.product.configurator.colorspec_41' | t | json }}
+        }
+      },
+      "labels": {
+        "size": {{ 'products.product.configurator.labels.size' | t | json }},
+        "stock": {{ 'products.product.configurator.labels.stock' | t | json }},
+        "colorspec": {{ 'products.product.configurator.labels.colorspec' | t | json }},
+        "coating": {{ 'products.product.configurator.labels.coating' | t | json }},
+        "fold": {{ 'products.product.configurator.labels.fold' | t | json }}
+      }
+    }
+  </script>
+  <template data-bc-icon="chevron">{% render 'au-icon', name: 'chevron-down', size: 18 %}</template>
+  <h2 class="bc__heading slug">{{ 'products.product.configurator.heading' | t }}</h2>
+  <div class="bc-card">
+    <div class="bc-sec">
+      <h3 class="bc-sec__title">{% render 'au-icon', name: 'settings-2', size: 18 %}{{ 'products.product.configurator.specs' | t }}</h3>
+      <div class="bc-grid" data-bc-steps><p>{{ 'products.product.configurator.loading' | t }}</p></div>
+      <p class="bc__note" data-bc-note role="status" aria-live="polite" hidden></p>
+    </div>
+    <div class="bc-sec">
+      <h3 class="bc-sec__title" id="BcRun-{{ section_id }}">{% render 'au-icon', name: 'calculator', size: 18 %}{{ 'products.product.configurator.run_size' | t }}</h3>
+      <p class="bc-hint">{{ 'products.product.configurator.run_hint' | t }}</p>
+      <div class="bc-run">
+        <div class="bc-run__head" aria-hidden="true">
+          <span>{{ 'products.product.configurator.run_size' | t }}</span>
+          <span>{{ 'products.product.configurator.per_unit' | t }}</span>
+          <span>{{ 'products.product.configurator.total_price' | t }}</span>
+        </div>
+        <fieldset class="bc-run__set" aria-labelledby="BcRun-{{ section_id }}" data-bc-tiers></fieldset>
+      </div>
+    </div>
+    <div class="bc-sec">
+      <h3 class="bc-sec__title" id="BcTurn-{{ section_id }}">{% render 'au-icon', name: 'clock', size: 18 %}{{ 'products.product.configurator.turnaround' | t }}<span class="bc-req" aria-hidden="true">*</span></h3>
+      <div role="radiogroup" aria-labelledby="BcTurn-{{ section_id }}" data-bc-turn>
+        <label class="bc-turn"><input type="radio" name="bc-{{ section_id }}-turn" value="NBD" checked><span>{{ 'products.product.configurator.next_day' | t }}</span></label>
+      </div>
+    </div>
+    <div class="bc-sec" data-bc-addons hidden></div>
+    <div class="bc-sec bc-sec--checks">
+      <div>
+        <h3 class="bc-sec__title bc-sec__title--sm">{{ 'products.product.configurator.samples' | t }}</h3>
+        <label class="bc-check"><input type="checkbox" data-bc-sample><span>{{ 'products.product.configurator.sample_label' | t: price: '$9.99' }}</span></label>
+      </div>
+      <div data-bc-proof-row>
+        <h3 class="bc-sec__title bc-sec__title--sm">{{ 'products.product.configurator.proofs' | t }}<span class="bc-info" title="{{ 'products.product.configurator.proof_help' | t }}">{% render 'au-icon', name: 'info', size: 16 %}</span></h3>
+        <label class="bc-check"><input type="checkbox" data-bc-proof><span>{{ 'products.product.configurator.proof_label' | t }}</span></label>
+      </div>
+    </div>
+  </div>
+  <p class="bc__summary" data-bc-summary aria-live="polite"></p>
+  <div class="bc__quote" data-bc-quote hidden>
+    <p>{{ 'products.product.configurator.quote_help' | t }}</p>
+    <a class="button button--secondary" href="{{ block.settings.quote_url | default: '/pages/contact' }}">{{ 'products.product.configurator.quote' | t }}</a>
+  </div>
+  <div data-bc-props hidden></div>
+</brochure-configurator>
+<script src="{{ 'brochure-configurator.js' | asset_url }}" defer="defer"></script>
+
+{% stylesheet %}
+  .bc { display: grid; gap: 1.6rem; }
+  .bc-card { border: 2px solid #000; border-radius: 1.2rem; background: #fff; box-shadow: 3px 3px 0 #000; }
+  .bc-sec { display: grid; gap: 1rem; padding: 1.6rem; border-top: 1px solid rgba(0, 0, 0, .12); }
+  .bc-sec:first-child { border-top: 0; }
+  .bc-sec__title { display: flex; align-items: center; gap: .8rem; margin: 0; font: 700 1.4rem/1.2 var(--font-heading-family); letter-spacing: .08em; text-transform: uppercase; }
+  .bc-sec__title--sm { font-size: 1.3rem; margin-bottom: .6rem; }
+  .bc-sec--checks { gap: 1.4rem; }
+  .bc-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.2rem 1.6rem; }
+  .bc-field { display: grid; gap: .5rem; min-width: 0; }
+  .bc-field--full { grid-column: 1 / -1; }
+  .bc-field__label { font-size: 1.2rem; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; }
+  .bc-req { margin-left: .3rem; color: #E0245E; }
+  .bc-opt-tag { font-weight: 400; text-transform: none; letter-spacing: 0; opacity: .7; }
+  .bc-select select { width: 100%; min-height: 4.4rem; padding: 0 1.2rem; border: 2px solid #000; border-radius: .8rem; background: #fff; font: inherit; font-size: 1.5rem; color: inherit; }
+  .bc-select { position: relative; }
+  .bc-select select { appearance: none; padding-right: 3.6rem; cursor: pointer; }
+  .bc-select__ic { position: absolute; right: 1.1rem; top: 50%; transform: translateY(-50%); pointer-events: none; display: flex; }
+  .bc-select select:focus-visible { outline: 2px solid #000; outline-offset: 2px; background: rgba(103, 211, 251, .12); }
+  .bc-hint { margin: 0; font-size: 1.2rem; font-style: italic; opacity: .75; }
+  .bc-run { border: 2px solid #000; border-radius: .8rem; overflow: hidden; }
+  .bc-run__head, .bc-run__row { display: grid; grid-template-columns: 1.2fr 1fr 1fr; gap: 1rem; align-items: center; padding: 1rem 1.2rem; }
+  .bc-run__head { background: #000; color: #fff; font-size: 1.2rem; font-weight: 700; text-transform: uppercase; letter-spacing: .06em; }
+  .bc-run__set { border: 0; margin: 0; padding: 0; min-width: 0; }
+  .bc-run__row { position: relative; border-top: 1px solid rgba(0, 0, 0, .12); cursor: pointer; font-size: 1.5rem; font-variant-numeric: tabular-nums; }
+  .bc-run__row:first-child { border-top: 0; }
+  .bc-run__row input { position: absolute; opacity: 0; width: 1px; height: 1px; margin: 0; }
+  .bc-run__qty { display: flex; align-items: center; gap: .8rem; font-weight: 700; }
+  .bc-run__qty::before { content: ""; width: 1.6rem; height: 1.6rem; border: 2px solid #000; border-radius: 50%; background: #fff; flex: none; }
+  .bc-run__row:has(input:checked) { background: rgba(249, 98, 221, .18); }
+  .bc-run__row:has(input:checked) .bc-run__qty::before { background: radial-gradient(#000 40%, #fff 45%); }
+  .bc-run__row:has(input:focus-visible) { outline: 2px solid #000; outline-offset: -4px; }
+  .bc-run__row.is-disabled { cursor: not-allowed; opacity: .4; }
+  .bc-turn { display: inline-flex; align-items: center; gap: .8rem; padding: 1.1rem 1.6rem; border: 2px solid #000; border-radius: .8rem; background: rgba(103, 211, 251, .15); box-shadow: 2px 2px 0 #000; font-size: 1.5rem; cursor: pointer; }
+  .bc-turn input { accent-color: #000; width: 1.8rem; height: 1.8rem; margin: 0; }
+  .bc-check { display: flex; align-items: center; gap: .8rem; font-size: 1.5rem; cursor: pointer; }
+  .bc-check input { accent-color: #000; width: 1.8rem; height: 1.8rem; margin: 0; }
+  .bc-info { display: inline-flex; cursor: help; }
+  .bc__note { margin: 0; padding: .8rem 1.2rem; border-left: 4px solid #000; background: #FFF4B8; font-size: 1.3rem; }
+  .bc__summary { margin: 0; font-size: 1.6rem; }
+  .bc__summary strong { font-size: 2.2rem; }
+  .bc-quote-tag { font-style: normal; font-size: 1.3rem; text-transform: uppercase; letter-spacing: .06em; }
+  .bc__quote { padding: 1.4rem; border: 2px dashed #000; border-radius: 1.2rem; }
+  .bc__quote p { margin: 0 0 1rem; }
+  @media (max-width: 749px) {
+    .bc-grid { grid-template-columns: 1fr; }
+    .bc-run__head, .bc-run__row { gap: .6rem; padding: .9rem 1rem; font-size: 1.4rem; }
+  }
+  /* Safety net: when the configurator is present, hide any native option picker in the same product section. */
+  .product:has(brochure-configurator) variant-picker,
+  .product:has(brochure-configurator) .product-form__input--option,
+  .product:has(brochure-configurator) [data-variant-picker],
+  .product:has(brochure-configurator) .tiers:not(.bc-run) { display: none !important; }
+{% endstylesheet %}

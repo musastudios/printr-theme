@@ -64,6 +64,8 @@
             <div {{ block.shopify_attributes }}>{% render 'variant-picker', product: product, section_id: section.id %}</div>
           {%- when 'tier_pricing' -%}
             <div {{ block.shopify_attributes }}>{% render 'tier-pricing', product: product, variant: variant, radio: tier_radio %}</div>
+          {%- when 'brochure_config' -%}
+            <div {{ block.shopify_attributes }}>{% render 'brochure-configurator', product: product, section_id: section.id, block: block %}</div>
           {%- when 'buy_buttons' -%}
             <div id="BuyBlock-{{ section.id }}" {{ block.shopify_attributes }}>{% render 'product-buy', variant: variant, section_id: section.id, show_artwork: block.settings.show_artwork, show_dynamic_checkout: block.settings.show_dynamic_checkout, custom_buy_now: has_art, inline_ctas: tier_radio %}</div>
           {%- when 'artwork_uploader' -%}
@@ -175,6 +177,12 @@
     { "type": "variant_picker", "name": "Variant picker", "limit": 1 },
     { "type": "tier_pricing", "name": "Quantity tier pricing", "limit": 1, "settings": [
       { "type": "product_list", "id": "radio_products", "label": "Products with radio rows", "limit": 25, "info": "These products show selectable quantity rows with save badges and the 3D Add to cart button. Other products keep the classic table." }
+    ] },
+    { "type": "brochure_config", "name": "Brochure configurator", "limit": 1, "settings": [
+      { "type": "paragraph", "content": "Step-by-step options with live quantity pricing. Reads JSON from the product metafield custom.configurator, else the theme asset brochure-configurator.json. Variants must use options Size | Qty | Config. Place above Artwork uploader and Buy buttons; hide the Variant picker and Quantity tier pricing blocks on this template." },
+      { "type": "url", "id": "quote_url", "label": "Quote request link", "info": "Shown when the chosen combination has no sellable variant. Defaults to /pages/contact." },
+      { "type": "product", "id": "sample_product", "label": "Job sample product ($9.99)", "info": "Hidden product added to the cart when the customer ticks Job sample. If empty, the request is saved as a line property to invoice." },
+      { "type": "product", "id": "qa_product", "label": "Pre-flight & QA product ($5)", "info": "Used for Digital proof when the Artwork uploader block has no QA product. If empty, the request is saved as a line property to invoice." }
     ] },
     { "type": "turnaround", "name": "Production time", "limit": 1, "settings": [{ "type": "text", "id": "text", "label": "Default production time", "default": "5–7 business days" }] },
     { "type": "buy_buttons", "name": "Buy buttons", "limit": 1, "settings": [

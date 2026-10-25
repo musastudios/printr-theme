@@ -1,0 +1,2121 @@
+{
+ "version": 1,
+ "product": "brochures",
+ "currency": "USD",
+ "markup": 2,
+ "title": {
+  "en": "Brochures",
+  "es": "Folletos"
+ },
+ "options_map": {
+  "size": "Size",
+  "qty": "Qty",
+  "config": "Config"
+ },
+ "config_code": [
+  "stock",
+  "colorspec",
+  "coating",
+  "fold"
+ ],
+ "groups": [
+  {
+   "key": "size",
+   "label": {
+    "en": "Size",
+    "es": "Tamaño"
+   },
+   "values": [
+    {
+     "v": "11x17",
+     "label": {
+      "en": "11\" × 17\"",
+      "es": "11\" × 17\""
+     },
+     "trim": [
+      11,
+      17
+     ]
+    },
+    {
+     "v": "5.5x8.5",
+     "label": {
+      "en": "5.5\" × 8.5\"",
+      "es": "5.5\" × 8.5\""
+     },
+     "trim": [
+      5.5,
+      8.5
+     ]
+    },
+    {
+     "v": "8.5x11",
+     "label": {
+      "en": "8.5\" × 11\"",
+      "es": "8.5\" × 11\""
+     },
+     "trim": [
+      8.5,
+      11
+     ]
+    },
+    {
+     "v": "8.5x14",
+     "label": {
+      "en": "8.5\" × 14\"",
+      "es": "8.5\" × 14\""
+     },
+     "trim": [
+      8.5,
+      14
+     ]
+    }
+   ]
+  },
+  {
+   "key": "stock",
+   "label": {
+    "en": "Paper",
+    "es": "Papel"
+   },
+   "values": [
+    {
+     "v": "GB100",
+     "label": {
+      "en": "100lb Gloss Book",
+      "es": "Gloss Book 100 lb"
+     }
+    }
+   ]
+  },
+  {
+   "key": "colorspec",
+   "default": "44",
+   "label": {
+    "en": "Print colors",
+    "es": "Colores de impresión"
+   },
+   "values": [
+    {
+     "v": "40",
+     "label": {
+      "en": "4/0 · Full color front",
+      "es": "4/0 · Full color al frente"
+     },
+     "sides": 1
+    },
+    {
+     "v": "44",
+     "label": {
+      "en": "4/4 · Full color both sides",
+      "es": "4/4 · Full color ambos lados"
+     },
+     "sides": 2
+    },
+    {
+     "v": "41",
+     "label": {
+      "en": "4/1 · Color front, black back",
+      "es": "4/1 · Color al frente, negro atrás"
+     },
+     "sides": 2
+    }
+   ]
+  },
+  {
+   "key": "coating",
+   "label": {
+    "en": "Coating",
+    "es": "Acabado"
+   },
+   "values": [
+    {
+     "v": "AQ",
+     "label": {
+      "en": "Aqueous",
+      "es": "Aqueous (brillo protector)"
+     }
+    },
+    {
+     "v": "NC",
+     "label": {
+      "en": "No coating",
+      "es": "Sin acabado"
+     }
+    }
+   ]
+  },
+  {
+   "key": "fold",
+   "label": {
+    "en": "Fold",
+    "es": "Doblez"
+   },
+   "values": [
+    {
+     "v": "TRI",
+     "label": {
+      "en": "Tri-fold / Letter fold",
+      "es": "Tríptico (doblez carta)"
+     },
+     "panels": 3
+    },
+    {
+     "v": "FLAT",
+     "label": {
+      "en": "Flat (no folding)",
+      "es": "Plano (sin doblez)"
+     },
+     "panels": 1
+    },
+    {
+     "v": "HALF",
+     "label": {
+      "en": "Half-fold",
+      "es": "Díptico (doblez a la mitad)"
+     },
+     "panels": 2
+    }
+   ]
+  }
+ ],
+ "qty": [
+  100,
+  250,
+  500,
+  1000,
+  2500,
+  5000
+ ],
+ "rules": [
+  {
+   "id": "example-no-tri-on-5.5x8.5",
+   "enabled": false,
+   "when": {
+    "size": [
+     "5.5x8.5"
+    ]
+   },
+   "excludes": {
+    "fold": [
+     "TRI"
+    ]
+   },
+   "reason": {
+    "en": "Tri-fold is not available at this size",
+    "es": "El tríptico no está disponible en este tamaño"
+   }
+  },
+  {
+   "id": "example-aq-requires-gb100",
+   "enabled": false,
+   "when": {
+    "coating": [
+     "AQ"
+    ]
+   },
+   "only": {
+    "stock": [
+     "GB100"
+    ]
+   },
+   "reason": {
+    "en": "Aqueous coating requires 100lb Gloss Book",
+    "es": "Aqueous requiere Gloss Book 100 lb"
+   }
+  }
+ ],
+ "turnaround": {
+  "v": "NBD",
+  "label": {
+   "en": "Next business day",
+   "es": "Próximo día laborable"
+  }
+ },
+ "addons": [
+  {
+   "key": "job_sample",
+   "label": {
+    "en": "Job sample",
+    "es": "Muestra del trabajo"
+   },
+   "price": 19.98,
+   "status": "pending_approval",
+   "note": "Maps to the existing QA/proof flow in the artwork uploader; not rendered as a separate fee."
+  }
+ ],
+ "prices": {
+  "11x17|GB100-40-AQ-TRI": {
+   "100": {
+    "p": null,
+    "src": "placeholder"
+   },
+   "250": {
+    "p": null,
+    "src": "placeholder"
+   },
+   "500": {
+    "p": null,
+    "src": "placeholder"
+   },
+   "1000": {
+    "p": null,
+    "src": "placeholder"
+   },
+   "2500": {
+    "p": null,
+    "src": "placeholder"
+   },
+   "5000": {
+    "p": null,
+    "src": "placeholder"
+   }
+  },
+  "11x17|GB100-40-AQ-FLAT": {
+   "100": {
+    "p": null,
+    "src": "placeholder"
+   },
+   "250": {
+    "p": null,
+    "src": "placeholder"
+   },
+   "500": {
+    "p": null,
+    "src": "placeholder"
+   },
+   "1000": {
+    "p": null,
+    "src": "placeholder"
+   },
+   "2500": {
+    "p": null,
+    "src": "placeholder"
+   },
+   "5000": {
+    "p": null,
+    "src": "placeholder"
+   }
+  },
+  "11x17|GB100-40-AQ-HALF": {
+   "100": {
+    "p": null,
+    "src": "placeholder"
+   },
+   "250": {
+    "p": null,
+    "src": "placeholder"
+   },
+   "500": {
+    "p": null,
+    "src": "placeholder"
+   },
+   "1000": {
+    "p": null,
+    "src": "placeholder"
+   },
+   "2500": {
+    "p": null,
+    "src": "placeholder"
+   },
+   "5000": {
+    "p": null,
+    "src": "placeholder"
+   }
+  },
+  "11x17|GB100-40-NC-TRI": {
+   "100": {
+    "p": null,
+    "src": "placeholder"
+   },
+   "250": {
+    "p": null,
+    "src": "placeholder"
+   },
+   "500": {
+    "p": null,
+    "src": "placeholder"
+   },
+   "1000": {
+    "p": null,
+    "src": "placeholder"
+   },
+   "2500": {
+    "p": null,
+    "src": "placeholder"
+   },
+   "5000": {
+    "p": null,
+    "src": "placeholder"
+   }
+  },
+  "11x17|GB100-40-NC-FLAT": {
+   "100": {
+    "p": null,
+    "src": "placeholder"
+   },
+   "250": {
+    "p": null,
+    "src": "placeholder"
+   },
+   "500": {
+    "p": null,
+    "src": "placeholder"
+   },
+   "1000": {
+    "p": null,
+    "src": "placeholder"
+   },
+   "2500": {
+    "p": null,
+    "src": "placeholder"
+   },
+   "5000": {
+    "p": null,
+    "src": "placeholder"
+   }
+  },
+  "11x17|GB100-40-NC-HALF": {
+   "100": {
+    "p": null,
+    "src": "placeholder"
+   },
+   "250": {
+    "p": null,
+    "src": "placeholder"
+   },
+   "500": {
+    "p": null,
+    "src": "placeholder"
+   },
+   "1000": {
+    "p": null,
+    "src": "placeholder"
+   },
+   "2500": {
+    "p": null,
+    "src": "placeholder"
+   },
+   "5000": {
+    "p": null,
+    "src": "placeholder"
+   }
+  },
+  "11x17|GB100-44-AQ-TRI": {
+   "100": {
+    "p": 168.96,
+    "src": "real"
+   },
+   "250": {
+    "p": 283.46,
+    "src": "real"
+   },
+   "500": {
+    "p": 481.2,
+    "src": "real"
+   },
+   "1000": {
+    "p": 650,
+    "src": "real"
+   },
+   "2500": {
+    "p": 927.6,
+    "src": "real"
+   },
+   "5000": {
+    "p": 1310,
+    "src": "real"
+   }
+  },
+  "11x17|GB100-44-AQ-FLAT": {
+   "100": {
+    "p": null,
+    "src": "placeholder"
+   },
+   "250": {
+    "p": null,
+    "src": "placeholder"
+   },
+   "500": {
+    "p": null,
+    "src": "placeholder"
+   },
+   "1000": {
+    "p": null,
+    "src": "placeholder"
+   },
+   "2500": {
+    "p": null,
+    "src": "placeholder"
+   },
+   "5000": {
+    "p": null,
+    "src": "placeholder"
+   }
+  },
+  "11x17|GB100-44-AQ-HALF": {
+   "100": {
+    "p": null,
+    "src": "placeholder"
+   },
+   "250": {
+    "p": null,
+    "src": "placeholder"
+   },
+   "500": {
+    "p": null,
+    "src": "placeholder"
+   },
+   "1000": {
+    "p": null,
+    "src": "placeholder"
+   },
+   "2500": {
+    "p": null,
+    "src": "placeholder"
+   },
+   "5000": {
+    "p": null,
+    "src": "placeholder"
+   }
+  },
+  "11x17|GB100-44-NC-TRI": {
+   "100": {
+    "p": null,
+    "src": "placeholder"
+   },
+   "250": {
+    "p": null,
+    "src": "placeholder"
+   },
+   "500": {
+    "p": null,
+    "src": "placeholder"
+   },
+   "1000": {
+    "p": null,
+    "src": "placeholder"
+   },
+   "2500": {
+    "p": null,
+    "src": "placeholder"
+   },
+   "5000": {
+    "p": null,
+    "src": "placeholder"
+   }
+  },
+  "11x17|GB100-44-NC-FLAT": {
+   "100": {
+    "p": null,
+    "src": "placeholder"
+   },
+   "250": {
+    "p": null,
+    "src": "placeholder"
+   },
+   "500": {
+    "p": null,
+    "src": "placeholder"
+   },
+   "1000": {
+    "p": null,
+    "src": "placeholder"
+   },
+   "2500": {
+    "p": null,
+    "src": "placeholder"
+   },
+   "5000": {
+    "p": null,
+    "src": "placeholder"
+   }
+  },
+  "11x17|GB100-44-NC-HALF": {
+   "100": {
+    "p": null,
+    "src": "placeholder"
+   },
+   "250": {
+    "p": null,
+    "src": "placeholder"
+   },
+   "500": {
+    "p": null,
+    "src": "placeholder"
+   },
+   "1000": {
+    "p": null,
+    "src": "placeholder"
+   },
+   "2500": {
+    "p": null,
+    "src": "placeholder"
+   },
+   "5000": {
+    "p": null,
+    "src": "placeholder"
+   }
+  },
+  "11x17|GB100-41-AQ-TRI": {
+   "100": {
+    "p": null,
+    "src": "placeholder"
+   },
+   "250": {
+    "p": null,
+    "src": "placeholder"
+   },
+   "500": {
+    "p": null,
+    "src": "placeholder"
+   },
+   "1000": {
+    "p": null,
+    "src": "placeholder"
+   },
+   "2500": {
+    "p": null,
+    "src": "placeholder"
+   },
+   "5000": {
+    "p": null,
+    "src": "placeholder"
+   }
+  },
+  "11x17|GB100-41-AQ-FLAT": {
+   "100": {
+    "p": null,
+    "src": "placeholder"
+   },
+   "250": {
+    "p": null,
+    "src": "placeholder"
+   },
+   "500": {
+    "p": null,
+    "src": "placeholder"
+   },
+   "1000": {
+    "p": null,
+    "src": "placeholder"
+   },
+   "2500": {
+    "p": null,
+    "src": "placeholder"
+   },
+   "5000": {
+    "p": null,
+    "src": "placeholder"
+   }
+  },
+  "11x17|GB100-41-AQ-HALF": {
+   "100": {
+    "p": null,
+    "src": "placeholder"
+   },
+   "250": {
+    "p": null,
+    "src": "placeholder"
+   },
+   "500": {
+    "p": null,
+    "src": "placeholder"
+   },
+   "1000": {
+    "p": null,
+    "src": "placeholder"
+   },
+   "2500": {
+    "p": null,
+    "src": "placeholder"
+   },
+   "5000": {
+    "p": null,
+    "src": "placeholder"
+   }
+  },
+  "11x17|GB100-41-NC-TRI": {
+   "100": {
+    "p": null,
+    "src": "placeholder"
+   },
+   "250": {
+    "p": null,
+    "src": "placeholder"
+   },
+   "500": {
+    "p": null,
+    "src": "placeholder"
+   },
+   "1000": {
+    "p": null,
+    "src": "placeholder"
+   },
+   "2500": {
+    "p": null,
+    "src": "placeholder"
+   },
+   "5000": {
+    "p": null,
+    "src": "placeholder"
+   }
+  },
+  "11x17|GB100-41-NC-FLAT": {
+   "100": {
+    "p": null,
+    "src": "placeholder"
+   },
+   "250": {
+    "p": null,
+    "src": "placeholder"
+   },
+   "500": {
+    "p": null,
+    "src": "placeholder"
+   },
+   "1000": {
+    "p": null,
+    "src": "placeholder"
+   },
+   "2500": {
+    "p": null,
+    "src": "placeholder"
+   },
+   "5000": {
+    "p": null,
+    "src": "placeholder"
+   }
+  },
+  "11x17|GB100-41-NC-HALF": {
+   "100": {
+    "p": null,
+    "src": "placeholder"
+   },
+   "250": {
+    "p": null,
+    "src": "placeholder"
+   },
+   "500": {
+    "p": null,
+    "src": "placeholder"
+   },
+   "1000": {
+    "p": null,
+    "src": "placeholder"
+   },
+   "2500": {
+    "p": null,
+    "src": "placeholder"
+   },
+   "5000": {
+    "p": null,
+    "src": "placeholder"
+   }
+  },
+  "5.5x8.5|GB100-40-AQ-TRI": {
+   "100": {
+    "p": null,
+    "src": "placeholder"
+   },
+   "250": {
+    "p": null,
+    "src": "placeholder"
+   },
+   "500": {
+    "p": null,
+    "src": "placeholder"
+   },
+   "1000": {
+    "p": null,
+    "src": "placeholder"
+   },
+   "2500": {
+    "p": null,
+    "src": "placeholder"
+   },
+   "5000": {
+    "p": null,
+    "src": "placeholder"
+   }
+  },
+  "5.5x8.5|GB100-40-AQ-FLAT": {
+   "100": {
+    "p": null,
+    "src": "placeholder"
+   },
+   "250": {
+    "p": null,
+    "src": "placeholder"
+   },
+   "500": {
+    "p": null,
+    "src": "placeholder"
+   },
+   "1000": {
+    "p": null,
+    "src": "placeholder"
+   },
+   "2500": {
+    "p": null,
+    "src": "placeholder"
+   },
+   "5000": {
+    "p": null,
+    "src": "placeholder"
+   }
+  },
+  "5.5x8.5|GB100-40-AQ-HALF": {
+   "100": {
+    "p": null,
+    "src": "placeholder"
+   },
+   "250": {
+    "p": null,
+    "src": "placeholder"
+   },
+   "500": {
+    "p": null,
+    "src": "placeholder"
+   },
+   "1000": {
+    "p": null,
+    "src": "placeholder"
+   },
+   "2500": {
+    "p": null,
+    "src": "placeholder"
+   },
+   "5000": {
+    "p": null,
+    "src": "placeholder"
+   }
+  },
+  "5.5x8.5|GB100-40-NC-TRI": {
+   "100": {
+    "p": null,
+    "src": "placeholder"
+   },
+   "250": {
+    "p": null,
+    "src": "placeholder"
+   },
+   "500": {
+    "p": null,
+    "src": "placeholder"
+   },
+   "1000": {
+    "p": null,
+    "src": "placeholder"
+   },
+   "2500": {
+    "p": null,
+    "src": "placeholder"
+   },
+   "5000": {
+    "p": null,
+    "src": "placeholder"
+   }
+  },
+  "5.5x8.5|GB100-40-NC-FLAT": {
+   "100": {
+    "p": null,
+    "src": "placeholder"
+   },
+   "250": {
+    "p": null,
+    "src": "placeholder"
+   },
+   "500": {
+    "p": null,
+    "src": "placeholder"
+   },
+   "1000": {
+    "p": null,
+    "src": "placeholder"
+   },
+   "2500": {
+    "p": null,
+    "src": "placeholder"
+   },
+   "5000": {
+    "p": null,
+    "src": "placeholder"
+   }
+  },
+  "5.5x8.5|GB100-40-NC-HALF": {
+   "100": {
+    "p": null,
+    "src": "placeholder"
+   },
+   "250": {
+    "p": null,
+    "src": "placeholder"
+   },
+   "500": {
+    "p": null,
+    "src": "placeholder"
+   },
+   "1000": {
+    "p": null,
+    "src": "placeholder"
+   },
+   "2500": {
+    "p": null,
+    "src": "placeholder"
+   },
+   "5000": {
+    "p": null,
+    "src": "placeholder"
+   }
+  },
+  "5.5x8.5|GB100-44-AQ-TRI": {
+   "100": {
+    "p": null,
+    "src": "placeholder"
+   },
+   "250": {
+    "p": null,
+    "src": "placeholder"
+   },
+   "500": {
+    "p": null,
+    "src": "placeholder"
+   },
+   "1000": {
+    "p": null,
+    "src": "placeholder"
+   },
+   "2500": {
+    "p": null,
+    "src": "placeholder"
+   },
+   "5000": {
+    "p": null,
+    "src": "placeholder"
+   }
+  },
+  "5.5x8.5|GB100-44-AQ-FLAT": {
+   "100": {
+    "p": null,
+    "src": "placeholder"
+   },
+   "250": {
+    "p": null,
+    "src": "placeholder"
+   },
+   "500": {
+    "p": null,
+    "src": "placeholder"
+   },
+   "1000": {
+    "p": null,
+    "src": "placeholder"
+   },
+   "2500": {
+    "p": null,
+    "src": "placeholder"
+   },
+   "5000": {
+    "p": null,
+    "src": "placeholder"
+   }
+  },
+  "5.5x8.5|GB100-44-AQ-HALF": {
+   "100": {
+    "p": null,
+    "src": "placeholder"
+   },
+   "250": {
+    "p": null,
+    "src": "placeholder"
+   },
+   "500": {
+    "p": null,
+    "src": "placeholder"
+   },
+   "1000": {
+    "p": null,
+    "src": "placeholder"
+   },
+   "2500": {
+    "p": null,
+    "src": "placeholder"
+   },
+   "5000": {
+    "p": null,
+    "src": "placeholder"
+   }
+  },
+  "5.5x8.5|GB100-44-NC-TRI": {
+   "100": {
+    "p": null,
+    "src": "placeholder"
+   },
+   "250": {
+    "p": null,
+    "src": "placeholder"
+   },
+   "500": {
+    "p": null,
+    "src": "placeholder"
+   },
+   "1000": {
+    "p": null,
+    "src": "placeholder"
+   },
+   "2500": {
+    "p": null,
+    "src": "placeholder"
+   },
+   "5000": {
+    "p": null,
+    "src": "placeholder"
+   }
+  },
+  "5.5x8.5|GB100-44-NC-FLAT": {
+   "100": {
+    "p": null,
+    "src": "placeholder"
+   },
+   "250": {
+    "p": null,
+    "src": "placeholder"
+   },
+   "500": {
+    "p": null,
+    "src": "placeholder"
+   },
+   "1000": {
+    "p": null,
+    "src": "placeholder"
+   },
+   "2500": {
+    "p": null,
+    "src": "placeholder"
+   },
+   "5000": {
+    "p": null,
+    "src": "placeholder"
+   }
+  },
+  "5.5x8.5|GB100-44-NC-HALF": {
+   "100": {
+    "p": null,
+    "src": "placeholder"
+   },
+   "250": {
+    "p": null,
+    "src": "placeholder"
+   },
+   "500": {
+    "p": null,
+    "src": "placeholder"
+   },
+   "1000": {
+    "p": null,
+    "src": "placeholder"
+   },
+   "2500": {
+    "p": null,
+    "src": "placeholder"
+   },
+   "5000": {
+    "p": null,
+    "src": "placeholder"
+   }
+  },
+  "5.5x8.5|GB100-41-AQ-TRI": {
+   "100": {
+    "p": null,
+    "src": "placeholder"
+   },
+   "250": {
+    "p": null,
+    "src": "placeholder"
+   },
+   "500": {
+    "p": null,
+    "src": "placeholder"
+   },
+   "1000": {
+    "p": null,
+    "src": "placeholder"
+   },
+   "2500": {
+    "p": null,
+    "src": "placeholder"
+   },
+   "5000": {
+    "p": null,
+    "src": "placeholder"
+   }
+  },
+  "5.5x8.5|GB100-41-AQ-FLAT": {
+   "100": {
+    "p": null,
+    "src": "placeholder"
+   },
+   "250": {
+    "p": null,
+    "src": "placeholder"
+   },
+   "500": {
+    "p": null,
+    "src": "placeholder"
+   },
+   "1000": {
+    "p": null,
+    "src": "placeholder"
+   },
+   "2500": {
+    "p": null,
+    "src": "placeholder"
+   },
+   "5000": {
+    "p": null,
+    "src": "placeholder"
+   }
+  },
+  "5.5x8.5|GB100-41-AQ-HALF": {
+   "100": {
+    "p": null,
+    "src": "placeholder"
+   },
+   "250": {
+    "p": null,
+    "src": "placeholder"
+   },
+   "500": {
+    "p": null,
+    "src": "placeholder"
+   },
+   "1000": {
+    "p": null,
+    "src": "placeholder"
+   },
+   "2500": {
+    "p": null,
+    "src": "placeholder"
+   },
+   "5000": {
+    "p": null,
+    "src": "placeholder"
+   }
+  },
+  "5.5x8.5|GB100-41-NC-TRI": {
+   "100": {
+    "p": null,
+    "src": "placeholder"
+   },
+   "250": {
+    "p": null,
+    "src": "placeholder"
+   },
+   "500": {
+    "p": null,
+    "src": "placeholder"
+   },
+   "1000": {
+    "p": null,
+    "src": "placeholder"
+   },
+   "2500": {
+    "p": null,
+    "src": "placeholder"
+   },
+   "5000": {
+    "p": null,
+    "src": "placeholder"
+   }
+  },
+  "5.5x8.5|GB100-41-NC-FLAT": {
+   "100": {
+    "p": null,
+    "src": "placeholder"
+   },
+   "250": {
+    "p": null,
+    "src": "placeholder"
+   },
+   "500": {
+    "p": null,
+    "src": "placeholder"
+   },
+   "1000": {
+    "p": null,
+    "src": "placeholder"
+   },
+   "2500": {
+    "p": null,
+    "src": "placeholder"
+   },
+   "5000": {
+    "p": null,
+    "src": "placeholder"
+   }
+  },
+  "5.5x8.5|GB100-41-NC-HALF": {
+   "100": {
+    "p": null,
+    "src": "placeholder"
+   },
+   "250": {
+    "p": null,
+    "src": "placeholder"
+   },
+   "500": {
+    "p": null,
+    "src": "placeholder"
+   },
+   "1000": {
+    "p": null,
+    "src": "placeholder"
+   },
+   "2500": {
+    "p": null,
+    "src": "placeholder"
+   },
+   "5000": {
+    "p": null,
+    "src": "placeholder"
+   }
+  },
+  "8.5x11|GB100-40-AQ-TRI": {
+   "100": {
+    "p": null,
+    "src": "placeholder"
+   },
+   "250": {
+    "p": null,
+    "src": "placeholder"
+   },
+   "500": {
+    "p": null,
+    "src": "placeholder"
+   },
+   "1000": {
+    "p": null,
+    "src": "placeholder"
+   },
+   "2500": {
+    "p": null,
+    "src": "placeholder"
+   },
+   "5000": {
+    "p": null,
+    "src": "placeholder"
+   }
+  },
+  "8.5x11|GB100-40-AQ-FLAT": {
+   "100": {
+    "p": null,
+    "src": "placeholder"
+   },
+   "250": {
+    "p": null,
+    "src": "placeholder"
+   },
+   "500": {
+    "p": null,
+    "src": "placeholder"
+   },
+   "1000": {
+    "p": null,
+    "src": "placeholder"
+   },
+   "2500": {
+    "p": null,
+    "src": "placeholder"
+   },
+   "5000": {
+    "p": null,
+    "src": "placeholder"
+   }
+  },
+  "8.5x11|GB100-40-AQ-HALF": {
+   "100": {
+    "p": null,
+    "src": "placeholder"
+   },
+   "250": {
+    "p": null,
+    "src": "placeholder"
+   },
+   "500": {
+    "p": null,
+    "src": "placeholder"
+   },
+   "1000": {
+    "p": null,
+    "src": "placeholder"
+   },
+   "2500": {
+    "p": null,
+    "src": "placeholder"
+   },
+   "5000": {
+    "p": null,
+    "src": "placeholder"
+   }
+  },
+  "8.5x11|GB100-40-NC-TRI": {
+   "100": {
+    "p": null,
+    "src": "placeholder"
+   },
+   "250": {
+    "p": null,
+    "src": "placeholder"
+   },
+   "500": {
+    "p": null,
+    "src": "placeholder"
+   },
+   "1000": {
+    "p": null,
+    "src": "placeholder"
+   },
+   "2500": {
+    "p": null,
+    "src": "placeholder"
+   },
+   "5000": {
+    "p": null,
+    "src": "placeholder"
+   }
+  },
+  "8.5x11|GB100-40-NC-FLAT": {
+   "100": {
+    "p": null,
+    "src": "placeholder"
+   },
+   "250": {
+    "p": null,
+    "src": "placeholder"
+   },
+   "500": {
+    "p": null,
+    "src": "placeholder"
+   },
+   "1000": {
+    "p": null,
+    "src": "placeholder"
+   },
+   "2500": {
+    "p": null,
+    "src": "placeholder"
+   },
+   "5000": {
+    "p": null,
+    "src": "placeholder"
+   }
+  },
+  "8.5x11|GB100-40-NC-HALF": {
+   "100": {
+    "p": null,
+    "src": "placeholder"
+   },
+   "250": {
+    "p": null,
+    "src": "placeholder"
+   },
+   "500": {
+    "p": null,
+    "src": "placeholder"
+   },
+   "1000": {
+    "p": null,
+    "src": "placeholder"
+   },
+   "2500": {
+    "p": null,
+    "src": "placeholder"
+   },
+   "5000": {
+    "p": null,
+    "src": "placeholder"
+   }
+  },
+  "8.5x11|GB100-44-AQ-TRI": {
+   "100": {
+    "p": null,
+    "src": "placeholder"
+   },
+   "250": {
+    "p": null,
+    "src": "placeholder"
+   },
+   "500": {
+    "p": null,
+    "src": "placeholder"
+   },
+   "1000": {
+    "p": null,
+    "src": "placeholder"
+   },
+   "2500": {
+    "p": null,
+    "src": "placeholder"
+   },
+   "5000": {
+    "p": null,
+    "src": "placeholder"
+   }
+  },
+  "8.5x11|GB100-44-AQ-FLAT": {
+   "100": {
+    "p": null,
+    "src": "placeholder"
+   },
+   "250": {
+    "p": null,
+    "src": "placeholder"
+   },
+   "500": {
+    "p": null,
+    "src": "placeholder"
+   },
+   "1000": {
+    "p": null,
+    "src": "placeholder"
+   },
+   "2500": {
+    "p": null,
+    "src": "placeholder"
+   },
+   "5000": {
+    "p": null,
+    "src": "placeholder"
+   }
+  },
+  "8.5x11|GB100-44-AQ-HALF": {
+   "100": {
+    "p": null,
+    "src": "placeholder"
+   },
+   "250": {
+    "p": null,
+    "src": "placeholder"
+   },
+   "500": {
+    "p": null,
+    "src": "placeholder"
+   },
+   "1000": {
+    "p": null,
+    "src": "placeholder"
+   },
+   "2500": {
+    "p": null,
+    "src": "placeholder"
+   },
+   "5000": {
+    "p": null,
+    "src": "placeholder"
+   }
+  },
+  "8.5x11|GB100-44-NC-TRI": {
+   "100": {
+    "p": null,
+    "src": "placeholder"
+   },
+   "250": {
+    "p": null,
+    "src": "placeholder"
+   },
+   "500": {
+    "p": null,
+    "src": "placeholder"
+   },
+   "1000": {
+    "p": null,
+    "src": "placeholder"
+   },
+   "2500": {
+    "p": null,
+    "src": "placeholder"
+   },
+   "5000": {
+    "p": null,
+    "src": "placeholder"
+   }
+  },
+  "8.5x11|GB100-44-NC-FLAT": {
+   "100": {
+    "p": null,
+    "src": "placeholder"
+   },
+   "250": {
+    "p": null,
+    "src": "placeholder"
+   },
+   "500": {
+    "p": null,
+    "src": "placeholder"
+   },
+   "1000": {
+    "p": null,
+    "src": "placeholder"
+   },
+   "2500": {
+    "p": null,
+    "src": "placeholder"
+   },
+   "5000": {
+    "p": null,
+    "src": "placeholder"
+   }
+  },
+  "8.5x11|GB100-44-NC-HALF": {
+   "100": {
+    "p": null,
+    "src": "placeholder"
+   },
+   "250": {
+    "p": null,
+    "src": "placeholder"
+   },
+   "500": {
+    "p": null,
+    "src": "placeholder"
+   },
+   "1000": {
+    "p": null,
+    "src": "placeholder"
+   },
+   "2500": {
+    "p": null,
+    "src": "placeholder"
+   },
+   "5000": {
+    "p": null,
+    "src": "placeholder"
+   }
+  },
+  "8.5x11|GB100-41-AQ-TRI": {
+   "100": {
+    "p": null,
+    "src": "placeholder"
+   },
+   "250": {
+    "p": null,
+    "src": "placeholder"
+   },
+   "500": {
+    "p": null,
+    "src": "placeholder"
+   },
+   "1000": {
+    "p": null,
+    "src": "placeholder"
+   },
+   "2500": {
+    "p": null,
+    "src": "placeholder"
+   },
+   "5000": {
+    "p": null,
+    "src": "placeholder"
+   }
+  },
+  "8.5x11|GB100-41-AQ-FLAT": {
+   "100": {
+    "p": null,
+    "src": "placeholder"
+   },
+   "250": {
+    "p": null,
+    "src": "placeholder"
+   },
+   "500": {
+    "p": null,
+    "src": "placeholder"
+   },
+   "1000": {
+    "p": null,
+    "src": "placeholder"
+   },
+   "2500": {
+    "p": null,
+    "src": "placeholder"
+   },
+   "5000": {
+    "p": null,
+    "src": "placeholder"
+   }
+  },
+  "8.5x11|GB100-41-AQ-HALF": {
+   "100": {
+    "p": null,
+    "src": "placeholder"
+   },
+   "250": {
+    "p": null,
+    "src": "placeholder"
+   },
+   "500": {
+    "p": null,
+    "src": "placeholder"
+   },
+   "1000": {
+    "p": null,
+    "src": "placeholder"
+   },
+   "2500": {
+    "p": null,
+    "src": "placeholder"
+   },
+   "5000": {
+    "p": null,
+    "src": "placeholder"
+   }
+  },
+  "8.5x11|GB100-41-NC-TRI": {
+   "100": {
+    "p": null,
+    "src": "placeholder"
+   },
+   "250": {
+    "p": null,
+    "src": "placeholder"
+   },
+   "500": {
+    "p": null,
+    "src": "placeholder"
+   },
+   "1000": {
+    "p": null,
+    "src": "placeholder"
+   },
+   "2500": {
+    "p": null,
+    "src": "placeholder"
+   },
+   "5000": {
+    "p": null,
+    "src": "placeholder"
+   }
+  },
+  "8.5x11|GB100-41-NC-FLAT": {
+   "100": {
+    "p": null,
+    "src": "placeholder"
+   },
+   "250": {
+    "p": null,
+    "src": "placeholder"
+   },
+   "500": {
+    "p": null,
+    "src": "placeholder"
+   },
+   "1000": {
+    "p": null,
+    "src": "placeholder"
+   },
+   "2500": {
+    "p": null,
+    "src": "placeholder"
+   },
+   "5000": {
+    "p": null,
+    "src": "placeholder"
+   }
+  },
+  "8.5x11|GB100-41-NC-HALF": {
+   "100": {
+    "p": null,
+    "src": "placeholder"
+   },
+   "250": {
+    "p": null,
+    "src": "placeholder"
+   },
+   "500": {
+    "p": null,
+    "src": "placeholder"
+   },
+   "1000": {
+    "p": null,
+    "src": "placeholder"
+   },
+   "2500": {
+    "p": null,
+    "src": "placeholder"
+   },
+   "5000": {
+    "p": null,
+    "src": "placeholder"
+   }
+  },
+  "8.5x14|GB100-40-AQ-TRI": {
+   "100": {
+    "p": null,
+    "src": "placeholder"
+   },
+   "250": {
+    "p": null,
+    "src": "placeholder"
+   },
+   "500": {
+    "p": null,
+    "src": "placeholder"
+   },
+   "1000": {
+    "p": null,
+    "src": "placeholder"
+   },
+   "2500": {
+    "p": null,
+    "src": "placeholder"
+   },
+   "5000": {
+    "p": null,
+    "src": "placeholder"
+   }
+  },
+  "8.5x14|GB100-40-AQ-FLAT": {
+   "100": {
+    "p": null,
+    "src": "placeholder"
+   },
+   "250": {
+    "p": null,
+    "src": "placeholder"
+   },
+   "500": {
+    "p": null,
+    "src": "placeholder"
+   },
+   "1000": {
+    "p": null,
+    "src": "placeholder"
+   },
+   "2500": {
+    "p": null,
+    "src": "placeholder"
+   },
+   "5000": {
+    "p": null,
+    "src": "placeholder"
+   }
+  },
+  "8.5x14|GB100-40-AQ-HALF": {
+   "100": {
+    "p": null,
+    "src": "placeholder"
+   },
+   "250": {
+    "p": null,
+    "src": "placeholder"
+   },
+   "500": {
+    "p": null,
+    "src": "placeholder"
+   },
+   "1000": {
+    "p": null,
+    "src": "placeholder"
+   },
+   "2500": {
+    "p": null,
+    "src": "placeholder"
+   },
+   "5000": {
+    "p": null,
+    "src": "placeholder"
+   }
+  },
+  "8.5x14|GB100-40-NC-TRI": {
+   "100": {
+    "p": null,
+    "src": "placeholder"
+   },
+   "250": {
+    "p": null,
+    "src": "placeholder"
+   },
+   "500": {
+    "p": null,
+    "src": "placeholder"
+   },
+   "1000": {
+    "p": null,
+    "src": "placeholder"
+   },
+   "2500": {
+    "p": null,
+    "src": "placeholder"
+   },
+   "5000": {
+    "p": null,
+    "src": "placeholder"
+   }
+  },
+  "8.5x14|GB100-40-NC-FLAT": {
+   "100": {
+    "p": null,
+    "src": "placeholder"
+   },
+   "250": {
+    "p": null,
+    "src": "placeholder"
+   },
+   "500": {
+    "p": null,
+    "src": "placeholder"
+   },
+   "1000": {
+    "p": null,
+    "src": "placeholder"
+   },
+   "2500": {
+    "p": null,
+    "src": "placeholder"
+   },
+   "5000": {
+    "p": null,
+    "src": "placeholder"
+   }
+  },
+  "8.5x14|GB100-40-NC-HALF": {
+   "100": {
+    "p": null,
+    "src": "placeholder"
+   },
+   "250": {
+    "p": null,
+    "src": "placeholder"
+   },
+   "500": {
+    "p": null,
+    "src": "placeholder"
+   },
+   "1000": {
+    "p": null,
+    "src": "placeholder"
+   },
+   "2500": {
+    "p": null,
+    "src": "placeholder"
+   },
+   "5000": {
+    "p": null,
+    "src": "placeholder"
+   }
+  },
+  "8.5x14|GB100-44-AQ-TRI": {
+   "100": {
+    "p": null,
+    "src": "placeholder"
+   },
+   "250": {
+    "p": null,
+    "src": "placeholder"
+   },
+   "500": {
+    "p": null,
+    "src": "placeholder"
+   },
+   "1000": {
+    "p": null,
+    "src": "placeholder"
+   },
+   "2500": {
+    "p": null,
+    "src": "placeholder"
+   },
+   "5000": {
+    "p": null,
+    "src": "placeholder"
+   }
+  },
+  "8.5x14|GB100-44-AQ-FLAT": {
+   "100": {
+    "p": null,
+    "src": "placeholder"
+   },
+   "250": {
+    "p": null,
+    "src": "placeholder"
+   },
+   "500": {
+    "p": null,
+    "src": "placeholder"
+   },
+   "1000": {
+    "p": null,
+    "src": "placeholder"
+   },
+   "2500": {
+    "p": null,
+    "src": "placeholder"
+   },
+   "5000": {
+    "p": null,
+    "src": "placeholder"
+   }
+  },
+  "8.5x14|GB100-44-AQ-HALF": {
+   "100": {
+    "p": null,
+    "src": "placeholder"
+   },
+   "250": {
+    "p": null,
+    "src": "placeholder"
+   },
+   "500": {
+    "p": null,
+    "src": "placeholder"
+   },
+   "1000": {
+    "p": null,
+    "src": "placeholder"
+   },
+   "2500": {
+    "p": null,
+    "src": "placeholder"
+   },
+   "5000": {
+    "p": null,
+    "src": "placeholder"
+   }
+  },
+  "8.5x14|GB100-44-NC-TRI": {
+   "100": {
+    "p": null,
+    "src": "placeholder"
+   },
+   "250": {
+    "p": null,
+    "src": "placeholder"
+   },
+   "500": {
+    "p": null,
+    "src": "placeholder"
+   },
+   "1000": {
+    "p": null,
+    "src": "placeholder"
+   },
+   "2500": {
+    "p": null,
+    "src": "placeholder"
+   },
+   "5000": {
+    "p": null,
+    "src": "placeholder"
+   }
+  },
+  "8.5x14|GB100-44-NC-FLAT": {
+   "100": {
+    "p": null,
+    "src": "placeholder"
+   },
+   "250": {
+    "p": null,
+    "src": "placeholder"
+   },
+   "500": {
+    "p": null,
+    "src": "placeholder"
+   },
+   "1000": {
+    "p": null,
+    "src": "placeholder"
+   },
+   "2500": {
+    "p": null,
+    "src": "placeholder"
+   },
+   "5000": {
+    "p": null,
+    "src": "placeholder"
+   }
+  },
+  "8.5x14|GB100-44-NC-HALF": {
+   "100": {
+    "p": null,
+    "src": "placeholder"
+   },
+   "250": {
+    "p": null,
+    "src": "placeholder"
+   },
+   "500": {
+    "p": null,
+    "src": "placeholder"
+   },
+   "1000": {
+    "p": null,
+    "src": "placeholder"
+   },
+   "2500": {
+    "p": null,
+    "src": "placeholder"
+   },
+   "5000": {
+    "p": null,
+    "src": "placeholder"
+   }
+  },
+  "8.5x14|GB100-41-AQ-TRI": {
+   "100": {
+    "p": null,
+    "src": "placeholder"
+   },
+   "250": {
+    "p": null,
+    "src": "placeholder"
+   },
+   "500": {
+    "p": null,
+    "src": "placeholder"
+   },
+   "1000": {
+    "p": null,
+    "src": "placeholder"
+   },
+   "2500": {
+    "p": null,
+    "src": "placeholder"
+   },
+   "5000": {
+    "p": null,
+    "src": "placeholder"
+   }
+  },
+  "8.5x14|GB100-41-AQ-FLAT": {
+   "100": {
+    "p": null,
+    "src": "placeholder"
+   },
+   "250": {
+    "p": null,
+    "src": "placeholder"
+   },
+   "500": {
+    "p": null,
+    "src": "placeholder"
+   },
+   "1000": {
+    "p": null,
+    "src": "placeholder"
+   },
+   "2500": {
+    "p": null,
+    "src": "placeholder"
+   },
+   "5000": {
+    "p": null,
+    "src": "placeholder"
+   }
+  },
+  "8.5x14|GB100-41-AQ-HALF": {
+   "100": {
+    "p": null,
+    "src": "placeholder"
+   },
+   "250": {
+    "p": null,
+    "src": "placeholder"
+   },
+   "500": {
+    "p": null,
+    "src": "placeholder"
+   },
+   "1000": {
+    "p": null,
+    "src": "placeholder"
+   },
+   "2500": {
+    "p": null,
+    "src": "placeholder"
+   },
+   "5000": {
+    "p": null,
+    "src": "placeholder"
+   }
+  },
+  "8.5x14|GB100-41-NC-TRI": {
+   "100": {
+    "p": null,
+    "src": "placeholder"
+   },
+   "250": {
+    "p": null,
+    "src": "placeholder"
+   },
+   "500": {
+    "p": null,
+    "src": "placeholder"
+   },
+   "1000": {
+    "p": null,
+    "src": "placeholder"
+   },
+   "2500": {
+    "p": null,
+    "src": "placeholder"
+   },
+   "5000": {
+    "p": null,
+    "src": "placeholder"
+   }
+  },
+  "8.5x14|GB100-41-NC-FLAT": {
+   "100": {
+    "p": null,
+    "src": "placeholder"
+   },
+   "250": {
+    "p": null,
+    "src": "placeholder"
+   },
+   "500": {
+    "p": null,
+    "src": "placeholder"
+   },
+   "1000": {
+    "p": null,
+    "src": "placeholder"
+   },
+   "2500": {
+    "p": null,
+    "src": "placeholder"
+   },
+   "5000": {
+    "p": null,
+    "src": "placeholder"
+   }
+  },
+  "8.5x14|GB100-41-NC-HALF": {
+   "100": {
+    "p": null,
+    "src": "placeholder"
+   },
+   "250": {
+    "p": null,
+    "src": "placeholder"
+   },
+   "500": {
+    "p": null,
+    "src": "placeholder"
+   },
+   "1000": {
+    "p": null,
+    "src": "placeholder"
+   },
+   "2500": {
+    "p": null,
+    "src": "placeholder"
+   },
+   "5000": {
+    "p": null,
+    "src": "placeholder"
+   }
+  }
+ }
+}
