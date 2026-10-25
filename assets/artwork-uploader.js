@@ -158,7 +158,7 @@ class ArtworkUploader extends HTMLElement {
     this.mode = 'upload';
     this.bind();
     this.setVariant(this.dataset.variant);
-    document.addEventListener('variant:change', (e) => { this.setVariant(e.detail.variantId); this.applyGate(); });
+    document.addEventListener('variant:change', (e) => { this.setVariant(e.detail.variantId, e.detail.options); this.applyGate(); });
     // Capture-phase guard so the theme's ProductForm (and native submit) never fire while blocked.
     document.addEventListener('submit', (e) => this.guard(e), true);
     // Capture-phase click guard for every buy control tied to this form (submit, theme Buy it now, native payment button, sticky bar).
@@ -229,8 +229,9 @@ class ArtworkUploader extends HTMLElement {
     this.querySelectorAll('[data-au-guidance]').forEach((e) => { e.textContent = guide; e.hidden = !guide; });
     this.querySelectorAll('[data-au-template-link]').forEach((tl) => { tl.href = p.template_url || '#'; tl.hidden = !p.template_url; });
   }
-  setVariant(id) {
-    const v = this.variants.find((x) => String(x.id) === String(id)) || this.variants[0];
+  setVariant(id, options) {
+    // product.variants caps at 250 in Liquid; callers may pass the variant's options for ids outside that list.
+    const v = this.variants.find((x) => String(x.id) === String(id)) || (Array.isArray(options) && options.length ? { id, options } : this.variants[0]);
     this.resolveSpec(v);
     let size = this.cfg.trimW && this.cfg.trimH ? { w: this.cfg.trimW, h: this.cfg.trimH } : null;
     if (!size && v) {

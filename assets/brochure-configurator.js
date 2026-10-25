@@ -49,23 +49,45 @@
    *   resolveVariant(sel)-> { id, available, price } | null
    */
   class StaticJsonAdapter {
-    /** @param {{config?: object, url?: string, variants: Array<{id:number, options:string[], price:number, available:boolean}>, optionNames: string[]}} o */
-    constructor(o) { this.o = o; this.config = o.config || null; this.variants = o.variants || []; this.names = (o.optionNames || []).map((n) => String(n).toLowerCase()); }
+    /**
+     * Variants are never shipped in bulk (Liquid product.variants caps at 250). Each Size/Config pair's Qty variants
+     * come from product_option_value.variant, loaded with the Section Rendering API and ?option_values=.
+     * Price and availability always come from the variant.
+     * @param {{config?: object, url?: string, product: {options: string[], qty: string, values: object}, initial?: object, fetchUrl: string, sectionId: string}} o
+     */
+    constructor(o) { this.o = o; this.config = o.config || null; this.product = o.product || { options: [], values: {} }; this.cache = new Map(); this.pending = new Map(); this.add(o.initial); }
     async load() { if (!this.config && this.o.url) this.config = await (await fetch(this.o.url)).json(); return this; }
     getSchema() { return this.config; }
     getRules() { return this.config.rules || []; }
+    want(sel) { const m = this.config.options_map || { size: 'Size', qty: 'Qty', config: 'Config' }; return { [m.size]: sel.size, [m.qty]: String(sel.qty), [m.config]: configCode(this.config, sel) }; }
+    key(sel) { const w = this.want(sel); return this.product.options.filter((n) => n !== this.product.qty).map((n) => `${w[n]}|`).join(''); }
+    add(d) { if (d && d.key != null) this.cache.set(d.key, new Map((d.tiers || []).filter((t) => t.id).map((t) => [String(t.qty), t]))); }
+    has(sel) { return this.cache.has(this.key(sel)); }
+    /** Load the Qty variants for this selection's Size/Config. Resolves to false when the combination has no option values. */
+    ensure(sel) {
+      const k = this.key(sel); if (this.cache.has(k)) return Promise.resolve(true);
+      if (this.pending.has(k)) return this.pending.get(k);
+      const w = this.want(sel); const vals = this.product.values || {};
+      const ids = this.product.options.map((n) => (vals[n] || {})[w[n]] ?? (n === this.product.qty ? Object.values(vals[n] || {})[0] : undefined));
+      if (ids.some((x) => x == null)) { this.cache.set(k, new Map()); return Promise.resolve(false); }
+      const u = new URL(this.o.fetchUrl, location.href); u.searchParams.set('section_id', this.o.sectionId); u.searchParams.set('option_values', ids.join(','));
+      const job = fetch(u).then((r) => (r.ok ? r.text() : Promise.reject(r.status))).then((html) => {
+        const el = new DOMParser().parseFromString(html, 'text/html').querySelector('[data-bc-variants]');
+        const d = el ? JSON.parse(el.textContent) : null;
+        if (d && d.key === k) this.add(d); else this.cache.set(k, new Map());
+        return true;
+      }).catch(() => false).finally(() => this.pending.delete(k));
+      this.pending.set(k, job); return job;
+    }
     resolveVariant(sel) {
-      const m = this.config.options_map || { size: 'Size', qty: 'Qty', config: 'Config' };
-      const want = { [m.size.toLowerCase()]: sel.size, [m.qty.toLowerCase()]: String(sel.qty), [m.config.toLowerCase()]: configCode(this.config, sel) };
-      const v = this.variants.find((x) => this.names.every((n, i) => want[n] === undefined || String(x.options[i]) === String(want[n])));
-      return v ? { id: v.id, available: v.available !== false, price: v.price } : null;
+      const row = this.cache.get(this.key(sel)); const v = row && row.get(String(sel.qty));
+      return v ? { id: v.id, available: v.available !== false, price: v.price, options: v.options } : null;
     }
     getPrice(sel) {
+      if (!this.has(sel)) return { price: null, source: 'loading', variant: null };
       const v = this.resolveVariant(sel);
-      if (v && v.price != null) return { price: v.price / 100, source: 'variant', variant: v };
-      const row = (this.config.prices || {})[`${sel.size}|${configCode(this.config, sel)}`] || {};
-      const t = row[String(sel.qty)];
-      return t && t.p != null ? { price: t.p, source: t.src || 'real', variant: v } : { price: null, source: 'quote', variant: v };
+      // A $0.00 variant is unpriced: quote it rather than sell it for free.
+      return v && v.price > 0 ? { price: v.price / 100, source: 'variant', variant: v } : { price: null, source: 'quote', variant: v };
     }
   }
 
@@ -96,10 +118,10 @@
     async connectedCallback() {
       const json = (s) => { const el = this.querySelector(s); try { return el ? JSON.parse(el.textContent) : null; } catch (e) { return null; } };
       this.t = json('[data-bc-strings]') || {};
-      const product = json('[data-bc-product]') || { variants: [], options: [] };
+      const product = json('[data-bc-product]') || { options: [], values: {} };
       this.lang = (this.dataset.lang || document.documentElement.lang || 'en').slice(0, 2) === 'es' ? 'es' : 'en';
       this.money = (n) => new Intl.NumberFormat(this.dataset.locale || undefined, { style: 'currency', currency: this.dataset.currency || 'USD' }).format(n);
-      this.adapter = new StaticJsonAdapter({ config: json('[data-bc-config]'), url: this.dataset.configUrl, variants: product.variants, optionNames: product.options });
+      this.adapter = new StaticJsonAdapter({ config: json('[data-bc-config]'), url: this.dataset.configUrl, product, initial: json('[data-bc-variants]'), fetchUrl: this.dataset.productUrl || location.pathname, sectionId: this.dataset.section });
       try { await this.adapter.load(); } catch (e) { this.querySelector('[data-bc-steps]').textContent = this.t.error || 'Error'; return; }
       this.schema = this.adapter.getSchema(product);
       this.engine = createEngine(this.schema, this.adapter.getRules());
@@ -151,12 +173,18 @@
           <div class="bc-select"><select id="${id}" data-bc-key="${g.key}" required>${opts}</select><span class="bc-select__ic" aria-hidden="true">${this.icon('chevron')}</span></div></div>`;
       }).join('');
       this.renderTiers();
+      this.load();
       const note = this.querySelector('[data-bc-note]');
       const names = reset.map((k) => { const g = this.schema.groups.find((x) => x.key === k); return g ? this.label(g) : this.t.quantity; });
-      note.textContent = names.length ? (this.t.reset || '').replace('{{ options }}', names.join(', ')) : '';
+      note.textContent = names.length ? (this.t.reset || '').replace('__OPTS__', names.join(', ')) : '';
       note.hidden = !names.length;
       if (focusKey) this.querySelector(`select[data-bc-key="${focusKey}"], [data-bc-key="${focusKey}"]:checked`)?.focus({ preventScroll: true });
       this.apply();
+    }
+    /** Fetch the selected Size/Config's variants if not loaded yet, then refresh prices and the form. */
+    load() {
+      const sel = this.sel; if (this.adapter.has(sel)) return;
+      this.adapter.ensure(sel).then(() => { if (this.sel === sel) { this.renderTiers(); this.apply(); } });
     }
     icon(n) { const t = this.querySelector(`template[data-bc-icon="${n}"]`); return t ? t.innerHTML : ''; }
     renderTiers() {
@@ -170,7 +198,7 @@
           <input type="radio" name="bc-${uid}-qty" value="${q}" data-bc-key="qty" ${String(this.sel.qty) === String(q) ? 'checked' : ''} ${ok ? '' : 'disabled'}>
           <span class="bc-run__qty">${q.toLocaleString(this.dataset.locale || undefined)}</span>
           <span class="bc-run__unit">${unit != null ? this.money(unit) : '—'}</span>
-          <span class="bc-run__tot">${p.price != null ? this.money(p.price) : `<em class="bc-quote-tag">${esc(this.t.quote_short)}</em>`}</span>
+          <span class="bc-run__tot">${p.price != null ? this.money(p.price) : p.source === 'loading' ? '…' : `<em class="bc-quote-tag">${esc(this.t.quote_short)}</em>`}</span>
         </label>`;
       }).join('');
     }
@@ -196,15 +224,16 @@
       }
       const sum = this.querySelector('[data-bc-summary]');
       sum.innerHTML = p.price != null ? `<span>${esc(this.t.total)}</span> <strong>${this.money(p.price)}</strong>` : '';
+      const loading = p.source === 'loading';
       const quote = this.querySelector('[data-bc-quote]');
-      quote.hidden = sellable;
-      if (!sellable) {
+      quote.hidden = sellable || loading;
+      if (!sellable && !loading) {
         const base = this.dataset.quoteUrl || '/pages/contact';
         const msg = Object.entries(props).filter(([k]) => k !== '_spec').map(([k, val]) => `${k}: ${val}`).join('\n');
         quote.querySelector('a').href = `${base}${base.includes('?') ? '&' : '?'}subject=${encodeURIComponent(this.t.quote_subject || 'Quote')}&body=${encodeURIComponent(msg)}`;
       }
-      this.dataset.state = sellable ? 'ready' : 'quote';
-      if (v && v.id !== this.lastId) { this.lastId = v.id; document.dispatchEvent(new CustomEvent('variant:change', { detail: { variantId: v.id, sectionId: this.dataset.section, source: 'brochure-configurator', spec } })); }
+      this.dataset.state = sellable ? 'ready' : loading ? 'loading' : 'quote';
+      if (v && v.id !== this.lastId) { this.lastId = v.id; document.dispatchEvent(new CustomEvent('variant:change', { detail: { variantId: v.id, sectionId: this.dataset.section, source: 'brochure-configurator', spec, options: v.options } })); }
       this.dispatchEvent(new CustomEvent('brochure:change', { bubbles: true, detail: { selection: sel, spec, price: p, variant: v } }));
     }
   }

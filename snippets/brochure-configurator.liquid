@@ -15,6 +15,7 @@
   class="bc"
   data-section="{{ section_id }}"
   data-form-id="ProductForm-{{ section_id }}"
+  data-product-url="{{ product.url }}"
   data-lang="{{ request.locale.iso_code }}"
   data-locale="{{ request.locale.iso_code }}-US"
   data-currency="{{ cart.currency.iso_code }}"
@@ -26,11 +27,37 @@
   {%- if cfg != blank -%}
     <script type="application/json" data-bc-config>{{ cfg | json }}</script>
   {%- endif -%}
+  {%- comment -%}
+    High-variant safe: product.variants caps at 250, so never loop it. Option value ids come from
+    options_with_values; the run-size rows come from product_option_value.variant on the Qty option
+    (each Qty value combined with the currently selected Size and Config). The script re-fetches this
+    section with ?option_values= to load the variants for any other Size/Config.
+  {%- endcomment -%}
+  {%- assign qty_name = cfg.options_map.qty | default: 'Qty' -%}
   <script type="application/json" data-bc-product>
-    {"options":{{ product.options | json }},"variants":[
-      {%- for v in product.variants -%}
-        {"id":{{ v.id }},"options":{{ v.options | json }},"price":{{ v.price | json }},"available":{{ v.available | json }}}
-        {%- unless forloop.last -%},{%- endunless -%}
+    {"options":{{ product.options | json }},"qty":{{ qty_name | json }},"values":{
+      {%- for option in product.options_with_values -%}
+        {{ option.name | json }}:{
+          {%- for ov in option.values -%}{{ ov.name | json }}:{{ ov.id }}{%- unless forloop.last -%},{%- endunless -%}{%- endfor -%}
+        }{%- unless forloop.last -%},{%- endunless -%}
+      {%- endfor -%}
+    }}
+  </script>
+  <script type="application/json" data-bc-variants>
+    {%- capture bc_key -%}
+      {%- for option in product.options_with_values -%}
+        {%- unless option.name == qty_name -%}{{ option.selected_value }}|{%- endunless -%}
+      {%- endfor -%}
+    {%- endcapture -%}
+    {"key":{{ bc_key | json }},"tiers":[
+      {%- for option in product.options_with_values -%}
+        {%- if option.name == qty_name -%}
+          {%- for ov in option.values -%}
+            {%- assign v = ov.variant -%}
+            {"qty":{{ ov.name | json }},"id":{{ v.id | default: 'null' }},"price":{{ v.price | default: 'null' }},"available":{{ v.available | default: false | json }},"options":{{ v.options | default: '' | json }}}
+            {%- unless forloop.last -%},{%- endunless -%}
+          {%- endfor -%}
+        {%- endif -%}
       {%- endfor -%}
     ]}
   </script>
@@ -40,11 +67,10 @@
       "turnaround": {{ 'products.product.configurator.turnaround' | t | json }},
       "total": {{ 'products.product.tiers.total' | t | json }},
       "each": {{ 'products.product.tiers.each_label' | t | json }},
-      "save": {{ 'products.product.tiers.save' | t: percent: '{{ percent }}' | json }},
       "best_value": {{ 'products.product.tiers.best_value' | t | json }},
       "quote_short": {{ 'products.product.configurator.quote_short' | t | json }},
       "quote_subject": {{ 'products.product.configurator.quote_subject' | t: product: product.title | json }},
-      "reset": {{ 'products.product.configurator.reset' | t: options: '{{ options }}' | json }},
+      "reset": {{ 'products.product.configurator.reset' | t: options: '__OPTS__' | json }},
       "error": {{ 'products.product.configurator.error' | t | json }},
       "sample": {{ 'products.product.configurator.sample' | t | json }},
       "yes": {{ 'products.product.configurator.yes' | t | json }},
