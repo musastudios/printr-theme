@@ -1,4 +1,4 @@
-{%- comment -%} Nav thumb: custom.nav_thumb, else collection image, else first product image, else the preview fallback product, else a placeholder. {%- endcomment -%}
+{%- comment -%} Nav thumb: custom.nav_thumb, else collection image, else first product image, else the preview fallback product or theme asset, else a placeholder. {%- endcomment -%}
 {%- liquid
   assign h = handle | strip
   assign ip = img_product | strip
@@ -12,14 +12,21 @@
       endif
     endif
   endif
+  assign asset = nil
   if img == blank and ip != blank
-    assign img = all_products[ip].featured_image
+    if ip contains 'asset:'
+      assign asset = ip | remove_first: 'asset:'
+    else
+      assign img = all_products[ip].featured_image
+    endif
   endif
 -%}
 <a class="mega__thumb" href="{{ url | strip }}">
   <span class="mega__thumb-media">
     {%- if img != blank -%}
       {{ img | image_url: width: 320 | image_tag: loading: 'lazy', widths: '160, 240, 320', sizes: sizes, alt: '' }}
+    {%- elsif asset != blank -%}
+      <img src="{{ asset | asset_url }}" alt="" loading="lazy" width="1200" height="1200">
     {%- else -%}
       {{ 'image' | placeholder_svg_tag: 'mega__thumb-ph' }}
     {%- endif -%}

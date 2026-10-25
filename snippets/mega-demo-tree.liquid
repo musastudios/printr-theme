@@ -1,6 +1,6 @@
 {%- comment -%}
   Preview-only IA (STORE_PLAN.md section 5), used when the header setting
-  "Preview planned menu" is on. One row per line: depth|title|collection handle|fallback url|thumb product handle.
+  "Preview planned menu" is on. One row per line: depth|title|collection handle|fallback url|thumb product handle (or asset:<file> for a theme asset thumb).
   A row whose collection does not exist yet uses the fallback url (an existing collection filtered by tag);
   with no fallback it counts as empty and is hidden, exactly as it will be once created with 0 products.
 {%- endcomment -%}
@@ -19,15 +19,15 @@
 3|Silk|premium-cards-silk|/collections/business-cards/silk|bc-silk-2-x-3-5-us-standard
 3|Suede|premium-cards-suede|/collections/business-cards/suede|bc-suede-2-x-3-5-us-standard
 2|Business Cards|business-cards||bc-raised-foil-2-x-3-5-us-standard
-3|Standard|business-cards-standard|/collections/business-cards/standard|
-3|Circle|business-cards-circle|/collections/business-cards/circle|
-3|Oval|business-cards-oval|/collections/business-cards/oval|
-3|Leaf|business-cards-leaf|/collections/business-cards/leaf|
-3|Fold-over|business-cards-fold-over|/collections/business-cards/fold-over|
-3|Linen|business-cards-linen|/collections/business-cards/linen-uncoated|
-3|Magnet|business-cards-magnet|/collections/business-cards/magnet|
-3|Plastic|business-cards-plastic|/collections/business-cards/plastic|
-3|Tear-Resistant|business-cards-tear-resistant|/collections/business-cards|
+3|Standard|business-cards-standard|/collections/business-cards/standard|asset:bc-type-standard.webp
+3|Circle|business-cards-circle|/collections/business-cards/circle|asset:bc-type-circle.webp
+3|Oval|business-cards-oval|/collections/business-cards/oval|asset:bc-type-oval.webp
+3|Leaf|business-cards-leaf|/collections/business-cards/leaf|asset:bc-type-leaf.webp
+3|Fold-over|business-cards-fold-over|/collections/business-cards/fold-over|asset:bc-type-fold-over.webp
+3|Linen|business-cards-linen|/collections/business-cards/linen-uncoated|asset:bc-type-linen.webp
+3|Magnet|business-cards-magnet|/collections/business-cards/magnet|asset:bc-type-magnet.webp
+3|Plastic|business-cards-plastic|/collections/business-cards/plastic|asset:bc-type-plastic.webp
+3|Tear-Resistant|business-cards-tear-resistant|/collections/business-cards|asset:bc-type-tear-resistant.webp
 2|Marketing Products|marketing-products|/collections/postcards|
 3|Postcards|postcards||
 3|Flyers and Brochures|flyers-brochures|/collections/brochures|
@@ -51,15 +51,15 @@
 2|Design Services||/pages/design-services|
 1|Business Cards|business-cards||
 2|Business Cards|business-cards||bc-raised-foil-2-x-3-5-us-standard
-3|Standard|business-cards-standard|/collections/business-cards/standard|
-3|Circle|business-cards-circle|/collections/business-cards/circle|
-3|Oval|business-cards-oval|/collections/business-cards/oval|
-3|Leaf|business-cards-leaf|/collections/business-cards/leaf|
-3|Fold-over|business-cards-fold-over|/collections/business-cards/fold-over|
-3|Linen|business-cards-linen|/collections/business-cards/linen-uncoated|
-3|Magnet|business-cards-magnet|/collections/business-cards/magnet|
-3|Plastic|business-cards-plastic|/collections/business-cards/plastic|
-3|Tear-Resistant|business-cards-tear-resistant|/collections/business-cards|
+3|Standard|business-cards-standard|/collections/business-cards/standard|asset:bc-type-standard.webp
+3|Circle|business-cards-circle|/collections/business-cards/circle|asset:bc-type-circle.webp
+3|Oval|business-cards-oval|/collections/business-cards/oval|asset:bc-type-oval.webp
+3|Leaf|business-cards-leaf|/collections/business-cards/leaf|asset:bc-type-leaf.webp
+3|Fold-over|business-cards-fold-over|/collections/business-cards/fold-over|asset:bc-type-fold-over.webp
+3|Linen|business-cards-linen|/collections/business-cards/linen-uncoated|asset:bc-type-linen.webp
+3|Magnet|business-cards-magnet|/collections/business-cards/magnet|asset:bc-type-magnet.webp
+3|Plastic|business-cards-plastic|/collections/business-cards/plastic|asset:bc-type-plastic.webp
+3|Tear-Resistant|business-cards-tear-resistant|/collections/business-cards|asset:bc-type-tear-resistant.webp
 2|Premium Cards|premium-cards|/collections/business-cards|bc-pearl-2-x-3-5-us-standard
 3|Black Edge|premium-cards-black-edge|/collections/business-cards/black-edge|
 3|Brown Kraft|premium-cards-brown-kraft|/collections/business-cards/brown-kraft|
