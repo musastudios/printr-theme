@@ -14,7 +14,7 @@
         "store_link": "/pages/contact",
         "store_label": "Find a store",
         "customer_account_menu": "customer-account-main-menu",
-        "demo_tree": false,
+        "demo_tree": true,
         "show_empty_highlight": false
       },
       "blocks": {
