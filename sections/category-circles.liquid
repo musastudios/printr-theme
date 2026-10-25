@@ -2,11 +2,12 @@
 {%- liquid
   assign cols = section.settings.collections
 -%}
-<div class="section section--tight color-{{ section.settings.color_scheme }}">
+<div class="section section--tight color-{{ section.settings.color_scheme }}{% if section.settings.bleed %} circles-section--bleed{% endif %}">
   <div class="page-width">
     {%- if section.settings.heading != blank -%}<h2 class="circles__heading h4">{{ section.settings.heading | escape }}</h2>{%- endif -%}
     {%- if section.settings.intro != blank -%}<div class="circles__intro rte">{{ section.settings.intro }}</div>{%- endif -%}
-    <ul class="circles" role="list">
+    <circles-scroller class="circles-scroller">
+    <ul class="circles" role="list" tabindex="0" aria-label="{{ section.settings.heading | default: 'Categories' | escape }}">
       {%- if section.settings.show_sale and section.settings.sale_link != blank -%}
         <li class="circles__item">
           <a class="circles__link" href="{{ section.settings.sale_link }}">
@@ -43,8 +44,20 @@
         {%- endfor -%}
       {%- endif -%}
     </ul>
+    </circles-scroller>
   </div>
 </div>
+{%- if section.settings.bleed -%}
+<script>
+  if (!customElements.get('circles-scroller')) customElements.define('circles-scroller', class extends HTMLElement {
+    connectedCallback() {
+      const ul = this.querySelector('.circles'); if (!ul) return;
+      const upd = () => this.toggleAttribute('data-end', ul.scrollLeft + ul.clientWidth >= ul.scrollWidth - 4);
+      ul.addEventListener('scroll', upd, { passive: true }); addEventListener('resize', upd); upd();
+    }
+  });
+</script>
+{%- endif -%}
 {% stylesheet %}
   .circles__intro p { margin: 0 0 1.6rem; opacity: .8; }
   .section--tight { padding-block: 2.4rem; }
@@ -58,7 +71,15 @@
   a.circles__link:hover img { scale: 1.08; }
   .circles__thumb--sale { background: #D4145A; color: #fff; font-family: var(--font-heading-family); font-weight: 800; font-size: clamp(1.6rem, 1.6vw, 2rem); }
   .circles__label { font-size: 1.4rem; font-weight: 600; line-height: 1.25; }
-  @media (prefers-reduced-motion: reduce) { .circles__thumb img { transition: none; } }
+  .circles-scroller { display: block; position: relative; }
+  .circles:focus-visible { outline: 2px solid var(--m); outline-offset: 2px; }
+  .circles-section--bleed { overflow-x: clip; }
+  .circles-section--bleed .circles-scroller { margin-inline-end: calc(50% - 50vw); }
+  .circles-section--bleed .circles { padding-inline-end: clamp(4rem, 8vw, 9rem); scrollbar-width: none; -webkit-mask-image: linear-gradient(90deg, #000 calc(100% - clamp(4rem, 8vw, 9rem)), transparent); mask-image: linear-gradient(90deg, #000 calc(100% - clamp(4rem, 8vw, 9rem)), transparent); }
+  .circles-section--bleed .circles::-webkit-scrollbar { display: none; }
+  .circles-section--bleed [data-end] .circles { -webkit-mask-image: none; mask-image: none; }
+  @media (prefers-reduced-motion: no-preference) { .circles { scroll-behavior: smooth; } }
+  @media (prefers-reduced-motion: reduce) { .circles__thumb img, .circles__thumb { transition: none; } }
 {% endstylesheet %}
 {% schema %}
 {
@@ -67,6 +88,7 @@
     { "type": "text", "id": "heading", "label": "Heading" },
     { "type": "richtext", "id": "intro", "label": "Intro text" },
     { "type": "collection_list", "id": "collections", "label": "Collections", "limit": 16, "info": "Uses each collection image, or its first product image." },
+    { "type": "checkbox", "id": "bleed", "label": "Scroll to screen edge", "info": "Circles run past the right edge with a fade hint.", "default": false },
     { "type": "header", "content": "Sale circle" },
     { "type": "checkbox", "id": "show_sale", "label": "Show sale circle", "default": true },
     { "type": "text", "id": "sale_badge", "label": "Circle text", "default": "Sale" },

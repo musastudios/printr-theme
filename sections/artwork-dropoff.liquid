@@ -1,0 +1,97 @@
+{%- liquid
+  assign email = section.settings.email | default: settings.artwork_email | default: 'shopprintr@gmail.com'
+  assign endpoint = section.settings.endpoint | default: settings.artwork_upload_endpoint
+  assign up_form = 'ArtworkUpload-' | append: section.id
+  assign subject_prefix = 'artwork_dropoff.subject_prefix' | t
+-%}
+<div class="section page-width ad" id="ArtworkDropoff-{{ section.id }}">
+  <h1>{{ section.settings.heading | default: page.title | escape }}</h1>
+  {%- if section.settings.intro != blank -%}<div class="rte">{{ section.settings.intro }}</div>{%- endif -%}
+
+  {%- if section.settings.show_uploader -%}
+    <form id="{{ up_form }}" class="ad__card ad__upload" data-ad-upload data-endpoint="{{ endpoint | escape }}" data-email="{{ email | escape }}" novalidate>
+      <h2 class="h4">{{ 'artwork_dropoff.up_heading' | t }}</h2>
+      <div class="ad__row">
+        <div class="field"><label for="AdUpOrder-{{ section.id }}">{{ 'artwork_dropoff.order_num' | t }}</label><input id="AdUpOrder-{{ section.id }}" name="order" placeholder="#1234" required autocomplete="off" data-ad-up-order></div>
+        <div class="field"><label for="AdUpEmail-{{ section.id }}">{{ 'artwork_dropoff.email' | t }}</label><input id="AdUpEmail-{{ section.id }}" type="email" name="email" required autocomplete="email" value="{{ customer.email }}" data-ad-up-email></div>
+      </div>
+      {% render 'artwork-uploader', section_id: section.id, form_id: up_form, standalone: true %}
+      <button type="submit" class="button">{{ 'artwork_dropoff.submit' | t }}</button>
+      <p class="ad__msg" role="status" aria-live="polite" data-ad-msg hidden></p>
+      <template data-ad-strings>{"sending":{{ 'artwork_dropoff.sending' | t | json }},"sent":{{ 'artwork_dropoff.sent' | t | json }},"fallback":{{ 'artwork_dropoff.fallback' | t | json }},"failed":{{ 'artwork_dropoff.failed' | t | json }},"need_order":{{ 'artwork_dropoff.need_order' | t | json }},"subject":{{ subject_prefix | json }}}</template>
+    </form>
+  {%- endif -%}
+
+  <artwork-dropoff class="ad__card" data-email="{{ email | escape }}" data-subject="{{ subject_prefix | escape }}" data-body="{{ 'artwork_dropoff.mail_body' | t | escape }}">
+    <h2 class="h4">{{ 'artwork_dropoff.steps_heading' | t }}</h2>
+    <ol class="ad__steps">
+      <li>{{ 'artwork_dropoff.step_1' | t }}</li>
+      <li>{{ 'artwork_dropoff.step_2' | t }} <strong>{{ email }}</strong></li>
+      <li>{{ 'artwork_dropoff.step_3' | t }}</li>
+      <li>{{ 'artwork_dropoff.step_4' | t }}</li>
+    </ol>
+    <div class="field ad__order">
+      <label for="AdOrder-{{ section.id }}">{{ 'artwork_dropoff.order_label' | t }}</label>
+      <input id="AdOrder-{{ section.id }}" type="text" inputmode="text" placeholder="#1234" autocomplete="off" data-ad-order>
+    </div>
+    <a class="button" href="mailto:{{ email }}" data-ad-mailto>{{ 'artwork_dropoff.email_button' | t }}</a>
+    <p class="ad__note">{{ 'artwork_dropoff.large_files' | t }}</p>
+  </artwork-dropoff>
+
+  {%- if section.blocks.size > 0 -%}
+    <h2 class="h4">{{ 'artwork_dropoff.specs_heading' | t }}</h2>
+    <div class="ad__table-wrap">
+      <table class="ad__table">
+        <thead><tr><th scope="col">{{ 'artwork_dropoff.col_product' | t }}</th><th scope="col">{{ 'artwork_dropoff.col_specs' | t }}</th><th scope="col">{{ 'artwork_dropoff.col_template' | t }}</th></tr></thead>
+        <tbody>
+          {%- for block in section.blocks -%}
+            <tr {{ block.shopify_attributes }}>
+              <th scope="row">{{ block.settings.product_name | escape }}</th>
+              <td>{{ block.settings.specs }}</td>
+              <td>{%- if block.settings.template_url != blank -%}<a href="{{ block.settings.template_url }}" download>{{ 'artwork_dropoff.download' | t }}</a>{%- else -%}—{%- endif -%}</td>
+            </tr>
+          {%- endfor -%}
+        </tbody>
+      </table>
+    </div>
+  {%- endif -%}
+  {%- if page.content != blank -%}<div class="rte ad__extra">{{ page.content }}</div>{%- endif -%}
+</div>
+<script src="{{ 'artwork-dropoff.js' | asset_url }}" type="module" defer="defer"></script>
+{% stylesheet %}
+  .ad { max-width: 90rem; }
+  .ad__card { display: grid; gap: 1.2rem; border: 1px solid rgb(var(--color-border)); border-radius: var(--radius); padding: 2rem; margin: 2.4rem 0; }
+  .ad__card h2 { margin: 0; }
+  .ad__steps { margin: 0; padding-left: 2rem; display: grid; gap: .6rem; }
+  .ad__order { max-width: 32rem; }
+  .ad__row { display: grid; gap: 1.2rem; grid-template-columns: repeat(auto-fit, minmax(22rem, 1fr)); }
+  .ad__upload > .button { justify-self: start; }
+  .ad__msg { margin: 0; font-weight: 700; }
+  .ad__msg[hidden] { display: none; }
+  .ad__card .button { justify-self: start; }
+  .ad__note { font-size: 1.4rem; opacity: .8; margin: 0; }
+  .ad__table-wrap { overflow-x: auto; }
+  .ad__table { width: 100%; border-collapse: collapse; font-size: 1.4rem; }
+  .ad__table th, .ad__table td { text-align: left; padding: 1rem; border-bottom: 1px solid rgb(var(--color-border)); vertical-align: top; }
+{% endstylesheet %}
+{% schema %}
+{
+  "name": "Artwork drop-off",
+  "tag": "section",
+  "settings": [
+    { "type": "text", "id": "heading", "label": "Heading", "default": "Send your artwork" },
+    { "type": "richtext", "id": "intro", "label": "Intro", "default": "<p>Sending your files after checkout? Email them to us with your order number and we'll handle prepress and upload them to production.</p>" },
+    { "type": "text", "id": "email", "label": "Artwork email", "default": "shopprintr@gmail.com" },
+    { "type": "checkbox", "id": "show_uploader", "label": "Show online uploader", "default": true, "info": "Same uploader, preflight and terms checkbox as the product page, keyed by order number + email." },
+    { "type": "text", "id": "endpoint", "label": "Upload endpoint", "info": "Overrides Theme settings → Artwork uploads. Receives multipart POST (order, email, properties[...] files and preflight). Empty = opens an email with the order number." }
+  ],
+  "blocks": [
+    { "type": "spec", "name": "Product spec", "settings": [
+      { "type": "text", "id": "product_name", "label": "Product", "default": "Business cards 2\" x 3.5\"" },
+      { "type": "richtext", "id": "specs", "label": "Specs", "default": "<p>Trim 2\" x 3.5\" · Bleed 0.125\" · Safe 0.125\" · 300 DPI · CMYK PDF</p>" },
+      { "type": "url", "id": "template_url", "label": "Template download URL" }
+    ] }
+  ],
+  "presets": [{ "name": "Artwork drop-off" }]
+}
+{% endschema %}

@@ -5,6 +5,7 @@
   Falls back to the product metafield custom.price_tiers (multi-line text "qty:price" per line) for products without a quantity option.
   @param {product} product - The product
   @param {variant} variant - The currently selected variant
+  @param {boolean} [radio] - Render selectable radio rows (quantity picker) instead of the classic table
   @example
   {% render 'tier-pricing', product: product, variant: product.selected_or_first_available_variant %}
 {% enddoc %}
@@ -22,6 +23,75 @@
   {%- liquid
     assign first_unit = nil
   -%}
+  {%- if radio -%}
+  <div class="tiers tiers--radio" data-swap="tiers">
+    <h2 class="tiers__heading slug" id="TiersHeading-{{ product.id }}">{{ 'products.product.tiers.heading' | t }}</h2>
+    <div class="tiers__head" aria-hidden="true">
+      <span></span>
+      <span>{{ 'products.product.tiers.quantity' | t }}</span>
+      <span>{{ 'products.product.tiers.total' | t }}</span>
+      <span>{{ 'products.product.tiers.per_unit' | t }}</span>
+      <span>{{ 'products.product.tiers.savings' | t }}</span>
+    </div>
+    <fieldset class="tiers__set" aria-labelledby="TiersHeading-{{ product.id }}">
+      {%- for value in qty_option.values -%}
+        {%- liquid
+          assign match = nil
+          for v in product.variants
+            assign ok = true
+            for opt in v.options
+              if forloop.index0 == qty_index
+                if opt != value
+                  assign ok = false
+                endif
+              else
+                assign cur = variant.options[forloop.index0]
+                if opt != cur
+                  assign ok = false
+                endif
+              endif
+            endfor
+            if ok
+              assign match = v
+              break
+            endif
+          endfor
+        -%}
+        {%- if match -%}
+          {%- liquid
+            assign units = value | remove: ',' | split: ' ' | first | plus: 0
+            assign unit_cents = 0
+            if units > 0
+              assign unit_cents = match.price | times: 1.0 | divided_by: units
+            endif
+            if first_unit == nil
+              assign first_unit = unit_cents
+            endif
+            assign saving = 0
+            if first_unit > 0 and unit_cents < first_unit
+              assign saving = first_unit | minus: unit_cents | times: 100 | divided_by: first_unit | round
+            endif
+          -%}
+          <label class="tiers__row{% unless match.available %} is-disabled{% endunless %}">
+            <input type="radio" name="tier-{{ product.id }}" value="{{ value | escape }}" data-tier-radio="{{ value.id }}" {% if match.id == variant.id %}checked{% endif %} {% unless match.available %}disabled{% endunless %}>
+            <span class="tiers__radio" aria-hidden="true"></span>
+            <span class="tiers__qty">
+              {{- value -}}
+              {%- if units == 1000 -%}
+                <span class="tiers__best">{{ 'products.product.tiers.best_value' | t }}</span>
+              {%- endif -%}
+            </span>
+            <span class="tiers__tot"><span class="tiers__lbl">{{ 'products.product.tiers.total' | t }}</span>{{ match.price | money }}</span>
+            <span class="tiers__unit"><span class="tiers__lbl">{{ 'products.product.tiers.each_label' | t }}</span>{%- if units > 0 -%}{{ unit_cents | round | money }}{%- endif -%}</span>
+            <span class="tiers__save-cell">
+              {%- if saving > 0 -%}<span class="tiers__save">{{ 'products.product.tiers.save' | t: percent: saving }}</span>{%- endif -%}
+            </span>
+          </label>
+        {%- endif -%}
+      {%- endfor -%}
+    </fieldset>
+  </div>
+  {%- else -%}
   <div class="tiers" data-swap="tiers">
     <h2 class="tiers__heading slug">{{ 'products.product.tiers.heading' | t }}</h2>
     <table class="tiers__table">
@@ -92,6 +162,7 @@
       </tbody>
     </table>
   </div>
+  {%- endif -%}
 {%- elsif product.metafields.custom.price_tiers != blank -%}
   {%- assign lines = product.metafields.custom.price_tiers.value | newline_to_br | split: '<br />' -%}
   <div class="tiers" data-swap="tiers">
@@ -118,4 +189,35 @@
   .tiers__table thead th { font-size: 1.2rem; text-transform: uppercase; letter-spacing: .08em; opacity: .7; }
   .tiers__table tr.is-current { background: rgba(var(--color-accent), .08); font-weight: 700; }
   .tiers__table tbody tr:last-child > * { border-bottom: 0; }
+  .tiers--radio { --tier-mag: var(--m, #F962DD); --tier-cyan: var(--c, #27D6FF); border: 1.5px dashed rgb(var(--color-border)); border-radius: 1.8rem; padding: 2.4rem 2.6rem 1.6rem; }
+  .tiers--radio .tiers__heading { margin-bottom: 1.6rem; font-family: var(--font-heading-family); font-weight: 700; }
+  .tiers__head, .tiers__row { display: grid; grid-template-columns: 2.8rem 1.1fr 1fr 1fr 11rem; align-items: center; column-gap: 1.2rem; }
+  .tiers__head { padding: 0 1.4rem 1.2rem 1.8rem; border-bottom: 1px solid rgb(var(--color-border)); font: 700 1.2rem/1.2 var(--font-heading-family); letter-spacing: .12em; text-transform: uppercase; opacity: .7; }
+  .tiers__head span:last-child { text-align: right; }
+  .tiers__set { border: 0; margin: 0; padding: 0; min-width: 0; }
+  .tiers__row { position: relative; padding: 1.6rem 1.4rem; border-bottom: 1px solid rgb(var(--color-border)); border-left: 4px solid transparent; cursor: pointer; font-size: 1.6rem; font-weight: 400; transition: background-color .15s; }
+  .tiers__row:last-child { border-bottom: 0; }
+  .tiers__row:hover { background: rgba(var(--color-foreground), .05); }
+  .tiers__row input { position: absolute; opacity: 0; width: 1px; height: 1px; margin: 0; padding: 0; }
+  .tiers__radio { width: 2rem; height: 2rem; border: 2px solid #000; border-radius: 0; display: grid; place-items: center; background: #fff; }
+  .tiers__radio::after { content: ""; width: 1rem; height: 1rem; background: #000; transform: scale(0); transition: transform .12s; }
+  .tiers__row:has(input:checked) { background: rgba(249, 98, 221, .14); border-left-color: #000; font-weight: 700; }
+  .tiers__row:has(input:checked) .tiers__radio::after { transform: scale(1); }
+  .tiers__row:has(input:focus-visible) { outline: 2px solid #000; outline-offset: -2px; }
+  .tiers__row.is-disabled { opacity: .45; cursor: not-allowed; }
+  .tiers__qty { font-weight: 700; display: flex; align-items: center; gap: 1rem; flex-wrap: wrap; }
+  .tiers__best, .tiers__save { border: 2px solid #000; border-radius: 999px; color: #000; box-shadow: 3px 3px 0 #000; font-family: var(--font-heading-family); font-weight: 700; text-transform: uppercase; white-space: nowrap; line-height: 1.2; transition: transform .12s, box-shadow .12s; }
+  .tiers__best { background: #67D3FB; font-size: 1.05rem; letter-spacing: .14em; padding: .3rem .9rem; }
+  .tiers__save { background: var(--tier-mag); font-size: 1.2rem; letter-spacing: .06em; padding: .5rem 1.1rem; }
+  .tiers__row:hover .tiers__best, .tiers__row:hover .tiers__save { transform: translate(-1px, -1px); box-shadow: 4px 4px 0 #000; }
+  .tiers__save-cell { justify-self: end; }
+  .tiers__lbl { display: none; }
+  @media (max-width: 749px) {
+    .tiers--radio { padding: 2rem 1.4rem 1rem; }
+    .tiers__head { display: none; }
+    .tiers__row { grid-template-columns: 2.4rem 1fr auto; grid-template-areas: "r q s" "r t u"; row-gap: .6rem; padding: 1.4rem 1.2rem; }
+    .tiers__radio { grid-area: r; } .tiers__qty { grid-area: q; } .tiers__save-cell { grid-area: s; } .tiers__tot { grid-area: t; } .tiers__unit { grid-area: u; justify-self: end; }
+    .tiers__lbl { display: inline; margin-right: .6rem; font-size: 1.15rem; letter-spacing: .1em; text-transform: uppercase; font-weight: 500; opacity: .7; }
+  }
+  @media (prefers-reduced-motion: reduce) { .tiers__row, .tiers__radio::after, .tiers__best, .tiers__save { transition: none; } }
 {% endstylesheet %}

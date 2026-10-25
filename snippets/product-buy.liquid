@@ -4,6 +4,7 @@
   @param {string} section_id - Section id for unique ids
   @param {boolean} [show_artwork] - Show artwork notes field
   @param {boolean} [show_dynamic_checkout] - Show accelerated checkout buttons
+  @param {boolean} [custom_buy_now] - Replace accelerated checkout with a theme Buy it now (cart/add then /checkout) so artwork files and linked lines are kept
   @example
   {% render 'product-buy', product: product, variant: variant, section_id: section.id %}
 {% enddoc %}
@@ -48,7 +49,11 @@
     <p class="form-error" role="alert" data-form-error hidden></p>
     <div class="product-buy__installments">{{ form | payment_terms }}</div>
     {%- if show_dynamic_checkout -%}
-      {{ form | payment_button }}
+      {%- if custom_buy_now -%}
+        <button type="button" class="button button--secondary button--full product-buy__now" data-buy-now {% unless variant.available %}disabled{% endunless %}>{{ 'artwork.buy_now' | t }}</button>
+      {%- else -%}
+        {{ form | payment_button }}
+      {%- endif -%}
     {%- endif -%}
   {%- endform -%}
 </product-form>
@@ -59,6 +64,10 @@
   .product-buy__installments { margin-top: 1.2rem; font-size: 1.4rem; }
   .gift-recipient { margin-bottom: 1.6rem; }
   .gift-recipient summary { cursor: pointer; font-weight: 600; margin-bottom: 1.2rem; }
-  .product-buy .shopify-payment-button { margin-top: 1rem; }
+  .product-buy .shopify-payment-button, .product-buy__now { margin-top: 1rem; }
+  .product-buy { --shopify-accelerated-checkout-button-border-radius: var(--radius-button); --shopify-accelerated-checkout-button-block-size: 4.8rem; }
+  .product-buy .shopify-payment-button__button { border-radius: var(--radius-button); min-height: 4.8rem; overflow: hidden; }
+  .product-buy .shopify-payment-button__button--unbranded { font: 600 1.5rem/1 var(--font-body-family); background: rgb(var(--color-button)); color: rgb(var(--color-button-text)); border: 2px solid rgb(var(--color-button)); }
+  .product-buy .shopify-payment-button__button--branded, .product-buy .shopify-payment-button__button--branded [role="button"] { border-radius: var(--radius-button); overflow: hidden; }
   .form-error { color: var(--color-sale); }
 {% endstylesheet %}

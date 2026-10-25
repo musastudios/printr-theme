@@ -1,0 +1,36 @@
+{% doc %}
+  Pending-artwork detector for an order: a line sent "Artwork: Will send after checkout" (or a Design Service brief)
+  and the order is not tagged artwork-received.
+  @param {order} order - Customer order
+  @param {boolean} [notice] - Render the order-page notice instead of a compact link
+  @example
+  {% render 'artwork-pending', order: order, notice: true %}
+{% enddoc %}
+{%- liquid
+  assign pending = false
+  for line in order.line_items
+    for p in line.properties
+      if p.first == 'Artwork' and p.last == 'Will send after checkout'
+        assign pending = true
+      endif
+    endfor
+  endfor
+  if order.tags contains 'artwork-received' or order.cancelled
+    assign pending = false
+  endif
+-%}
+{%- if pending -%}
+  {%- if notice -%}
+    <div class="art-pending" role="status">
+      <p><strong>{{ 'customer.artwork.pending_title' | t }}</strong> — {{ 'customer.artwork.pending_order' | t }}</p>
+      <a class="button" href="/pages/upload-artwork?order={{ order.name | url_encode }}&email={{ order.email | url_encode }}">{{ 'customer.artwork.upload' | t }}</a>
+    </div>
+  {%- else -%}
+    <li><a href="/pages/upload-artwork?order={{ order.name | url_encode }}&email={{ order.email | url_encode }}">{{ order.name }} — {{ 'customer.artwork.upload' | t }}</a></li>
+  {%- endif -%}
+{%- endif -%}
+{% stylesheet %}
+  .art-pending { display: flex; flex-wrap: wrap; gap: 1.2rem 2rem; align-items: center; justify-content: space-between; padding: 1.6rem 2rem; margin: 0 0 2.4rem; border: 3px solid rgb(var(--color-foreground)); border-radius: var(--radius); background: #FFF915; color: #000; }
+  .art-pending p { margin: 0; flex: 1 1 28rem; }
+  .art-pending ul { margin: .6rem 0 0; padding-left: 2rem; }
+{% endstylesheet %}

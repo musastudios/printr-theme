@@ -21,7 +21,8 @@
         "sale_label": "On sale",
         "sale_link": "/collections/sale",
         "color_scheme": "scheme-1",
-        "intro": "<p>Pick a category and start building your order in minutes.</p>"
+        "intro": "<p>Pick a category and start building your order in minutes.</p>",
+        "bleed": true
       }
     },
     "hero": {
@@ -29,10 +30,11 @@
       "settings": {
         "autoplay": true,
         "speed": 6,
-        "full_width": false,
-        "height": 70,
+        "full_width": true,
+        "height": 75,
         "height_mobile": 60,
-        "effect": "slide"
+        "effect": "slide",
+        "mobile_portrait": true
       },
       "blocks": {
         "hero_gym": {
@@ -43,7 +45,8 @@
             "color_scheme": "scheme-4",
             "style": "overlay",
             "position": "left",
-            "overlay": 35
+            "overlay": 35,
+            "image_position": "right"
           },
           "blocks": {
             "h": {
@@ -98,7 +101,8 @@
             "color_scheme": "scheme-4",
             "style": "overlay",
             "position": "left",
-            "overlay": 35
+            "overlay": 35,
+            "image_position": "right"
           },
           "blocks": {
             "h": {
@@ -153,7 +157,8 @@
             "color_scheme": "scheme-4",
             "style": "overlay",
             "position": "left",
-            "overlay": 35
+            "overlay": 35,
+            "image_position": "right"
           },
           "blocks": {
             "h": {
@@ -208,7 +213,8 @@
             "color_scheme": "scheme-4",
             "style": "overlay",
             "position": "left",
-            "overlay": 35
+            "overlay": 35,
+            "image_position": "right"
           },
           "blocks": {
             "h": {
@@ -263,7 +269,8 @@
             "color_scheme": "scheme-4",
             "style": "overlay",
             "position": "left",
-            "overlay": 35
+            "overlay": 35,
+            "image_position": "right"
           },
           "blocks": {
             "h": {

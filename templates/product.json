@@ -16,7 +16,12 @@
           "type": "variant_picker"
         },
         "tiers": {
-          "type": "tier_pricing"
+          "type": "tier_pricing",
+          "settings": {
+            "radio_products": [
+              "bc-pearl-3-5-x-4"
+            ]
+          }
         },
         "turn": {
           "type": "turnaround"
@@ -51,6 +56,19 @@
         "tabs": {
           "type": "tabs",
           "settings": {}
+        },
+        "ds": {
+          "type": "design_service",
+          "settings": {
+            "hide_qa": true,
+            "quote_url": "/pages/design-services"
+          }
+        },
+        "artwork": {
+          "type": "artwork_uploader",
+          "settings": {
+            "terms_url": "/pages/artwork-terms"
+          }
         }
       },
       "block_order": [
@@ -59,6 +77,8 @@
         "picker",
         "tiers",
         "turn",
+        "artwork",
+        "ds",
         "buy",
         "pickup",
         "actions",
@@ -120,6 +140,3 @@
     "recent"
   ]
 }
-
-
-
