@@ -8,7 +8,7 @@
         "menu": "main-menu",
         "sticky": true,
         "color_scheme": "scheme-1",
-        "highlight_item": "Deals",
+        "highlight_item": "On Sale",
         "show_categories": true,
         "search_placeholder": "What do you want to print?",
         "store_link": "/pages/contact",
