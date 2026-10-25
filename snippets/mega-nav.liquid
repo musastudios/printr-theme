@@ -193,7 +193,7 @@
                   assign first_g = group_list.first | append: ''
                   assign ngroups = group_list.size
                   assign flow = false
-                  if ngroups == 1 and ncols > 1
+                  if ngroups == 1 and ncols > 1 and l3_total > 6
                     assign flow = true
                   endif
                   comment
