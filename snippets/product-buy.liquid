@@ -31,12 +31,8 @@
       </details>
     {%- endif -%}
     <div class="product-buy__row">
-      <quantity-input class="qty">
-        <button type="button" name="minus">−<span class="visually-hidden">{{ 'products.product.decrease' | t }}</span></button>
-        <label class="visually-hidden" for="Qty-{{ section_id }}">{{ 'products.product.quantity' | t }}</label>
-        <input id="Qty-{{ section_id }}" type="number" name="quantity" value="1" min="1" step="1" inputmode="numeric">
-        <button type="button" name="plus">+<span class="visually-hidden">{{ 'products.product.increase' | t }}</span></button>
-      </quantity-input>
+      {%- comment -%} Quantity is chosen via the tier rows (variant Qty option), so the submitted line quantity is always 1. {%- endcomment -%}
+      <input id="Qty-{{ section_id }}" type="hidden" name="quantity" value="1">
       {%- unless inline_ctas and show_dynamic_checkout and custom_buy_now -%}
         <button type="submit" class="button product-buy__submit" {% unless variant.available %}disabled{% endunless %}>
           {%- if variant == nil -%}
