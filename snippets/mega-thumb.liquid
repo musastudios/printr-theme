@@ -1,9 +1,18 @@
-{%- comment -%} Nav thumb: custom.nav_thumb, else collection image, else first product image, else the preview fallback product or theme asset, else a placeholder. {%- endcomment -%}
+{%- comment -%} Nav thumb: our art first (asset: row or mega-art map); art_only skips store photos. Otherwise custom.nav_thumb, else collection image, else first product image, else the preview fallback product or theme asset, else a placeholder. {%- endcomment -%}
 {%- liquid
   assign h = handle | strip
   assign ip = img_product | strip
   assign img = nil
-  if h != blank
+  assign asset = nil
+  if ip contains 'asset:'
+    assign asset = ip | remove_first: 'asset:'
+  elsif ip != blank
+    capture asset
+      render 'mega-art', h: ip
+    endcapture
+    assign asset = asset | strip
+  endif
+  if asset == blank and art_only != true and h != blank
     assign c = collections[h]
     if c.id != blank
       assign img = c.metafields.custom.nav_thumb.value | default: c.image
@@ -12,21 +21,16 @@
       endif
     endif
   endif
-  assign asset = nil
-  if img == blank and ip != blank
-    if ip contains 'asset:'
-      assign asset = ip | remove_first: 'asset:'
-    else
-      assign img = all_products[ip].featured_image
-    endif
+  if asset == blank and img == blank and art_only != true and ip != blank
+    assign img = all_products[ip].featured_image
   endif
 -%}
 <a class="mega__thumb" href="{{ url | strip }}">
   <span class="mega__thumb-media">
-    {%- if img != blank -%}
+    {%- if asset != blank -%}
+      <img src="{{ asset | asset_url }}" alt="" loading="lazy" width="640" height="640">
+    {%- elsif img != blank -%}
       {{ img | image_url: width: 320 | image_tag: loading: 'lazy', widths: '160, 240, 320', sizes: sizes, alt: '' }}
-    {%- elsif asset != blank -%}
-      <img src="{{ asset | asset_url }}" alt="" loading="lazy" width="1200" height="1200">
     {%- else -%}
       {{ 'image' | placeholder_svg_tag: 'mega__thumb-ph' }}
     {%- endif -%}

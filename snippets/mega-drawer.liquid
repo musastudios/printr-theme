@@ -84,15 +84,15 @@
                           {%- if depths[k] != '3' -%}{%- break -%}{%- endif -%}
                           {%- if vis[k] != '1' -%}{%- continue -%}{%- endif -%}
                           {%- assign n = n | plus: 1 -%}
-                          <li>{% render 'mega-thumb', title: titles[k], url: urls[k], handle: handles[k], img_product: imgs[k], sizes: '30vw' %}</li>
+                          <li>{% render 'mega-thumb', title: titles[k], url: urls[k], handle: handles[k], img_product: imgs[k], art_only: art_only, sizes: '30vw' %}</li>
                         {%- endfor -%}
                       {%- endif -%}
                       {%- if n == 0 -%}
-                        <li>{% render 'mega-thumb', title: titles[j], url: urls[j], handle: handles[j], img_product: imgs[j], sizes: '30vw' %}</li>
+                        <li>{% render 'mega-thumb', title: titles[j], url: urls[j], handle: handles[j], img_product: imgs[j], art_only: art_only, sizes: '30vw' %}</li>
                       {%- endif -%}
                     </ul>
                     <a class="mobile-menu__viewall" href="{{ urls[j] | strip }}">{{ 'sections.header.view_all' | t: title: titles[j] }} →</a>
-                    {%- if mega.settings.show_promo -%}{% render 'mega-promo', collection: tc, block: mega, allow_fallback: true, fallback_handle: imgs[j], default_product: mega.settings.promo_product_default, compact: true %}{%- endif -%}
+                    {%- if mega.settings.show_promo -%}{% render 'mega-promo', collection: tc, block: mega, allow_fallback: true, fallback_handle: imgs[j], default_product: mega.settings.promo_product_default, compact: true, art_only: art_only %}{%- endif -%}
                   </div>
                   {%- assign first_tab = false -%}
                 {%- endfor -%}
@@ -143,7 +143,7 @@
                   endif
                   assign pc = mega.settings.promo_collection | default: src
                 -%}
-                {%- if show_promo -%}{% render 'mega-promo', collection: pc, block: mega, override: override, allow_fallback: true, compact: true %}{%- endif -%}
+                {%- if show_promo -%}{% render 'mega-promo', collection: pc, block: mega, override: override, allow_fallback: true, compact: true, art_only: art_only %}{%- endif -%}
               {%- endif -%}
             {%- endif -%}
           </div>

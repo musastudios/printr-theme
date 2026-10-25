@@ -108,16 +108,16 @@
                               {%- if depths[k] != '3' -%}{%- break -%}{%- endif -%}
                               {%- if vis[k] != '1' -%}{%- continue -%}{%- endif -%}
                               {%- assign n = n | plus: 1 -%}
-                              <li>{% render 'mega-thumb', title: titles[k], url: urls[k], handle: handles[k], img_product: imgs[k], sizes: '(min-width: 1280px) 180px, 15vw' %}</li>
+                              <li>{% render 'mega-thumb', title: titles[k], url: urls[k], handle: handles[k], img_product: imgs[k], art_only: art_only, sizes: '(min-width: 1280px) 180px, 15vw' %}</li>
                             {%- endfor -%}
                           {%- endif -%}
                           {%- if n == 0 -%}
-                            <li>{% render 'mega-thumb', title: titles[j], url: urls[j], handle: handles[j], img_product: imgs[j], sizes: '(min-width: 1280px) 180px, 15vw' %}</li>
+                            <li>{% render 'mega-thumb', title: titles[j], url: urls[j], handle: handles[j], img_product: imgs[j], art_only: art_only, sizes: '(min-width: 1280px) 180px, 15vw' %}</li>
                           {%- endif -%}
                         </ul>
                       </div>
                       {%- if mega.settings.show_promo -%}
-                        {% render 'mega-promo', collection: tc, block: mega, allow_fallback: true, fallback_handle: imgs[j], default_product: mega.settings.promo_product_default, id: pid %}
+                        {% render 'mega-promo', collection: tc, block: mega, allow_fallback: true, fallback_handle: imgs[j], default_product: mega.settings.promo_product_default, id: pid, art_only: art_only %}
                       {%- endif -%}
                     </div>
                     {%- assign first_tab = false -%}
@@ -237,7 +237,7 @@
                           {%- for k in (tk1..e) -%}
                             {%- if depths[k] != '3' -%}{%- break -%}{%- endif -%}
                             {%- if vis[k] != '1' -%}{%- continue -%}{%- endif -%}
-                            <li>{% render 'mega-thumb', title: titles[k], url: urls[k], handle: handles[k], img_product: imgs[k], sizes: '(min-width: 1280px) 180px, 15vw' %}</li>
+                            <li>{% render 'mega-thumb', title: titles[k], url: urls[k], handle: handles[k], img_product: imgs[k], art_only: art_only, sizes: '(min-width: 1280px) 180px, 15vw' %}</li>
                           {%- endfor -%}
                         </ul>
                         {%- assign mine_list = mine | split: ',' -%}
@@ -257,7 +257,7 @@
                   <a class="mega__viewall" href="{{ url }}">{{ 'sections.header.view_all' | t: title: titles[i] }} →</a>
                 </div>
                 {%- if show_promo -%}
-                  {% render 'mega-promo', collection: pc, block: mega, override: override, allow_fallback: true, id: pid %}
+                  {% render 'mega-promo', collection: pc, block: mega, override: override, allow_fallback: true, id: pid, art_only: art_only %}
                 {%- endif -%}
             {%- endcase -%}
           </div>

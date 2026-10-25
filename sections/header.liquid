@@ -213,7 +213,7 @@
   </div>
 
   <nav class="header__nav" aria-label="{{ 'accessibility.menu' | t }}">
-    {% render 'mega-nav', depths: m_depths, titles: m_titles, handles: m_handles, urls: m_urls, imgs: m_imgs, vis: m_vis, counts: m_counts, blocks: section.blocks, highlight: section.settings.highlight_item %}
+    {% render 'mega-nav', depths: m_depths, titles: m_titles, handles: m_handles, urls: m_urls, imgs: m_imgs, vis: m_vis, counts: m_counts, blocks: section.blocks, highlight: section.settings.highlight_item, art_only: section.settings.demo_tree %}
   </nav>
   {%- if settings.show_cmyk_bar -%}
     <div class="cmyk-bar" aria-hidden="true"><span></span><span></span><span></span><span></span></div>
@@ -228,7 +228,7 @@
       <span class="slug">{{ 'accessibility.menu' | t }}</span>
       <button type="button" class="icon-button" data-drawer-close>{% render 'icon', name: 'close' %}<span class="visually-hidden">{{ 'accessibility.close_menu' | t }}</span></button>
     </div>
-    {% render 'mega-drawer', depths: m_depths, titles: m_titles, handles: m_handles, urls: m_urls, imgs: m_imgs, vis: m_vis, counts: m_counts, blocks: section.blocks, highlight: section.settings.highlight_item %}
+    {% render 'mega-drawer', depths: m_depths, titles: m_titles, handles: m_handles, urls: m_urls, imgs: m_imgs, vis: m_vis, counts: m_counts, blocks: section.blocks, highlight: section.settings.highlight_item, art_only: section.settings.demo_tree %}
     <div class="mobile-menu__footer">
       {%- if shop.customer_accounts_enabled -%}<a href="{{ routes.account_url }}">{% render 'icon', name: 'account' %}{{ 'sections.header.sign_in' | t }}</a>{%- endif -%}
       {%- if section.settings.store_link != blank -%}<a href="{{ section.settings.store_link }}">{% render 'icon', name: 'pin' %}{{ section.settings.store_label | escape }}</a>{%- endif -%}
