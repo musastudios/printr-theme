@@ -180,7 +180,9 @@
     ] },
     { "type": "brochure_config", "name": "Brochure configurator", "limit": 1, "settings": [
       { "type": "paragraph", "content": "Step-by-step options with live quantity pricing. Reads JSON from the product metafield custom.configurator, else the theme asset brochure-configurator.json. Variants must use options Size | Qty | Config. Place above Artwork uploader and Buy buttons; hide the Variant picker and Quantity tier pricing blocks on this template." },
-      { "type": "url", "id": "quote_url", "label": "Quote request link", "info": "Shown when the chosen combination has no sellable variant. Defaults to /pages/contact." }
+      { "type": "url", "id": "quote_url", "label": "Quote request link", "info": "Shown when the chosen combination has no sellable variant. Defaults to /pages/contact." },
+      { "type": "product", "id": "sample_product", "label": "Job sample product ($9.99)", "info": "Hidden product added to the cart when the customer ticks Job sample. If empty, the request is saved as a line property to invoice." },
+      { "type": "product", "id": "qa_product", "label": "Pre-flight & QA product ($5)", "info": "Used for Digital proof when the Artwork uploader block has no QA product. If empty, the request is saved as a line property to invoice." }
     ] },
     { "type": "turnaround", "name": "Production time", "limit": 1, "settings": [{ "type": "text", "id": "text", "label": "Default production time", "default": "5–7 business days" }] },
     { "type": "buy_buttons", "name": "Buy buttons", "limit": 1, "settings": [

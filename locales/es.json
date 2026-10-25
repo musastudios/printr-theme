@@ -113,7 +113,32 @@
         "quote_help": "Esta combinación aún no tiene precio en línea. Envíanos tus especificaciones y te respondemos con una cotización.",
         "quote_subject": "Solicitud de cotización: {{ product }}",
         "reset": "Ajustamos para mantener la compatibilidad: {{ options }}",
-        "error": "No pudimos cargar las opciones. Refresca la página o contáctanos."
+        "error": "No pudimos cargar las opciones. Refresca la página o contáctanos.",
+        "specs": "Especificaciones del producto",
+        "run_size": "Cantidad",
+        "run_hint": "El precio por unidad y el total se actualizan al cambiar las opciones.",
+        "per_unit": "Precio por unidad",
+        "total_price": "Precio total",
+        "next_day": "Próximo día laborable",
+        "samples": "Muestras del trabajo",
+        "sample": "Muestra del trabajo",
+        "sample_label": "Muestra del trabajo terminado (por juego) +{{ price }}",
+        "proofs": "Pruebas digitales",
+        "proof_label": "Prueba en PDF + revisión de archivo (por juego) +$5.00",
+        "proof_help": "Añade nuestra revisión Pre-flight y QA: revisamos tu archivo y te enviamos una prueba en PDF antes de imprimir.",
+        "yes": "Sí",
+        "labels": {
+          "size": "Tamaño",
+          "stock": "Papel",
+          "colorspec": "Colores",
+          "coating": "Acabado",
+          "fold": "Doblez"
+        },
+        "proof": "Prueba digital",
+        "invoiced": "a facturar",
+        "colorspec_40": "Color al frente, dorso en blanco",
+        "colorspec_44": "Full color ambos lados",
+        "colorspec_41": "Color al frente, dorso en negro"
       }
     },
     "compare": {
