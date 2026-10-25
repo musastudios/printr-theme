@@ -88,3 +88,11 @@ Placeholder: the other 426 variants (17 configs × 6 qty for 11x17, plus all of 
 ## Harness
 
 `/workspace/printr-art/brochure-configurator/` (outside the repo): `index.html`, `index.es.html`, `shoot.py`, screenshots at 1280 and 390 (default, 1000-tier add to cart, quote state, rule reset).
+
+## Store product (created 2026-10-25, DRAFT)
+
+- Product: "Brochures", handle `brochures`, id `gid://shopify/Product/15424535462062`, status DRAFT, published to 0 channels.
+- Options: Size (4) | Qty (6) | Config (18) = 432 variants. Config packs `GB100-{colorspec}-{coating}-{fold}`; the configurator UI splits it into separate Size, Colorspec, Coating, Fold and Quantity controls.
+- 6 variants are really priced (11x17, 4/4, Aqueous, Tri-Fold; cost x 2). `custom.price_status` = `real`.
+- **426 variants are PLACEHOLDERS at price 0.00** (`custom.price_status` = `placeholder`, product tag `needs-price`). The configurator JSON has no price for them, so the UI shows "Request a quote" and doesn't add them to the cart. A direct `/cart/add` with their variant id would still sell at $0, so **do not publish this product until every placeholder has a real price** (or until those variants are removed).
+- Metafields: `custom.configurator` (json, from tools/brochures/generate.mjs) and `custom.print_profile` -> `flat-flyers-brochures`. No product-level `print_spec` is set, because specs are per size.
