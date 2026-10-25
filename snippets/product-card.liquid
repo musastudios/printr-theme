@@ -54,7 +54,6 @@
     {%- endif -%}
   </div>
   <div class="card__info">
-    {%- if product.vendor != blank and settings.card_show_vendor -%}<span class="card__vendor">{{ product.vendor | escape }}</span>{%- endif -%}
     <h3 class="card__title"><a href="{{ product.url }}">{{ product.title | escape }}</a></h3>
     {% render 'price', product: product, show_from: settings.card_show_from_price %}
     {%- if settings.card_show_swatches and color_option -%}

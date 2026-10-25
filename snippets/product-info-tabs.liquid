@@ -47,7 +47,7 @@
     </div>
     <div class="pinfo__panel rte" role="tabpanel" tabindex="0" id="{{ uid }}-p-description" aria-labelledby="{{ uid }}-t-description" hidden>
       {%- for block in section.blocks -%}
-        {%- if block.type == 'description' -%}<div {{ block.shopify_attributes }}>{{ product.description }}</div>{%- endif -%}
+        {%- if block.type == 'description' -%}<div {{ block.shopify_attributes }}>{{ product.description | replace: 'Caguas Copy', 'PRINTR' }}</div>{%- endif -%}
       {%- endfor -%}
     </div>
     <div class="pinfo__panel rte" role="tabpanel" tabindex="0" id="{{ uid }}-p-specs" aria-labelledby="{{ uid }}-t-specs" hidden>

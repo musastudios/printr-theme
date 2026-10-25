@@ -12,14 +12,21 @@
       <link rel="icon" type="image/svg+xml" href="{{ 'printr-mark.svg' | asset_url }}">
     {%- endif -%}
     <link rel="preconnect" href="https://fonts.shopifycdn.com" crossorigin>
+    {%- liquid
+      comment
+        Safety net: the old seller name must never reach customers (SEO fields still hold it until VENDOR_PLAN is applied).
+      endcomment
+      assign pt_clean = page_title | replace: ' | Caguas Copy', '' | replace: 'Caguas Copy', 'PRINTR'
+      assign pd_clean = page_description | replace: 'Caguas Copy', 'PRINTR'
+    -%}
     <title>
-      {{ page_title }}
+      {{ pt_clean }}
       {%- if current_tags %} &ndash; {{ 'general.tagged' | t: tags: current_tags | join: ', ' }}{% endif -%}
       {%- if current_page != 1 %} &ndash; {{ 'general.page' | t: page: current_page }}{% endif -%}
-      {%- unless page_title contains shop.name %} &ndash; {{ shop.name }}{% endunless -%}
+      {%- unless pt_clean contains shop.name %} &ndash; {{ shop.name }}{% endunless -%}
     </title>
-    {% if page_description %}
-      <meta name="description" content="{{ page_description | escape }}">
+    {% if pd_clean != blank %}
+      <meta name="description" content="{{ pd_clean | escape }}">
     {% endif %}
     {% render 'meta-tags' %}
     {% render 'css-variables' %}

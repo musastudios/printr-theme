@@ -1,7 +1,9 @@
 <div class="collection-hero color-{{ section.settings.color_scheme }}">
-  <div class="page-width collection-hero__inner crop">
-    <h1>{{ collection.title | escape }}</h1>
-    {%- if collection.description != blank -%}<div class="rte">{{ collection.description }}</div>{%- endif -%}
+  <div class="page-width collection-hero__inner">
+    <div class="collection-hero__marks crop">
+      <h1>{{ collection.title | escape }}</h1>
+      {%- if collection.description != blank -%}<div class="rte">{{ collection.description }}</div>{%- endif -%}
+    </div>
   </div>
 </div>
 <div class="section page-width collection">
@@ -55,7 +57,15 @@
   {%- endpaginate -%}
 </div>
 {% stylesheet %}
-  .collection-hero { padding-block: 6rem 4rem; }
+  .collection-hero { padding-block: 5.6rem; }
+  .collection-hero__marks { display: inline-block; padding: 2.4rem; max-width: 100%; }
+  .collection-hero__marks h1 { margin: 0; }
+  .collection-hero__marks .rte { margin-top: 1.2rem; }
+  .crop-on .collection-hero__marks::before, .crop-on .collection-hero__marks::after { width: 16px; height: 16px; opacity: .8; }
+  .crop-on .collection-hero__marks::before { top: 0; left: 0; }
+  .crop-on .collection-hero__marks::after { bottom: 0; right: 0; }
+  .section.collection { padding-top: 4.8rem; padding-bottom: 6.4rem; }
+  @media (max-width: 749px) { .collection-hero { padding-block: 4rem; } .section.collection { padding-top: 3.2rem; padding-bottom: 4.8rem; } }
   .collection-hero__inner { max-width: 80rem; margin-inline: auto; text-align: center; }
   .collection__filter-toggle { margin-bottom: 2rem; }
   .collection__count { opacity: .7; margin: 0; }

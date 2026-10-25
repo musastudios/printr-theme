@@ -141,7 +141,11 @@
         "colorspec_40": "Color front only, white back",
         "colorspec_44": "Full color both sides",
         "colorspec_41": "Color front, black back"
-      }
+      },
+      "share_title": "Share this product",
+      "share_email": "Email",
+      "share_copy": "Copy link",
+      "share_copied": "Link copied"
     },
     "compare": {
       "label": "Compare",
@@ -293,7 +297,9 @@
       "all_categories": "All Categories",
       "sign_in": "Sign in / Register",
       "view_all": "View all {{ title }}",
-      "shop_all": "Shop all {{ title }}"
+      "shop_all": "Shop all {{ title }}",
+      "track_order": "Track order",
+      "show_menu": "Show {{ title }} menu"
     },
     "category_circles": {
       "heading": "Shop by category",

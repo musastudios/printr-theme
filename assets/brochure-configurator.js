@@ -185,9 +185,9 @@
         return `<div class="bc-field${g.key === 'fold' ? ' bc-field--full' : ''}"><label class="bc-field__label" for="${id}">${esc(this.label(g))}<span class="bc-req" aria-hidden="true">*</span></label>
           <div class="bc-select"><select id="${id}" data-bc-key="${g.key}" required>${opts}</select><span class="bc-select__ic" aria-hidden="true">${this.icon('chevron')}</span></div></div>`;
       }).join('');
+      this.load();
       this.renderTiers();
       this.renderExtras();
-      this.load();
       const note = this.querySelector('[data-bc-note]');
       const names = reset.map((k) => { const g = this.schema.groups.find((x) => x.key === k); return g ? this.label(g) : this.t.quantity; });
       note.textContent = names.length ? (this.t.reset || '').replace('__OPTS__', names.join(', ')) : '';
@@ -197,8 +197,14 @@
     }
     /** Fetch the selected Size/Config's variants if not loaded yet, then refresh prices and the form. */
     load() {
-      const sel = this.sel; if (this.adapter.has(sel)) return;
-      this.adapter.ensure(sel).then(() => { if (this.sel === sel) { this.renderTiers(); this.apply(); } });
+      const sel = this.sel; if (this.adapter.has(sel)) { this.fixQty(); return; }
+      this.adapter.ensure(sel).then(() => { if (this.sel === sel) { this.fixQty(); this.renderTiers(); this.apply(); } });
+    }
+    /** Cascade to real variants: keep the run size when it is sellable, else move to the first run size that is (or the only one left). */
+    fixQty() {
+      const okQ = this.schema.qty.map(String).filter((q) => this.engine.status('qty', q, this.sel).ok && (this.adapter.resolveVariant({ ...this.sel, qty: q }) || {}).available);
+      if (!okQ.length || okQ.includes(String(this.sel.qty))) return;
+      this.sel = { ...this.sel, qty: okQ[0] };
     }
     icon(n) { const t = this.querySelector(`template[data-bc-icon="${n}"]`); return t ? t.innerHTML : ''; }
     renderTiers() {

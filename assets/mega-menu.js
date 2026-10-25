@@ -10,6 +10,15 @@
       this.btns.forEach((b) => {
         const li = b.closest('li');
         b.addEventListener('keydown', (e) => this.key(e, b));
+        // The label is a real link to the category's all page; ArrowDown or Space on it opens the panel, Enter follows it.
+        const link = li.querySelector('[data-l1-link]');
+        if (link && panelOf(b)) {
+          link.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowDown' || e.key === ' ') { e.preventDefault(); this.set(b, true); panelOf(b).querySelector('a, button')?.focus(); }
+            else if (e.key === 'ArrowRight' || e.key === 'ArrowLeft') this.key(e, b);
+          });
+          link.addEventListener('focus', () => { if (this.cur && this.cur !== b) this.set(this.cur, false); });
+        }
         if (!panelOf(b)) return;
         b.addEventListener('click', (e) => { e.preventDefault(); this.set(b, b.getAttribute('aria-expanded') !== 'true'); });
         li.addEventListener('mouseenter', () => {
@@ -47,7 +56,7 @@
         e.preventDefault();
         const n = this.btns[(i + (e.key === 'ArrowRight' ? 1 : -1) + this.btns.length) % this.btns.length];
         if (this.cur) this.set(this.cur, false);
-        n.focus();
+        (n.closest('li').querySelector('[data-l1-link]') || n).focus();
       } else if (e.key === 'ArrowDown' && panelOf(b)) {
         e.preventDefault();
         this.set(b, true);

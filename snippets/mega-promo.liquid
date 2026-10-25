@@ -51,7 +51,7 @@
         assign img = p.featured_image
       endif
       if text == blank
-        assign text = p.description | strip_html | truncatewords: 10
+        assign text = p.description | replace: 'Caguas Copy', 'PRINTR' | strip_html | truncatewords: 10
       endif
     else
       assign heading = ''
@@ -61,7 +61,7 @@
       assign heading = p.title
       assign href = p.url
       assign img = p.featured_image
-      assign text = p.description | strip_html | truncatewords: 10
+      assign text = p.description | replace: 'Caguas Copy', 'PRINTR' | strip_html | truncatewords: 10
       assign badge = p.metafields.custom.badge.value | default: block.settings.promo_badge_fallback
       assign color = block.settings.promo_badge_color
     endif
@@ -90,7 +90,7 @@
       assign p = default_product
       assign heading = p.title
       assign href = p.url
-      assign text = p.description | strip_html | truncatewords: 10
+      assign text = p.description | replace: 'Caguas Copy', 'PRINTR' | strip_html | truncatewords: 10
       assign badge = p.metafields.custom.badge.value | default: block.settings.promo_badge_fallback
       capture asset
         render 'mega-art', h: p.handle, promo: true
