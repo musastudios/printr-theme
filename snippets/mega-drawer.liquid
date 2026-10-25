@@ -1,0 +1,157 @@
+{%- comment -%}
+  Mobile drawer menu: same data as mega-nav. Showroom = scrolling chips + 3-col thumbs + compact promo.
+  Columns = nested accordions, promo at the bottom.
+{%- endcomment -%}
+{%- liquid
+  assign last = depths.size | minus: 1
+  assign sale_key = highlight | strip | downcase
+-%}
+<ul class="mobile-menu" role="list">
+  {%- if last >= 0 -%}
+  {%- for i in (0..last) -%}
+    {%- if depths[i] != '1' or vis[i] != '1' -%}{%- continue -%}{%- endif -%}
+    {%- liquid
+      assign key = titles[i] | strip | downcase
+      assign mega = nil
+      assign override = nil
+      for b in blocks
+        assign bk = b.settings.menu_item | strip | downcase
+        if bk == key and bk != blank
+          if b.type == 'promo_card'
+            assign override = b
+          else
+            assign mega = b
+          endif
+        endif
+      endfor
+      assign s = i | plus: 1
+      assign e = i
+      assign kids = 0
+      if s <= last
+        for j in (s..last)
+          if depths[j] == '1'
+            break
+          endif
+          assign e = j
+          if depths[j] == '2' and vis[j] == '1'
+            assign kids = kids | plus: 1
+          endif
+        endfor
+      endif
+      assign url = urls[i] | strip
+      assign hh = handles[i] | strip
+      assign src = nil
+      if hh != blank
+        assign src = collections[hh]
+      endif
+      assign pid = 'Drawer-' | append: i
+      assign is_sale = false
+      if sale_key != blank and key == sale_key
+        assign is_sale = true
+      endif
+    -%}
+    <li class="mobile-menu__item">
+      {%- if kids > 0 -%}
+        <details class="mobile-menu__acc">
+          <summary class="mobile-menu__l1{% if is_sale %} is-sale{% endif %}">{{ titles[i] | escape }}<span class="mobile-menu__pm" aria-hidden="true"></span></summary>
+          <div class="mobile-menu__panel">
+            {%- if mega.type == 'mega_showroom' -%}
+              {%- assign first_tab = true -%}
+              <mega-showroom class="mobile-showroom">
+                <div role="tablist" aria-orientation="horizontal" class="mobile-showroom__chips" aria-label="{{ titles[i] | escape }}">
+                  {%- for j in (s..e) -%}
+                    {%- if depths[j] != '2' or vis[j] != '1' -%}{%- continue -%}{%- endif -%}
+                    <button type="button" role="tab" id="{{ pid }}-t{{ j }}" aria-controls="{{ pid }}-p{{ j }}" aria-selected="{% if first_tab %}true{% else %}false{% endif %}" tabindex="{% if first_tab %}0{% else %}-1{% endif %}">{{ titles[j] | escape }}</button>
+                    {%- assign first_tab = false -%}
+                  {%- endfor -%}
+                </div>
+                {%- assign first_tab = true -%}
+                {%- for j in (s..e) -%}
+                  {%- if depths[j] != '2' or vis[j] != '1' -%}{%- continue -%}{%- endif -%}
+                  {%- liquid
+                    assign tc = nil
+                    assign th = handles[j] | strip
+                    if th != blank
+                      assign tc = collections[th]
+                    endif
+                    assign k1 = j | plus: 1
+                    assign n = 0
+                  -%}
+                  <div role="tabpanel" id="{{ pid }}-p{{ j }}" aria-labelledby="{{ pid }}-t{{ j }}"{% unless first_tab %} hidden{% endunless %}>
+                    <ul class="mobile-showroom__grid" role="list">
+                      {%- if k1 <= e -%}
+                        {%- for k in (k1..e) -%}
+                          {%- if depths[k] != '3' -%}{%- break -%}{%- endif -%}
+                          {%- if vis[k] != '1' -%}{%- continue -%}{%- endif -%}
+                          {%- assign n = n | plus: 1 -%}
+                          <li>{% render 'mega-thumb', title: titles[k], url: urls[k], handle: handles[k], img_product: imgs[k], sizes: '30vw' %}</li>
+                        {%- endfor -%}
+                      {%- endif -%}
+                      {%- if n == 0 -%}
+                        <li>{% render 'mega-thumb', title: titles[j], url: urls[j], handle: handles[j], img_product: imgs[j], sizes: '30vw' %}</li>
+                      {%- endif -%}
+                    </ul>
+                    <a class="mobile-menu__viewall" href="{{ urls[j] | strip }}">{{ 'sections.header.view_all' | t: title: titles[j] }} →</a>
+                    {%- if mega.settings.show_promo -%}{% render 'mega-promo', collection: tc, block: mega, allow_fallback: first_tab, compact: true %}{%- endif -%}
+                  </div>
+                  {%- assign first_tab = false -%}
+                {%- endfor -%}
+              </mega-showroom>
+            {%- else -%}
+              <ul class="mobile-menu__l2" role="list">
+                {%- for j in (s..e) -%}
+                  {%- if depths[j] != '2' or vis[j] != '1' -%}{%- continue -%}{%- endif -%}
+                  {%- liquid
+                    assign k1 = j | plus: 1
+                    assign n = 0
+                    if k1 <= e
+                      for k in (k1..e)
+                        if depths[k] != '3'
+                          break
+                        endif
+                        if vis[k] == '1'
+                          assign n = n | plus: 1
+                        endif
+                      endfor
+                    endif
+                  -%}
+                  <li>
+                    {%- if n > 0 -%}
+                      <details class="mobile-menu__acc mobile-menu__acc--l2">
+                        <summary>{{ titles[j] | escape }}<span class="mobile-menu__pm" aria-hidden="true"></span></summary>
+                        <ul class="mobile-menu__l3" role="list">
+                          {%- for k in (k1..e) -%}
+                            {%- if depths[k] != '3' -%}{%- break -%}{%- endif -%}
+                            {%- if vis[k] != '1' -%}{%- continue -%}{%- endif -%}
+                            <li><a href="{{ urls[k] | strip }}">{{ titles[k] | escape }}</a></li>
+                          {%- endfor -%}
+                          <li><a class="mobile-menu__viewall" href="{{ urls[j] | strip }}">{{ 'sections.header.view_all' | t: title: titles[j] }} →</a></li>
+                        </ul>
+                      </details>
+                    {%- else -%}
+                      <a href="{{ urls[j] | strip }}">{{ titles[j] | escape }}</a>
+                    {%- endif -%}
+                  </li>
+                {%- endfor -%}
+                <li><a class="mobile-menu__viewall" href="{{ url }}">{{ 'sections.header.view_all' | t: title: titles[i] }} →</a></li>
+              </ul>
+              {%- if mega != nil and mega.type != 'mega_products' -%}
+                {%- liquid
+                  assign show_promo = true
+                  if mega.type == 'mega_columns' and mega.settings.show_promo == false
+                    assign show_promo = false
+                  endif
+                  assign pc = mega.settings.promo_collection | default: src
+                -%}
+                {%- if show_promo -%}{% render 'mega-promo', collection: pc, block: mega, override: override, allow_fallback: true, compact: true %}{%- endif -%}
+              {%- endif -%}
+            {%- endif -%}
+          </div>
+        </details>
+      {%- else -%}
+        <a class="mobile-menu__l1{% if is_sale %} is-sale{% endif %}" href="{{ url }}">{{ titles[i] | escape }}{% render 'icon', name: 'arrow-right' %}</a>
+      {%- endif -%}
+    </li>
+  {%- endfor -%}
+  {%- endif -%}
+</ul>

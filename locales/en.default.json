@@ -291,7 +291,9 @@
     "header": {
       "category": "Category",
       "all_categories": "All Categories",
-      "sign_in": "Sign in / Register"
+      "sign_in": "Sign in / Register",
+      "view_all": "View all {{ title }}",
+      "shop_all": "Shop all {{ title }}"
     },
     "category_circles": {
       "heading": "Shop by category",

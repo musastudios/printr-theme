@@ -168,7 +168,6 @@ body:has(compare-bar:not([hidden])) .back-to-top{bottom:8rem}
 /* Brand gradient accents (logo "r" circle) */
 .brand-gradient .badge--new{background:var(--brand-gradient);color:#000}
 .brand-gradient .scroll-progress,.brand-gradient .ship-goal__bar span{background:var(--brand-gradient)}
-.brand-gradient .header__link.is-active{text-decoration:none;background-image:var(--brand-gradient);background-size:100% 3px;background-repeat:no-repeat;background-position:0 100%;padding-bottom:6px}
 .brand-gradient .button:not(.button--secondary):hover{box-shadow:0 0 0 2px rgb(var(--color-background)),0 0 0 4px var(--g2),4px 6px 0 4px var(--g3)}
 .brand-gradient .slideshow__dots button[aria-current=true]{background:var(--brand-gradient);border-color:transparent}
 

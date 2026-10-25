@@ -1,4 +1,4 @@
-// PRINTR header: sticky state, hover/keyboard mega menu, category-scoped search.
+// PRINTR header: sticky state, category-scoped search.
 (() => {
   if (customElements.get('sticky-header')) return;
   const desktop = matchMedia('(min-width: 990px)');
@@ -12,23 +12,6 @@
       this.ro.observe(this);
       this.onScroll();
 
-      this.megas = [...this.querySelectorAll('[data-mega]')];
-      this.megas.forEach((d) => {
-        let t;
-        const li = d.parentElement;
-        li.addEventListener('mouseenter', () => { if (!desktop.matches) return; clearTimeout(t); this.closeAll(d); d.open = true; });
-        li.addEventListener('mouseleave', () => { if (!desktop.matches) return; t = setTimeout(() => { d.open = false; }, 120); });
-        d.addEventListener('toggle', () => { if (d.open) this.closeAll(d); });
-      });
-      this.addEventListener('keydown', (e) => {
-        if (e.key !== 'Escape') return;
-        const open = this.querySelector('[data-mega][open]');
-        if (open) { open.open = false; open.querySelector('summary').focus(); }
-      });
-      this.onDocClick = (e) => { if (!this.contains(e.target)) this.closeAll(); };
-      document.addEventListener('click', this.onDocClick);
-      this.addEventListener('focusout', (e) => { if (!this.contains(e.relatedTarget)) this.closeAll(); });
-
       this.setupSearch();
     }
     disconnectedCallback() {
@@ -37,7 +20,6 @@
       this.ro?.disconnect();
     }
     setHeight() { document.documentElement.style.setProperty('--header-height', `${this.offsetHeight}px`); }
-    closeAll(except) { this.megas.forEach((m) => { if (m !== except) m.open = false; }); }
     setupSearch() {
       const ps = this.querySelector('[data-category-search]');
       if (!ps) return;

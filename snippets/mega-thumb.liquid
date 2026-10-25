@@ -1,0 +1,26 @@
+{%- comment -%} Nav thumb: custom.nav_thumb, else collection image, else first product image, else the preview fallback product. {%- endcomment -%}
+{%- liquid
+  assign h = handle | strip
+  assign ip = img_product | strip
+  assign img = nil
+  if h != blank
+    assign c = collections[h]
+    if c.id != blank
+      assign img = c.metafields.custom.nav_thumb.value | default: c.image
+      if img == blank
+        assign img = c.products.first.featured_image
+      endif
+    endif
+  endif
+  if img == blank and ip != blank
+    assign img = all_products[ip].featured_image
+  endif
+-%}
+<a class="mega__thumb" href="{{ url | strip }}">
+  <span class="mega__thumb-media">
+    {%- if img != blank -%}
+      {{ img | image_url: width: 320 | image_tag: loading: 'lazy', widths: '160, 240, 320', sizes: sizes, alt: '' }}
+    {%- endif -%}
+  </span>
+  <span class="mega__thumb-label">{{ title | escape }}</span>
+</a>

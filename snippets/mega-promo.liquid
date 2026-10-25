@@ -1,0 +1,73 @@
+{%- comment -%}
+  Promo card. Order: promo_card block (override) > collection metafields (custom.mega_*) > block fallbacks > nothing.
+  A product promo is hidden when the product is unavailable.
+  Params: collection, block, override, allow_fallback, id, compact
+{%- endcomment -%}
+{%- liquid
+  assign p = nil
+  assign img = nil
+  assign badge = ''
+  assign color = ''
+  assign heading = ''
+  assign text = ''
+  assign href = ''
+  assign cta = block.settings.promo_cta | default: 'Shop now'
+  if override
+    assign img = override.settings.image
+    assign badge = override.settings.badge
+    assign heading = override.settings.title
+    assign text = override.settings.text
+    assign href = override.settings.url
+    assign cta = override.settings.cta | default: cta
+  else
+    if collection
+      assign p = collection.metafields.custom.mega_featured_product.value
+      assign img = collection.metafields.custom.mega_promo_image.value
+      assign badge = collection.metafields.custom.mega_promo_badge.value
+      assign color = collection.metafields.custom.mega_badge_color.value
+      assign text = collection.metafields.custom.mega_promo_text.value
+    endif
+    if p == blank and allow_fallback
+      assign p = block.settings.promo_product_fallback
+      if img == blank
+        assign img = block.settings.promo_image_fallback
+      endif
+      if color == blank
+        assign color = block.settings.promo_badge_color
+      endif
+    endif
+    if badge == blank and p != blank
+      assign badge = p.metafields.custom.badge.value | default: block.settings.promo_badge_fallback
+    endif
+    if p != blank and p.available
+      assign heading = p.title
+      assign href = p.url
+      if img == blank
+        assign img = p.featured_image
+      endif
+      if text == blank
+        assign text = p.description | strip_html | truncatewords: 10
+      endif
+    else
+      assign heading = ''
+    endif
+  endif
+  assign color = color | default: 'yellow' | downcase
+-%}
+{%- if heading != blank -%}
+  <div class="mega__promo{% if compact %} mega__promo--compact{% endif %}">
+    <a class="mega__promo-card" href="{{ href | default: '#' }}">
+      <span class="mega__promo-media">
+        {%- if img != blank -%}
+          {{ img | image_url: width: 600 | image_tag: loading: 'lazy', widths: '400, 600', sizes: '(min-width: 990px) 300px, 40vw', alt: '' }}
+        {%- endif -%}
+        {%- if badge != blank -%}<span class="badge-3d badge--{{ color }}">{{ badge | escape }}</span>{%- endif -%}
+      </span>
+      <span class="mega__promo-body">
+        <span class="mega__promo-title">{{ heading | escape }}</span>
+        {%- if text != blank and compact != true -%}<span class="mega__promo-text">{{ text | escape }}</span>{%- endif -%}
+        <span class="cta-3d">{{ cta | escape }} →</span>
+      </span>
+    </a>
+  </div>
+{%- endif -%}

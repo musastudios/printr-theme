@@ -1,0 +1,122 @@
+{%- comment -%}
+  Preview-only IA (STORE_PLAN.md section 5), used when the header setting
+  "Preview planned menu" is on. One row per line: depth|title|collection handle|fallback url|thumb product handle.
+  A row whose collection does not exist yet uses the fallback url (an existing collection filtered by tag);
+  with no fallback it counts as empty and is hidden, exactly as it will be once created with 0 products.
+{%- endcomment -%}
+{%- capture tree -%}
+1|Printing|all-print-products||
+2|Premium Cards|premium-cards|/collections/business-cards|bc-pearl-2-x-3-5-us-standard
+3|Black Edge|premium-cards-black-edge|/collections/business-cards/black-edge|bc-black-edge-2-x-3-5-us-standard
+3|Brown Kraft|premium-cards-brown-kraft|/collections/business-cards/brown-kraft|bc-brown-kraft-2-x-3-5-us-standard
+3|Dual Raised|premium-cards-dual-raised|/collections/business-cards/dual-raised|bc-dual-raised-2-x-3-5-us-standard
+3|Foil|premium-cards-foil|/collections/business-cards/foil-worx|bc-foil-worx-2-x-3-5-us-standard
+3|Natural|premium-cards-natural|/collections/business-cards/natural|bc-natural-2-x-3-5-us-standard
+3|Painted Edge|premium-cards-painted-edge|/collections/business-cards/painted-edge|bc-painted-edge-2-x-3-5-us-standard
+3|Pearl|premium-cards-pearl|/collections/business-cards/pearl|bc-pearl-2-x-3-5-us-standard
+3|Raised Foil|premium-cards-raised-foil|/collections/business-cards/raised-foil|bc-raised-foil-2-x-3-5-us-standard
+3|Raised Spot UV|premium-cards-raised-spot-uv|/collections/business-cards/raised-spot-uv|bc-raised-spot-uv-2-x-3-5-us-standard
+3|Silk|premium-cards-silk|/collections/business-cards/silk|bc-silk-2-x-3-5-us-standard
+3|Suede|premium-cards-suede|/collections/business-cards/suede|bc-suede-2-x-3-5-us-standard
+2|Business Cards|business-cards||
+3|Standard|business-cards-standard|/collections/business-cards/standard|bc-standard-2-x-3-5-us-standard
+2|Marketing Products|marketing-products|/collections/postcards|
+3|Postcards|postcards||
+3|Flyers and Brochures|flyers-brochures|/collections/brochures|
+2|Signs & Banners|signs-banners|/collections/signs|
+3|Signs|signs||
+3|Large Format Posters|large-format-posters||
+3|Banners & Flags|banners-flags|/collections/banners|
+3|Adhesive Graphics|adhesive-graphics||
+3|Vehicle Magnets|vehicle-magnets||
+3|Display and Events|display-events|/collections/banners|
+2|Labels & Stickers|labels-stickers|/collections/stickers-labels|st-rect-2x3-5
+3|Roll Labels|roll-labels||
+3|Stickers|stickers|/collections/stickers-labels/stickers|st-rect-2x3-5
+3|Bumper Stickers|bumper-stickers|/collections/stickers-labels/adhesive-vinyl-bumper-sticker|st-bumper-4x12
+2|Packaging|packaging||
+3|Boxes|boxes||
+3|Packaging Tags & Cards|packaging-tags-cards||
+2|Promo Products|promo-products||
+2|Direct Mail|direct-mail||
+2|Apparel|apparel||
+2|Design Services||/pages/design-services|
+1|Business Cards|business-cards||
+2|Business Cards|business-cards||
+3|Standard Business Cards|business-cards-standard|/collections/business-cards/standard|
+2|Premium Cards|premium-cards|/collections/business-cards|
+3|Black Edge|premium-cards-black-edge|/collections/business-cards/black-edge|
+3|Brown Kraft|premium-cards-brown-kraft|/collections/business-cards/brown-kraft|
+3|Dual Raised|premium-cards-dual-raised|/collections/business-cards/dual-raised|
+3|Foil|premium-cards-foil|/collections/business-cards/foil-worx|
+3|Natural|premium-cards-natural|/collections/business-cards/natural|
+3|Painted Edge|premium-cards-painted-edge|/collections/business-cards/painted-edge|
+3|Pearl|premium-cards-pearl|/collections/business-cards/pearl|
+3|Raised Foil|premium-cards-raised-foil|/collections/business-cards/raised-foil|
+3|Raised Spot UV|premium-cards-raised-spot-uv|/collections/business-cards/raised-spot-uv|
+3|Silk|premium-cards-silk|/collections/business-cards/silk|
+3|Suede|premium-cards-suede|/collections/business-cards/suede|
+1|Marketing|marketing-products|/collections/postcards|
+2|Marketing Products|marketing-products|/collections/postcards|
+3|Postcards|postcards||
+3|Flyers and Brochures|flyers-brochures|/collections/brochures|
+3|Presentation Folders|presentation-folders||
+3|Announcement Cards|announcement-cards||
+3|Booklets|booklets||
+3|Bookmarks|bookmarks||
+3|Calendars|calendars||
+3|Catalogs|catalogs||
+3|Counter Cards|counter-cards||
+3|Door Hangers|door-hangers||
+3|Envelopes|envelopes||
+3|Event Tickets|event-tickets||
+3|Greeting Cards|greeting-cards||
+3|Hang Tags|hang-tags||
+3|Letterheads|letterheads||
+3|Magnets|magnets||
+3|Menus|menus||
+3|NCR Forms|ncr-forms||
+3|Notepads|notepads||
+3|Posters|posters||
+3|Rack Cards|rack-cards||
+3|Sell Sheets|sell-sheets||
+3|Social Cards|social-cards||
+3|Table Tents|table-tents||
+3|Trading Cards|trading-cards||
+1|Signs & Banners|signs-banners|/collections/signs|
+2|Signs|signs||
+3|Rigid Signs|rigid-signs|/collections/signs|
+3|Wall Art|wall-art||
+2|Large Format Posters|large-format-posters||
+2|Banners & Flags|banners-flags|/collections/banners|
+3|Outdoor Banners|outdoor-banners|/collections/banners|
+3|Indoor Banners|indoor-banners|/collections/banners|
+3|Flags|flags||
+2|Adhesive Graphics|adhesive-graphics||
+3|Floor Graphics|floor-graphics||
+3|Window Graphics|window-graphics||
+3|Wall Decals|wall-decals||
+2|Vehicle Magnets|vehicle-magnets||
+2|Display and Events|display-events|/collections/banners|
+3|Indoor Banner Stands|indoor-banner-stands|/collections/banners|
+3|Outdoor Banner Stands|outdoor-banner-stands||
+3|Displays|displays||
+3|Table Covers|table-covers||
+3|SEG Fabric Frames|seg-fabric-frames||
+1|Labels & Stickers|labels-stickers|/collections/stickers-labels|
+2|Roll Labels|roll-labels||
+3|By Shape|roll-labels-by-shape||
+3|By Stock|roll-labels-by-stock||
+2|Stickers|stickers|/collections/stickers-labels/stickers|
+3|Popular|stickers-popular|/collections/stickers-labels/standard-stickers|
+3|By Shape|stickers-by-shape|/collections/stickers-labels/rectangle-stickers|
+2|Bumper Stickers|bumper-stickers|/collections/stickers-labels/adhesive-vinyl-bumper-sticker|
+1|Packaging|packaging||
+2|Boxes|boxes||
+3|Standard Boxes|boxes-standard||
+2|Packaging Tags & Cards|packaging-tags-cards||
+3|Standard|packaging-tags-cards-standard||
+3|Premium|packaging-tags-cards-premium||
+1|Design Services||/pages/design-services|
+{%- endcapture -%}
+{{- tree | strip -}}

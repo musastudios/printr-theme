@@ -291,7 +291,9 @@
     "header": {
       "category": "Categoría",
       "all_categories": "Todas las categorías",
-      "sign_in": "Iniciar sesión / Registro"
+      "sign_in": "Iniciar sesión / Registro",
+      "view_all": "Ver todo: {{ title }}",
+      "shop_all": "Comprar {{ title }}"
     },
     "category_circles": {
       "heading": "Compra por categoría",

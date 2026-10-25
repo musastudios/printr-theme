@@ -1,0 +1,188 @@
+{%- comment -%}
+  Desktop nav + mega panels. Arrays come from sections/header.liquid (one entry per menu row).
+  Block types: mega_columns, mega_compact, mega_showroom, mega_products, promo_card.
+  An L1 with no block and visible children renders as a simple dropdown; with none, a plain link.
+{%- endcomment -%}
+{%- liquid
+  assign last = depths.size | minus: 1
+  assign sale_key = highlight | strip | downcase
+-%}
+<mega-menu class="mega-nav">
+<ul class="page-width header__menu" role="list">
+  {%- if last >= 0 -%}
+  {%- for i in (0..last) -%}
+    {%- if depths[i] != '1' or vis[i] != '1' -%}{%- continue -%}{%- endif -%}
+    {%- liquid
+      assign key = titles[i] | strip | downcase
+      assign mega = nil
+      assign override = nil
+      for b in blocks
+        assign bk = b.settings.menu_item | strip | downcase
+        if bk == key and bk != blank
+          if b.type == 'promo_card'
+            assign override = b
+          else
+            assign mega = b
+          endif
+        endif
+      endfor
+      assign s = i | plus: 1
+      assign e = i
+      assign kids = 0
+      if s <= last
+        for j in (s..last)
+          if depths[j] == '1'
+            break
+          endif
+          assign e = j
+          if depths[j] == '2' and vis[j] == '1'
+            assign kids = kids | plus: 1
+          endif
+        endfor
+      endif
+      assign url = urls[i] | strip
+      assign hh = handles[i] | strip
+      assign src = nil
+      if hh != blank
+        assign src = collections[hh]
+      endif
+      assign is_current = false
+      if request.path == url
+        assign is_current = true
+      elsif collection and hh != blank and collection.handle == hh
+        assign is_current = true
+      endif
+      assign mtype = mega.type | default: 'dropdown'
+      assign pid = 'Mega-' | append: i
+      assign is_sale = false
+      if sale_key != blank and key == sale_key
+        assign is_sale = true
+      endif
+    -%}
+    <li class="header__item{% if kids > 0 %} has-mega{% endif %}" data-mega="{{ mtype }}">
+      {%- if kids > 0 -%}
+        <button type="button" class="header__link{% if is_current %} is-current{% endif %}{% if is_sale %} is-sale{% endif %}" data-l1 aria-expanded="false" aria-controls="{{ pid }}" aria-haspopup="true">
+          {{- titles[i] | escape -}}{% render 'icon', name: 'chevron-down' %}
+        </button>
+        <div id="{{ pid }}" class="mega mega--{{ mtype }}" hidden {{ mega.shopify_attributes }}>
+          <div class="page-width mega__wrap">
+            {%- case mtype -%}
+              {%- when 'mega_showroom' -%}
+                {%- liquid
+                  assign ratio = mega.settings.thumb_ratio | default: '1/1'
+                  assign tpr = mega.settings.thumbs_per_row | default: 4
+                  assign first_tab = true
+                -%}
+                <mega-showroom class="mega__showroom">
+                  <div role="tablist" aria-orientation="vertical" class="mega__tabs" aria-label="{{ titles[i] | escape }}">
+                    {%- for j in (s..e) -%}
+                      {%- if depths[j] != '2' or vis[j] != '1' -%}{%- continue -%}{%- endif -%}
+                      <button type="button" role="tab" id="{{ pid }}-t{{ j }}" aria-controls="{{ pid }}-p{{ j }}" aria-selected="{% if first_tab %}true{% else %}false{% endif %}" tabindex="{% if first_tab %}0{% else %}-1{% endif %}">{{ titles[j] | escape }}{% render 'icon', name: 'arrow-right' %}</button>
+                      {%- assign first_tab = false -%}
+                    {%- endfor -%}
+                    {%- assign va = mega.settings.view_all_url | default: url -%}
+                    <a class="mega__viewall" href="{{ va }}">{{ 'sections.header.view_all' | t: title: titles[i] }} →</a>
+                  </div>
+                  {%- assign first_tab = true -%}
+                  {%- for j in (s..e) -%}
+                    {%- if depths[j] != '2' or vis[j] != '1' -%}{%- continue -%}{%- endif -%}
+                    {%- liquid
+                      assign tc = nil
+                      assign th = handles[j] | strip
+                      if th != blank
+                        assign tc = collections[th]
+                      endif
+                      assign cnt = counts[j] | strip
+                      assign k1 = j | plus: 1
+                    -%}
+                    <div role="tabpanel" id="{{ pid }}-p{{ j }}" aria-labelledby="{{ pid }}-t{{ j }}" class="mega__tabpanel"{% unless first_tab %} hidden{% endunless %}>
+                      <div class="mega__tabmain">
+                        <div class="mega__thead">
+                          <h3>{{ titles[j] | escape }}</h3>
+                          <a href="{{ urls[j] | strip }}">{{ 'sections.header.shop_all' | t: title: titles[j] }}{% if cnt != blank %} ({{ cnt }}){% endif %} →</a>
+                        </div>
+                        <ul class="mega__thumbs" role="list" style="--cols: {{ tpr }}; --ratio: {{ ratio }}">
+                          {%- assign n = 0 -%}
+                          {%- if k1 <= e -%}
+                            {%- for k in (k1..e) -%}
+                              {%- if depths[k] != '3' -%}{%- break -%}{%- endif -%}
+                              {%- if vis[k] != '1' -%}{%- continue -%}{%- endif -%}
+                              {%- assign n = n | plus: 1 -%}
+                              <li>{% render 'mega-thumb', title: titles[k], url: urls[k], handle: handles[k], img_product: imgs[k], sizes: '(min-width: 1280px) 180px, 15vw' %}</li>
+                            {%- endfor -%}
+                          {%- endif -%}
+                          {%- if n == 0 -%}
+                            <li>{% render 'mega-thumb', title: titles[j], url: urls[j], handle: handles[j], img_product: imgs[j], sizes: '(min-width: 1280px) 180px, 15vw' %}</li>
+                          {%- endif -%}
+                        </ul>
+                      </div>
+                      {%- if mega.settings.show_promo -%}
+                        {% render 'mega-promo', collection: tc, block: mega, allow_fallback: first_tab, id: pid %}
+                      {%- endif -%}
+                    </div>
+                    {%- assign first_tab = false -%}
+                  {%- endfor -%}
+                </mega-showroom>
+              {%- when 'mega_products' -%}
+                <div class="mega__cols" style="--cols: {{ kids }}">
+                  {%- for j in (s..e) -%}
+                    {%- if depths[j] == '2' and vis[j] == '1' -%}{% render 'mega-col', j: j, e: e, depths: depths, titles: titles, urls: urls, vis: vis, flow: false %}{%- endif -%}
+                  {%- endfor -%}
+                  <a class="mega__viewall" href="{{ url }}">{{ 'sections.header.view_all' | t: title: titles[i] }} →</a>
+                </div>
+                {%- liquid
+                  assign tsrc = mega.settings.source_collection | default: src
+                  assign list = tsrc.metafields.custom.mega_trending_products.value
+                  if list == blank
+                    assign list = tsrc.products
+                  endif
+                  assign lim = mega.settings.limit | default: 2
+                  assign heading = mega.settings.heading | default: '' | replace: '[menu]', titles[i]
+                -%}
+                {%- if list != blank -%}
+                  <div class="mega__trending">
+                    {%- if heading != blank -%}<h6 class="mega__eyebrow">{{ heading | escape }}</h6>{%- endif -%}
+                    <div class="mega__trending-grid">
+                      {%- for p in list limit: lim -%}{% render 'product-card', product: p, compact: true %}{%- endfor -%}
+                    </div>
+                  </div>
+                {%- endif -%}
+              {%- else -%}
+                {%- liquid
+                  assign ncols = mega.settings.columns | default: 4
+                  if mtype == 'mega_compact' or mtype == 'dropdown'
+                    assign ncols = 1
+                  endif
+                  assign flow = false
+                  if kids == 1 and ncols > 1
+                    assign flow = true
+                  endif
+                  assign pc = mega.settings.promo_collection | default: src
+                  assign show_promo = true
+                  if mtype == 'mega_columns' and mega.settings.show_promo == false
+                    assign show_promo = false
+                  endif
+                  if mtype == 'dropdown' and override == nil
+                    assign show_promo = false
+                  endif
+                -%}
+                <div class="mega__cols{% if flow %} mega__cols--flow{% endif %}" style="--cols: {{ ncols }}">
+                  {%- for j in (s..e) -%}
+                    {%- if depths[j] == '2' and vis[j] == '1' -%}{% render 'mega-col', j: j, e: e, depths: depths, titles: titles, urls: urls, vis: vis, flow: flow %}{%- endif -%}
+                  {%- endfor -%}
+                  <a class="mega__viewall" href="{{ url }}">{{ 'sections.header.view_all' | t: title: titles[i] }} →</a>
+                </div>
+                {%- if show_promo -%}
+                  {% render 'mega-promo', collection: pc, block: mega, override: override, allow_fallback: true, id: pid %}
+                {%- endif -%}
+            {%- endcase -%}
+          </div>
+        </div>
+      {%- else -%}
+        <a class="header__link{% if is_current %} is-current{% endif %}{% if is_sale %} is-sale{% endif %}" href="{{ url }}" data-l1{% if is_current %} aria-current="page"{% endif %}>{{ titles[i] | escape }}</a>
+      {%- endif -%}
+    </li>
+  {%- endfor -%}
+  {%- endif -%}
+</ul>
+</mega-menu>

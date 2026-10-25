@@ -1,0 +1,27 @@
+{%- comment -%} One L2 column: heading + visible L3 links. flow = single group split across the block's columns. {%- endcomment -%}
+{%- liquid
+  assign k1 = j | plus: 1
+  assign n = 0
+  if k1 <= e
+    for k in (k1..e)
+      if depths[k] != '3'
+        break
+      endif
+      if vis[k] == '1'
+        assign n = n | plus: 1
+      endif
+    endfor
+  endif
+-%}
+<div class="mega__col{% if flow %} mega__col--flow{% endif %}">
+  <a class="mega__title" href="{{ urls[j] | strip }}">{{ titles[j] | escape }}</a>
+  {%- if n > 0 -%}
+    <ul role="list">
+      {%- for k in (k1..e) -%}
+        {%- if depths[k] != '3' -%}{%- break -%}{%- endif -%}
+        {%- if vis[k] != '1' -%}{%- continue -%}{%- endif -%}
+        <li><a href="{{ urls[k] | strip }}">{{ titles[k] | escape }}</a></li>
+      {%- endfor -%}
+    </ul>
+  {%- endif -%}
+</div>
