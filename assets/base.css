@@ -37,7 +37,7 @@ label{font-weight:600;font-size:1.4rem}
 .crop-on .crop::before,.crop-on .crop::after{content:"";position:absolute;width:14px;height:14px;pointer-events:none;z-index:2;border-color:rgb(var(--color-foreground));opacity:.55}
 .crop-on .crop::before{top:-8px;left:-8px;border-top:1px solid;border-left:1px solid}
 .crop-on .crop::after{bottom:-8px;right:-8px;border-bottom:1px solid;border-right:1px solid}
-.cmyk-bar{display:flex;height:1.2rem;margin:.8rem auto;width:calc(100% - 2*var(--page-gutter,2rem));max-width:var(--page-width,140rem);border:2px solid #000;border-radius:var(--radius-button,99px);box-shadow:3px 3px 0 #000;overflow:hidden;box-sizing:border-box}.cmyk-bar span{flex:1}.cmyk-bar span+span{border-left:2px solid #000}
+.cmyk-bar{display:flex;height:1.2rem;margin:.8rem auto;width:calc(100% - 2*clamp(1.6rem,3vw,4rem));max-width:var(--page-width,140rem);border:2px solid #000;border-radius:var(--radius-button,99px);box-shadow:3px 3px 0 #000;overflow:hidden;box-sizing:border-box}.cmyk-bar span{flex:1}.cmyk-bar span+span{border-left:2px solid #000}
 .cmyk-bar span:nth-child(1){background:var(--c)}.cmyk-bar span:nth-child(2){background:var(--m)}.cmyk-bar span:nth-child(3){background:var(--y)}.cmyk-bar span:nth-child(4){background:var(--k)}
 .badge{display:inline-block;padding:.3rem .9rem;border-radius:99px;font-size:1.2rem;font-weight:700;color:#fff;background:var(--k)}
 .badge--sale{background:var(--color-sale)}.badge--new{background:var(--color-badge-new)}
