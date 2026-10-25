@@ -1,7 +1,8 @@
 {% doc %}
   Renders one print_spec metaobject as JSON for the artwork uploader (null when blank).
+  template_url is the size's downloadable template (print_spec.template_file), null when unset.
   @param {object} spec - print_spec metaobject
 {% enddoc %}
 {%- if spec != blank -%}
-  {"label":{{ spec.label.value | json }},"trim_w_in":{{ spec.trim_w_in.value | json }},"trim_h_in":{{ spec.trim_h_in.value | json }},"bleed_in":{{ spec.bleed_in.value | json }},"safe_in":{{ spec.safe_in.value | json }},"min_dpi":{{ spec.min_dpi.value | json }},"warn_dpi":{{ spec.warn_dpi.value | json }},"sides":{{ spec.sides.value | json }},"pages":{{ spec.pages.value | json }},"formats":{{ spec.formats.value | json }},"special":{{ spec.special.value | json }},"panels":{{ spec.panels.value | json }},"detail":{{ spec.detail.value | json }},"notes":{{ spec.notes.value | json }}}
+  {"handle":{{ spec.system.handle | json }},"label":{{ spec.label.value | json }},"trim_w_in":{{ spec.trim_w_in.value | json }},"trim_h_in":{{ spec.trim_h_in.value | json }},"bleed_in":{{ spec.bleed_in.value | json }},"safe_in":{{ spec.safe_in.value | json }},"min_dpi":{{ spec.min_dpi.value | json }},"warn_dpi":{{ spec.warn_dpi.value | json }},"sides":{{ spec.sides.value | json }},"pages":{{ spec.pages.value | json }},"formats":{{ spec.formats.value | json }},"special":{{ spec.special.value | json }},"panels":{{ spec.panels.value | json }},"detail":{{ spec.detail.value | json }},"notes":{{ spec.notes.value | json }},"template_url":{{ spec.template_file.value.url | json }}}
 {%- else -%}null{%- endif -%}

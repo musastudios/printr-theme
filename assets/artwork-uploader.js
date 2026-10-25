@@ -227,7 +227,19 @@ class ArtworkUploader extends HTMLElement {
     this.querySelectorAll('[data-au-formats]').forEach((e) => { e.textContent = fmt(this.t.drop_formats, { formats: fmts, max: r2(this.cfg.maxBytes / 1048576) }); });
     const guide = [decodeEntities(p.guidance), decodeEntities(sp.notes), this.foldFromOption ? fmt(this.t.folds, { n: special.panelCount || 2 }) : ''].filter(Boolean).join('\n');
     this.querySelectorAll('[data-au-guidance]').forEach((e) => { e.textContent = guide; e.hidden = !guide; });
-    this.querySelectorAll('[data-au-template-link]').forEach((tl) => { tl.href = p.template_url || '#'; tl.hidden = !p.template_url; });
+    // Download template: selected size's print_spec template_file, else the profile template.
+    const tplUrl = this.sizeTemplateUrl(sp) || p.template_url || '';
+    this.querySelectorAll('[data-au-template-link]').forEach((tl) => { tl.href = tplUrl || '#'; tl.hidden = !tplUrl; });
+  }
+  sizeTemplateUrl(sp) {
+    if (!sp) return '';
+    if (sp.template_url) return sp.template_url;
+    if (!this.sizeTemplates) {
+      this.sizeTemplates = [];
+      this.querySelectorAll('script[data-au-size-template]').forEach((el) => { try { this.sizeTemplates.push(JSON.parse(el.textContent)); } catch (e) { /* skip bad block */ } });
+    }
+    const hit = this.sizeTemplates.find((t) => (sp.handle && t.handle === sp.handle) || (t.label && t.label === sp.label && num(t.trim_w_in) === num(sp.trim_w_in) && num(t.trim_h_in) === num(sp.trim_h_in)));
+    return (hit && hit.template_url) || '';
   }
   setVariant(id, options) {
     // product.variants caps at 250 in Liquid; callers may pass the variant's options for ids outside that list.

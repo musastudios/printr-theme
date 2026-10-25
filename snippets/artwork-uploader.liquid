@@ -85,6 +85,12 @@
       ]
     }
   </script>
+  {%- comment -%} One block per size: print_spec handle -> its template download (empty = use profile template). {%- endcomment -%}
+  {%- for sz in profile.sizes.value -%}
+    <script type="application/json" data-au-size-template>
+      {"handle":{{ sz.system.handle | json }},"label":{{ sz.label.value | json }},"trim_w_in":{{ sz.trim_w_in.value | json }},"trim_h_in":{{ sz.trim_h_in.value | json }},"template_url":{{ sz.template_file.value.url | json }}}
+    </script>
+  {%- endfor -%}
   <script type="application/json" data-au-strings>
     {
       "files_uploaded": {{ 'artwork.files_uploaded' | t | json }},
