@@ -1,0 +1,32 @@
+{% doc %}
+  Print template download for the selected size. Per-variant print_spec template_file,
+  falling back to the print profile template (file, then URL). Updates on variant:change.
+  @param {product} product - Product
+  @param {variant} variant - Selected variant
+{% enddoc %}
+{%- liquid
+  assign profile = product.metafields.custom.print_profile.value
+  assign profile_tpl = profile.template_url.value
+  if profile.template_file.value != blank
+    assign profile_tpl = profile.template_file.value.url | default: profile_tpl
+  endif
+  assign product_spec = product.metafields.custom.print_spec.value | default: profile.default_size.value
+  if product_spec.template_file.value != blank
+    assign profile_tpl = product_spec.template_file.value.url
+  endif
+  assign current = variant.metafields.custom.print_spec.value.template_file.value.url | default: profile_tpl
+-%}
+<product-templates class="product__templates" data-fallback="{{ profile_tpl }}">
+  <script type="application/json" data-tpl-map>
+    {
+      {%- for v in product.variants -%}
+        {{ v.id | json }}:{{ v.metafields.custom.print_spec.value.template_file.value.url | default: profile_tpl | json }}{%- unless forloop.last -%},{%- endunless -%}
+      {%- endfor -%}
+    }
+  </script>
+  <p class="product__tpl-empty" data-tpl-empty {% if current != blank %}hidden{% endif %}>{{ 'artwork.no_template' | t }}</p>
+  <a class="link product__tpl" href="{{ current | default: '#' }}" target="_blank" rel="noopener" data-tpl-link {% if current == blank %}hidden{% endif %}>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M12 15V3"/><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m7 10 5 5 5-5"/></svg>
+    {{- 'artwork.template_short' | t -}}
+  </a>
+</product-templates>

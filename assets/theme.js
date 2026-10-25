@@ -387,3 +387,21 @@ class CarouselTrack extends HTMLElement {
 }
 customElements.get('carousel-track') || customElements.define('carousel-track', CarouselTrack);
 
+
+/* Product templates: download link follows the selected variant's print_spec template */
+class ProductTemplates extends HTMLElement {
+  connectedCallback() {
+    try { this.map = JSON.parse(this.querySelector('[data-tpl-map]')?.textContent || '{}'); } catch (e) { this.map = {}; }
+    this.onVariant = (e) => this.update(e.detail?.variantId);
+    document.addEventListener('variant:change', this.onVariant);
+  }
+  disconnectedCallback() { document.removeEventListener('variant:change', this.onVariant); }
+  update(id) {
+    if (!id) return;
+    const url = this.map[String(id)] || this.dataset.fallback || '';
+    const a = this.querySelector('[data-tpl-link]'); const empty = this.querySelector('[data-tpl-empty]');
+    if (a) { a.href = url || '#'; a.hidden = !url; }
+    if (empty) empty.hidden = !!url;
+  }
+}
+if (!customElements.get('product-templates')) customElements.define('product-templates', ProductTemplates);

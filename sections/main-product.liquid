@@ -48,6 +48,8 @@
     <div class="product__info">
       {%- for block in section.blocks -%}
         {%- case block.type -%}
+          {%- when 'description', 'collapsible', 'tabs' -%}
+            {%- continue -%}
           {%- when 'title' -%}
             <div {{ block.shopify_attributes }}>
               {%- if product.vendor != blank -%}<span class="slug">{{ product.vendor }}</span>{%- endif -%}
@@ -74,6 +76,16 @@
             <div {{ block.shopify_attributes }}>{% render 'design-service', product: product, section_id: section.id, block: block %}</div>
           {%- when 'turnaround' -%}
             <p class="product__turnaround" {{ block.shopify_attributes }}>{% render 'icon', name: 'clock' %}<span><strong>{{ 'products.product.turnaround' | t }}:</strong> {{ product.metafields.custom.turnaround | default: block.settings.text }}</span></p>
+          {%- when 'custom_liquid' -%}
+            <div {{ block.shopify_attributes }}>{{ block.settings.custom_liquid }}</div>
+          {%- when '@app' -%}
+            {% render block %}
+        {%- endcase -%}
+      {%- endfor -%}
+    </div>
+    <div class="product__details">
+      {%- for block in section.blocks -%}
+        {%- case block.type -%}
           {%- when 'description' -%}
             <div class="rte product__description" {{ block.shopify_attributes }}>{{ product.description }}</div>
           {%- when 'collapsible' -%}
@@ -110,12 +122,9 @@
                 {%- endif -%}
               {%- endfor -%}
             </tabs-component>
-          {%- when 'custom_liquid' -%}
-            <div {{ block.shopify_attributes }}>{{ block.settings.custom_liquid }}</div>
-          {%- when '@app' -%}
-            {% render block %}
         {%- endcase -%}
       {%- endfor -%}
+      {% render 'product-templates', product: product, variant: variant %}
     </div>
   </div>
 </div>
@@ -131,7 +140,10 @@
 <script type="application/ld+json">{{ product | structured_data }}</script>
 {% stylesheet %}
   .product__grid { display: grid; gap: clamp(3rem, 5vw, 7rem); }
-  @media (min-width: 990px) { .product__grid { grid-template-columns: 1.2fr 1fr; } .product__info { position: sticky; top: 10rem; align-self: start; } }
+  @media (min-width: 990px) { .product__grid { grid-template-columns: 1.2fr 1fr; grid-template-rows: auto 1fr; } .product__media { grid-column: 1; grid-row: 1; } .product__info { grid-column: 2; grid-row: 1 / span 2; position: sticky; top: 10rem; align-self: start; } .product__details { grid-column: 1; grid-row: 2; align-self: start; } }
+  .product__details { display: flex; flex-direction: column; gap: 2.4rem; min-width: 0; }
+  .product__tpl { display: inline-flex; align-items: center; gap: .8rem; font-weight: 600; }
+  .product__tpl svg { width: 1.8rem; height: 1.8rem; }
   .product__info { display: flex; flex-direction: column; gap: 2.4rem; }
   .product__thumbs { list-style: none; padding: 0; margin: 1.6rem 0 0; display: grid; grid-template-columns: 1fr 1fr; gap: 1.6rem; }
   .product__price .price { font-size: 2.6rem; }
