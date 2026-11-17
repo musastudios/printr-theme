@@ -120,7 +120,11 @@
     }
   </script>
   <template data-bc-icon="chevron">{% render 'au-icon', name: 'chevron-down', size: 18 %}</template>
-  <h2 class="bc__heading slug">{{ 'products.product.configurator.heading' | t }}</h2>
+  {%- assign bc_heading = cfg.heading[request.locale.iso_code] | default: cfg.heading.en -%}
+  {%- if bc_heading == blank -%}
+    {%- assign bc_heading = 'products.product.configurator.heading' | t -%}
+  {%- endif -%}
+  <h2 class="bc__heading slug">{{ bc_heading }}</h2>
   <div class="bc-card">
     <div class="bc-sec">
       <h3 class="bc-sec__title">{% render 'au-icon', name: 'settings-2', size: 18 %}{{ 'products.product.configurator.specs' | t }}</h3>
