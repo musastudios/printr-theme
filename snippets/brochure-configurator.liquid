@@ -120,11 +120,25 @@
     }
   </script>
   <template data-bc-icon="chevron">{% render 'au-icon', name: 'chevron-down', size: 18 %}</template>
-  {%- assign bc_heading = cfg.heading[request.locale.iso_code] | default: cfg.heading.en -%}
-  {%- if bc_heading == blank -%}
-    {%- assign bc_heading = 'products.product.configurator.heading' | t -%}
-  {%- endif -%}
-  <h2 class="bc__heading slug">{{ bc_heading }}</h2>
+  {%- liquid
+    assign bc_heading = ''
+    assign bc_heading_src = 'theme'
+    assign bc_mf = product.metafields.custom.configurator.value
+    assign bc_headings = bc_mf['heading']
+    if bc_headings != blank
+      assign bc_lang = request.locale.iso_code | split: '-' | first | downcase
+      assign bc_heading = bc_headings[bc_lang]
+      if bc_heading == blank
+        assign bc_heading = bc_headings['en']
+      endif
+    endif
+    if bc_heading != blank
+      assign bc_heading_src = 'metafield'
+    else
+      assign bc_heading = 'products.product.configurator.heading' | t
+    endif
+  -%}
+  <h2 class="bc__heading slug" data-heading-source="{{ bc_heading_src }}">{{ bc_heading | escape }}</h2>
   <div class="bc-card">
     <div class="bc-sec">
       <h3 class="bc-sec__title">{% render 'au-icon', name: 'settings-2', size: 18 %}{{ 'products.product.configurator.specs' | t }}</h3>
