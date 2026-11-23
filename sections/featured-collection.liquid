@@ -11,6 +11,7 @@
     <ul class="grid product-grid" role="list" style="--cols: {{ section.settings.columns }}">
       {%- if c != blank -%}
         {%- for product in c.products limit: section.settings.limit -%}
+          {%- if product.type == 'Service fee' -%}{%- continue -%}{%- endif -%}
           <li>{% render 'product-card', product: product %}</li>
         {%- endfor -%}
       {%- else -%}

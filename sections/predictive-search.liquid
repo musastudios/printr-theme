@@ -8,6 +8,7 @@
       <div><h3 class="slug">{{ 'sections.search.products' | t }}</h3>
         <ul role="list" class="ps__products">
           {%- for p in predictive_search.resources.products -%}
+          {%- if p.type == 'Service fee' -%}{%- continue -%}{%- endif -%}
             <li><a href="{{ p.url }}" class="ps__product">
               {%- if p.featured_image -%}{{ p.featured_image | image_url: width: 120 | image_tag: loading: 'lazy', widths: '60, 120', sizes: '60px' }}{%- endif -%}
               <span>{{ p.title | escape }}<br><small>{{ p.price | money }}</small></span></a></li>

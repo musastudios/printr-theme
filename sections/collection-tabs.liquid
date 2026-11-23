@@ -11,6 +11,7 @@
         <div role="tabpanel" id="Panel-{{ block.id }}" aria-labelledby="Tab-{{ block.id }}" {% unless forloop.first %}hidden{% endunless %}>
           <ul class="grid product-grid" role="list" style="--cols: 4">
             {%- for product in block.settings.collection.products limit: 8 -%}
+              {%- if product.type == 'Service fee' -%}{%- continue -%}{%- endif -%}
               <li>{% render 'product-card', product: product %}</li>
             {%- endfor -%}
           </ul>

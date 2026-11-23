@@ -31,6 +31,7 @@
       {%- if collection.products.size > 0 -%}
         <ul id="ProductGrid-{{ section.id }}" class="grid product-grid" data-product-grid data-layout="grid" role="list" style="--cols: {{ section.settings.columns }}">
           {%- for product in collection.products -%}
+            {%- if product.type == 'Service fee' -%}{%- continue -%}{%- endif -%}
             <li>{% render 'product-card', product: product %}</li>
           {%- endfor -%}
         </ul>
