@@ -87,7 +87,9 @@ export function applyRushToFormData(fd, data, tier, extraTurnKeys = []) {
 class RushTurnaround extends HTMLElement {
   connectedCallback() {
     this.data = JSON.parse(this.querySelector('[data-rush-data]').textContent);
-    this.t = this.data.strings || {};
+    // The | t filter HTML-escapes (isn't -> isn&#39;t); decode once since most strings go through textContent.
+    const dec = (v) => { const ta = document.createElement('textarea'); ta.innerHTML = String(v); return ta.value; };
+    this.t = Object.fromEntries(Object.entries(this.data.strings || {}).map(([k, v]) => [k, dec(v)]));
     this.radios = [...this.querySelectorAll('[data-rush-opt]')];
     this.radios.forEach((r) => r.addEventListener('change', () => { if (r.checked) this.choose(r.value, true); }));
     // formdata does not bubble; capture at document so the hook survives the buy form being re-rendered on variant change.
