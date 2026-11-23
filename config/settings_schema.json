@@ -373,6 +373,28 @@
     ]
   },
   {
+    "name": "Production turnaround",
+    "settings": [
+      {
+        "type": "paragraph",
+        "content": "Rush (2 Business Days / Next Business Day) is offered on a product page when the selected variant has the metafields printr.rush_2bd / printr.rush_nbd (surcharge in store currency, blank = not offered). The surcharge is charged as a nested cart line of the fee product below: one $0.01 variant per tier (SKUs RUSH-2BD and RUSH-NBD; a single $0.01 variant also works), quantity = surcharge in cents. Leave empty to use the product with handle rush-production; with no fee product, rush is not offered."
+      },
+      {
+        "type": "product",
+        "id": "rush_product",
+        "label": "Rush Production fee product",
+        "info": "Hidden product: taxable, no shipping, inventory not tracked, $0.01 variants, available on the Online Store."
+      },
+      {
+        "type": "number",
+        "id": "rush_standard_days",
+        "label": "Standard production time (business days)",
+        "default": 4,
+        "info": "Shown for Standard when rush is offered. A variant metafield printr.standard_days overrides it."
+      }
+    ]
+  },
+  {
     "name": "Artwork uploads",
     "settings": [
       {

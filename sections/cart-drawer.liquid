@@ -2,7 +2,7 @@
   <div class="drawer__overlay" data-drawer-close></div>
   <div class="drawer__panel">
     <div class="drawer__header">
-      <h2 id="CartDrawerTitle" class="h3">{{ 'sections.cart.title' | t }} ({{ cart.item_count }})</h2>
+      <h2 id="CartDrawerTitle" class="h3">{{ 'sections.cart.title' | t }} ({% render 'cart-count' %})</h2>
       <button type="button" class="icon-button" data-drawer-close>{% render 'icon', name: 'close' %}<span class="visually-hidden">{{ 'general.close' | t }}</span></button>
     </div>
     <cart-items class="cart-drawer__body">

@@ -145,7 +145,23 @@
       "share_title": "Compartir este producto",
       "share_email": "Correo electrónico",
       "share_copy": "Copiar enlace",
-      "share_copied": "Enlace copiado"
+      "share_copied": "Enlace copiado",
+      "rush": {
+        "heading": "Tiempo de producción",
+        "standard": "Estándar",
+        "standard_days": "{{ days }} días laborables",
+        "included": "Incluido",
+        "two_day": "2 días laborables",
+        "next_day": "Próximo día laborable",
+        "rush_label": "Producción urgente",
+        "fastest_label": "Lo más rápido — producción urgente",
+        "total": "Total con {option}: {price}",
+        "price_note": "Incluye urgencia {option} (+{amount})",
+        "note": "Solo tiempo de producción. El envío se calcula al pagar.",
+        "reset": "{option} no está disponible para esta opción, así que cambiamos a Estándar.",
+        "cart_note": "Cargo por producción urgente. Se elimina automáticamente con su artículo impreso.",
+        "editor_missing_fee": "Las opciones urgentes están ocultas: crea el producto de cargo Rush Production y selecciónalo en Configuración del tema → Production turnaround."
+      }
     },
     "compare": {
       "label": "Comparar",

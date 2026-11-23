@@ -1,0 +1,15 @@
+{% doc %}
+  Number of items in the cart for display, leaving out Rush Production fee lines
+  (they are $0.01 units whose quantity is the surcharge in cents).
+  @example
+  {% render 'cart-count' %}
+{% enddoc %}
+{%- liquid
+  assign n = cart.item_count
+  for item in cart.items
+    if item.properties._rush_fee != blank
+      assign n = n | minus: item.quantity
+    endif
+  endfor
+  echo n
+-%}

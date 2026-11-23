@@ -73,7 +73,8 @@ const renderCartSections = (sections) => {
 const refreshCount = async () => {
   try {
     const cart = await (await fetch(`${window.routes.cart_url}.js`)).json();
-    document.querySelectorAll('[data-cart-count]').forEach((el) => { el.textContent = cart.item_count; el.hidden = cart.item_count === 0; });
+    const n = visibleItemCount(cart);
+    document.querySelectorAll('[data-cart-count]').forEach((el) => { el.textContent = n; el.hidden = n === 0; });
   } catch (e) { /* noop */ }
 };
 const sectionIdsOnPage = () => {
@@ -109,9 +110,38 @@ customElements.define('cart-items', CartItems);
 
 /* Linked add-on lines follow their parent; orphans are removed.
  * - Artwork QA fee: child has _artwork_fee, linked by _artwork_link.
- * - Design Service: child has "Design tier", linked by _parent_key. */
+ * - Design Service: child has "Design tier", linked by _parent_key.
+ * - Rush production fee: child has _rush_fee, linked by _rush_link (also a Shopify nested line under the print item).
+ *   Its quantity must equal the print line's _rush_cents x the print line's quantity ($0.01 per unit). */
 const isDesignChild = (i) => i.properties && i.properties._parent_key && i.properties['Design tier'];
 const isFeeChild = (i) => i.properties && i.properties._artwork_fee;
+// RUSH-PLAN-START (pure; mirrored in tests)
+const isRushChild = (i) => !!(i && i.properties && i.properties._rush_fee);
+const isRushParent = (i) => !!(i && i.properties && i.properties._rush_link && !isRushChild(i));
+const rushWant = (p) => Math.max(0, parseInt(p.properties._rush_cents, 10) || 0) * p.quantity;
+/** Fee lines are money, not units: leave them out of the cart count. */
+const visibleItemCount = (cart) => (cart && cart.items ? cart.items.reduce((n, i) => n + (isRushChild(i) ? 0 : i.quantity), 0) : 0);
+/** What to change so every rush parent has exactly one fee line of the right quantity. Returns { updates, adds }. */
+function rushPlan(cart) {
+  const updates = {}; const adds = [];
+  const parents = new Map(); cart.items.filter(isRushParent).forEach((p) => { if (!parents.has(p.properties._rush_link)) parents.set(p.properties._rush_link, p); });
+  const seen = new Set();
+  cart.items.forEach((i) => {
+    if (!isRushChild(i)) return;
+    const link = i.properties._rush_link; const p = parents.get(link);
+    if (!p || seen.has(link)) { updates[i.key] = 0; return; } // orphan or duplicate fee line
+    seen.add(link);
+    const want = rushWant(p);
+    if (i.quantity !== want) updates[i.key] = want;
+  });
+  parents.forEach((p, link) => {
+    const want = rushWant(p); const fee = parseInt(p.properties._rush_fee_variant, 10);
+    if (!seen.has(link) && want > 0 && fee) adds.push({ id: fee, quantity: want, parent_line_key: p.key, properties: { _rush_link: link, _rush_fee: p.properties._rush_tier || 'rush', _for: p.product_title + (p.variant_title ? ` – ${p.variant_title}` : '') } });
+  });
+  return { updates, adds };
+}
+// RUSH-PLAN-END
+const rushReadded = new Set();
 let feeCheck = null;
 async function removeOrphanFees(cart) {
   if (feeCheck) return feeCheck;
@@ -120,16 +150,27 @@ async function removeOrphanFees(cart) {
       const c = cart && cart.items ? cart : await (await fetch(`${window.routes.cart_url}.js`)).json();
       const parents = new Set(c.items.filter((i) => i.properties && i.properties._artwork_link && !isFeeChild(i)).map((i) => i.properties._artwork_link));
       const dsParents = new Set(c.items.filter((i) => i.properties && i.properties._parent_key && !isDesignChild(i)).map((i) => i.properties._parent_key));
-      const updates = {};
+      const rush = rushPlan(c);
+      const updates = { ...rush.updates };
       c.items.forEach((i) => {
         if (isFeeChild(i) && !parents.has(i.properties._artwork_link)) updates[i.key] = 0;
         else if (isDesignChild(i) && !dsParents.has(i.properties._parent_key)) updates[i.key] = 0;
         else if (isDesignChild(i) && i.quantity !== 1) updates[i.key] = 1; // design line is always qty 1
       });
-      if (!Object.keys(updates).length) return;
-      const res = await fetch(`${window.routes.cart_url}/update.js`, { method: 'POST', headers: { 'Content-Type': 'application/json', Accept: 'application/json' }, body: JSON.stringify({ updates, sections: sectionIdsOnPage() }) });
-      const data = await res.json();
-      renderCartSections(data.sections); refreshCount();
+      let sections = null;
+      if (Object.keys(updates).length) {
+        const res = await fetch(`${window.routes.cart_url}/update.js`, { method: 'POST', headers: { 'Content-Type': 'application/json', Accept: 'application/json' }, body: JSON.stringify({ updates, sections: sectionIdsOnPage() }) });
+        sections = (await res.json()).sections;
+      }
+      // A rush print line lost its fee line (e.g. removed by hand): put it back once per page view, nested under the print line.
+      const adds = rush.adds.filter((a) => !rushReadded.has(a.properties._rush_link));
+      if (adds.length) {
+        adds.forEach((a) => rushReadded.add(a.properties._rush_link));
+        const res = await fetch(`${window.routes.cart_add_url}.js`, { method: 'POST', headers: { 'Content-Type': 'application/json', Accept: 'application/json' }, body: JSON.stringify({ items: adds, sections: sectionIdsOnPage() }) });
+        const data = await res.json();
+        if (!data.status) sections = data.sections || sections;
+      }
+      if (sections) { renderCartSections(sections); refreshCount(); }
     } catch (err) { console.error(err); } finally { feeCheck = null; }
   })();
   return feeCheck;
@@ -155,6 +196,11 @@ class ProductForm extends HTMLElement {
     try {
       let res = await post(fd);
       let data = await res.json();
+      // Nested-line parent link refused: add the same lines without parent_id (the rush fee stays linked by _rush_link).
+      if (data.status && [...fd.keys()].some((k) => /\]\[parent_id\]$/.test(k))) {
+        const flat = new FormData(); for (const [k, v] of fd.entries()) if (!/\]\[parent_id\]$/.test(k)) flat.append(k, v);
+        fd = flat; res = await post(fd); data = await res.json();
+      }
       // Design Service add failed: keep the print item, drop the design line + its markers, and flag the selector.
       if (data.status && [...fd.keys()].some((k) => k.endsWith('[properties][Design tier]'))) {
         const retry = withoutDesign(fd);
@@ -232,7 +278,7 @@ class VariantPicker extends HTMLElement {
         doc = await load(ids);
       }
       const variantId = doc.querySelector('[data-selected-variant]')?.dataset.selectedVariant;
-      ['[data-swap="price"]', '[data-swap="tiers"]', '[data-swap="buy"]', '[data-swap="picker"]', '[data-swap="media"]', '[data-swap="sku"]'].forEach((sel) => {
+      ['[data-swap="price"]', '[data-swap="tiers"]', '[data-swap="buy"]', '[data-swap="picker"]', '[data-swap="media"]', '[data-swap="sku"]', '[data-swap="turnaround"]'].forEach((sel) => {
         const a = root.querySelector(sel); const b = doc.querySelector(sel);
         if (a && b) a.replaceWith(b);
       });

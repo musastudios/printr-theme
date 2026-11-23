@@ -50,7 +50,7 @@
     <span class="visually-hidden">{{ 'products.product.regular_price' | t }}</span>
     <s>{{ compare | money }}</s>
   {%- else -%}
-    <span>{{ price | money }}</span>
+    <span data-price-amount>{{ price | money }}</span>
   {%- endif -%}
   {%- if target.unit_price_measurement -%}
     <small class="price__unit">

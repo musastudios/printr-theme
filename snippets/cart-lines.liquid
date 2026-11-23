@@ -6,7 +6,9 @@
 {%- assign has_design = false -%}
 <ul class="cart-lines" role="list">
   {%- for item in cart.items -%}
-    <li class="cart-line">
+    {%- assign is_rush = false -%}
+    {%- if item.properties._rush_fee != blank -%}{%- assign is_rush = true -%}{%- endif -%}
+    <li class="cart-line{% if is_rush %} cart-line--rush{% endif %}">
       <a href="{{ item.url }}" class="media cart-line__media" style="--ratio: 1">
         {%- if item.image -%}{{ item.image | image_url: width: 200 | image_tag: loading: 'lazy', widths: '100, 200', sizes: '100px' }}{%- endif -%}
       </a>
@@ -29,7 +31,9 @@
         {%- if item.unit_price_measurement -%}<p class="cart-line__meta"><span class="visually-hidden">{{ 'products.product.unit_price' | t }}</span>{{ item.unit_price | money }}/{%- if item.unit_price_measurement.reference_value != 1 -%}{{ item.unit_price_measurement.reference_value }}{%- endif -%}{{ item.unit_price_measurement.reference_unit }}</p>{%- endif -%}
         {%- if item.selling_plan_allocation -%}<p class="cart-line__meta">{{ item.selling_plan_allocation.selling_plan.name }}</p>{%- endif -%}
         <div class="cart-line__row">
-          {%- if is_design or item.properties._artwork_fee != blank -%}
+          {%- if is_rush -%}
+            <p class="cart-line__meta cart-line__rush-note">{{ 'products.product.rush.cart_note' | t }}</p>
+          {%- elsif is_design or item.properties._artwork_fee != blank -%}
             <p class="cart-line__meta">{{ 'products.product.quantity' | t }}: {{ item.quantity }}</p>
           {%- else -%}
           <quantity-input class="qty">
@@ -39,13 +43,15 @@
             <button type="button" name="plus">+<span class="visually-hidden">{{ 'products.product.increase' | t }}</span></button>
           </quantity-input>
           {%- endif -%}
+          {%- unless is_rush -%}
           <a href="{{ item.url_to_remove }}" class="link-button" data-line-remove="{{ forloop.index }}">{{ 'sections.cart.remove' | t: title: '' }}<span class="visually-hidden">{{ item.product.title | escape }}</span></a>
+          {%- endunless -%}
         </div>
       </div>
       <div class="cart-line__price">
         {%- if item.original_line_price > item.final_line_price -%}<s>{{ item.original_line_price | money }}</s>{%- endif -%}
         <strong>{{ item.final_line_price | money }}</strong>
-        {%- if item.final_price != item.original_price -%}<small>{{ item.final_price | money }} / {{ 'products.product.each' | t }}</small>{%- endif -%}
+        {%- if item.final_price != item.original_price and is_rush == false -%}<small>{{ item.final_price | money }} / {{ 'products.product.each' | t }}</small>{%- endif -%}
       </div>
     </li>
   {%- endfor -%}
@@ -60,4 +66,8 @@
   .cart-lines__note { margin: 1.6rem 0 0; padding: 1rem 1.2rem; border: 2px solid #000; border-radius: 12px; background: #FFF915; color: #000; font-size: 1.3rem; }
   .cart-line__price { text-align: right; display: grid; }
   .cart-line__price s { opacity: .6; font-size: 1.3rem; }
+  .cart-line--rush { margin-top: -1.2rem; padding: 1rem 1.2rem; grid-template-columns: 1fr auto; background: #FAF8F3; border: 1.5px dashed #E3DFD4; border-radius: 1.2rem; }
+  .cart-line--rush .cart-line__media { display: none; }
+  .cart-line--rush .cart-line__row { margin-top: .4rem; }
+  .cart-line__rush-note { font-style: italic; }
 {% endstylesheet %}

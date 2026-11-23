@@ -1,0 +1,179 @@
+{% doc %}
+  Production time block. When the selected variant has rush surcharges (variant metafields printr.rush_2bd and
+  printr.rush_nbd, store-currency amounts already marked up; blank = not offered) AND the hidden Rush Production
+  fee product is set up, renders a turnaround selector: Standard (included) / 2 Business Days / Next Business Day.
+  The chosen rush is charged as a nested cart line of the fee product's $0.01 variant (quantity = surcharge in cents),
+  added in the same /cart/add call as the print item (see assets/rush-turnaround.js and docs/rush-turnaround.md).
+  Otherwise renders the static production-time note, so nothing changes until the fee product exists.
+  @param {product} product - The product
+  @param {variant} variant - The selected variant
+  @param {string} section_id - Section id
+  @param {object} block - The turnaround block (settings.text = default production time)
+  @example
+  {% render 'rush-turnaround', product: product, variant: variant, section_id: section.id, block: block %}
+{% enddoc %}
+{%- liquid
+  assign rush_product = settings.rush_product
+  if rush_product == blank
+    assign rush_product = all_products['rush-production']
+  endif
+  assign fee_2bd = nil
+  assign fee_nbd = nil
+  assign fee_any = nil
+  if rush_product != blank and rush_product.id != blank
+    for fv in rush_product.variants
+      if fv.price == 1 and fv.available
+        assign fsku = fv.sku | upcase
+        if fsku == 'RUSH-2BD'
+          assign fee_2bd = fv
+        elsif fsku == 'RUSH-NBD'
+          assign fee_nbd = fv
+        elsif fee_any == nil
+          assign fee_any = fv
+        endif
+      endif
+    endfor
+  endif
+  if fee_2bd == nil
+    assign fee_2bd = fee_any
+  endif
+  if fee_nbd == nil
+    assign fee_nbd = fee_any
+  endif
+
+  assign c2 = 0
+  assign cn = 0
+  assign m2 = variant.metafields.printr.rush_2bd.value
+  assign mn = variant.metafields.printr.rush_nbd.value
+  if m2 != blank and m2 > 0 and fee_2bd != nil
+    assign c2 = m2 | times: 100 | round
+  endif
+  if mn != blank and mn > 0 and fee_nbd != nil
+    assign cn = mn | times: 100 | round
+  endif
+  assign has_rush = false
+  if c2 > 0 or cn > 0
+    assign has_rush = true
+  endif
+
+  assign std_days = variant.metafields.printr.standard_days.value | default: settings.rush_standard_days | default: 4
+  assign uid = 'Rush-' | append: section_id
+  assign form_id = 'ProductForm-' | append: section_id
+  assign v_title = variant.title
+  if product.has_only_default_variant
+    assign v_title = ''
+  endif
+-%}
+{%- if has_rush -%}
+  <rush-turnaround class="rush" data-section="{{ section_id }}" data-form-id="{{ form_id }}" data-variant="{{ variant.id }}" data-product-url="{{ product.url }}">
+    <script type="application/json" data-rush-data>
+      {
+        "variant": {{ variant.id | json }},
+        "price": {{ variant.price | json }},
+        "title": {{ product.title | json }},
+        "variantTitle": {{ v_title | json }},
+        "standardDays": {{ std_days | json }},
+        "money": {{ shop.money_format | json }},
+        "options": {
+          "2bd": {% if c2 > 0 %}{ "cents": {{ c2 }}, "fee": {{ fee_2bd.id | json }} }{% else %}null{% endif %},
+          "nbd": {% if cn > 0 %}{ "cents": {{ cn }}, "fee": {{ fee_nbd.id | json }} }{% else %}null{% endif %}
+        },
+        "strings": {
+          "standard": {{ 'products.product.rush.standard' | t | json }},
+          "two_day": {{ 'products.product.rush.two_day' | t | json }},
+          "next_day": {{ 'products.product.rush.next_day' | t | json }},
+          "total": {{ 'products.product.rush.total' | t | json }},
+          "price_note": {{ 'products.product.rush.price_note' | t | json }},
+          "reset": {{ 'products.product.rush.reset' | t | json }},
+          "configurator_turnaround": {{ 'products.product.configurator.turnaround' | t | json }}
+        }
+      }
+    </script>
+    <fieldset class="rush__set">
+      <legend class="rush__head">
+        {%- render 'au-icon', name: 'clock', size: 18 -%}
+        <span>{{ 'products.product.rush.heading' | t }}</span>
+      </legend>
+      <label class="rush__opt">
+        <input type="radio" name="{{ uid }}" value="standard" data-rush-opt checked>
+        <span class="rush__radio" aria-hidden="true"></span>
+        <span class="rush__ic" aria-hidden="true">{% render 'au-icon', name: 'calendar-days', size: 20 %}</span>
+        <span class="rush__txt">
+          <span class="rush__name">{{ 'products.product.rush.standard' | t }}</span>
+          <span class="rush__sub">{{ 'products.product.rush.standard_days' | t: days: std_days }}</span>
+        </span>
+        <span class="rush__price rush__price--incl">{{ 'products.product.rush.included' | t }}</span>
+      </label>
+      {%- if c2 > 0 -%}
+        <label class="rush__opt">
+          <input type="radio" name="{{ uid }}" value="2bd" data-rush-opt>
+          <span class="rush__radio" aria-hidden="true"></span>
+          <span class="rush__ic rush__ic--zap" aria-hidden="true">{% render 'au-icon', name: 'zap', size: 20 %}</span>
+          <span class="rush__txt">
+            <span class="rush__name">{{ 'products.product.rush.two_day' | t }}</span>
+            <span class="rush__sub">{{ 'products.product.rush.rush_label' | t }}</span>
+          </span>
+          <span class="rush__price">+{{ c2 | money }}</span>
+        </label>
+      {%- endif -%}
+      {%- if cn > 0 -%}
+        <label class="rush__opt">
+          <input type="radio" name="{{ uid }}" value="nbd" data-rush-opt>
+          <span class="rush__radio" aria-hidden="true"></span>
+          <span class="rush__ic rush__ic--rocket" aria-hidden="true">{% render 'au-icon', name: 'rocket', size: 20 %}</span>
+          <span class="rush__txt">
+            <span class="rush__name">{{ 'products.product.rush.next_day' | t }}</span>
+            <span class="rush__sub">{{ 'products.product.rush.fastest_label' | t }}</span>
+          </span>
+          <span class="rush__price">+{{ cn | money }}</span>
+        </label>
+      {%- endif -%}
+    </fieldset>
+    <p class="rush__total" data-rush-total aria-live="polite"></p>
+    <p class="rush__note">{{ 'products.product.rush.note' | t }}</p>
+    <p class="rush__reset" data-rush-reset role="status" hidden></p>
+  </rush-turnaround>
+  <script src="{{ 'rush-turnaround.js' | asset_url }}" type="module" defer="defer"></script>
+{%- else -%}
+  <p class="product__turnaround">{% render 'icon', name: 'clock' %}<span><strong>{{ 'products.product.turnaround' | t }}:</strong> {{ product.metafields.custom.turnaround | default: block.settings.text }}</span></p>
+  {%- if request.design_mode and rush_product == blank -%}
+    {%- if variant.metafields.printr.rush_2bd != blank or variant.metafields.printr.rush_nbd != blank -%}
+      <p class="rush__editor-note">{{ 'products.product.rush.editor_missing_fee' | t }}</p>
+    {%- endif -%}
+  {%- endif -%}
+{%- endif -%}
+{% stylesheet %}
+  .rush { --rush-line: #E3DFD4; --rush-cyan: #67D3FB; --rush-mag: #F0509C; --rush-yellow: #FEF956; display: block; background: #FAF8F3; color: #000; border: 1.5px dashed var(--rush-line); border-radius: 1.8rem; padding: 2rem 2.2rem 1.6rem; }
+  .rush__set { border: 0; margin: 0; padding: 0; min-width: 0; display: grid; gap: 1rem; }
+  .rush__head { display: flex; align-items: center; gap: .8rem; padding: 0; margin: 0 0 1.2rem; font: 700 1.4rem/1.2 var(--font-heading-family); letter-spacing: .08em; text-transform: uppercase; }
+  .rush__opt { position: relative; display: grid; grid-template-columns: 2rem 3.6rem 1fr auto; align-items: center; column-gap: 1.2rem; min-height: 5.6rem; padding: 1rem 1.4rem; background: #fff; border: 2px solid #000; border-radius: 1.2rem; cursor: pointer; transition: transform .12s, box-shadow .12s, background-color .15s; }
+  .rush__opt:hover { transform: translate(-1px, -1px); box-shadow: 3px 3px 0 #000; }
+  .rush__opt input { position: absolute; opacity: 0; width: 1px; height: 1px; margin: 0; padding: 0; }
+  .rush__radio { width: 2rem; height: 2rem; border: 2px solid #000; border-radius: 50%; display: grid; place-items: center; background: #fff; }
+  .rush__radio::after { content: ""; width: 1rem; height: 1rem; border-radius: 50%; background: #000; transform: scale(0); transition: transform .12s; }
+  .rush__ic { width: 3.6rem; height: 3.6rem; border: 2px solid #000; border-radius: 50%; display: grid; place-items: center; background: #FAF8F3; }
+  .rush__ic--zap { background: var(--rush-yellow); }
+  .rush__ic--rocket { background: var(--rush-cyan); }
+  .rush__txt { display: grid; gap: .2rem; min-width: 0; }
+  .rush__name { font-weight: 700; font-size: 1.6rem; line-height: 1.25; }
+  .rush__sub { font-size: 1.3rem; opacity: .7; }
+  .rush__price { font-weight: 700; font-size: 1.6rem; white-space: nowrap; }
+  .rush__price--incl { font: 700 1.15rem/1.2 var(--font-heading-family); letter-spacing: .12em; text-transform: uppercase; padding: .4rem 1rem; border: 2px solid #000; border-radius: 999px; background: #E3F3E8; }
+  .rush__opt:has(input:checked) { background: #F3E7EA; box-shadow: 3px 3px 0 #000; }
+  .rush__opt:has(input:checked) .rush__radio::after { transform: scale(1); }
+  .rush__opt:has(input:focus-visible) { outline: 2px solid #000; outline-offset: 3px; }
+  .rush__total { margin: 1.4rem 0 0; font-size: 1.5rem; }
+  .rush__total:empty { display: none; }
+  .rush__total strong { font-size: 1.8rem; }
+  .rush__note { margin: .8rem 0 0; font-size: 1.25rem; opacity: .7; }
+  .rush__reset { margin: 1rem 0 0; padding: .8rem 1.2rem; border: 2px solid #000; border-radius: 1rem; background: #FFF915; font-size: 1.3rem; }
+  .rush__editor-note { margin: .8rem 0 0; padding: .8rem 1.2rem; border: 2px dashed #000; border-radius: 1rem; font-size: 1.3rem; }
+  .price__rush { display: block; font-size: 1.3rem; font-weight: 600; opacity: .75; margin-top: .2rem; }
+  .product:has(rush-turnaround) brochure-configurator .bc-sec:has([data-bc-turn]) { display: none; }
+  @media (max-width: 749px) {
+    .rush { padding: 1.6rem 1.4rem 1.2rem; }
+    .rush__opt { grid-template-columns: 2rem 1fr auto; padding: 1rem 1.2rem; }
+    .rush__ic { display: none; }
+  }
+  @media (prefers-reduced-motion: reduce) { .rush__opt, .rush__radio::after { transition: none; } .rush__opt:hover { transform: none; } }
+{% endstylesheet %}

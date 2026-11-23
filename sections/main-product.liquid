@@ -74,7 +74,7 @@
           {%- when 'design_service' -%}
             <div {{ block.shopify_attributes }}>{% render 'design-service', product: product, section_id: section.id, block: block %}</div>
           {%- when 'turnaround' -%}
-            <p class="product__turnaround" {{ block.shopify_attributes }}>{% render 'icon', name: 'clock' %}<span><strong>{{ 'products.product.turnaround' | t }}:</strong> {{ product.metafields.custom.turnaround | default: block.settings.text }}</span></p>
+            <div class="product__turnaround-block" data-swap="turnaround" {{ block.shopify_attributes }}>{% render 'rush-turnaround', product: product, variant: variant, section_id: section.id, block: block %}</div>
           {%- when 'actions' -%}
             <div class="product__actions" {{ block.shopify_attributes }}>
               {%- if settings.enable_wishlist -%}<button type="button" class="link product__action" data-wishlist-toggle="{{ product.handle }}" aria-pressed="false">{% render 'icon', name: 'heart' %}{{ 'products.wishlist.save' | t }}</button>{%- endif -%}
@@ -161,7 +161,10 @@
       { "type": "product", "id": "sample_product", "label": "Job sample product ($9.99)", "info": "Hidden product added to the cart when the customer ticks Job sample. If empty, the request is saved as a line property to invoice." },
       { "type": "product", "id": "qa_product", "label": "Pre-flight & QA product ($5)", "info": "Used for Digital proof when the Artwork uploader block has no QA product. If empty, the request is saved as a line property to invoice." }
     ] },
-    { "type": "turnaround", "name": "Production time", "limit": 1, "settings": [{ "type": "text", "id": "text", "label": "Default production time", "default": "5–7 business days" }] },
+    { "type": "turnaround", "name": "Production time", "limit": 1, "settings": [
+      { "type": "paragraph", "content": "Shows a Standard / 2 Business Days / Next Business Day selector when the selected variant has rush surcharges (variant metafields printr.rush_2bd / printr.rush_nbd) and the Rush Production fee product is set in Theme settings → Production turnaround. Otherwise shows the production time below." },
+      { "type": "text", "id": "text", "label": "Default production time", "default": "5–7 business days" }
+    ] },
     { "type": "buy_buttons", "name": "Buy buttons", "limit": 1, "settings": [
       { "type": "checkbox", "id": "show_artwork", "label": "Show artwork notes field", "default": true },
       { "type": "checkbox", "id": "show_dynamic_checkout", "label": "Show dynamic checkout buttons", "default": true }

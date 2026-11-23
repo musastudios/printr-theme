@@ -222,7 +222,7 @@
       <a class="icon-button header__cart" href="{{ routes.cart_url }}" {% if settings.cart_type == 'drawer' %}data-drawer-open="CartDrawer" aria-controls="CartDrawer" aria-expanded="false"{% endif %}>
         {% render 'icon', name: 'cart' %}
         <span class="visually-hidden">{{ 'accessibility.cart' | t }}</span>
-        <span class="cart-bubble" data-cart-count {% if cart.item_count == 0 %}hidden{% endif %}>{{ cart.item_count }}</span>
+        {%- capture cart_count -%}{% render 'cart-count' %}{%- endcapture -%}<span class="cart-bubble" data-cart-count {% if cart_count == '0' %}hidden{% endif %}>{{ cart_count }}</span>
       </a>
     </div>
   </div>

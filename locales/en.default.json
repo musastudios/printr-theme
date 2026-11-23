@@ -145,7 +145,23 @@
       "share_title": "Share this product",
       "share_email": "Email",
       "share_copy": "Copy link",
-      "share_copied": "Link copied"
+      "share_copied": "Link copied",
+      "rush": {
+        "heading": "Production time",
+        "standard": "Standard",
+        "standard_days": "{{ days }} business days",
+        "included": "Included",
+        "two_day": "2 Business Days",
+        "next_day": "Next Business Day",
+        "rush_label": "Rush production",
+        "fastest_label": "Fastest — rush production",
+        "total": "Total with {option}: {price}",
+        "price_note": "Includes {option} rush (+{amount})",
+        "note": "Production time only. Shipping is calculated at checkout.",
+        "reset": "{option} isn't available for this option, so we switched you to Standard.",
+        "cart_note": "Rush production charge. Removed automatically with its print item.",
+        "editor_missing_fee": "Rush options are hidden: create the Rush Production fee product and select it in Theme settings → Production turnaround."
+      }
     },
     "compare": {
       "label": "Compare",
