@@ -99,5 +99,6 @@
   "order": [
     "breadcrumbs",
     "design-services"
-  ]
+  ],
+  "layout": "theme"
 }
