@@ -6,38 +6,72 @@
     "design-services": {
       "type": "design-services",
       "blocks": {
-        "feat-setup": { "type": "feature", "settings": { "feature_key": "setup" } },
-        "feat-logo": { "type": "feature", "settings": { "feature_key": "logo" } },
-        "feat-layout": { "type": "feature", "settings": { "feature_key": "layout" } },
-        "feat-proof": { "type": "feature", "settings": { "feature_key": "proof" } },
-        "feat-handoff": { "type": "feature", "settings": { "feature_key": "handoff" } },
+        "feat-setup": {
+          "type": "feature",
+          "settings": {
+            "feature_key": "setup"
+          }
+        },
+        "feat-logo": {
+          "type": "feature",
+          "settings": {
+            "feature_key": "logo"
+          }
+        },
+        "feat-layout": {
+          "type": "feature",
+          "settings": {
+            "feature_key": "layout"
+          }
+        },
+        "feat-proof": {
+          "type": "feature",
+          "settings": {
+            "feature_key": "proof"
+          }
+        },
+        "feat-handoff": {
+          "type": "feature",
+          "settings": {
+            "feature_key": "handoff"
+          }
+        },
         "case-sable": {
           "type": "case",
           "settings": {
             "case_key": "sable",
-            "before_asset": "ds-ba-01-before.png",
-            "after_asset": "ds-ba-01-after.png"
+            "before_asset": "ds-ba-01-before.webp",
+            "after_asset": "ds-ba-01-after.webp"
           }
         },
         "case-alba": {
           "type": "case",
           "settings": {
             "case_key": "alba",
-            "before_asset": "ds-ba-02-before.png",
-            "after_asset": "ds-ba-02-after.png"
+            "before_asset": "ds-ba-02-before.webp",
+            "after_asset": "ds-ba-02-after.webp"
           }
         },
         "case-mira": {
           "type": "case",
           "settings": {
             "case_key": "mira",
-            "before_asset": "ds-ba-03-before.png",
-            "after_asset": "ds-ba-03-after.png"
+            "before_asset": "ds-ba-03-before.webp",
+            "after_asset": "ds-ba-03-after.webp"
           }
         },
-        "quote-1": { "type": "testimonial", "settings": {} },
-        "quote-2": { "type": "testimonial", "settings": {} },
-        "quote-3": { "type": "testimonial", "settings": {} }
+        "quote-1": {
+          "type": "testimonial",
+          "settings": {}
+        },
+        "quote-2": {
+          "type": "testimonial",
+          "settings": {}
+        },
+        "quote-3": {
+          "type": "testimonial",
+          "settings": {}
+        }
       },
       "block_order": [
         "feat-setup",
@@ -56,7 +90,9 @@
         "show_checkout_note": false,
         "show_testimonials": false,
         "color_scheme": "scheme-1",
-        "cta_color_scheme": "scheme-5"
+        "cta_color_scheme": "scheme-5",
+        "hero_before_asset": "ds-hero-before.webp",
+        "hero_after_asset": "ds-hero-after.webp"
       }
     }
   },

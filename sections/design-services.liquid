@@ -14,14 +14,6 @@
     assign hero_lead = 'design_services_page.hero.lead' | t
   endif
   assign privacy_url = section.settings.privacy_url | default: shop.privacy_policy.url | default: '/policies/privacy-policy'
-  assign hero_case = nil
-  assign hero_found = false
-  for block in section.blocks
-    if hero_found == false and block.type == 'case'
-      assign hero_case = block
-      assign hero_found = true
-    endif
-  endfor
 -%}
 <div class="dsp color-{{ section.settings.color_scheme }}">
   <div class="cmyk-bar" aria-hidden="true"><span></span><span></span><span></span><span></span></div>
@@ -38,9 +30,17 @@
       <p class="dsp-micro">{{ 'design_services_page.hero.micro' | t }}</p>
     </div>
     <div class="dsp-hero__proof">
-      {%- if hero_case != nil -%}
-        {%- render 'design-services-compare', block: hero_case, prefix: 'hero', default_pos: 38, ticket: true -%}
-      {%- endif -%}
+      {%- render 'design-services-compare',
+        prefix: 'hero',
+        default_pos: 38,
+        ticket: true,
+        aspect: '4 / 5',
+        loading: 'eager',
+        before_image: section.settings.hero_before_image,
+        after_image: section.settings.hero_after_image,
+        before_asset: section.settings.hero_before_asset,
+        after_asset: section.settings.hero_after_asset
+      -%}
     </div>
   </section>
 
@@ -155,7 +155,7 @@
             data-ds-panel="{{ block.id }}"
             {% if case_index != 1 %}hidden{% endif %}
           >
-            {%- render 'design-services-compare', block: block, prefix: block.id, default_pos: 38, ticket: false -%}
+            {%- render 'design-services-compare', block: block, prefix: block.id, default_pos: 38, ticket: false, aspect: '4 / 3', loading: 'lazy' -%}
             <div class="dsp-fixes">
               <h3>{{ 'design_services_page.showcase.fixes_heading' | t }}</h3>
               <p class="dsp-fixes__product">{{ cproduct | escape }}</p>
@@ -454,10 +454,10 @@
 
   .dsp-compare { display: grid; gap: 1.2rem; }
   .dsp-compare__shell { position: relative; }
-  .dsp-compare__frame { position: relative; overflow: hidden; background: #fff; border: 3px solid #000; border-radius: 16px; box-shadow: 6px 6px 0 #F962DD; aspect-ratio: 4 / 5; }
+  .dsp-compare__frame { position: relative; overflow: hidden; background: #fff; border: 3px solid #000; border-radius: 16px; box-shadow: 6px 6px 0 #F962DD; aspect-ratio: var(--dsp-ratio, 4 / 5); }
   .dsp-compare__layer { position: absolute; inset: 0; }
   .dsp-compare__layer--before { clip-path: inset(0 calc(100% - var(--pos, 38%)) 0 0); z-index: 1; }
-  .dsp-compare__img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; max-width: none; }
+  .dsp-compare__img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: center; max-width: none; }
   .dsp-compare__ph { display: none; position: absolute; inset: 0; place-content: center; text-align: center; gap: .6rem; padding: 2rem; background: #E4DFD3; }
   .dsp-compare__layer--after .dsp-compare__ph { background: #FAF8F3; }
   .dsp-compare__layer.is-empty .dsp-compare__ph, .dsp-compare__layer:not(:has(.dsp-compare__img)) .dsp-compare__ph { display: grid; }
@@ -562,6 +562,10 @@
     { "type": "header", "content": "Hero" },
     { "type": "text", "id": "hero_heading", "label": "Heading override", "info": "Leave blank to use the theme translation." },
     { "type": "textarea", "id": "hero_lead", "label": "Lead override" },
+    { "type": "image_picker", "id": "hero_before_image", "label": "Hero before image", "info": "Overrides the built-in 4:5 hero asset." },
+    { "type": "image_picker", "id": "hero_after_image", "label": "Hero after image" },
+    { "type": "text", "id": "hero_before_asset", "label": "Hero before asset filename", "default": "ds-hero-before.webp" },
+    { "type": "text", "id": "hero_after_asset", "label": "Hero after asset filename", "default": "ds-hero-after.webp" },
     { "type": "header", "content": "Request form" },
     { "type": "text", "id": "turnstile_site_key", "label": "Cloudflare Turnstile site key", "info": "Required to accept requests. Leave blank while building; the form will stay locked." },
     { "type": "text", "id": "request_endpoint", "label": "Custom request endpoint", "info": "Optional Cloudflare Worker URL. If empty, the form posts through Shopify's contact form with a structured message." },
@@ -612,7 +616,7 @@
         { "type": "text", "id": "dimension", "label": "Dimension caption override" },
         { "type": "image_picker", "id": "before_image", "label": "Before image" },
         { "type": "image_picker", "id": "after_image", "label": "After image" },
-        { "type": "text", "id": "before_asset", "label": "Before asset filename", "info": "Used when no image is picked. Drop Lia's PNG into the theme assets folder." },
+        { "type": "text", "id": "before_asset", "label": "Before asset filename", "info": "Used when no image is picked. Default theme assets are ds-ba-0N-before.webp." },
         { "type": "text", "id": "after_asset", "label": "After asset filename" },
         { "type": "text", "id": "before_alt", "label": "Before alt override" },
         { "type": "text", "id": "after_alt", "label": "After alt override" },
@@ -641,9 +645,9 @@
         { "type": "feature", "settings": { "feature_key": "layout" } },
         { "type": "feature", "settings": { "feature_key": "proof" } },
         { "type": "feature", "settings": { "feature_key": "handoff" } },
-        { "type": "case", "settings": { "case_key": "sable", "before_asset": "ds-ba-01-before.png", "after_asset": "ds-ba-01-after.png" } },
-        { "type": "case", "settings": { "case_key": "alba", "before_asset": "ds-ba-02-before.png", "after_asset": "ds-ba-02-after.png" } },
-        { "type": "case", "settings": { "case_key": "mira", "before_asset": "ds-ba-03-before.png", "after_asset": "ds-ba-03-after.png" } }
+        { "type": "case", "settings": { "case_key": "sable", "before_asset": "ds-ba-01-before.webp", "after_asset": "ds-ba-01-after.webp" } },
+        { "type": "case", "settings": { "case_key": "alba", "before_asset": "ds-ba-02-before.webp", "after_asset": "ds-ba-02-after.webp" } },
+        { "type": "case", "settings": { "case_key": "mira", "before_asset": "ds-ba-03-before.webp", "after_asset": "ds-ba-03-after.webp" } }
       ]
     }
   ]
