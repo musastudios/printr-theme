@@ -92,7 +92,8 @@
         "color_scheme": "scheme-1",
         "cta_color_scheme": "scheme-5",
         "hero_before_asset": "ds-hero-before.webp",
-        "hero_after_asset": "ds-hero-after.webp"
+        "hero_after_asset": "ds-hero-after.webp",
+        "turnstile_site_key": "0x4AAAAAAGQBm4-y5v-TGkJ8"
       }
     }
   },
