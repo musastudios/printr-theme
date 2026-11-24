@@ -1,6 +1,6 @@
 /* PrinterShop Design Services page: compare slider + 4-step quote request.
  * Vanilla custom elements. No GSAP. No invented prices or turnaround promises. */
-const fmt = (s, vars = {}) => String(s || '').replace(/\{(\w+)\}/g, (_, k) => (k in vars ? vars[k] : `{${k}}`));
+const fmt = (s, vars = {}) => String(s || '').replace(/\{\{\s*(\w+)\s*\}\}/g, (_, k) => (k in vars ? vars[k] : `{{${k}}}`)).replace(/\{(\w+)\}/g, (_, k) => (k in vars ? vars[k] : `{${k}}`));
 
 const track = (name, payload = {}) => {
   try { window.Shopify?.analytics?.publish?.(name, payload); } catch (e) { /* noop */ }

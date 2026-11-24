@@ -194,7 +194,7 @@
       {%- form 'contact', id: 'DesignServicesForm', class: 'dsp-form' -%}
         {%- if form.posted_successfully? -%}
           <div class="dsp-success" role="status" tabindex="-1">
-            <p>{% render 'icon', name: 'check' %} {{ 'design_services_page.request.success' | t | replace: '{email}', form.email }}</p>
+            <p>{% render 'icon', name: 'check' %} {{ 'design_services_page.request.success' | t: email: form.email }}</p>
             <p><a href="{{ routes.root_url }}">{{ 'design_services_page.request.success_shop' | t }}</a> · <a href="#before-after">{{ 'design_services_page.request.success_work' | t }}</a></p>
           </div>
         {%- else -%}
@@ -205,7 +205,7 @@
           {{ form.errors | default_errors }}
           <div class="dsp-flow__chrome">
             <div class="dsp-flow__steps">
-              <p class="dsp-flow__count" data-ds-step-status aria-live="polite">{{ 'design_services_page.request.step_of' | t | replace: '{current}', '1' | replace: '{total}', '4' }}</p>
+              <p class="dsp-flow__count" data-ds-step-status aria-live="polite">{{ 'design_services_page.request.step_of' | t: current: 1, total: 4 }}</p>
               <ol class="dsp-ticks" aria-hidden="true">
                 {%- for i in (1..4) -%}
                   <li class="dsp-tick{% if i == 1 %} is-current{% endif %}" data-ds-tick="{{ i }}"></li>

@@ -727,7 +727,7 @@
       "slug": "Design request",
       "heading": "Tell us what you need. We'll quote it.",
       "intro": "Four short steps. No wall of fields — just enough for a custom quote.",
-      "step_of": "Step {current} of {total}",
+      "step_of": "Step {{ current }} of {{ total }}",
       "step_1": "What do you need?",
       "step_2": "Which product(s)?",
       "step_3": "Tell us about your project",
@@ -780,7 +780,7 @@
       "error_name": "Enter your name.",
       "error_email": "Enter a valid email so we can send your quote.",
       "error_link": "Enter a full URL starting with https://, or leave this blank.",
-      "success": "Request received. We'll email you at {email} with a custom quote.",
+      "success": "Request received. We'll email you at {{ email }} with a custom quote.",
       "success_shop": "Back to the shop",
       "success_work": "See before & afters",
       "required": "required"

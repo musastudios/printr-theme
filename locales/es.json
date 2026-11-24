@@ -727,7 +727,7 @@
       "slug": "Solicitud de diseño",
       "heading": "Cuéntanos qué necesitas. Te lo cotizamos.",
       "intro": "Cuatro pasos cortos. Sin una pared de campos — solo lo suficiente para una cotización a la medida.",
-      "step_of": "Paso {current} de {total}",
+      "step_of": "Paso {{ current }} de {{ total }}",
       "step_1": "¿Qué necesitas?",
       "step_2": "¿Para qué producto(s)?",
       "step_3": "Cuéntanos del proyecto",
@@ -780,7 +780,7 @@
       "error_name": "Escribe tu nombre.",
       "error_email": "Escribe un email válido para enviarte la cotización.",
       "error_link": "Escribe un URL completo que empiece con https://, o déjalo en blanco.",
-      "success": "Solicitud recibida. Te escribiremos a {email} con una cotización a la medida.",
+      "success": "Solicitud recibida. Te escribiremos a {{ email }} con una cotización a la medida.",
       "success_shop": "Volver a la tienda",
       "success_work": "Ver antes y después",
       "required": "obligatorio"
