@@ -1,0 +1,651 @@
+{% comment %}
+  PrinterShop Design Services landing page: hero, feature cards, before/after
+  showcase, 4-step quote request, optional testimonials, and a scheme-5 close.
+  Quote-only v1 — no prices or turnaround numbers. Assign this template to the
+  design-services page after the page itself is created in Shopify.
+{% endcomment %}
+{%- liquid
+  assign hero_heading = section.settings.hero_heading
+  if hero_heading == blank
+    assign hero_heading = 'design_services_page.hero.heading' | t
+  endif
+  assign hero_lead = section.settings.hero_lead
+  if hero_lead == blank
+    assign hero_lead = 'design_services_page.hero.lead' | t
+  endif
+  assign privacy_url = section.settings.privacy_url | default: shop.privacy_policy.url | default: '/policies/privacy-policy'
+  assign hero_case = nil
+  assign hero_found = false
+  for block in section.blocks
+    if hero_found == false and block.type == 'case'
+      assign hero_case = block
+      assign hero_found = true
+    endif
+  endfor
+-%}
+<div class="dsp color-{{ section.settings.color_scheme }}">
+  <div class="cmyk-bar" aria-hidden="true"><span></span><span></span><span></span><span></span></div>
+
+  <section class="dsp-hero section page-width" data-reveal>
+    <div class="dsp-hero__copy">
+      <p class="slug">{{ 'design_services_page.hero.slug' | t }}</p>
+      <h1>{{ hero_heading | escape }}</h1>
+      <p class="dsp-lead">{{ hero_lead | escape }}</p>
+      <div class="dsp-hero__actions">
+        <a class="button" href="#start-request" data-ds-jump="hero">{{ 'design_services_page.hero.cta' | t }}</a>
+        <a class="button button--secondary" href="#before-after">{{ 'design_services_page.hero.secondary' | t }}</a>
+      </div>
+      <p class="dsp-micro">{{ 'design_services_page.hero.micro' | t }}</p>
+    </div>
+    <div class="dsp-hero__proof">
+      {%- if hero_case != nil -%}
+        {%- render 'design-services-compare', block: hero_case, prefix: 'hero', default_pos: 38, ticket: true -%}
+      {%- endif -%}
+    </div>
+  </section>
+
+  <section class="dsp-features section page-width" data-reveal>
+    <header class="dsp-head">
+      <p class="slug">{{ 'design_services_page.features.slug' | t }}</p>
+      <h2>{{ 'design_services_page.features.heading' | t }}</h2>
+      <p class="dsp-lead">{{ 'design_services_page.features.intro' | t }}</p>
+    </header>
+    <ul class="dsp-features__grid" role="list">
+      {%- for block in section.blocks -%}
+        {%- if block.type == 'feature' -%}
+          {%- liquid
+            assign fkey = block.settings.feature_key | default: 'setup'
+            assign ficon = block.settings.icon
+            if ficon == blank
+              case fkey
+                when 'logo'
+                  assign ficon = 'sparkle'
+                when 'layout'
+                  assign ficon = 'grid'
+                when 'proof'
+                  assign ficon = 'eye'
+                when 'handoff'
+                  assign ficon = 'check'
+                else
+                  assign ficon = 'print'
+              endcase
+            endif
+            assign ftitle = block.settings.title
+            if ftitle == blank
+              assign ftitle_key = 'design_services_page.features.' | append: fkey | append: '_title'
+              assign ftitle = ftitle_key | t
+            endif
+            assign fbody = block.settings.body
+            if fbody == blank
+              assign fbody_key = 'design_services_page.features.' | append: fkey | append: '_body'
+              assign fbody = fbody_key | t
+            endif
+            assign ftag = block.settings.tag
+            if ftag == blank
+              assign ftag_key = 'design_services_page.features.' | append: fkey | append: '_tag'
+              assign ftag = ftag_key | t
+            endif
+          -%}
+          <li class="dsp-feat dsp-feat--{{ fkey }}" {{ block.shopify_attributes }}>
+            <span class="dsp-feat__icon" aria-hidden="true">{% render 'icon', name: ficon %}</span>
+            <span class="dsp-feat__tag dsp-feat__tag--{{ fkey }}">{{ ftag | escape }}</span>
+            <h3>{{ ftitle | escape }}</h3>
+            <p>{{ fbody | escape }}</p>
+          </li>
+        {%- endif -%}
+      {%- endfor -%}
+    </ul>
+    {%- if section.settings.show_checkout_note -%}
+      <p class="dsp-checkout-note">{{ 'design_services_page.checkout_note' | t }}</p>
+    {%- endif -%}
+  </section>
+
+  <section id="before-after" class="dsp-showcase section page-width" data-reveal>
+    <header class="dsp-head">
+      <p class="slug">{{ 'design_services_page.showcase.slug' | t }}</p>
+      <h2 tabindex="-1">{{ 'design_services_page.showcase.heading' | t }}</h2>
+      <p class="dsp-lead">{{ 'design_services_page.showcase.intro' | t }}</p>
+    </header>
+    <ds-showcase data-live="{{ 'design_services_page.showcase.live' | t | escape }}">
+      <p class="visually-hidden" data-ds-live aria-live="polite"></p>
+      <div class="dsp-cases" role="tablist" aria-label="{{ 'design_services_page.showcase.slug' | t | escape }}">
+        {%- assign case_index = 0 -%}
+        {%- for block in section.blocks -%}
+          {%- if block.type == 'case' -%}
+            {%- liquid
+              assign case_index = case_index | plus: 1
+              assign ckey = block.settings.case_key | default: 'sable'
+              assign cname = block.settings.title
+              if cname == blank
+                assign cname_key = 'design_services_page.showcase.' | append: ckey | append: '_name'
+                assign cname = cname_key | t
+              endif
+            -%}
+            <button
+              type="button"
+              class="dsp-cases__tab"
+              id="dsp-tab-{{ block.id }}"
+              role="tab"
+              aria-selected="{% if case_index == 1 %}true{% else %}false{% endif %}"
+              aria-controls="dsp-panel-{{ block.id }}"
+              tabindex="{% if case_index == 1 %}0{% else %}-1{% endif %}"
+              data-ds-case="{{ block.id }}"
+              {{ block.shopify_attributes }}
+            >{{ cname | escape }}</button>
+          {%- endif -%}
+        {%- endfor -%}
+      </div>
+      {%- assign case_index = 0 -%}
+      {%- for block in section.blocks -%}
+        {%- if block.type == 'case' -%}
+          {%- liquid
+            assign case_index = case_index | plus: 1
+            assign ckey = block.settings.case_key | default: 'sable'
+            assign cproduct = block.settings.product
+            if cproduct == blank
+              assign cproduct_key = 'design_services_page.showcase.' | append: ckey | append: '_product'
+              assign cproduct = cproduct_key | t
+            endif
+          -%}
+          <div
+            class="dsp-panel"
+            id="dsp-panel-{{ block.id }}"
+            role="tabpanel"
+            aria-labelledby="dsp-tab-{{ block.id }}"
+            data-ds-panel="{{ block.id }}"
+            {% if case_index != 1 %}hidden{% endif %}
+          >
+            {%- render 'design-services-compare', block: block, prefix: block.id, default_pos: 38, ticket: false -%}
+            <div class="dsp-fixes">
+              <h3>{{ 'design_services_page.showcase.fixes_heading' | t }}</h3>
+              <p class="dsp-fixes__product">{{ cproduct | escape }}</p>
+              <ul>
+                {%- for i in (1..3) -%}
+                  {%- liquid
+                    assign setting_key = 'fix_' | append: i
+                    assign fix = block.settings[setting_key]
+                    if fix == blank
+                      assign fix_key = 'design_services_page.showcase.' | append: ckey | append: '_fix_' | append: i
+                      assign fix = fix_key | t
+                    endif
+                  -%}
+                  {%- if fix != blank -%}<li>{{ fix | escape }}</li>{%- endif -%}
+                {%- endfor -%}
+              </ul>
+            </div>
+          </div>
+        {%- endif -%}
+      {%- endfor -%}
+    </ds-showcase>
+  </section>
+
+  <section id="start-request" class="dsp-request section page-width">
+    <span id="quote" class="dsp-quote-anchor" tabindex="-1"></span>
+    <header class="dsp-head">
+      <p class="slug">{{ 'design_services_page.request.slug' | t }}</p>
+      <h2>{{ 'design_services_page.request.heading' | t }}</h2>
+      <p class="dsp-lead">{{ 'design_services_page.request.intro' | t }}</p>
+    </header>
+    <ds-request
+      class="dsp-card"
+      data-sitekey="{{ section.settings.turnstile_site_key | escape }}"
+      data-endpoint="{{ section.settings.request_endpoint | strip | escape }}"
+    >
+      {%- form 'contact', id: 'DesignServicesForm', class: 'dsp-form' -%}
+        {%- if form.posted_successfully? -%}
+          <div class="dsp-success" role="status" tabindex="-1">
+            <p>{% render 'icon', name: 'check' %} {{ 'design_services_page.request.success' | t | replace: '{email}', form.email }}</p>
+            <p><a href="{{ routes.root_url }}">{{ 'design_services_page.request.success_shop' | t }}</a> · <a href="#before-after">{{ 'design_services_page.request.success_work' | t }}</a></p>
+          </div>
+        {%- else -%}
+          <div class="dsp-success" role="status" tabindex="-1" data-ds-success hidden>
+            <p data-ds-success-text></p>
+            <p><a href="{{ routes.root_url }}">{{ 'design_services_page.request.success_shop' | t }}</a> · <a href="#before-after">{{ 'design_services_page.request.success_work' | t }}</a></p>
+          </div>
+          {{ form.errors | default_errors }}
+          <div class="dsp-flow__chrome">
+            <div class="dsp-flow__steps">
+              <p class="dsp-flow__count" data-ds-step-status aria-live="polite">{{ 'design_services_page.request.step_of' | t | replace: '{current}', '1' | replace: '{total}', '4' }}</p>
+              <ol class="dsp-ticks" aria-hidden="true">
+                {%- for i in (1..4) -%}
+                  <li class="dsp-tick{% if i == 1 %} is-current{% endif %}" data-ds-tick="{{ i }}"></li>
+                {%- endfor -%}
+              </ol>
+              <h3 class="dsp-flow__heading" data-ds-step-heading tabindex="-1">{{ 'design_services_page.request.step_1' | t }}</h3>
+            </div>
+            <p class="dsp-summary" data-ds-summary>{{ 'design_services_page.request.summary_empty' | t }}</p>
+          </div>
+          <p class="form-error" data-ds-error role="alert" hidden></p>
+
+          <div class="dsp-step is-active" data-ds-step="1">
+            <fieldset class="dsp-need">
+              <legend class="visually-hidden">{{ 'design_services_page.request.need_legend' | t }}</legend>
+              {%- assign needs = 'new,redesign,logo,prepress' | split: ',' -%}
+              {%- for need in needs -%}
+                {%- liquid
+                  assign need_title_key = 'design_services_page.request.need_' | append: need | append: '_title'
+                  assign need_hint_key = 'design_services_page.request.need_' | append: need | append: '_hint'
+                  assign need_title = need_title_key | t
+                  assign need_hint = need_hint_key | t
+                -%}
+                <label class="dsp-need__card">
+                  <input type="radio" name="need" value="{{ need }}" data-label="{{ need_title | escape }}">
+                  <span class="dsp-need__text">
+                    <span class="dsp-need__title">{{ need_title }}</span>
+                    <span class="dsp-need__hint">{{ need_hint }}</span>
+                  </span>
+                  <span class="dsp-need__check" aria-hidden="true">{% render 'icon', name: 'check' %}</span>
+                </label>
+              {%- endfor -%}
+            </fieldset>
+          </div>
+
+          <div class="dsp-step" data-ds-step="2">
+            <fieldset>
+              <legend>{{ 'design_services_page.request.products_legend' | t }}</legend>
+              <div class="dsp-pills">
+                {%- assign products = 'business-cards,door-hangers,postcards-flyers,letterhead-envelopes,banners-signs,stickers-labels,apparel,unsure' | split: ',' -%}
+                {%- for prod in products -%}
+                  {%- assign plabel_key = 'design_services_page.request.product_' | append: prod -%}
+                  {%- assign plabel = plabel_key | t -%}
+                  <label class="dsp-pill">
+                    <input type="checkbox" name="products" value="{{ prod }}" data-label="{{ plabel | escape }}">
+                    <span>{{ plabel }}</span>
+                  </label>
+                {%- endfor -%}
+              </div>
+            </fieldset>
+          </div>
+
+          <div class="dsp-step" data-ds-step="3">
+            <div class="field">
+              <label for="DsBrief">{{ 'design_services_page.request.brief_label' | t }} <span class="dsp-req">{{ 'design_services_page.request.required' | t }}</span></label>
+              <textarea id="DsBrief" name="contact[body]" rows="6" required></textarea>
+              <small id="DsBriefHelp">{{ 'design_services_page.request.brief_help' | t }}</small>
+            </div>
+            <div class="field">
+              <label for="DsLink">{{ 'design_services_page.request.link_label' | t }}</label>
+              <input id="DsLink" name="contact[artwork_link]" type="url" inputmode="url" autocomplete="url" placeholder="https://">
+              <small>{{ 'design_services_page.request.link_help' | t }}</small>
+            </div>
+            <fieldset class="dsp-times">
+              <legend>{{ 'design_services_page.request.timeline_legend' | t }}</legend>
+              <div class="dsp-times__row">
+                {%- assign times = 'flexible,week,rush' | split: ',' -%}
+                {%- for time in times -%}
+                  {%- assign tlabel_key = 'design_services_page.request.timeline_' | append: time -%}
+                  {%- assign tlabel = tlabel_key | t -%}
+                  <label class="dsp-times__opt">
+                    <input type="radio" name="timeline" value="{{ time }}" data-label="{{ tlabel | escape }}">
+                    <span>{{ tlabel }}</span>
+                  </label>
+                {%- endfor -%}
+              </div>
+              <small>{{ 'design_services_page.request.timeline_help' | t }}</small>
+            </fieldset>
+          </div>
+
+          <div class="dsp-step" data-ds-step="4">
+            <div class="field-row">
+              <div class="field">
+                <label for="DsName">{{ 'design_services_page.request.name' | t }} <span class="dsp-req">{{ 'design_services_page.request.required' | t }}</span></label>
+                <input id="DsName" name="contact[name]" autocomplete="name" required value="{{ form.name }}">
+              </div>
+              <div class="field">
+                <label for="DsEmail">{{ 'design_services_page.request.email' | t }} <span class="dsp-req">{{ 'design_services_page.request.required' | t }}</span></label>
+                <input id="DsEmail" name="contact[email]" type="email" autocomplete="email" required value="{{ form.email }}">
+              </div>
+            </div>
+            <div class="field-row">
+              <div class="field">
+                <label for="DsPhone">{{ 'design_services_page.request.phone' | t }}</label>
+                <input id="DsPhone" name="contact[phone]" type="tel" autocomplete="tel" value="{{ form.phone }}">
+              </div>
+              <div class="field">
+                <label for="DsBusiness">{{ 'design_services_page.request.business' | t }}</label>
+                <input id="DsBusiness" name="contact[business]" autocomplete="organization">
+              </div>
+            </div>
+            <div class="dsp-turnstile field">
+              <div class="cf-turnstile" data-ds-turnstile></div>
+              {%- if section.settings.turnstile_site_key == blank -%}
+                <p class="form-error" role="status">{{ 'design_services_page.request.turnstile_missing' | t }}</p>
+              {%- endif -%}
+            </div>
+            <p class="dsp-legal">
+              {{ 'design_services_page.request.privacy_before' | t }}
+              <a href="{{ privacy_url }}">{{ 'design_services_page.request.privacy_link' | t }}</a>
+            </p>
+          </div>
+
+          <input type="hidden" name="contact[product_handle]" value="">
+          <input type="hidden" name="contact[need]" value="">
+          <input type="hidden" name="contact[products]" value="">
+          <input type="hidden" name="contact[timeline]" value="">
+          <input type="hidden" name="contact[request_meta]" value="">
+          <input type="hidden" name="contact[turnstile]" value="">
+
+          <div class="dsp-flow__nav">
+            <button type="button" class="button button--secondary" data-ds-back hidden>{{ 'design_services_page.request.back' | t }}</button>
+            <button type="button" class="button" data-ds-next>{{ 'design_services_page.request.next' | t }}</button>
+            <button type="submit" class="button" data-ds-submit hidden {% if section.settings.turnstile_site_key == blank %}disabled{% endif %}>{{ 'design_services_page.request.send' | t }}</button>
+          </div>
+          <noscript>
+            <p class="form-error">{{ 'design_services_page.request.turnstile_missing' | t }}</p>
+            <button type="submit" class="button" {% if section.settings.turnstile_site_key == blank %}disabled{% endif %}>{{ 'design_services_page.request.send' | t }}</button>
+          </noscript>
+        {%- endif -%}
+      {%- endform -%}
+      <script type="application/json" data-ds-strings>
+        {
+          "step_of": {{ 'design_services_page.request.step_of' | t | json }},
+          "step_1": {{ 'design_services_page.request.step_1' | t | json }},
+          "step_2": {{ 'design_services_page.request.step_2' | t | json }},
+          "step_3": {{ 'design_services_page.request.step_3' | t | json }},
+          "step_4": {{ 'design_services_page.request.step_4' | t | json }},
+          "summary_empty": {{ 'design_services_page.request.summary_empty' | t | json }},
+          "back": {{ 'design_services_page.request.back' | t | json }},
+          "next": {{ 'design_services_page.request.next' | t | json }},
+          "send": {{ 'design_services_page.request.send' | t | json }},
+          "sending": {{ 'design_services_page.request.sending' | t | json }},
+          "error_need": {{ 'design_services_page.request.error_need' | t | json }},
+          "error_products": {{ 'design_services_page.request.error_products' | t | json }},
+          "error_brief": {{ 'design_services_page.request.error_brief' | t | json }},
+          "error_timeline": {{ 'design_services_page.request.error_timeline' | t | json }},
+          "error_name": {{ 'design_services_page.request.error_name' | t | json }},
+          "error_email": {{ 'design_services_page.request.error_email' | t | json }},
+          "error_link": {{ 'design_services_page.request.error_link' | t | json }},
+          "turnstile_missing": {{ 'design_services_page.request.turnstile_missing' | t | json }},
+          "turnstile_required": {{ 'design_services_page.request.turnstile_required' | t | json }},
+          "turnstile_failed": {{ 'design_services_page.request.turnstile_failed' | t | json }},
+          "success": {{ 'design_services_page.request.success' | t | json }}
+        }
+      </script>
+    </ds-request>
+  </section>
+
+  {%- if section.settings.show_testimonials -%}
+    <section class="dsp-quotes section page-width" data-reveal>
+      <header class="dsp-head">
+        <p class="slug">{{ 'design_services_page.testimonials.slug' | t }}</p>
+        <h2>{{ 'design_services_page.testimonials.heading' | t }}</h2>
+      </header>
+      <ul class="dsp-quotes__grid" role="list">
+        {%- for block in section.blocks -%}
+          {%- if block.type == 'testimonial' and block.settings.quote != blank -%}
+            <li class="dsp-quote" {{ block.shopify_attributes }}>
+              {%- if block.settings.tag != blank -%}<p class="dsp-quote__tag">{{ block.settings.tag | escape }}</p>{%- endif -%}
+              <blockquote>
+                <p>{{ block.settings.quote | escape }}</p>
+                {%- if block.settings.attribution != blank -%}<footer>{{ block.settings.attribution | escape }}</footer>{%- endif -%}
+              </blockquote>
+            </li>
+          {%- endif -%}
+        {%- endfor -%}
+      </ul>
+    </section>
+  {%- endif -%}
+
+  <section class="dsp-cta section color-{{ section.settings.cta_color_scheme }}">
+    <div class="page-width dsp-cta__inner">
+      <div>
+        <p class="slug">{{ 'design_services_page.cta.slug' | t }}</p>
+        <h2>{{ 'design_services_page.cta.heading' | t }}</h2>
+        <p class="dsp-lead">{{ 'design_services_page.cta.line' | t }}</p>
+      </div>
+      <a class="button" href="#start-request" data-ds-jump="close">{{ 'design_services_page.cta.button' | t }}</a>
+    </div>
+  </section>
+</div>
+<script src="{{ 'design-services.js' | asset_url }}" type="module" defer="defer"></script>
+
+{% stylesheet %}
+  .dsp { background: #FAF8F3; color: #000; }
+  .dsp .cmyk-bar { width: 100%; }
+  #start-request, #quote, #before-after { scroll-margin-top: 12rem; }
+  .dsp-quote-anchor { display: block; height: 0; }
+  .dsp-head { max-width: 72rem; margin-bottom: 3.2rem; }
+  .dsp-lead { font-size: 1.7rem; max-width: 62rem; margin: 0 0 1.6rem; }
+  .dsp-micro { font-size: 1.4rem; margin: 1.6rem 0 0; opacity: .8; }
+  .dsp-req { font-weight: 400; font-size: 1.2rem; letter-spacing: .04em; text-transform: lowercase; }
+
+  .dsp-hero { display: grid; gap: 4rem; align-items: center; min-height: clamp(52rem, 68vh, 72rem); padding-top: clamp(3rem, 5vw, 6rem); }
+  .dsp-hero__actions { display: flex; flex-wrap: wrap; gap: 1.2rem; margin-top: 2.8rem; }
+  .dsp-hero__proof { position: relative; }
+  @media (max-width: 749px) {
+    .dsp-hero { min-height: 0; }
+    .dsp-hero__actions { flex-direction: column; }
+    .dsp-hero__actions .button { width: 100%; }
+  }
+  @media (min-width: 750px) {
+    .dsp-hero { grid-template-columns: 55fr 45fr; gap: 5rem; }
+  }
+
+  .dsp-features { padding-block: clamp(3rem, 4vw, 5rem); }
+  .dsp-features__grid { list-style: none; margin: 0; padding: 0; display: grid; gap: 1.6rem; grid-template-columns: 1fr; }
+  @media (min-width: 750px) {
+    .dsp-features__grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  }
+  .dsp-feat { background: #fff; border: 3px solid #000; border-radius: 16px; padding: 2rem; display: grid; gap: .8rem; align-content: start; }
+  .dsp-feat h3 { margin: 0; }
+  .dsp-feat p { margin: 0; }
+  .dsp-feat__icon { width: 4.4rem; height: 4.4rem; display: grid; place-items: center; }
+  .dsp-feat__icon .icon { width: 2.8rem; height: 2.8rem; }
+  .dsp-feat__tag { display: inline-flex; align-items: center; width: max-content; min-height: 2.8rem; padding: .2rem 1rem; border: 2px solid #000; border-radius: 999px; font-size: 1.2rem; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: #000; }
+  .dsp-feat__tag--setup { background: #27D6FF; }
+  .dsp-feat__tag--logo { background: #F962DD; }
+  .dsp-feat__tag--layout { background: #FFF915; }
+  .dsp-feat__tag--proof { background: #000; color: #FFF915; }
+  .dsp-feat__tag--handoff { background: #FAF8F3; }
+  .dsp-checkout-note { margin: 2.4rem 0 0; font-size: 1.4rem; }
+
+  .dsp-cases { display: flex; gap: .8rem; overflow-x: auto; scroll-snap-type: x mandatory; padding-bottom: .4rem; margin-bottom: 2rem; }
+  .dsp-cases__tab { flex: none; scroll-snap-align: start; min-height: 4.4rem; padding: 0 1.8rem; border: 2px solid #000; border-radius: 999px; background: #fff; color: #000; font: 700 1.4rem/1 var(--font-body-family); cursor: pointer; }
+  .dsp-cases__tab[aria-selected="true"] { outline: 3px solid #27D6FF; background: #E5F9FF; }
+  .dsp-panel { display: grid; gap: 2.4rem; }
+  .dsp-fixes h3 { margin: 0 0 .6rem; }
+  .dsp-fixes__product { font-size: 1.3rem; letter-spacing: .08em; text-transform: uppercase; font-weight: 600; margin: 0 0 1.2rem; }
+  .dsp-fixes ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 1.2rem; }
+  .dsp-fixes li { position: relative; padding-left: 2.4rem; }
+  .dsp-fixes li::before { content: ""; position: absolute; left: 0; top: .55rem; width: 1.2rem; height: 1.2rem; border-radius: 50%; background: conic-gradient(var(--c) 0 25%, var(--m) 0 50%, var(--y) 0 75%, var(--k) 0); }
+  @media (min-width: 750px) {
+    .dsp-fixes ul { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 2rem; }
+  }
+
+  .dsp-compare { display: grid; gap: 1.2rem; }
+  .dsp-compare__shell { position: relative; }
+  .dsp-compare__frame { position: relative; overflow: hidden; background: #fff; border: 3px solid #000; border-radius: 16px; box-shadow: 6px 6px 0 #F962DD; aspect-ratio: 4 / 5; }
+  .dsp-compare__layer { position: absolute; inset: 0; }
+  .dsp-compare__layer--before { clip-path: inset(0 calc(100% - var(--pos, 38%)) 0 0); z-index: 1; }
+  .dsp-compare__img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; max-width: none; }
+  .dsp-compare__ph { display: none; position: absolute; inset: 0; place-content: center; text-align: center; gap: .6rem; padding: 2rem; background: #E4DFD3; }
+  .dsp-compare__layer--after .dsp-compare__ph { background: #FAF8F3; }
+  .dsp-compare__layer.is-empty .dsp-compare__ph, .dsp-compare__layer:not(:has(.dsp-compare__img)) .dsp-compare__ph { display: grid; }
+  .dsp-compare__ph-label { display: inline-flex; align-items: center; padding: .2rem 1rem; border: 2px solid #000; border-radius: 999px; background: #FFF915; font-weight: 800; font-size: 1.2rem; letter-spacing: .08em; text-transform: uppercase; }
+  .dsp-compare__ph p { font-family: var(--font-heading-family); font-weight: var(--font-heading-weight); font-size: 2.4rem; margin: 0; letter-spacing: -.02em; }
+  .dsp-compare__rule { position: absolute; top: 0; bottom: 0; left: var(--pos, 38%); z-index: 3; width: 3px; background: #000; transform: translateX(-50%); pointer-events: none; }
+  .dsp-compare__knob { position: absolute; top: 50%; left: 50%; width: 4.4rem; height: 4.4rem; border: 3px solid #000; border-radius: 50%; background: conic-gradient(var(--c) 0 25%, var(--m) 0 50%, var(--y) 0 75%, var(--k) 0); transform: translate(-50%, -50%); box-shadow: 0 0 0 3px #fff; }
+  .dsp-compare:focus-within .dsp-compare__knob { outline: 2px solid var(--m); outline-offset: 3px; }
+  .dsp-compare__range { position: absolute; inset: 0; z-index: 4; width: 100%; height: 100%; margin: 0; padding: 0; opacity: 0; cursor: ew-resize; appearance: none; background: transparent; }
+  .dsp-compare__toggle { display: flex; gap: .8rem; }
+  .dsp-compare__pill { min-height: 4.4rem; padding: 0 1.8rem; border: 2px solid #000; border-radius: 999px; background: #fff; color: #000; font: 700 1.4rem/1 var(--font-body-family); cursor: pointer; }
+  .dsp-compare__pill[aria-pressed="true"] { outline: 3px solid #27D6FF; background: #E5F9FF; }
+  .dsp-compare__dim { margin: 0; font-size: 1.2rem; letter-spacing: .14em; text-transform: uppercase; font-weight: 600; }
+  .dsp-proof__ticket { position: absolute; top: 1.2rem; right: 1.2rem; z-index: 5; margin: 0; background: #FFF915; color: #000; border: 2px solid #000; border-radius: 999px; padding: .3rem 1rem; font-size: 1.2rem; font-weight: 800; pointer-events: none; }
+  .dsp-proof__reg { position: absolute; bottom: 1.4rem; left: 1.4rem; z-index: 5; width: 1rem; height: 1rem; border-radius: 50%; background: conic-gradient(var(--c) 0 25%, var(--m) 0 50%, var(--y) 0 75%, var(--k) 0); pointer-events: none; }
+  @media (prefers-reduced-motion: no-preference) {
+    .dsp-compare__layer--before { transition: clip-path .15s linear; }
+    .dsp-compare__rule { transition: left .15s linear; }
+  }
+
+  .dsp-request { padding-bottom: var(--space); }
+  .dsp-card { display: block; background: #fff; border: 3px solid #000; border-radius: 16px; box-shadow: 6px 6px 0 #F962DD; padding: clamp(2rem, 3vw, 3.2rem); max-width: 96rem; margin: 0 auto; }
+  .dsp-flow__chrome { display: grid; gap: 1.2rem; margin-bottom: 2.4rem; align-items: start; }
+  @media (min-width: 750px) {
+    .dsp-flow__chrome { grid-template-columns: 1fr auto; align-items: center; position: sticky; top: 10rem; z-index: 2; background: #fff; padding-bottom: 1.2rem; }
+  }
+  .dsp-flow__count { margin: 0; font-weight: 700; }
+  .dsp-flow__heading { margin: .8rem 0 0; font-size: 2.2rem; }
+  .dsp-ticks { list-style: none; display: flex; gap: .6rem; margin: .8rem 0 0; padding: 0; }
+  .dsp-tick { width: 2.8rem; height: .8rem; border: 2px solid #000; border-radius: 999px; background: transparent; }
+  .dsp-tick.is-done { background: #000; }
+  .dsp-tick.is-current { background: #FFF915; }
+  .dsp-summary { margin: 0; background: #FFF915; border: 2px solid #000; border-radius: 999px; padding: .6rem 1.4rem; font-size: 1.3rem; font-weight: 700; max-width: 42rem; }
+  .dsp-need { border: 0; padding: 0; margin: 0; display: grid; gap: 1.2rem; }
+  @media (min-width: 750px) { .dsp-need { grid-template-columns: 1fr 1fr; } }
+  .dsp-need__card { display: grid; grid-template-columns: 2rem 1fr auto; gap: 1.2rem; align-items: start; min-height: 7.2rem; padding: 1.4rem 1.6rem; border: 2px solid #000; border-radius: 12px; background: #fff; cursor: pointer; }
+  .dsp-need__card input { width: 2rem; height: 2rem; margin: .2rem 0 0; accent-color: #000; }
+  .dsp-need__title { display: block; font-weight: 800; }
+  .dsp-need__hint { display: block; font-size: 1.4rem; margin-top: .2rem; }
+  .dsp-need__check { opacity: 0; }
+  .dsp-need__card:hover, .dsp-need__card:focus-within { outline: 3px solid #27D6FF; outline-offset: 0; }
+  .dsp-need__card:has(input:checked) { outline: 3px solid #27D6FF; background: #E5F9FF; }
+  .dsp-need__card:has(input:checked) .dsp-need__check { opacity: 1; }
+  .dsp-pills { display: flex; flex-wrap: wrap; gap: .8rem; }
+  .dsp-pill { display: inline-flex; align-items: center; min-height: 4.4rem; cursor: pointer; }
+  .dsp-pill input { position: absolute; opacity: 0; width: 1px; height: 1px; }
+  .dsp-pill span { display: inline-flex; align-items: center; min-height: 4.4rem; padding: 0 1.6rem; border: 2px solid #000; border-radius: 999px; background: #fff; font-weight: 700; }
+  .dsp-pill:has(input:focus-visible) span { outline: 2px solid var(--m); outline-offset: 3px; }
+  .dsp-pill:has(input:checked) span { outline: 3px solid #27D6FF; background: #E5F9FF; }
+  .dsp-times { border: 0; padding: 0; margin: 0 0 1.6rem; }
+  .dsp-times legend { font-weight: 600; font-size: 1.4rem; margin-bottom: .8rem; }
+  .dsp-times__row { display: grid; grid-template-columns: 1fr; gap: .8rem; }
+  @media (min-width: 600px) { .dsp-times__row { grid-template-columns: 1fr 1fr 1fr; } }
+  .dsp-times__opt { display: block; cursor: pointer; }
+  .dsp-times__opt input { position: absolute; opacity: 0; width: 1px; height: 1px; }
+  .dsp-times__opt span { display: flex; align-items: center; justify-content: center; min-height: 4.8rem; border: 2px solid #000; border-radius: 999px; background: #fff; font-weight: 700; }
+  .dsp-times__opt:has(input:focus-visible) span { outline: 2px solid var(--m); outline-offset: 3px; }
+  .dsp-times__opt:has(input:checked) span { outline: 3px solid #27D6FF; background: #E5F9FF; }
+  .dsp-legal { font-size: 1.4rem; margin: 0 0 1.6rem; }
+  .dsp-flow__nav { display: none; flex-wrap: wrap; gap: 1.2rem; margin-top: 2.4rem; }
+  ds-request.is-enhanced .dsp-flow__nav { display: flex; }
+  ds-request.is-enhanced .dsp-flow__nav .button { min-width: 16rem; }
+  @media (max-width: 749px) {
+    ds-request.is-enhanced .dsp-flow__nav { flex-direction: column; }
+    ds-request.is-enhanced .dsp-flow__nav .button { width: 100%; }
+  }
+  ds-request:not(.is-enhanced) [data-ds-step] { display: block !important; }
+  ds-request:not(.is-enhanced) .dsp-flow__nav { display: none; }
+  .dsp-success { background: #FFF915; border: 2px solid #000; border-radius: 12px; padding: 2rem; }
+  .dsp-success p { margin: 0 0 1rem; }
+  .dsp-success .icon { display: inline-block; vertical-align: middle; margin-right: .6rem; }
+  .dsp-turnstile .cf-turnstile { min-height: 6.5rem; }
+  .dsp-field-error { margin-top: .8rem; }
+
+  .dsp-quotes__grid { list-style: none; margin: 0; padding: 0; display: grid; gap: 1.6rem; }
+  @media (min-width: 750px) { .dsp-quotes__grid { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+  .dsp-quote { background: #fff; border: 2px solid #000; border-radius: 16px; padding: 2rem; }
+  .dsp-quote__tag { display: inline-flex; margin: 0 0 1.2rem; padding: .2rem 1rem; background: #FFF915; border: 2px solid #000; border-radius: 999px; font-size: 1.2rem; font-weight: 700; }
+  .dsp-quote blockquote { margin: 0; }
+  .dsp-quote p { margin: 0 0 1.2rem; }
+  .dsp-quote footer { font-weight: 700; font-size: 1.4rem; }
+
+  .dsp-cta { padding-block: clamp(4rem, 6vw, 8rem); }
+  .dsp-cta__inner { display: flex; flex-wrap: wrap; gap: 3rem; justify-content: space-between; align-items: center; }
+  .dsp-cta .slug { color: #FAF8F3; }
+  .dsp-cta .slug::before { box-shadow: 0 0 0 2px #FAF8F3; }
+  .dsp-cta .dsp-lead { color: #FAF8F3; margin: 0; }
+  .dsp-cta h2 { color: #FAF8F3; }
+  @media (max-width: 749px) {
+    .dsp-cta__inner { flex-direction: column; align-items: stretch; }
+    .dsp-cta .button { width: 100%; }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Design Services",
+  "tag": "div",
+  "class": "dsp-section",
+  "enabled_on": { "templates": ["page"] },
+  "settings": [
+    { "type": "header", "content": "Hero" },
+    { "type": "text", "id": "hero_heading", "label": "Heading override", "info": "Leave blank to use the theme translation." },
+    { "type": "textarea", "id": "hero_lead", "label": "Lead override" },
+    { "type": "header", "content": "Request form" },
+    { "type": "text", "id": "turnstile_site_key", "label": "Cloudflare Turnstile site key", "info": "Required to accept requests. Leave blank while building; the form will stay locked." },
+    { "type": "text", "id": "request_endpoint", "label": "Custom request endpoint", "info": "Optional Cloudflare Worker URL. If empty, the form posts through Shopify's contact form with a structured message." },
+    { "type": "url", "id": "privacy_url", "label": "Privacy policy", "info": "Defaults to the shop privacy policy, then /policies/privacy-policy." },
+    { "type": "checkbox", "id": "show_checkout_note", "label": "Show “add design help at checkout” note", "default": false, "info": "Turn on only after the hidden Design Service product is live." },
+    { "type": "checkbox", "id": "show_testimonials", "label": "Show testimonials", "default": false, "info": "Keep off until real customer quotes are entered in the testimonial blocks. Do not publish invented reviews." },
+    { "type": "color_scheme", "id": "color_scheme", "label": "Page color scheme", "default": "scheme-1" },
+    { "type": "color_scheme", "id": "cta_color_scheme", "label": "Closing band color scheme", "default": "scheme-5" }
+  ],
+  "blocks": [
+    {
+      "type": "feature",
+      "name": "Feature card",
+      "limit": 5,
+      "settings": [
+        { "type": "select", "id": "feature_key", "label": "Feature", "options": [
+          { "value": "setup", "label": "Print-ready file setup" },
+          { "value": "logo", "label": "Logo & brand refresh" },
+          { "value": "layout", "label": "Layout redesign" },
+          { "value": "proof", "label": "Pre-press proof" },
+          { "value": "handoff", "label": "Direct-to-print handoff" }
+        ], "default": "setup" },
+        { "type": "select", "id": "icon", "label": "Icon override", "options": [
+          { "value": "", "label": "Automatic" },
+          { "value": "print", "label": "Print" },
+          { "value": "sparkle", "label": "Sparkle" },
+          { "value": "grid", "label": "Grid" },
+          { "value": "eye", "label": "Eye" },
+          { "value": "check", "label": "Check" }
+        ], "default": "" },
+        { "type": "text", "id": "tag", "label": "Tag override" },
+        { "type": "text", "id": "title", "label": "Title override" },
+        { "type": "textarea", "id": "body", "label": "Body override" }
+      ]
+    },
+    {
+      "type": "case",
+      "name": "Before & after case",
+      "limit": 3,
+      "settings": [
+        { "type": "select", "id": "case_key", "label": "Case", "options": [
+          { "value": "sable", "label": "SABLE & CO. business card" },
+          { "value": "alba", "label": "CLÍNICA ALBA logo" },
+          { "value": "mira", "label": "CASA MIRA Realty door hanger" }
+        ], "default": "sable" },
+        { "type": "text", "id": "title", "label": "Brand name override" },
+        { "type": "text", "id": "product", "label": "Product label override" },
+        { "type": "text", "id": "dimension", "label": "Dimension caption override" },
+        { "type": "image_picker", "id": "before_image", "label": "Before image" },
+        { "type": "image_picker", "id": "after_image", "label": "After image" },
+        { "type": "text", "id": "before_asset", "label": "Before asset filename", "info": "Used when no image is picked. Drop Lia's PNG into the theme assets folder." },
+        { "type": "text", "id": "after_asset", "label": "After asset filename" },
+        { "type": "text", "id": "before_alt", "label": "Before alt override" },
+        { "type": "text", "id": "after_alt", "label": "After alt override" },
+        { "type": "text", "id": "fix_1", "label": "What we fixed, 1" },
+        { "type": "text", "id": "fix_2", "label": "What we fixed, 2" },
+        { "type": "text", "id": "fix_3", "label": "What we fixed, 3" }
+      ]
+    },
+    {
+      "type": "testimonial",
+      "name": "Testimonial",
+      "limit": 3,
+      "settings": [
+        { "type": "text", "id": "tag", "label": "Tag (business type · product)" },
+        { "type": "textarea", "id": "quote", "label": "Quote" },
+        { "type": "text", "id": "attribution", "label": "Attribution" }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Design Services",
+      "blocks": [
+        { "type": "feature", "settings": { "feature_key": "setup" } },
+        { "type": "feature", "settings": { "feature_key": "logo" } },
+        { "type": "feature", "settings": { "feature_key": "layout" } },
+        { "type": "feature", "settings": { "feature_key": "proof" } },
+        { "type": "feature", "settings": { "feature_key": "handoff" } },
+        { "type": "case", "settings": { "case_key": "sable", "before_asset": "ds-ba-01-before.png", "after_asset": "ds-ba-01-after.png" } },
+        { "type": "case", "settings": { "case_key": "alba", "before_asset": "ds-ba-02-before.png", "after_asset": "ds-ba-02-after.png" } },
+        { "type": "case", "settings": { "case_key": "mira", "before_asset": "ds-ba-03-before.png", "after_asset": "ds-ba-03-after.png" } }
+      ]
+    }
+  ]
+}
+{% endschema %}

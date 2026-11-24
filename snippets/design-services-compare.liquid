@@ -1,0 +1,113 @@
+{% doc %}
+  Before/after compare widget for the Design Services page (hero + showcase).
+  Theme Editor image pickers win; otherwise a theme asset filename is used
+  (ds-ba-01-before.png, etc.). Missing assets fall back to a labeled slot.
+  @param {object} block - case block with images and copy
+  @param {string} prefix - unique id prefix
+  @param {number} default_pos - divider from the left (38 shows ~62% after)
+  @param {boolean} ticket - show the hero proof ticket
+{% enddoc %}
+{%- liquid
+  assign ckey = block.settings.case_key | default: 'sable'
+  assign cname = block.settings.title
+  if cname == blank
+    assign cname_key = 'design_services_page.showcase.' | append: ckey | append: '_name'
+    assign cname = cname_key | t
+  endif
+  assign dim = block.settings.dimension
+  if dim == blank
+    assign dim_key = 'design_services_page.showcase.' | append: ckey | append: '_dimension'
+    assign dim = dim_key | t
+  endif
+  assign before_alt = block.settings.before_alt
+  if before_alt == blank
+    assign before_alt_key = 'design_services_page.showcase.' | append: ckey | append: '_before_alt'
+    assign before_alt = before_alt_key | t
+  endif
+  assign after_alt = block.settings.after_alt
+  if after_alt == blank
+    assign after_alt_key = 'design_services_page.showcase.' | append: ckey | append: '_after_alt'
+    assign after_alt = after_alt_key | t
+  endif
+  assign before_img = block.settings.before_image
+  assign after_img = block.settings.after_image
+  assign before_file = block.settings.before_asset
+  assign after_file = block.settings.after_asset
+  if before_file == blank
+    case ckey
+      when 'alba'
+        assign before_file = 'ds-ba-02-before.png'
+      when 'mira'
+        assign before_file = 'ds-ba-03-before.png'
+      else
+        assign before_file = 'ds-ba-01-before.png'
+    endcase
+  endif
+  if after_file == blank
+    case ckey
+      when 'alba'
+        assign after_file = 'ds-ba-02-after.png'
+      when 'mira'
+        assign after_file = 'ds-ba-03-after.png'
+      else
+        assign after_file = 'ds-ba-01-after.png'
+    endcase
+  endif
+  assign pos = default_pos | default: 38
+-%}
+<ds-compare
+  class="dsp-compare"
+  data-value="{{ pos }}"
+  data-valuetext="{{ 'design_services_page.showcase.valuetext' | t | escape }}"
+  style="--pos: {{ pos }}%;"
+>
+  <div class="dsp-compare__shell crop">
+    <div class="dsp-compare__frame">
+      <div class="dsp-compare__layer dsp-compare__layer--after">
+        {%- if after_img != blank -%}
+          {{ after_img | image_url: width: 1600 | image_tag: widths: '600, 900, 1200, 1600', sizes: '(min-width: 750px) 42vw, 100vw', loading: 'lazy', alt: after_alt, class: 'dsp-compare__img' }}
+        {%- else -%}
+          <img class="dsp-compare__img" src="{{ after_file | asset_url }}" alt="{{ after_alt | escape }}" width="1200" height="1500" loading="lazy">
+        {%- endif -%}
+        <div class="dsp-compare__ph" aria-hidden="true">
+          <span class="dsp-compare__ph-label">{{ 'design_services_page.showcase.after' | t }}</span>
+          <p>{{ cname | escape }}</p>
+          <small>{{ 'design_services_page.showcase.placeholder' | t }}</small>
+        </div>
+      </div>
+      <div class="dsp-compare__layer dsp-compare__layer--before">
+        {%- if before_img != blank -%}
+          {{ before_img | image_url: width: 1600 | image_tag: widths: '600, 900, 1200, 1600', sizes: '(min-width: 750px) 42vw, 100vw', loading: 'lazy', alt: before_alt, class: 'dsp-compare__img' }}
+        {%- else -%}
+          <img class="dsp-compare__img" src="{{ before_file | asset_url }}" alt="{{ before_alt | escape }}" width="1200" height="1500" loading="lazy">
+        {%- endif -%}
+        <div class="dsp-compare__ph" aria-hidden="true">
+          <span class="dsp-compare__ph-label">{{ 'design_services_page.showcase.before' | t }}</span>
+          <p>{{ cname | escape }}</p>
+          <small>{{ 'design_services_page.showcase.placeholder' | t }}</small>
+        </div>
+      </div>
+      <div class="dsp-compare__rule" aria-hidden="true"><span class="dsp-compare__knob"></span></div>
+      <input
+        type="range"
+        min="0"
+        max="100"
+        value="{{ pos }}"
+        step="1"
+        class="dsp-compare__range"
+        id="ds-compare-{{ prefix | default: ckey }}"
+        aria-label="{{ 'design_services_page.showcase.compare_label' | t | escape }}"
+        aria-valuetext="{{ 'design_services_page.showcase.valuetext' | t | escape }}"
+      >
+    </div>
+    {%- if ticket -%}
+      <p class="dsp-proof__ticket">{{ 'design_services_page.hero.proof_ticket' | t }}</p>
+      <span class="dsp-proof__reg" aria-hidden="true"></span>
+    {%- endif -%}
+  </div>
+  <div class="dsp-compare__toggle" role="group" aria-label="{{ 'design_services_page.showcase.compare_label' | t | escape }}">
+    <button type="button" class="dsp-compare__pill" data-ds-pos="100" aria-pressed="false">{{ 'design_services_page.showcase.before' | t }}</button>
+    <button type="button" class="dsp-compare__pill" data-ds-pos="0" aria-pressed="false">{{ 'design_services_page.showcase.after' | t }}</button>
+  </div>
+  <p class="dsp-compare__dim">{{ dim | escape }}</p>
+</ds-compare>
