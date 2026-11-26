@@ -1,9 +1,19 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
 {
   "sections": {
     "circles": {
       "type": "category-circles",
       "settings": {
         "heading": "Find it fast.",
+        "intro": "<p>Pick a category and start building your order in minutes.</p>",
         "collections": [
           "business-cards",
           "postcards",
@@ -16,37 +26,27 @@
           "apparel",
           "all-print-products"
         ],
+        "bleed": true,
         "show_sale": true,
         "sale_badge": "Sale",
         "sale_label": "On sale",
         "sale_link": "/collections/sale",
-        "color_scheme": "scheme-1",
-        "intro": "<p>Pick a category and start building your order in minutes.</p>",
-        "bleed": true
+        "color_scheme": "scheme-1"
       }
     },
     "hero": {
       "type": "slideshow",
-      "settings": {
-        "autoplay": true,
-        "speed": 6,
-        "full_width": true,
-        "height": 75,
-        "height_mobile": 60,
-        "effect": "slide",
-        "mobile_portrait": true
-      },
       "blocks": {
         "hero_gym": {
           "type": "slide",
           "settings": {
             "image": "shopify://shop_images/printr-hero-gym-desktop-v2.jpg",
             "image_mobile": "shopify://shop_images/printr-hero-gym-mobile-v2.jpg",
-            "color_scheme": "scheme-4",
+            "image_position": "right",
             "style": "overlay",
             "position": "left",
             "overlay": 35,
-            "image_position": "right"
+            "color_scheme": "scheme-4"
           },
           "blocks": {
             "h": {
@@ -57,14 +57,16 @@
                 "tag": "h1",
                 "size": "h1",
                 "alignment": "left"
-              }
+              },
+              "blocks": {}
             },
             "t": {
               "type": "text",
               "settings": {
                 "text": "<p>Banners, flyers and cards built to pack the gym floor.</p>",
                 "alignment": "left"
-              }
+              },
+              "blocks": {}
             },
             "g": {
               "type": "group",
@@ -79,7 +81,8 @@
                     "label": "Shop fitness prints",
                     "link": "shopify://collections/apparel",
                     "style": "primary"
-                  }
+                  },
+                  "blocks": {}
                 }
               },
               "block_order": [
@@ -98,11 +101,11 @@
           "settings": {
             "image": "shopify://shop_images/printr-hero-restaurant-desktop-v2.jpg",
             "image_mobile": "shopify://shop_images/printr-hero-restaurant-mobile-v2.jpg",
-            "color_scheme": "scheme-4",
+            "image_position": "right",
             "style": "overlay",
             "position": "left",
             "overlay": 35,
-            "image_position": "right"
+            "color_scheme": "scheme-4"
           },
           "blocks": {
             "h": {
@@ -113,14 +116,16 @@
                 "tag": "h2",
                 "size": "h1",
                 "alignment": "left"
-              }
+              },
+              "blocks": {}
             },
             "t": {
               "type": "text",
               "settings": {
                 "text": "<p>Menus, table cards and signage with real restaurant polish.</p>",
                 "alignment": "left"
-              }
+              },
+              "blocks": {}
             },
             "g": {
               "type": "group",
@@ -135,7 +140,8 @@
                     "label": "Shop restaurant prints",
                     "link": "shopify://collections/brochures",
                     "style": "primary"
-                  }
+                  },
+                  "blocks": {}
                 }
               },
               "block_order": [
@@ -154,11 +160,11 @@
           "settings": {
             "image": "shopify://shop_images/printr-hero-fastfood-desktop-v2.jpg",
             "image_mobile": "shopify://shop_images/printr-hero-fastfood-mobile-v2.jpg",
-            "color_scheme": "scheme-4",
+            "image_position": "right",
             "style": "overlay",
             "position": "left",
             "overlay": 35,
-            "image_position": "right"
+            "color_scheme": "scheme-4"
           },
           "blocks": {
             "h": {
@@ -169,14 +175,16 @@
                 "tag": "h2",
                 "size": "h1",
                 "alignment": "left"
-              }
+              },
+              "blocks": {}
             },
             "t": {
               "type": "text",
               "settings": {
                 "text": "<p>Banners and signs that turn foot traffic into orders.</p>",
                 "alignment": "left"
-              }
+              },
+              "blocks": {}
             },
             "g": {
               "type": "group",
@@ -191,7 +199,8 @@
                     "label": "Shop banners & signs",
                     "link": "shopify://collections/banners",
                     "style": "primary"
-                  }
+                  },
+                  "blocks": {}
                 }
               },
               "block_order": [
@@ -210,11 +219,11 @@
           "settings": {
             "image": "shopify://shop_images/printr-hero-medical-desktop-v2.jpg",
             "image_mobile": "shopify://shop_images/printr-hero-medical-mobile-v2.jpg",
-            "color_scheme": "scheme-4",
+            "image_position": "right",
             "style": "overlay",
             "position": "left",
             "overlay": 35,
-            "image_position": "right"
+            "color_scheme": "scheme-4"
           },
           "blocks": {
             "h": {
@@ -225,14 +234,16 @@
                 "tag": "h2",
                 "size": "h1",
                 "alignment": "left"
-              }
+              },
+              "blocks": {}
             },
             "t": {
               "type": "text",
               "settings": {
                 "text": "<p>Appointment cards, brochures and signage that look as professional as you are.</p>",
                 "alignment": "left"
-              }
+              },
+              "blocks": {}
             },
             "g": {
               "type": "group",
@@ -247,7 +258,8 @@
                     "label": "Shop clinic prints",
                     "link": "shopify://collections/business-cards",
                     "style": "primary"
-                  }
+                  },
+                  "blocks": {}
                 }
               },
               "block_order": [
@@ -266,11 +278,11 @@
           "settings": {
             "image": "shopify://shop_images/printr-hero-mix-desktop-v2.jpg",
             "image_mobile": "shopify://shop_images/printr-hero-mix-mobile-v2.jpg",
-            "color_scheme": "scheme-4",
+            "image_position": "right",
             "style": "overlay",
             "position": "left",
             "overlay": 35,
-            "image_position": "right"
+            "color_scheme": "scheme-4"
           },
           "blocks": {
             "h": {
@@ -281,14 +293,16 @@
                 "tag": "h2",
                 "size": "h1",
                 "alignment": "left"
-              }
+              },
+              "blocks": {}
             },
             "t": {
               "type": "text",
               "settings": {
                 "text": "<p>Cards, stickers, apparel and more, all from one shop.</p>",
                 "alignment": "left"
-              }
+              },
+              "blocks": {}
             },
             "g": {
               "type": "group",
@@ -303,7 +317,8 @@
                     "label": "Shop all products",
                     "link": "shopify://collections/all-print-products",
                     "style": "primary"
-                  }
+                  },
+                  "blocks": {}
                 }
               },
               "block_order": [
@@ -324,82 +339,17 @@
         "hero_fastfood",
         "hero_medical",
         "hero_mix"
-      ]
-    },
-    "features": {
-      "type": "multicolumn",
+      ],
       "settings": {
-        "heading": "",
-        "columns": 3,
-        "compact": true,
-        "color_scheme": "scheme-1",
-        "bg_image": "shopify://shop_images/printr-bg-halftone-cmyk.jpg",
-        "bg_overlay": 20
-      },
-      "blocks": {
-        "f1": {
-          "type": "icon-column",
-          "settings": {
-            "icon": "clock",
-            "image": "shopify://shop_images/printr-feat-fast-turnaround.jpg",
-            "title": "Fast turnaround",
-            "text": "<p>Quick production on everyday print, from upload to shipping.</p>"
-          }
-        },
-        "f2": {
-          "type": "icon-column",
-          "settings": {
-            "icon": "print",
-            "image": "shopify://shop_images/printr-feat-premium-stocks.jpg",
-            "title": "Premium stocks",
-            "text": "<p>Thick papers, rich finishes and colour that pops.</p>"
-          }
-        },
-        "f3": {
-          "type": "icon-column",
-          "settings": {
-            "icon": "check",
-            "image": "shopify://shop_images/printr-feat-reprint-guarantee.jpg",
-            "title": "Reprint guarantee",
-            "text": "<p>Not right? We'll reprint it.</p>"
-          }
-        },
-        "f4": {
-          "type": "icon-column",
-          "settings": {
-            "icon": "truck",
-            "image": "shopify://shop_images/printr-feat-free-shipping.jpg",
-            "title": "Reliable shipping",
-            "text": "<p>Fast, reliable shipping to your door.</p>"
-          }
-        },
-        "f5": {
-          "type": "icon-column",
-          "settings": {
-            "icon": "chat",
-            "image": "shopify://shop_images/printr-feat-design-help.jpg",
-            "title": "Design help",
-            "text": "<p>No artwork? Our team will help you get print-ready.</p>"
-          }
-        },
-        "f6": {
-          "type": "icon-column",
-          "settings": {
-            "icon": "print",
-            "image": "shopify://shop_images/printr-feat-bulk-pricing.jpg",
-            "title": "Bulk pricing",
-            "text": "<p>Order more, pay less per piece.</p>"
-          }
-        }
-      },
-      "block_order": [
-        "f1",
-        "f2",
-        "f3",
-        "f4",
-        "f5",
-        "f6"
-      ]
+        "label": "Featured promotions",
+        "full_width": true,
+        "mobile_portrait": true,
+        "height": 75,
+        "height_mobile": 60,
+        "effect": "slide",
+        "autoplay": true,
+        "speed": 6
+      }
     },
     "marquee": {
       "type": "marquee",
@@ -408,6 +358,12 @@
           "type": "item",
           "settings": {
             "text": "Business cards"
+          }
+        },
+        "item_UJiqVf": {
+          "type": "item",
+          "settings": {
+            "text": "30% OFF"
           }
         },
         "i2": {
@@ -437,6 +393,7 @@
       },
       "block_order": [
         "i1",
+        "item_UJiqVf",
         "i2",
         "i3",
         "i4",
@@ -449,13 +406,6 @@
     },
     "collections": {
       "type": "collection-list",
-      "settings": {
-        "heading": "Shop by product.",
-        "layout": "grid",
-        "columns": 5,
-        "color_scheme": "scheme-1",
-        "intro": "<p>From business cards to full storefront signage, everything your business prints, in one place.</p>"
-      },
       "blocks": {
         "c1": {
           "type": "collection",
@@ -529,7 +479,95 @@
         "c8",
         "c9",
         "c10"
-      ]
+      ],
+      "settings": {
+        "heading": "Shop by product.",
+        "intro": "<p>From business cards to full storefront signage, everything your business prints, in one place.</p>",
+        "layout": "grid",
+        "columns": 5,
+        "color_scheme": "scheme-1"
+      }
+    },
+    "features": {
+      "type": "multicolumn",
+      "blocks": {
+        "f1": {
+          "type": "icon-column",
+          "settings": {
+            "icon": "clock",
+            "image": "shopify://shop_images/printr-feat-fast-turnaround.jpg",
+            "title": "Fast turnaround",
+            "text": "<p>Quick production on everyday print, from upload to shipping.</p>"
+          },
+          "blocks": {}
+        },
+        "f2": {
+          "type": "icon-column",
+          "settings": {
+            "icon": "print",
+            "image": "shopify://shop_images/printr-feat-premium-stocks.jpg",
+            "title": "Premium stocks",
+            "text": "<p>Thick papers, rich finishes and colour that pops.</p>"
+          },
+          "blocks": {}
+        },
+        "f3": {
+          "type": "icon-column",
+          "settings": {
+            "icon": "check",
+            "image": "shopify://shop_images/printr-feat-reprint-guarantee.jpg",
+            "title": "Reprint guarantee",
+            "text": "<p>Not right? We'll reprint it.</p>"
+          },
+          "blocks": {}
+        },
+        "f4": {
+          "type": "icon-column",
+          "settings": {
+            "icon": "truck",
+            "image": "shopify://shop_images/printr-feat-free-shipping.jpg",
+            "title": "Reliable shipping",
+            "text": "<p>Fast, reliable shipping to your door.</p>"
+          },
+          "blocks": {}
+        },
+        "f5": {
+          "type": "icon-column",
+          "settings": {
+            "icon": "chat",
+            "image": "shopify://shop_images/printr-feat-design-help.jpg",
+            "title": "Design help",
+            "text": "<p>No artwork? Our team will help you get print-ready.</p>"
+          },
+          "blocks": {}
+        },
+        "f6": {
+          "type": "icon-column",
+          "settings": {
+            "icon": "print",
+            "image": "shopify://shop_images/printr-feat-bulk-pricing.jpg",
+            "title": "Bulk pricing",
+            "text": "<p>Order more, pay less per piece.</p>"
+          },
+          "blocks": {}
+        }
+      },
+      "block_order": [
+        "f1",
+        "f2",
+        "f3",
+        "f4",
+        "f5",
+        "f6"
+      ],
+      "settings": {
+        "heading": "",
+        "columns": 3,
+        "compact": true,
+        "color_scheme": "scheme-1",
+        "bg_image": "shopify://shop_images/printr-bg-halftone-cmyk.jpg",
+        "bg_overlay": 20
+      }
     },
     "featured": {
       "type": "featured-collection",
@@ -547,12 +585,33 @@
       "settings": {
         "slug": "Volume pricing",
         "heading": "Print more. Pay less.",
+        "body": "<p>Volume pricing on bigger runs, so every piece costs less.</p>",
         "button": "See volume pricing",
         "link": "shopify://collections/sale",
+        "end_date": "",
         "color_scheme": "scheme-3",
         "image": "shopify://shop_images/printr-promo-bulk.jpg",
-        "overlay": 75,
-        "body": "<p>Volume pricing on bigger runs, so every piece costs less.</p>"
+        "overlay": 75
+      }
+    },
+    "video_press": {
+      "type": "video-loop",
+      "settings": {
+        "video_desktop": "shopify://files/videos/printr-press-loop-1920x1080-v2.mp4",
+        "video_mobile": "shopify://files/videos/printr-press-loop-1080x1350-v2.mp4",
+        "poster_desktop": "shopify://shop_images/printr-press-loop-1920x1080-poster-v2.jpg",
+        "poster_mobile": "shopify://shop_images/printr-press-loop-1080x1350-poster-v2.jpg",
+        "alt": "Printing press running a CMYK job",
+        "ratio_desktop": "21 / 9",
+        "ratio_mobile": "4 / 5",
+        "full_width": false,
+        "slug": "On press",
+        "heading": "Printed in-house, checked sheet by sheet",
+        "text": "<p>Calibrated color and premium stocks on every run.</p>",
+        "button": "Shop all print",
+        "link": "shopify://collections/all-print-products",
+        "overlay": 55,
+        "color_scheme": "scheme-1"
       }
     },
     "featured_postcards": {
@@ -568,10 +627,6 @@
     },
     "tabs": {
       "type": "collection-tabs",
-      "settings": {
-        "heading": "Explore our print range",
-        "color_scheme": "scheme-1"
-      },
       "blocks": {
         "t1": {
           "type": "tab",
@@ -607,7 +662,25 @@
         "t2",
         "t3",
         "t4"
-      ]
+      ],
+      "settings": {
+        "heading": "Explore our print range",
+        "color_scheme": "scheme-1"
+      }
+    },
+    "promo_new": {
+      "type": "promo-banner",
+      "settings": {
+        "slug": "New customers",
+        "heading": "New here? Let's print your first order.",
+        "body": "<p>Pick your product, upload your file or get design help, and we'll take it from there.</p>",
+        "button": "Start your order",
+        "link": "shopify://collections/all-print-products",
+        "end_date": "",
+        "color_scheme": "scheme-1",
+        "image": "shopify://shop_images/printr-promo-new-customers.jpg",
+        "overlay": 60
+      }
     },
     "iwt": {
       "type": "image-with-text",
@@ -615,22 +688,30 @@
         "h": {
           "type": "heading",
           "settings": {
+            "slug": "",
             "heading": "How it works",
-            "slug": ""
-          }
+            "tag": "h2",
+            "size": "h2",
+            "alignment": "left"
+          },
+          "blocks": {}
         },
         "t": {
           "type": "text",
           "settings": {
-            "text": "<ol><li><strong>Choose your product.</strong> Pick the size, paper and quantity.</li><li><strong>Upload or get design help.</strong> Send your file, or let our team help prepare it.</li><li><strong>Review and approve.</strong> Check your order details and give the green light.</li><li><strong>We print and ship.</strong> Your order goes to press and ships to your door.</li></ol>"
-          }
+            "text": "<ol><li><strong>Choose your product.</strong> Pick the size, paper and quantity.</li><li><strong>Upload or get design help.</strong> Send your file, or let our team help prepare it.</li><li><strong>Review and approve.</strong> Check your order details and give the green light.</li><li><strong>We print and ship.</strong> Your order goes to press and ships to your door.</li></ol>",
+            "alignment": "left"
+          },
+          "blocks": {}
         },
         "b": {
           "type": "button",
           "settings": {
             "label": "Start your order",
-            "link": "shopify://collections/all-print-products"
-          }
+            "link": "shopify://collections/all-print-products",
+            "style": "primary"
+          },
+          "blocks": {}
         }
       },
       "block_order": [
@@ -639,17 +720,33 @@
         "b"
       ],
       "settings": {
-        "color_scheme": "scheme-2",
-        "image": "shopify://shop_images/printr-editorial-process.jpg"
+        "image": "shopify://shop_images/printr-editorial-process.jpg",
+        "reverse": false,
+        "color_scheme": "scheme-2"
+      }
+    },
+    "video_cards": {
+      "type": "video-loop",
+      "settings": {
+        "video_desktop": "shopify://files/videos/printr-cards-loop-1920x1080.mp4",
+        "video_mobile": "shopify://files/videos/printr-cards-loop-1080x1350.mp4",
+        "poster_desktop": "shopify://shop_images/printr-cards-loop-1920x1080-poster.jpg",
+        "poster_mobile": "shopify://shop_images/printr-cards-loop-1080x1350-poster.jpg",
+        "alt": "Stack of freshly printed business cards",
+        "ratio_desktop": "21 / 9",
+        "ratio_mobile": "4 / 5",
+        "full_width": false,
+        "slug": "Business cards",
+        "heading": "Cards that make the first impression",
+        "text": "<p>Matte, gloss and soft-touch finishes.</p>",
+        "button": "Shop business cards",
+        "link": "shopify://collections/business-cards",
+        "overlay": 55,
+        "color_scheme": "scheme-1"
       }
     },
     "gallery": {
       "type": "scrolling-gallery",
-      "settings": {
-        "heading": "Printed for businesses like yours",
-        "speed": 30,
-        "color_scheme": "scheme-1"
-      },
       "blocks": {
         "g1": {
           "type": "image",
@@ -717,104 +814,59 @@
         "g6",
         "g7",
         "g8"
-      ]
+      ],
+      "settings": {
+        "heading": "Printed for businesses like yours",
+        "speed": 30,
+        "color_scheme": "scheme-1"
+      }
     },
     "testimonials": {
       "type": "multicolumn",
-      "settings": {
-        "heading": "Loved by local businesses",
-        "columns": 3,
-        "color_scheme": "scheme-1",
-        "bg_image": "shopify://shop_images/printr-bg-paper-texture.jpg",
-        "bg_overlay": 0
-      },
       "blocks": {
         "q1": {
           "type": "testimonial",
           "settings": {
             "rating": 5,
+            "quote": "<p>Our new menus came out sharp and on time. Ordering was easy.</p>",
             "author": "J.R.",
-            "role": "Restaurant owner",
-            "quote": "<p>Our new menus came out sharp and on time. Ordering was easy.</p>"
-          }
+            "role": "Restaurant owner"
+          },
+          "blocks": {}
         },
         "q2": {
           "type": "testimonial",
           "settings": {
             "rating": 5,
+            "quote": "<p>The banners for our grand opening looked incredible. People noticed.</p>",
             "author": "M.T.",
-            "role": "Gym owner",
-            "quote": "<p>The banners for our grand opening looked incredible. People noticed.</p>"
-          }
+            "role": "Gym owner"
+          },
+          "blocks": {}
         },
         "q3": {
           "type": "testimonial",
           "settings": {
             "rating": 5,
+            "quote": "<p>Fast, simple and the cards feel premium. We'll be back.</p>",
             "author": "A.L.",
-            "role": "Clinic manager",
-            "quote": "<p>Fast, simple and the cards feel premium. We'll be back.</p>"
-          }
+            "role": "Clinic manager"
+          },
+          "blocks": {}
         }
       },
       "block_order": [
         "q1",
         "q2",
         "q3"
-      ]
-    },
-    "promo_new": {
-      "type": "promo-banner",
+      ],
       "settings": {
-        "slug": "New customers",
-        "heading": "New here? Let's print your first order.",
-        "button": "Start your order",
-        "link": "shopify://collections/all-print-products",
-        "end_date": "",
+        "heading": "Loved by local businesses",
+        "columns": 3,
+        "compact": false,
         "color_scheme": "scheme-1",
-        "image": "shopify://shop_images/printr-promo-new-customers.jpg",
-        "overlay": 60,
-        "body": "<p>Pick your product, upload your file or get design help, and we'll take it from there.</p>"
-      }
-    },
-    "video_press": {
-      "type": "video-loop",
-      "settings": {
-        "video_desktop": "shopify://files/videos/printr-press-loop-1920x1080-v2.mp4",
-        "video_mobile": "shopify://files/videos/printr-press-loop-1080x1350-v2.mp4",
-        "poster_desktop": "shopify://shop_images/printr-press-loop-1920x1080-poster-v2.jpg",
-        "poster_mobile": "shopify://shop_images/printr-press-loop-1080x1350-poster-v2.jpg",
-        "alt": "Printing press running a CMYK job",
-        "ratio_desktop": "21 / 9",
-        "ratio_mobile": "4 / 5",
-        "full_width": false,
-        "slug": "On press",
-        "heading": "Printed in-house, checked sheet by sheet",
-        "text": "<p>Calibrated color and premium stocks on every run.</p>",
-        "button": "Shop all print",
-        "link": "shopify://collections/all-print-products",
-        "overlay": 55,
-        "color_scheme": "scheme-1"
-      }
-    },
-    "video_cards": {
-      "type": "video-loop",
-      "settings": {
-        "video_desktop": "shopify://files/videos/printr-cards-loop-1920x1080.mp4",
-        "video_mobile": "shopify://files/videos/printr-cards-loop-1080x1350.mp4",
-        "poster_desktop": "shopify://shop_images/printr-cards-loop-1920x1080-poster.jpg",
-        "poster_mobile": "shopify://shop_images/printr-cards-loop-1080x1350-poster.jpg",
-        "alt": "Stack of freshly printed business cards",
-        "ratio_desktop": "21 / 9",
-        "ratio_mobile": "4 / 5",
-        "full_width": false,
-        "slug": "Business cards",
-        "heading": "Cards that make the first impression",
-        "text": "<p>Matte, gloss and soft-touch finishes.</p>",
-        "button": "Shop business cards",
-        "link": "shopify://collections/business-cards",
-        "overlay": 55,
-        "color_scheme": "scheme-1"
+        "bg_image": "shopify://shop_images/printr-bg-paper-texture.jpg",
+        "bg_overlay": 0
       }
     },
     "cta": {
@@ -823,23 +875,30 @@
         "h": {
           "type": "heading",
           "settings": {
+            "slug": "",
             "heading": "Ready to print something great?",
+            "tag": "h2",
+            "size": "h2",
             "alignment": "center"
-          }
+          },
+          "blocks": {}
         },
         "t": {
           "type": "text",
           "settings": {
             "text": "<p>Start your order now and get it in your hands fast.</p>",
             "alignment": "center"
-          }
+          },
+          "blocks": {}
         },
         "b": {
           "type": "button",
           "settings": {
             "label": "Start printing",
-            "link": "shopify://collections/all-print-products"
-          }
+            "link": "shopify://collections/all-print-products",
+            "style": "primary"
+          },
+          "blocks": {}
         }
       },
       "block_order": [
@@ -867,9 +926,9 @@
   "order": [
     "circles",
     "hero",
-    "features",
     "marquee",
     "collections",
+    "features",
     "featured",
     "promo",
     "video_press",
@@ -884,4 +943,3 @@
     "newsletter"
   ]
 }
-
