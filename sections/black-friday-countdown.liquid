@@ -11,7 +11,7 @@
   assign expired_behavior = section.settings.expired_behavior | default: 'hide-section'
   assign expired_text = section.settings.expired_text
   assign cta_label = section.settings.cta_label
-  assign cta_url = section.settings.cta_url
+  assign cta_url = section.settings.cta_url | default: '/collections/all-print-products'
   assign style = section.settings.style_variant | default: 'black-yellow'
   assign image_alt = heading | default: 'Black Friday: 30% off the entire store'
   assign logo_uid = 'bf-v3-' | append: section.id
@@ -848,8 +848,7 @@
     {
       "type": "url",
       "id": "cta_url",
-      "label": "Button / banner link",
-      "default": "/collections/all-print-products"
+      "label": "Button / banner link"
     },
     {
       "type": "header",
