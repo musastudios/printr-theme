@@ -644,6 +644,7 @@
     },
     "featured_postcards": {
       "type": "featured-collection",
+      "disabled": true,
       "settings": {
         "slug": "Marketing",
         "heading": "Postcards",
