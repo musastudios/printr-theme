@@ -1,37 +1,84 @@
 {%- if section.settings.enable -%}
   {%- form 'customer', id: 'PopupForm', class: 'popup__form growth-form' -%}
     {%- assign success = form.posted_successfully? -%}
-    <newsletter-popup data-delay="{{ section.settings.delay }}" data-frequency="{{ section.settings.frequency }}" data-exit-intent="{{ section.settings.exit_intent }}" data-success="{{ success }}" data-home="{% if request.page_type == 'index' %}true{% else %}false{% endif %}">
+    {%- assign subscribed = false -%}
+    {%- if customer.accepts_marketing or success -%}
+      {%- assign subscribed = true -%}
+    {%- endif -%}
+    <newsletter-popup
+      data-delay="{{ section.settings.delay }}"
+      data-frequency="{{ section.settings.frequency }}"
+      data-exit-intent="{{ section.settings.exit_intent }}"
+      data-success="{{ success }}"
+      data-subscribed="{% if subscribed %}true{% else %}false{% endif %}"
+      data-home="{% if request.page_type == 'index' %}true{% else %}false{% endif %}"
+    >
       <dialog class="modal popup color-{{ section.settings.color_scheme }}" role="dialog" aria-modal="true" aria-labelledby="PopupTitle">
         <div class="popup__grid crop">
-          {%- if section.settings.image -%}
-            <div class="popup__media">{%- assign focal = section.settings.image.presentation.focal_point | prepend: 'object-position: ' -%}{{ section.settings.image | image_url: width: 900 | image_tag: loading: 'lazy', widths: '450, 900', sizes: '(min-width: 750px) 40rem, 0px', alt: '', style: focal }}</div>
-          {%- endif -%}
-          <div class="popup__body">
-            <button type="button" class="icon-button popup__close" data-close>{% render 'icon', name: 'close' %}<span class="visually-hidden">{{ 'general.close' | t }}</span></button>
-            {%- if success -%}
-              <span class="slug">{{ section.settings.slug | escape }}</span>
-              <h2 id="PopupTitle">{{ 'general.newsletter.success' | t }}</h2>
-              <p class="newsletter__fine">{{ 'growth_funnel.terms' | t }}</p>
+          <div class="popup__media">
+            {%- if section.settings.image != blank -%}
+              {%- assign focal = section.settings.image.presentation.focal_point | prepend: 'object-position: ' -%}
+              {{ section.settings.image | image_url: width: 1200 | image_tag: loading: 'lazy', widths: '450, 900, 1200', sizes: '(min-width: 750px) 36rem, 0px', alt: '', style: focal }}
             {%- else -%}
+              <img
+                src="{{ 'popup-first-order.webp' | asset_url }}"
+                srcset="{{ 'popup-first-order.webp' | asset_url }} 864w"
+                sizes="(min-width: 750px) 36rem, 0px"
+                width="864"
+                height="1152"
+                alt=""
+                loading="lazy"
+                class="popup__media-img"
+              >
+            {%- endif -%}
+          </div>
+          <div class="popup__body">
+            <button type="button" class="popup__close" data-close>
+              <span class="popup__close-mark" aria-hidden="true">&times;</span>
+              <span class="visually-hidden">{{ 'general.close' | t }}</span>
+            </button>
+
+            <div data-growth-success-panel class="popup__success"{% unless success %} hidden{% endunless %}>
               <span class="slug">{{ section.settings.slug | escape }}</span>
-              <h2 id="PopupTitle">{{ section.settings.heading | escape }}</h2>
-              <div class="rte">{{ section.settings.text }}</div>
+              <h2 id="PopupSuccessTitle" class="popup__heading">{{ 'general.newsletter.popup_success' | t }}</h2>
+              <p class="newsletter__fine">{{ 'general.newsletter.popup_fine_print' | t }}</p>
+            </div>
+
+            <div data-growth-form-panel class="popup__offer"{% if success %} hidden{% endif %}>
+              <span class="slug">{{ section.settings.slug | escape }}</span>
+              <h2 id="PopupTitle" class="popup__heading">{{ section.settings.heading | escape }}</h2>
+              {%- if section.settings.text != blank -%}
+                <div class="rte popup__text">{{ section.settings.text }}</div>
+              {%- endif -%}
               <input type="hidden" name="contact[tags]" value="newsletter,popup">
               <input type="hidden" name="growth-source" value="popup">
-              <div class="field field--inline">
+              <div class="field field--inline popup__fields">
                 <label class="visually-hidden" for="PopupEmail">{{ 'general.newsletter.email' | t }}</label>
-                <input id="PopupEmail" type="email" name="contact[email]" required autocomplete="email" placeholder="{{ 'general.newsletter.email' | t }}" data-growth-email{% if form.errors %} aria-invalid="true" aria-describedby="PopupError"{% endif %}>
-                <button type="submit" class="button" data-growth-submit>{{ 'general.newsletter.subscribe' | t }}</button>
+                <input
+                  id="PopupEmail"
+                  class="popup__email"
+                  type="email"
+                  name="contact[email]"
+                  required
+                  autocomplete="email"
+                  placeholder="{{ 'general.newsletter.email' | t }}"
+                  data-growth-email
+                  {% if form.errors %}
+                    aria-invalid="true"
+                    aria-describedby="PopupError"
+                  {% endif %}
+                >
+                <button type="submit" class="button popup__submit" data-growth-submit>{{ 'general.newsletter.subscribe' | t }}</button>
               </div>
               {%- if settings.growth_turnstile_site_key != blank and settings.growth_subscribe_url != blank -%}
                 <div class="growth-turnstile" data-growth-turnstile></div>
               {%- endif -%}
-              <p class="newsletter__fine">{{ 'general.newsletter.fine_print' | t }}</p>
+              <p class="newsletter__fine">{{ 'general.newsletter.popup_fine_print' | t }}</p>
               <p class="newsletter__status" data-growth-status role="status" hidden></p>
-              {%- if form.errors -%}<p id="PopupError" class="form-error" role="alert">{{ form.errors.translated_fields.email | capitalize }} {{ form.errors.messages.email }}</p>{%- endif -%}
-              <button type="button" class="link popup__dismiss" data-close>{{ 'general.newsletter.no_thanks' | t }}</button>
-            {%- endif -%}
+              {%- if form.errors -%}
+                <p id="PopupError" class="form-error" role="alert">{{ form.errors.translated_fields.email | capitalize }} {{ form.errors.messages.email }}</p>
+              {%- endif -%}
+            </div>
           </div>
         </div>
       </dialog>
@@ -39,32 +86,54 @@
   {%- endform -%}
 {%- endif -%}
 {% stylesheet %}
-  .newsletter__fine { margin: .8rem 0 0; font-size: 1.3rem; opacity: .75; }
-  .growth-turnstile { display: flex; justify-content: center; margin-top: .8rem; min-height: 6.5rem; }
-  .popup { padding: 0; max-width: min(88rem, calc(100vw - 3.2rem)); }
-  .popup[open] { position: fixed; inset: 0; margin: auto; max-height: calc(100vh - 3.2rem); overflow: auto; z-index: 50; box-shadow: 0 0 0 100vmax rgba(0, 0, 0, .5); }
-  .popup__grid { display: grid; }
-  .popup__media img { height: 100%; object-fit: cover; }
-  .popup__body { position: relative; padding: clamp(3.2rem, 5vw, 5.6rem); display: grid; gap: 1.2rem; align-content: center; }
-  .popup__close { position: absolute; top: 1.2rem; right: 1.2rem; }
-  .popup__dismiss { justify-self: start; }
-  .field--inline { display: flex; gap: .8rem; flex-wrap: wrap; }
-  .field--inline input { flex: 1 1 20rem; }
-  @media (min-width: 750px) { .popup__grid:has(.popup__media) { grid-template-columns: 1fr 1.2fr; } }
-  @media (max-width: 749px) { .popup__media { display: none; } }
+  .newsletter__fine { margin: .4rem 0 0; font-size: 1.2rem; line-height: 1.45; opacity: .72; max-width: 36rem; }
+  .newsletter__status { margin: .4rem 0 0; font-size: 1.3rem; }
+  .growth-turnstile { display: flex; justify-content: flex-start; margin-top: .4rem; min-height: 0; }
+  .popup { padding: 0; max-width: min(86rem, calc(100vw - 2.4rem)); border: 0; border-radius: 2.4rem; overflow: hidden; background: rgb(var(--color-background)); }
+  .popup[open] { position: fixed; inset: 0; margin: auto; max-height: calc(100vh - 2.4rem); overflow: hidden; z-index: 50; box-shadow: 0 2.4rem 6.4rem rgba(0, 0, 0, .28), 0 0 0 100vmax rgba(0, 0, 0, .5); }
+  .popup__form { margin: 0; }
+  .popup__grid { display: grid; min-height: 42rem; max-height: calc(100vh - 2.4rem); }
+  .popup__media { min-width: 0; background: #efe8dc; }
+  .popup__media img,
+  .popup__media-img { display: block; width: 100%; height: 100%; object-fit: cover; }
+  .popup__body { position: relative; padding: clamp(3.2rem, 5vw, 5.6rem) clamp(2.4rem, 4vw, 4.8rem); display: grid; gap: 1.2rem; align-content: center; }
+  .popup__heading { margin: 0; font-size: clamp(2.8rem, 4vw, 4.4rem); line-height: 1.05; letter-spacing: -0.03em; font-weight: 700; }
+  .popup__text { margin: 0; font-size: 1.5rem; }
+  .popup__text p { margin: 0; }
+  .popup__close { position: absolute; top: 1.2rem; right: 1.2rem; width: 3.6rem; height: 3.6rem; border: 0; border-radius: 999px; background: transparent; color: inherit; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; }
+  .popup__close:hover { background: rgba(0, 0, 0, .06); }
+  .popup__close-mark { font-size: 2.8rem; line-height: 1; font-weight: 400; transform: translateY(-0.1rem); }
+  .popup__fields { display: flex; gap: .8rem; flex-wrap: wrap; align-items: stretch; margin-top: .4rem; }
+  .popup__email { flex: 1 1 18rem; min-height: 4.8rem; border-radius: 999px; border: 1px solid rgb(var(--color-border)); padding: 0 1.8rem; font: inherit; background: #fff; }
+  .popup__email:focus { outline: none; border-color: #b8167a; box-shadow: 0 0 0 .3rem rgba(184, 22, 122, .28); }
+  .popup__submit { border-radius: 999px; background: #000; border-color: #000; color: #fff; min-height: 4.8rem; padding: 0 2.4rem; }
+  .popup__submit:hover { background: #111; }
+  .popup__success,
+  .popup__offer { display: grid; gap: 1.2rem; align-content: center; }
+  .popup__success[hidden],
+  .popup__offer[hidden] { display: none; }
+  @media (min-width: 750px) {
+    .popup__grid { grid-template-columns: .9fr 1.15fr; }
+  }
+  @media (max-width: 749px) {
+    .popup__media { display: none; }
+    .popup__grid { min-height: 0; }
+    .popup__body { padding: 3.2rem 2.4rem 2.8rem; }
+    .popup__heading { font-size: 2.8rem; }
+  }
 {% endstylesheet %}
 {% schema %}
 {
   "name": "Newsletter popup",
   "settings": [
-    { "type": "checkbox", "id": "enable", "label": "Enable popup", "default": false },
-    { "type": "range", "id": "delay", "label": "Delay", "min": 2, "max": 60, "step": 1, "unit": "s", "default": 10 },
+    { "type": "checkbox", "id": "enable", "label": "Enable popup", "default": true },
+    { "type": "range", "id": "delay", "label": "Delay", "min": 2, "max": 60, "step": 1, "unit": "s", "default": 15 },
     { "type": "range", "id": "frequency", "label": "Show again after", "min": 1, "max": 60, "step": 1, "unit": "d", "default": 14 },
     { "type": "checkbox", "id": "exit_intent", "label": "Also open on exit intent (desktop)", "default": true },
-    { "type": "image_picker", "id": "image", "label": "Image" },
-    { "type": "text", "id": "slug", "label": "Eyebrow", "default": "First order" },
-    { "type": "text", "id": "heading", "label": "Heading", "default": "15% off your first print order" },
-    { "type": "richtext", "id": "text", "label": "Text", "default": "<p>Join the list and confirm your email to get a unique 15% OFF code for your first order. Valid on products only; excludes shipping and taxes.</p>" },
+    { "type": "image_picker", "id": "image", "label": "Image", "info": "Leave empty to use the built-in PRINTR painted-edge graphic." },
+    { "type": "text", "id": "slug", "label": "Eyebrow", "default": "FIRST ORDER" },
+    { "type": "text", "id": "heading", "label": "Heading", "default": "15% off your first print run" },
+    { "type": "richtext", "id": "text", "label": "Text", "default": "<p>Join the list and confirm your email to get a unique 15% OFF code.</p>" },
     { "type": "color_scheme", "id": "color_scheme", "label": "Color scheme", "default": "scheme-1" }
   ]
 }

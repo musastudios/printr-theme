@@ -28,6 +28,7 @@ export function captureReferral(location = window.location, assign = applyDiscou
   const code = readRef(location.search);
   if (!code) return null;
   setCookie(REF_COOKIE, code, 30);
+  try { sessionStorage.setItem('printr-popup-skip', '1'); } catch { /* storage blocked */ }
   const redirect = config().refRedirect || '/collections/all-print-products';
   const current = `${location.pathname}${location.search}`;
   if (!location.pathname.startsWith('/discount/')) {
@@ -103,8 +104,21 @@ function enhanceForm(form) {
       });
       const json = await res.json().catch(() => ({}));
       if (!res.ok || !json.ok) throw new Error(json.error || 'subscribe_failed');
-      show(cfg.strings?.success || 'Check your email to confirm your subscription.');
+      const successMsg = cfg.strings?.success || 'Check your inbox for your unique 15% OFF code!';
+      show(successMsg);
       form.setAttribute('data-growth-success', 'true');
+      const formPanel = form.querySelector('[data-growth-form-panel]');
+      const successPanel = form.querySelector('[data-growth-success-panel]');
+      if (successPanel) {
+        if (formPanel) formPanel.hidden = true;
+        successPanel.hidden = false;
+      }
+      try {
+        localStorage.setItem('printr-popup-subscribed', '1');
+        localStorage.setItem('printr-popup', String(Date.now() + 3650 * 864e5));
+      } catch { /* storage blocked */ }
+      document.cookie = 'printr_popup_subscribed=1; path=/; max-age=315360000; SameSite=Lax';
+      form.dispatchEvent(new CustomEvent('growth:subscribed', { bubbles: true }));
     } catch (err) {
       show(cfg.strings?.error || 'We could not subscribe you. Try again.', true);
       if (window.turnstile && widgetId != null) window.turnstile.reset(widgetId);

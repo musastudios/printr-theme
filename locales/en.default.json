@@ -22,12 +22,14 @@
     "newsletter": {
       "email": "Email",
       "subscribe": "Subscribe",
-      "success": "Check your email to confirm your subscription. Your unique 15% OFF code arrives after you confirm.",
+      "success": "Check your inbox for your unique 15% OFF code!",
       "no_thanks": "No thanks",
       "use_code": "Use code",
       "placeholder": "Your email",
       "fine_print": "Valid on products only; excludes shipping and taxes. Single-use on first order, cannot be combined with other discounts. You can unsubscribe at any time.",
-      "confirm_needed": "Check your email to confirm your subscription. Your unique 15% OFF code will be sent after you confirm."
+      "popup_fine_print": "Valid on products only (excludes shipping & tax). Single-use code expires in 90 days.",
+      "popup_success": "Check your inbox for your unique 15% OFF code!",
+      "confirm_needed": "Check your inbox for your unique 15% OFF code!"
     },
     "countdown": {
       "days": "Days",

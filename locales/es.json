@@ -22,12 +22,14 @@
     "newsletter": {
       "email": "Correo electrónico",
       "subscribe": "Suscribirme",
-      "success": "Revisa tu correo para confirmar tu suscripción. Tu código único de 15% OFF llega después de confirmar.",
+      "success": "¡Revisa tu bandeja de entrada para tu código único de 15% OFF!",
       "no_thanks": "No, gracias",
       "use_code": "Usa el código",
       "placeholder": "Tu email",
       "fine_print": "Válido solo en productos; no aplica a envío ni impuestos (IVU). Un solo uso en tu primera orden, no acumulable con otros descuentos. Puedes darte de baja cuando quieras.",
-      "confirm_needed": "Revisa tu correo para confirmar tu suscripción. Te enviaremos tu código único de 15% OFF después de confirmar."
+      "popup_fine_print": "Válido solo en productos (no aplica a envío ni impuestos/IVU). Código de un solo uso, expira en 90 días.",
+      "popup_success": "¡Revisa tu bandeja de entrada para tu código único de 15% OFF!",
+      "confirm_needed": "¡Revisa tu bandeja de entrada para tu código único de 15% OFF!"
     },
     "countdown": {
       "days": "Días",

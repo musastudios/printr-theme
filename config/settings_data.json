@@ -31,13 +31,13 @@
         "type": "newsletter-popup",
         "settings": {
           "enable": true,
-          "delay": 10,
+          "delay": 15,
           "frequency": 14,
           "exit_intent": true,
-          "image": "shopify://shop_images/caguas-copy-circle-business-cards.jpg",
-          "slug": "First order",
-          "heading": "15% off your first print order",
-          "text": "<p>Join the list and confirm your email to get a unique 15% OFF code for your first order.</p>",
+          "image": "",
+          "slug": "FIRST ORDER",
+          "heading": "15% off your first print run",
+          "text": "<p>Join the list and confirm your email to get a unique 15% OFF code.</p>",
           "code": "",
           "color_scheme": ""
         }

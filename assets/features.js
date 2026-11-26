@@ -194,9 +194,51 @@ customElements.define('load-more', LoadMore);
 class NewsletterPopup extends HTMLElement {
   /* Non-modal dialog (show, not showModal) so it stays below drawers (z-index 50 < drawer 60).
      Never opens while the menu/cart/search drawer, header search or a mega menu is open.
-     Mobile: home page only, after 20s or 50% scroll. */
+     Opens after the configured delay (default 15s) for first-time / non-dismissed visitors. */
   busy() {
     return !!document.querySelector('drawer-panel[open], dialog[open], .mega-open, [data-search-input][aria-expanded="true"], .header__item.has-mega > button[aria-expanded="true"]');
+  }
+  cookie(name) {
+    const match = document.cookie.split('; ').find((row) => row.startsWith(name + '='));
+    return match ? decodeURIComponent(match.split('=').slice(1).join('=')) : '';
+  }
+  writeCookie(name, value, days) {
+    const maxAge = Math.round(days * 86400);
+    document.cookie = `${name}=${encodeURIComponent(value)}; path=/; max-age=${maxAge}; SameSite=Lax`;
+  }
+  storageGet(key) {
+    try { return localStorage.getItem(key) || ''; } catch { return ''; }
+  }
+  storageSet(key, value) {
+    try { localStorage.setItem(key, value); } catch { /* storage full or blocked */ }
+  }
+  sessionGet(key) {
+    try { return sessionStorage.getItem(key) || ''; } catch { return ''; }
+  }
+  sessionSet(key, value) {
+    try { sessionStorage.setItem(key, value); } catch { /* storage blocked */ }
+  }
+  shouldSkip() {
+    if (this.dataset.subscribed === 'true') return true;
+    if (this.storageGet('printr-popup-subscribed') === '1' || this.cookie('printr_popup_subscribed') === '1') return true;
+    const params = new URLSearchParams(window.location.search);
+    if (params.has('ref') || params.has('welcome') || params.get('subscribed') === '1') {
+      this.sessionSet('printr-popup-skip', '1');
+      return true;
+    }
+    if (this.sessionGet('printr-popup-skip') === '1') return true;
+    if (/welcome-confirmed/.test(window.location.pathname)) return true;
+    const days = Number(this.dataset.frequency || 14);
+    const last = Number(this.storageGet('printr-popup') || this.cookie('printr_popup') || 0);
+    if (last && Date.now() - last < days * 864e5) return true;
+    return false;
+  }
+  markSubscribed() {
+    const until = String(Date.now() + 3650 * 864e5);
+    this.storageSet('printr-popup-subscribed', '1');
+    this.storageSet('printr-popup', until);
+    this.writeCookie('printr_popup_subscribed', '1', 3650);
+    this.writeCookie('printr_popup', until, 3650);
   }
   focusables() {
     return [...this.dialog.querySelectorAll('a[href], button:not([disabled]), input:not([disabled]):not([type=hidden]), select, textarea, [tabindex]:not([tabindex="-1"])')]
@@ -213,7 +255,12 @@ class NewsletterPopup extends HTMLElement {
     if (!this.dialog.open) return;
     this.dialog.classList.remove('is-open');
     this.dialog.close();
-    if (persist) localStorage.setItem('printr-popup', Date.now());
+    if (persist) {
+      const ts = String(Date.now());
+      const days = Number(this.dataset.frequency || 14);
+      this.storageSet('printr-popup', ts);
+      this.writeCookie('printr_popup', ts, days);
+    }
     if (this.returnTo && this.returnTo.isConnected && typeof this.returnTo.focus === 'function') this.returnTo.focus();
     this.returnTo = null;
   }
@@ -227,9 +274,6 @@ class NewsletterPopup extends HTMLElement {
   }
   connectedCallback() {
     this.dialog = this.querySelector('dialog');
-    const key = 'printr-popup';
-    const days = Number(this.dataset.frequency || 7);
-    const last = Number(localStorage.getItem(key) || 0);
     const success = this.dataset.success === 'true';
     const close = () => this.hide(true);
     this.dialog.addEventListener('click', (e) => { if (e.target === this.dialog || e.target.closest('[data-close]')) close(); });
@@ -240,26 +284,24 @@ class NewsletterPopup extends HTMLElement {
     /* A drawer opening over the popup hides it (no frequency write); it comes back later only via a new page view. */
     new MutationObserver(() => { if (this.dialog.open && document.querySelector('drawer-panel[open]')) { this.returnTo = null; this.hide(false); } })
       .observe(document.body, { subtree: true, attributes: true, attributeFilter: ['open'] });
-    if (success) { this.show(); localStorage.setItem(key, Date.now() + 3650 * 864e5); return; }
+    this.closest('form')?.addEventListener('growth:subscribed', () => this.markSubscribed());
+    if (success) { this.markSubscribed(); this.show(); return; }
     if (window.Shopify && window.Shopify.designMode) return;
-    if (Date.now() - last < days * 864e5) return;
-    const mobile = window.matchMedia('(max-width: 749px)').matches;
-    if (mobile && this.dataset.home !== 'true') return;
+    if (this.shouldSkip()) return;
     let done = false;
     const open = () => {
       if (done) return;
+      if (this.shouldSkip()) { done = true; cleanup(); return; }
       if (this.busy()) { setTimeout(open, 3000); return; }
       done = true; cleanup(); this.show();
     };
-    const timer = setTimeout(open, (mobile ? 20 : Number(this.dataset.delay || 8)) * 1000);
+    const delaySec = Number(this.dataset.delay || 15);
+    const timer = setTimeout(open, (Number.isFinite(delaySec) ? delaySec : 15) * 1000);
     const onLeave = (e) => { if (e.clientY <= 0) open(); };
-    const onScroll = () => {
-      const max = document.documentElement.scrollHeight - window.innerHeight;
-      if (max > 0 && window.scrollY / max >= 0.5) open();
-    };
-    const cleanup = () => { clearTimeout(timer); document.removeEventListener('mouseout', onLeave); window.removeEventListener('scroll', onScroll); };
-    if (mobile) window.addEventListener('scroll', onScroll, { passive: true });
-    else if (this.dataset.exitIntent === 'true') document.addEventListener('mouseout', onLeave);
+    const cleanup = () => { clearTimeout(timer); document.removeEventListener('mouseout', onLeave); };
+    if (this.dataset.exitIntent === 'true' && !window.matchMedia('(max-width: 749px)').matches) {
+      document.addEventListener('mouseout', onLeave);
+    }
   }
 }
 customElements.define('newsletter-popup', NewsletterPopup);
