@@ -372,10 +372,22 @@
             "text": "Postcards"
           }
         },
+        "item_qpbU7j": {
+          "type": "item",
+          "settings": {
+            "text": "30% OFF"
+          }
+        },
         "i3": {
           "type": "item",
           "settings": {
             "text": "Flags"
+          }
+        },
+        "item_UBHfqF": {
+          "type": "item",
+          "settings": {
+            "text": "30% OFF"
           }
         },
         "i4": {
@@ -384,10 +396,22 @@
             "text": "Flyers"
           }
         },
+        "item_3RTL3c": {
+          "type": "item",
+          "settings": {
+            "text": "30% OFF"
+          }
+        },
         "i5": {
           "type": "item",
           "settings": {
             "text": "Stickers"
+          }
+        },
+        "item_xd7prA": {
+          "type": "item",
+          "settings": {
+            "text": "30% OFF"
           }
         }
       },
@@ -395,9 +419,13 @@
         "i1",
         "item_UJiqVf",
         "i2",
+        "item_qpbU7j",
         "i3",
+        "item_UBHfqF",
         "i4",
-        "i5"
+        "item_3RTL3c",
+        "i5",
+        "item_xd7prA"
       ],
       "settings": {
         "color_scheme": "scheme-4",
