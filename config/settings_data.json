@@ -95,7 +95,10 @@
           "border": "#2a2a2e"
         }
       }
-    }
+    },
+    "growth_subscribe_url": "https://growth.printr.shop/api/subscribe",
+    "growth_turnstile_site_key": "0x4AAAAAAGQBm4-y5v-TGkJ8",
+    "growth_ref_redirect": "/collections/all-print-products"
   },
   "presets": {
     "Printr": {
