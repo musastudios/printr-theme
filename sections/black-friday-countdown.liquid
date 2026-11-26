@@ -2,6 +2,8 @@
   assign enabled = section.settings.enable_countdown
   assign layout_mode = section.settings.layout_mode | default: 'banner'
   assign show_overlay = section.settings.show_timer_overlay
+  assign show_logo = section.settings.show_logo_overlay
+  assign show_cta = section.settings.show_cta_overlay
   assign eyebrow = section.settings.eyebrow
   assign heading = section.settings.heading
   assign code = section.settings.discount_code | strip
@@ -12,6 +14,7 @@
   assign cta_url = section.settings.cta_url
   assign style = section.settings.style_variant | default: 'black-yellow'
   assign image_alt = heading | default: 'Black Friday: 30% off the entire store'
+  assign logo_uid = 'bf-v3-' | append: section.id
   if expired_behavior == 'hide'
     assign expired_behavior = 'hide-section'
   endif
@@ -20,15 +23,15 @@
     assign desktop_1x = section.settings.desktop_image | image_url: width: 1920
     assign desktop_2x = section.settings.desktop_image | image_url: width: 3840
   else
-    assign desktop_1x = 'bf-v2-banner-desktop.webp' | asset_url
-    assign desktop_2x = 'bf-v2-banner-desktop-2x.webp' | asset_url
+    assign desktop_1x = 'bf-v3-jc-desktop.webp' | asset_url
+    assign desktop_2x = desktop_1x
   endif
   if section.settings.mobile_image != blank
     assign mobile_1x = section.settings.mobile_image | image_url: width: 1080
     assign mobile_2x = section.settings.mobile_image | image_url: width: 2160
   else
-    assign mobile_1x = 'bf-v2-banner-mobile.webp' | asset_url
-    assign mobile_2x = 'bf-v2-banner-mobile-2x.webp' | asset_url
+    assign mobile_1x = 'bf-v3-jc-mobile.webp' | asset_url
+    assign mobile_2x = mobile_1x
   endif
 -%}
 {% style %}
@@ -45,35 +48,51 @@
 {%- if enabled -%}
   {%- if layout_mode == 'banner' -%}
     <div class="bf-banner">
-      {%- if cta_url != blank -%}
-        <a class="bf-banner__link" href="{{ cta_url }}">
-          <span class="visually-hidden">{{ cta_label | default: image_alt | escape }}</span>
-      {%- else -%}
-        <div class="bf-banner__link">
-      {%- endif -%}
-          <picture class="bf-banner__picture">
-            <source
-              media="(min-width: 750px)"
-              srcset="{{ desktop_1x }} 1920w, {{ desktop_2x }} 3840w"
-              sizes="100vw"
-            >
-            <img
-              class="bf-banner__img"
-              src="{{ mobile_1x }}"
-              srcset="{{ mobile_1x }} 1080w, {{ mobile_2x }} 2160w"
-              sizes="100vw"
-              width="1080"
-              height="1350"
-              alt="{{ image_alt | escape }}"
-              loading="eager"
-              fetchpriority="high"
-              decoding="async"
-            >
-          </picture>
-      {%- if cta_url != blank -%}
-        </a>
-      {%- else -%}
+      <picture class="bf-banner__picture">
+        <source
+          media="(min-width: 750px)"
+          srcset="{{ desktop_1x }} 1920w, {{ desktop_2x }} 3840w"
+          sizes="100vw"
+        >
+        <img
+          class="bf-banner__img"
+          src="{{ mobile_1x }}"
+          srcset="{{ mobile_1x }} 1080w, {{ mobile_2x }} 2160w"
+          sizes="100vw"
+          width="1080"
+          height="1350"
+          alt="{{ image_alt | escape }}"
+          loading="eager"
+          fetchpriority="high"
+          decoding="async"
+        >
+      </picture>
+
+      {%- if show_logo -%}
+        <div class="bf-banner__logo">
+          <a class="bf-banner__logo-link" href="{{ routes.root_url }}" aria-label="{{ shop.name | escape }}">
+            {%- if section.settings.logo_image != blank -%}
+              {{ section.settings.logo_image | image_url: width: 800 | image_tag: class: 'bf-banner__logo-img', loading: 'eager', widths: '200, 400, 600, 800', sizes: '(min-width: 750px) 19vw, 46vw', alt: shop.name }}
+            {%- elsif section.settings.use_theme_logo and settings.logo != blank -%}
+              {{ settings.logo | image_url: width: 800 | image_tag: class: 'bf-banner__logo-img', loading: 'eager', widths: '200, 400, 600, 800', sizes: '(min-width: 750px) 19vw, 46vw', alt: shop.name }}
+            {%- else -%}
+              {% render 'printr-logo', uid: logo_uid, class: 'bf-banner__logo-svg' %}
+            {%- endif -%}
+          </a>
         </div>
+      {%- endif -%}
+
+      {%- if show_cta and cta_label != blank and cta_url != blank -%}
+        <div class="bf-banner__cta-slot">
+          <a class="bf-banner__cta" href="{{ cta_url }}">
+            <span class="bf-banner__cta-label">{{ cta_label | escape }}</span>
+            <span class="bf-banner__cta-arrow" aria-hidden="true">
+              <svg viewBox="0 0 16 16" width="16" height="16" focusable="false"><path fill="currentColor" d="M2 8h10.2L8.6 4.4 10 3l6 5-6 5-1.4-1.4L12.2 9H2V8z"/></svg>
+            </span>
+          </a>
+        </div>
+      {%- elsif cta_url != blank -%}
+        <a class="bf-banner__hit" href="{{ cta_url }}"><span class="visually-hidden">{{ cta_label | default: image_alt | escape }}</span></a>
       {%- endif -%}
 
       {%- if show_overlay -%}
@@ -348,8 +367,7 @@
     .bf-units { width: 100%; }
   }
 
-  /* —— Banner + overlay timer —— */
-  .section-bf-countdown:has(.bf-banner) { display: block; }
+  /* —— v3 JC custom banner + HTML overlays —— */
   .bf-banner {
     position: relative;
     display: block;
@@ -360,7 +378,6 @@
     overflow: hidden;
     line-height: 0;
   }
-  .bf-banner__link { display: block; color: inherit; text-decoration: none; }
   .bf-banner__picture { display: block; width: 100%; }
   .bf-banner__img {
     display: block;
@@ -373,33 +390,157 @@
     .bf-banner__img { aspect-ratio: 1080 / 1350; }
   }
   @media (min-width: 750px) {
-    .bf-banner__img { aspect-ratio: 1920 / 800; }
+    .bf-banner__img { aspect-ratio: 1920 / 1086; }
   }
+  .bf-banner__hit {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+  }
+  .bf-banner__logo,
+  .bf-banner__cta-slot,
   .bf-banner__timer {
     position: absolute;
     z-index: 3;
-    display: block;
     box-sizing: border-box;
     overflow: hidden;
     line-height: 1.2;
+  }
+  /* Desktop 1920x1086 reserved slots. Keep clear: CMYK bar x=0-20 and four + crop marks. */
+  @media (min-width: 750px) {
+    .bf-banner__logo {
+      left: 7.2917%;
+      top: 7.3665%;
+      width: 18.75%;
+      height: 11.9705%;
+    }
+    .bf-banner__cta-slot {
+      left: 5.7292%;
+      top: 68.8766%;
+      width: 21.875%;
+      height: 9.5764%;
+    }
+    .bf-banner__timer {
+      left: 6.25%;
+      top: 79.9263%;
+      width: 39.1667%;
+      height: 10.8656%;
+    }
+  }
+  /* Mobile 1080x1350 reserved slots. Inset past CMYK bar and corner + marks. */
+  @media (max-width: 749px) {
+    .bf-banner__logo {
+      left: 7.4074%;
+      top: 1.4815%;
+      width: 46.2963%;
+      height: 5.3333%;
+    }
+    .bf-banner__cta-slot {
+      left: 31.4815%;
+      top: 88.4444%;
+      width: 37.0370%;
+      height: 4.7407%;
+    }
+    .bf-banner__timer {
+      left: 14.8148%;
+      top: 93.7778%;
+      width: 70.3704%;
+      height: 5.1852%;
+    }
+  }
+
+  /* Logo: white wordmark + color mark on this dark navy field */
+  .bf-banner__logo {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    color: #ffffff;
+  }
+  .bf-banner__logo-link {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    width: 100%;
+    height: 100%;
+    color: inherit;
+    text-decoration: none;
+  }
+  .bf-banner__logo-svg,
+  .bf-banner__logo-img {
+    display: block;
+    width: auto;
+    height: auto;
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+    object-position: left center;
+  }
+  .bf-banner__logo-svg { width: 100%; height: 100%; }
+
+  /* CTA: JC's yellow pill, black uppercase type, arrow */
+  .bf-banner__cta-slot {
+    display: flex;
+    align-items: center;
     pointer-events: none;
   }
-  @media (max-width: 749px) {
-    .bf-banner__timer {
-      left: 18.5185%;
-      top: 81.6296%;
-      width: 62.9630%;
-      height: 6.3704%;
-    }
-  }
   @media (min-width: 750px) {
-    .bf-banner__timer {
-      left: 4.5833%;
-      top: 78.625%;
-      width: 32.2917%;
-      height: 9.75%;
+    .bf-banner__cta-slot { justify-content: flex-start; }
+  }
+  @media (max-width: 749px) {
+    .bf-banner__cta-slot { justify-content: center; }
+  }
+  .bf-banner__cta {
+    pointer-events: auto;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.45em;
+    box-sizing: border-box;
+    margin: 0;
+    background: #FFF915;
+    color: #070709;
+    font-weight: 800;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    text-decoration: none;
+    border: 0;
+    border-radius: 999px;
+    box-shadow: 0 6px 18px rgba(255, 249, 21, 0.28), 0 1px 0 rgba(0, 0, 0, 0.18);
+    white-space: nowrap;
+    line-height: 1;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+  }
+  .bf-banner__cta:hover,
+  .bf-banner__cta:focus-visible {
+    transform: translateY(-0.08em);
+    box-shadow: 0 8px 22px rgba(255, 249, 21, 0.42), 0 1px 0 rgba(0, 0, 0, 0.18);
+  }
+  .bf-banner__cta-arrow {
+    display: inline-flex;
+    flex: 0 0 auto;
+  }
+  .bf-banner__cta-arrow svg { display: block; width: 1em; height: 1em; }
+  /* Desktop original pill 382x77 inside the padded 420x104 slot */
+  @media (min-width: 750px) {
+    .bf-banner__cta {
+      width: 19.8958cqw;
+      height: 4.0104cqw;
+      padding: 0 1.3542cqw;
+      font-size: 1.0417cqw;
     }
   }
+  /* Mobile: fill the reserved 400x64 centered pill */
+  @media (max-width: 749px) {
+    .bf-banner__cta {
+      width: 100%;
+      height: 100%;
+      padding: 0 1.6667cqw;
+      font-size: 1.6667cqw;
+    }
+  }
+
+  /* Countdown capsule */
+  .bf-banner__timer { display: block; }
   .bf-overlay,
   .bf-overlay__fallback,
   .bf-overlay__expired {
@@ -410,7 +551,7 @@
     align-items: center;
     background: linear-gradient(180deg, rgba(255, 255, 255, 0.10), rgba(255, 255, 255, 0.035));
     border: 1px solid rgba(255, 255, 255, 0.16);
-    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.22), 0 10px 28px rgba(0, 0, 0, 0.35), 0 0 0 1px rgba(39, 214, 255, 0.12);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.22), 0 8px 16px rgba(0, 0, 0, 0.32), 0 0 0 1px rgba(39, 214, 255, 0.12);
     backdrop-filter: blur(16px);
     -webkit-backdrop-filter: blur(16px);
     color: #FBF4E4;
@@ -425,46 +566,45 @@
     letter-spacing: 0.04em;
     padding: 0 2cqw;
   }
-  /* Desktop design canvas: 1920 x 800, slot 620 x 78 */
+  /* Desktop canvas 1920, slot 752x118 */
   @media (min-width: 750px) {
     .bf-overlay {
-      padding: 0 0.8333cqw 0 1.0417cqw;
+      padding: 0 1.0417cqw 0 1.25cqw;
       gap: 0.8333cqw;
-      border-radius: 0.7292cqw;
+      border-radius: 0.8333cqw;
     }
     .bf-overlay__fallback,
     .bf-overlay__expired {
-      border-radius: 0.7292cqw;
-      font-size: 0.7292cqw;
+      border-radius: 0.8333cqw;
+      font-size: 0.8333cqw;
     }
-    .bf-overlay__kicker { font-size: 0.5729cqw; }
-    .bf-overlay__cells { flex: 1; justify-content: flex-end; gap: 0.4167cqw; }
-    .bf-overlay__cell { width: 4.0625cqw; height: 3.0208cqw; border-radius: 0.4167cqw; }
-    .bf-overlay__num { font-size: 1.3542cqw; }
-    .bf-overlay__unit { font-size: 0.4688cqw; margin-top: 0.1042cqw; }
-    .bf-overlay__colon { font-size: 1.25cqw; padding: 0 0.1042cqw; }
-    .bf-overlay__dot { width: 0.3125cqw; height: 0.3125cqw; }
+    .bf-overlay__kicker { font-size: 0.6771cqw; }
+    .bf-overlay__cells { flex: 1; justify-content: flex-end; gap: 0.5208cqw; }
+    .bf-overlay__cell { width: 4.6875cqw; height: 3.75cqw; border-radius: 0.5208cqw; }
+    .bf-overlay__num { font-size: 1.5625cqw; }
+    .bf-overlay__unit { font-size: 0.5208cqw; margin-top: 0.1042cqw; }
+    .bf-overlay__colon { font-size: 1.3542cqw; padding: 0 0.1042cqw; }
+    .bf-overlay__dot { width: 0.3646cqw; height: 0.3646cqw; }
   }
-  /* Mobile design canvas: 1080 x 1350, slot 680 x 86 */
+  /* Mobile canvas 1080, slot 760x70 */
   @media (max-width: 749px) {
     .bf-overlay {
-      padding: 0 1.4815cqw 0 1.6667cqw;
-      gap: 1.1111cqw;
-      justify-content: center;
-      border-radius: 1.2963cqw;
+      padding: 0 1.2963cqw 0 1.4815cqw;
+      gap: 0.9259cqw;
+      border-radius: 1.1111cqw;
     }
     .bf-overlay__fallback,
     .bf-overlay__expired {
-      border-radius: 1.2963cqw;
-      font-size: 1.2963cqw;
+      border-radius: 1.1111cqw;
+      font-size: 1.1111cqw;
     }
-    .bf-overlay__kicker { font-size: 0.9259cqw; }
-    .bf-overlay__cells { gap: 0.5556cqw; }
-    .bf-overlay__cell { width: 7.9630cqw; height: 5.7407cqw; border-radius: 0.7407cqw; }
-    .bf-overlay__num { font-size: 2.5926cqw; }
-    .bf-overlay__unit { font-size: 0.9259cqw; margin-top: 0.1852cqw; }
-    .bf-overlay__colon { font-size: 2.4074cqw; padding: 0 0.0926cqw; }
-    .bf-overlay__dot { width: 0.5556cqw; height: 0.5556cqw; }
+    .bf-overlay__kicker { font-size: 0.8333cqw; }
+    .bf-overlay__cells { flex: 1; justify-content: flex-end; gap: 0.5556cqw; }
+    .bf-overlay__cell { width: 7.2222cqw; height: 4.6296cqw; border-radius: 0.7407cqw; }
+    .bf-overlay__num { font-size: 2.0370cqw; }
+    .bf-overlay__unit { font-size: 0.7407cqw; margin-top: 0.0926cqw; }
+    .bf-overlay__colon { font-size: 1.8519cqw; padding: 0 0.0926cqw; }
+    .bf-overlay__dot { width: 0.4630cqw; height: 0.4630cqw; }
   }
   .bf-overlay__kicker {
     display: inline-flex;
@@ -505,7 +645,7 @@
   }
   .bf-overlay__cell--live {
     border-color: #27D6FF;
-    box-shadow: 0 0 18px rgba(39, 214, 255, 0.4), inset 0 0 10px rgba(39, 214, 255, 0.08);
+    box-shadow: 0 0 12px rgba(39, 214, 255, 0.4), inset 0 0 8px rgba(39, 214, 255, 0.08);
   }
   .bf-overlay__num {
     font-family: "Geist Mono", ui-monospace, "Cascadia Mono", "Segoe UI Mono", Menlo, Consolas, monospace;
@@ -556,7 +696,8 @@
     .bf-overlay__dot { animation: none; }
     .bf-unit__digits.is-tick,
     .bf-overlay__num.is-tick { animation: none; }
-    .bf-code { transition: none; }
+    .bf-code,
+    .bf-banner__cta { transition: none; }
   }
 {% endstylesheet %}
 
@@ -589,6 +730,18 @@
         { "value": "bar", "label": "Standalone bar" }
       ],
       "default": "banner"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_logo_overlay",
+      "label": "Show logo on banner",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_cta_overlay",
+      "label": "Show CTA button on banner",
+      "default": true
     },
     {
       "type": "checkbox",
@@ -647,19 +800,40 @@
     },
     {
       "type": "paragraph",
-      "content": "Optional overrides. If empty, the bundled Black Friday v2 banners load automatically (no admin upload needed)."
+      "content": "Optional overrides. If empty, the bundled JC custom v3 banners load automatically (no admin upload needed)."
     },
     {
       "type": "image_picker",
       "id": "desktop_image",
       "label": "Desktop banner",
-      "info": "Recommended 1920 x 800 (or 3840 x 1600). Leave empty to use the bundled banner."
+      "info": "Recommended 1920 x 1086. Leave empty to use the bundled banner."
     },
     {
       "type": "image_picker",
       "id": "mobile_image",
       "label": "Mobile banner",
-      "info": "Recommended 1080 x 1350 (or 2160 x 2700). Leave empty to use the bundled banner."
+      "info": "Recommended 1080 x 1350. Leave empty to use the bundled banner."
+    },
+    {
+      "type": "header",
+      "content": "Logo"
+    },
+    {
+      "type": "paragraph",
+      "content": "On this dark navy banner the bundled brand mark uses white letters and the color Printr symbol. Upload a light logo if you want to replace it."
+    },
+    {
+      "type": "image_picker",
+      "id": "logo_image",
+      "label": "Custom logo",
+      "info": "Optional. Overrides the bundled brand mark and the theme logo."
+    },
+    {
+      "type": "checkbox",
+      "id": "use_theme_logo",
+      "label": "Use the store logo from theme settings",
+      "default": false,
+      "info": "Only use this if that logo is already light enough to read on a dark banner."
     },
     {
       "type": "header",

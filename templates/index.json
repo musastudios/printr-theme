@@ -956,6 +956,8 @@
       "settings": {
         "enable_countdown": true,
         "layout_mode": "banner",
+        "show_logo_overlay": true,
+        "show_cta_overlay": true,
         "show_timer_overlay": true,
         "eyebrow": "SALE ENDS IN",
         "heading": "BLACK FRIDAY: 30% OFF THE ENTIRE STORE",
@@ -965,7 +967,8 @@
         "expired_text": "Black Friday deal has ended",
         "cta_label": "Shop 30% Off",
         "cta_url": "/collections/all-print-products",
-        "style_variant": "black-yellow"
+        "style_variant": "black-yellow",
+        "use_theme_logo": false
       }
     }
   },
