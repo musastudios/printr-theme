@@ -137,9 +137,29 @@
         "show_social": false,
         "color_scheme": "scheme-5"
       }
+    },
+    "announcement_bar": {
+      "type": "announcement-bar",
+      "blocks": {
+        "black_friday": {
+          "type": "announcement",
+          "settings": {
+            "text": "BLACK FRIDAY: 30% OFF the entire store — 24 hours only!",
+            "link": "/collections/all-print-products"
+          }
+        }
+      },
+      "block_order": [
+        "black_friday"
+      ],
+      "settings": {
+        "color_scheme": "scheme-4",
+        "show_localization": false
+      }
     }
   },
   "order": [
+    "announcement_bar",
     "topbar",
     "header"
   ]

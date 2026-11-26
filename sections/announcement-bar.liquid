@@ -26,9 +26,11 @@
   </div>
 </div>
 {% stylesheet %}
-  .announcement { font-size: 1.3rem; font-weight: 600; }
-  .announcement__inner { display: flex; align-items: center; justify-content: center; gap: 2rem; min-height: 3.6rem; }
-  .announcement__list { display: flex; gap: 3rem; list-style: none; margin: 0; padding: 0; overflow-x: auto; }
+  .announcement { font-size: 1.35rem; font-weight: 700; letter-spacing: 0.02em; }
+  .announcement__inner { display: flex; align-items: center; justify-content: center; gap: 2rem; min-height: 3.8rem; padding-block: 0.6rem; text-align: center; }
+  .announcement__list { display: flex; flex-wrap: wrap; justify-content: center; gap: 1.2rem 3rem; list-style: none; margin: 0; padding: 0; }
+  .announcement a { color: inherit; text-decoration: none; }
+  .announcement a:hover { text-decoration: underline; text-underline-offset: 3px; }
   .announcement__locale select { padding: 0.2rem 0.8rem; width: auto; background: transparent; border: 0; }
 {% endstylesheet %}
 {% schema %}
