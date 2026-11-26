@@ -1,0 +1,27 @@
+{% doc %}
+  Renders Days / Hours / Minutes / Seconds tiles for the Black Friday countdown.
+  @param {boolean} [compact] Smaller tiles for the announcement bar. Defaults to false.
+{% enddoc %}
+<div
+  class="bf-units{% if compact %} bf-units--compact{% endif %}"
+  data-bf-units
+  role="timer"
+  aria-label="{{ 'general.countdown.remaining' | t | escape }}"
+>
+  <div class="bf-unit">
+    <span class="bf-unit__digits" data-days>00</span>
+    <span class="bf-unit__label">{{ 'general.countdown.days' | t }}</span>
+  </div>
+  <div class="bf-unit">
+    <span class="bf-unit__digits" data-hours>00</span>
+    <span class="bf-unit__label">{{ 'general.countdown.hours' | t }}</span>
+  </div>
+  <div class="bf-unit">
+    <span class="bf-unit__digits" data-minutes>00</span>
+    <span class="bf-unit__label">{{ 'general.countdown.minutes' | t }}</span>
+  </div>
+  <div class="bf-unit">
+    <span class="bf-unit__digits" data-seconds>00</span>
+    <span class="bf-unit__label">{{ 'general.countdown.seconds' | t }}</span>
+  </div>
+</div>

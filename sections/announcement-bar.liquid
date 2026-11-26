@@ -1,4 +1,12 @@
-<div class="announcement color-{{ section.settings.color_scheme }}">
+{%- liquid
+  assign show_countdown = section.settings.show_countdown
+  assign countdown_label = section.settings.countdown_label
+  assign countdown_target = section.settings.countdown_target | default: '2026-12-01T23:59:59-04:00' | strip
+-%}
+{%- if show_countdown -%}
+  <script src="{{ 'black-friday-countdown.js' | asset_url }}" defer="defer"></script>
+{%- endif -%}
+<div class="announcement color-{{ section.settings.color_scheme }}{% if show_countdown %} announcement--countdown{% endif %}">
   <div class="page-width announcement__inner">
     <ul class="announcement__list" role="list">
       {%- for block in section.blocks -%}
@@ -11,6 +19,26 @@
         </li>
       {%- endfor -%}
     </ul>
+    {%- if show_countdown and countdown_target != blank -%}
+      <bf-countdown
+        class="announcement__countdown"
+        data-target="{{ countdown_target | escape }}"
+        data-expired-behavior="hide"
+      >
+        <div class="announcement__countdown-live" data-bf-live hidden>
+          {%- if countdown_label != blank -%}
+            <span class="announcement__countdown-label">
+              <span class="bf-live-dot" aria-hidden="true"></span>
+              {{ countdown_label | escape }}
+            </span>
+          {%- endif -%}
+          {% render 'bf-countdown-units', compact: true %}
+        </div>
+        <span class="announcement__countdown-fallback" data-bf-fallback>
+          {{ 'general.countdown.ends_on' | t: datetime: countdown_target }}
+        </span>
+      </bf-countdown>
+    {%- endif -%}
     {%- if section.settings.show_localization -%}
       {%- form 'localization', class: 'announcement__locale' -%}
         {%- if localization.available_languages.size > 1 -%}
@@ -32,6 +60,23 @@
   .announcement a { color: inherit; text-decoration: none; }
   .announcement a:hover { text-decoration: underline; text-underline-offset: 3px; }
   .announcement__locale select { padding: 0.2rem 0.8rem; width: auto; background: transparent; border: 0; }
+  .announcement--countdown .announcement__inner { flex-wrap: wrap; gap: 0.8rem 2rem; }
+  .announcement__countdown { display: inline-flex; align-items: center; }
+  .announcement__countdown-live { display: inline-flex; align-items: center; gap: 0.8rem; flex-wrap: wrap; justify-content: center; }
+  .announcement__countdown-label { display: inline-flex; align-items: center; gap: 0.5rem; letter-spacing: 0.12em; text-transform: uppercase; font-size: 1.1rem; }
+  .announcement__countdown-fallback { font-size: 1.2rem; }
+  .announcement .bf-live-dot { width: 0.7rem; height: 0.7rem; border-radius: 50%; background: currentColor; box-shadow: 0 0 0 0 currentColor; animation: bf-bar-pulse 1.6s ease-out infinite; flex: 0 0 auto; }
+  .announcement .bf-units--compact { display: flex; gap: 0.4rem; margin: 0; }
+  .announcement .bf-units--compact .bf-unit { display: grid; justify-items: center; gap: 0; min-width: 3.6rem; padding: 0.2rem 0.4rem; border: 1.5px solid currentColor; border-radius: 6px; line-height: 1; }
+  .announcement .bf-units--compact .bf-unit__digits { font-family: var(--font-heading-family); font-size: 1.6rem; font-variant-numeric: tabular-nums; font-feature-settings: "tnum" 1, "lnum" 1; letter-spacing: -0.03em; line-height: 1.1; }
+  .announcement .bf-units--compact .bf-unit__digits.is-tick { animation: bf-bar-tick 0.35s ease; }
+  .announcement .bf-units--compact .bf-unit__label { font-size: 0.85rem; letter-spacing: 0.08em; text-transform: uppercase; opacity: 0.75; }
+  @keyframes bf-bar-tick { 0% { transform: translateY(-20%); opacity: 0.5; } 100% { transform: none; opacity: 1; } }
+  @keyframes bf-bar-pulse { 0% { box-shadow: 0 0 0 0 currentColor; opacity: 1; } 70% { box-shadow: 0 0 0 0.55rem transparent; } 100% { box-shadow: 0 0 0 0 transparent; } }
+  @media (prefers-reduced-motion: reduce) {
+    .announcement .bf-live-dot { animation: none; }
+    .announcement .bf-units--compact .bf-unit__digits.is-tick { animation: none; }
+  }
 {% endstylesheet %}
 {% schema %}
 {
@@ -40,7 +85,12 @@
   "class": "section-announcement",
   "settings": [
     { "type": "color_scheme", "id": "color_scheme", "label": "Color scheme", "default": "scheme-5" },
-    { "type": "checkbox", "id": "show_localization", "label": "Show language selector", "default": true }
+    { "type": "checkbox", "id": "show_localization", "label": "Show language selector", "default": true },
+    { "type": "header", "content": "Black Friday countdown" },
+    { "type": "paragraph", "content": "Optional compact timer in this bar. Leave it off if you already use the homepage countdown section. End date uses ISO format with a timezone offset, for example 2026-12-01T23:59:59-04:00 (11:59 PM AST)." },
+    { "type": "checkbox", "id": "show_countdown", "label": "Show countdown timer", "default": false },
+    { "type": "text", "id": "countdown_label", "label": "Countdown label", "default": "ENDS IN" },
+    { "type": "text", "id": "countdown_target", "label": "Countdown end date and time", "default": "2026-12-01T23:59:59-04:00", "info": "ISO format with timezone offset. Example (11:59 PM AST): 2026-12-01T23:59:59-04:00" }
   ],
   "blocks": [
     {

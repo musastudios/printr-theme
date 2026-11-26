@@ -23,7 +23,13 @@
       "days": "Días",
       "hours": "Horas",
       "minutes": "Min",
-      "seconds": "Seg"
+      "seconds": "Seg",
+      "copy_code": "Copiar código",
+      "copied": "¡Copiado!",
+      "remaining": "Tiempo restante",
+      "live": "En vivo",
+      "ends_on": "La oferta termina el {{ datetime }}",
+      "code": "Código de descuento"
     },
     "slider": {
       "previous": "Diapositiva anterior",

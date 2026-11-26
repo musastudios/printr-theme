@@ -23,7 +23,13 @@
       "days": "Days",
       "hours": "Hours",
       "minutes": "Min",
-      "seconds": "Sec"
+      "seconds": "Sec",
+      "copy_code": "Copy code",
+      "copied": "Copied!",
+      "remaining": "Time remaining",
+      "live": "Live",
+      "ends_on": "Offer ends {{ datetime }}",
+      "code": "Discount code"
     },
     "slider": {
       "previous": "Previous slide",

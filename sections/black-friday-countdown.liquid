@@ -1,0 +1,702 @@
+{%- liquid
+  assign enabled = section.settings.enable_countdown
+  assign layout_mode = section.settings.layout_mode | default: 'banner'
+  assign show_overlay = section.settings.show_timer_overlay
+  assign eyebrow = section.settings.eyebrow
+  assign heading = section.settings.heading
+  assign code = section.settings.discount_code | strip
+  assign target = section.settings.target_datetime | default: '2026-12-01T23:59:59-04:00' | strip
+  assign expired_behavior = section.settings.expired_behavior | default: 'hide-section'
+  assign expired_text = section.settings.expired_text
+  assign cta_label = section.settings.cta_label
+  assign cta_url = section.settings.cta_url
+  assign style = section.settings.style_variant | default: 'black-yellow'
+  assign image_alt = heading | default: 'Black Friday: 30% off the entire store'
+  if expired_behavior == 'hide'
+    assign expired_behavior = 'hide-section'
+  endif
+
+  if section.settings.desktop_image != blank
+    assign desktop_1x = section.settings.desktop_image | image_url: width: 1920
+    assign desktop_2x = section.settings.desktop_image | image_url: width: 3840
+  else
+    assign desktop_1x = 'bf-v2-banner-desktop.webp' | asset_url
+    assign desktop_2x = 'bf-v2-banner-desktop-2x.webp' | asset_url
+  endif
+  if section.settings.mobile_image != blank
+    assign mobile_1x = section.settings.mobile_image | image_url: width: 1080
+    assign mobile_2x = section.settings.mobile_image | image_url: width: 2160
+  else
+    assign mobile_1x = 'bf-v2-banner-mobile.webp' | asset_url
+    assign mobile_2x = 'bf-v2-banner-mobile-2x.webp' | asset_url
+  endif
+-%}
+{% style %}
+  @font-face {
+    font-family: "Geist Mono";
+    src: url("{{ 'geist-mono-bf.woff2' | asset_url }}") format("woff2");
+    font-weight: 700;
+    font-style: normal;
+    font-display: swap;
+  }
+{% endstyle %}
+<script src="{{ 'black-friday-countdown.js' | asset_url }}" defer="defer"></script>
+
+{%- if enabled -%}
+  {%- if layout_mode == 'banner' -%}
+    <div class="bf-banner">
+      {%- if cta_url != blank -%}
+        <a class="bf-banner__link" href="{{ cta_url }}">
+          <span class="visually-hidden">{{ cta_label | default: image_alt | escape }}</span>
+      {%- else -%}
+        <div class="bf-banner__link">
+      {%- endif -%}
+          <picture class="bf-banner__picture">
+            <source
+              media="(min-width: 750px)"
+              srcset="{{ desktop_1x }} 1920w, {{ desktop_2x }} 3840w"
+              sizes="100vw"
+            >
+            <img
+              class="bf-banner__img"
+              src="{{ mobile_1x }}"
+              srcset="{{ mobile_1x }} 1080w, {{ mobile_2x }} 2160w"
+              sizes="100vw"
+              width="1080"
+              height="1350"
+              alt="{{ image_alt | escape }}"
+              loading="eager"
+              fetchpriority="high"
+              decoding="async"
+            >
+          </picture>
+      {%- if cta_url != blank -%}
+        </a>
+      {%- else -%}
+        </div>
+      {%- endif -%}
+
+      {%- if show_overlay -%}
+        <bf-countdown
+          class="bf-banner__timer"
+          data-target="{{ target | escape }}"
+          data-expired-behavior="{{ expired_behavior | escape }}"
+        >
+          {% render 'bf-countdown-overlay', kicker: eyebrow %}
+          <p class="bf-overlay__fallback" data-bf-fallback>
+            {{ 'general.countdown.ends_on' | t: datetime: target }}
+          </p>
+          <p class="bf-overlay__expired" data-bf-expired hidden>
+            {{ expired_text | default: 'Black Friday deal has ended' | escape }}
+          </p>
+        </bf-countdown>
+      {%- endif -%}
+    </div>
+  {%- else -%}
+    <div class="bf-countdown bf-countdown--{{ style }}">
+      <bf-countdown
+        class="bf-countdown__shell page-width"
+        data-target="{{ target | escape }}"
+        data-expired-behavior="{{ expired_behavior | escape }}"
+      >
+        <div class="bf-countdown__live" data-bf-live hidden>
+          <div class="bf-countdown__copy">
+            {%- if eyebrow != blank -%}
+              <p class="bf-countdown__eyebrow">
+                <span class="bf-live-dot" aria-hidden="true"></span>
+                <span>{{ eyebrow | escape }}</span>
+                <span class="visually-hidden">{{ 'general.countdown.live' | t }}</span>
+              </p>
+            {%- endif -%}
+            {%- if heading != blank -%}
+              <h2 class="bf-countdown__heading">{{ heading | escape }}</h2>
+            {%- endif -%}
+          </div>
+
+          {% render 'bf-countdown-units', compact: false %}
+
+          <div class="bf-countdown__actions">
+            {%- if code != blank -%}
+              <button
+                type="button"
+                class="bf-code"
+                data-bf-copy
+                data-code="{{ code | escape }}"
+                data-copied-label="{{ 'general.countdown.copied' | t | escape }}"
+                aria-label="{{ 'general.countdown.copy_code' | t | escape }} {{ code | escape }}"
+              >
+                <span class="bf-code__kicker">{{ 'general.countdown.code' | t }}</span>
+                <span class="bf-code__value">{{ code | escape }}</span>
+                <span class="bf-code__action" data-bf-copy-label>{{ 'general.countdown.copy_code' | t }}</span>
+              </button>
+            {%- endif -%}
+            {%- if cta_label != blank and cta_url != blank -%}
+              <a class="button bf-countdown__cta" href="{{ cta_url }}">{{ cta_label | escape }}</a>
+            {%- endif -%}
+          </div>
+        </div>
+
+        <p class="bf-countdown__fallback" data-bf-fallback>
+          {{ 'general.countdown.ends_on' | t: datetime: target }}
+        </p>
+
+        <p class="bf-countdown__expired" data-bf-expired hidden>
+          {{ expired_text | default: 'Black Friday deal has ended' | escape }}
+        </p>
+      </bf-countdown>
+    </div>
+  {%- endif -%}
+{%- elsif request.design_mode -%}
+  <div class="bf-countdown bf-countdown--disabled page-width">
+    <p>Black Friday countdown is turned off. Enable it in this section's settings.</p>
+  </div>
+{%- endif -%}
+
+{% stylesheet %}
+  /* —— Standalone bar —— */
+  .bf-countdown {
+    --bf-bg: #000000;
+    --bf-fg: #FAF8F3;
+    --bf-tile: #FFF915;
+    --bf-tile-fg: #000000;
+    --bf-accent: #F962DD;
+    --bf-cta-bg: #FFF915;
+    --bf-cta-fg: #000000;
+    --bf-line: #27D6FF;
+    --bf-muted: rgba(250, 248, 243, 0.72);
+    background: var(--bf-bg);
+    color: var(--bf-fg);
+    padding-block: 1.6rem;
+    border-block: 0;
+    position: relative;
+  }
+  .bf-countdown::before {
+    content: "";
+    display: block;
+    height: 4px;
+    width: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    background: linear-gradient(90deg, #27D6FF 0 25%, #F962DD 0 50%, #FFF915 0 75%, #000 0);
+  }
+  .bf-countdown--yellow-black {
+    --bf-bg: #FFF915;
+    --bf-fg: #000000;
+    --bf-tile: #000000;
+    --bf-tile-fg: #FFF915;
+    --bf-accent: #F962DD;
+    --bf-cta-bg: #000000;
+    --bf-cta-fg: #FFF915;
+    --bf-line: #000000;
+    --bf-muted: rgba(0, 0, 0, 0.7);
+  }
+  .bf-countdown--black-magenta {
+    --bf-bg: #000000;
+    --bf-fg: #FAF8F3;
+    --bf-tile: #F962DD;
+    --bf-tile-fg: #000000;
+    --bf-accent: #FFF915;
+    --bf-cta-bg: #FFF915;
+    --bf-cta-fg: #000000;
+    --bf-line: #27D6FF;
+  }
+  .bf-countdown__shell { display: block; }
+  .bf-countdown__live {
+    display: grid;
+    gap: 1.6rem 2.4rem;
+    align-items: center;
+    padding-block: 0.8rem 0.4rem;
+  }
+  @media (min-width: 990px) {
+    .bf-countdown__live {
+      grid-template-columns: minmax(18rem, 1.2fr) auto minmax(18rem, 0.9fr);
+    }
+  }
+  .bf-countdown__copy { min-width: 0; }
+  .bf-countdown__eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.7rem;
+    margin: 0 0 0.6rem;
+    font-size: 1.2rem;
+    font-weight: 700;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--bf-muted);
+  }
+  .bf-live-dot {
+    width: 0.8rem;
+    height: 0.8rem;
+    border-radius: 50%;
+    background: var(--bf-accent);
+    box-shadow: 0 0 0 0 var(--bf-accent);
+    animation: bf-pulse 1.6s ease-out infinite;
+    flex: 0 0 auto;
+  }
+  .bf-countdown__heading {
+    margin: 0;
+    font-size: clamp(2rem, 2.6vw, 3.2rem);
+    line-height: 1.05;
+    letter-spacing: -0.03em;
+    color: inherit;
+  }
+  .bf-units {
+    display: flex;
+    gap: 0.8rem;
+    justify-content: center;
+    margin: 0;
+  }
+  .bf-unit {
+    display: grid;
+    justify-items: center;
+    gap: 0.5rem;
+    min-width: 6.4rem;
+    padding: 1rem 0.8rem 0.8rem;
+    background: var(--bf-tile);
+    color: var(--bf-tile-fg);
+    border-radius: var(--radius, 8px);
+    box-shadow: 3px 3px 0 var(--bf-accent);
+  }
+  .bf-unit__digits {
+    font-family: var(--font-heading-family);
+    font-weight: var(--font-heading-weight, 700);
+    font-size: clamp(2.4rem, 4vw, 3.8rem);
+    line-height: 1;
+    font-variant-numeric: tabular-nums;
+    font-feature-settings: "tnum" 1, "lnum" 1;
+    letter-spacing: -0.04em;
+    display: block;
+    transform-origin: center bottom;
+  }
+  .bf-unit__digits.is-tick { animation: bf-tick 0.35s ease; }
+  .bf-unit__label {
+    font-size: 1rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    opacity: 0.8;
+  }
+  .bf-countdown__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    align-items: center;
+    justify-content: flex-end;
+  }
+  .bf-code {
+    display: inline-flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.15rem;
+    margin: 0;
+    padding: 0.7rem 1.2rem;
+    border: 2px dashed var(--bf-accent);
+    border-radius: var(--radius-button, 8px);
+    background: transparent;
+    color: inherit;
+    cursor: pointer;
+    text-align: left;
+    font: inherit;
+    min-height: 4.8rem;
+    transition: background 0.2s, transform 0.2s, border-color 0.2s;
+  }
+  .bf-code:hover,
+  .bf-code:focus-visible {
+    background: rgba(249, 98, 221, 0.14);
+    transform: translate(-1px, -1px);
+  }
+  .bf-code.is-copied {
+    border-style: solid;
+    border-color: #27D6FF;
+    background: rgba(39, 214, 255, 0.16);
+  }
+  .bf-code__kicker,
+  .bf-code__action {
+    font-size: 1rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    opacity: 0.75;
+  }
+  .bf-code__value {
+    font-family: var(--font-heading-family);
+    font-size: 2rem;
+    line-height: 1;
+    letter-spacing: 0.06em;
+    font-weight: 700;
+  }
+  .bf-countdown__cta {
+    background: var(--bf-cta-bg);
+    color: var(--bf-cta-fg);
+    border-color: var(--bf-cta-bg);
+  }
+  .bf-countdown__cta:hover {
+    box-shadow: 2px 2px 0 #27D6FF, 4px 4px 0 #F962DD;
+  }
+  .bf-countdown__fallback,
+  .bf-countdown__expired {
+    margin: 0;
+    padding-block: 0.8rem;
+    font-weight: 700;
+    text-align: center;
+  }
+  .bf-countdown--disabled { padding-block: 1.6rem; color: #000; }
+  @media (max-width: 989px) {
+    .bf-countdown__actions { justify-content: flex-start; }
+    .bf-unit { min-width: 0; flex: 1 1 0; box-shadow: 2px 2px 0 var(--bf-accent); padding: 0.8rem 0.4rem 0.6rem; }
+    .bf-units { width: 100%; }
+  }
+
+  /* —— Banner + overlay timer —— */
+  .section-bf-countdown:has(.bf-banner) { display: block; }
+  .bf-banner {
+    position: relative;
+    display: block;
+    width: 100%;
+    background: #070709;
+    container-type: inline-size;
+    container-name: bf-banner;
+    overflow: hidden;
+    line-height: 0;
+  }
+  .bf-banner__link { display: block; color: inherit; text-decoration: none; }
+  .bf-banner__picture { display: block; width: 100%; }
+  .bf-banner__img {
+    display: block;
+    width: 100%;
+    height: auto;
+    object-fit: cover;
+    object-position: center;
+  }
+  @media (max-width: 749px) {
+    .bf-banner__img { aspect-ratio: 1080 / 1350; }
+  }
+  @media (min-width: 750px) {
+    .bf-banner__img { aspect-ratio: 1920 / 800; }
+  }
+  .bf-banner__timer {
+    position: absolute;
+    z-index: 3;
+    display: block;
+    box-sizing: border-box;
+    overflow: hidden;
+    line-height: 1.2;
+    pointer-events: none;
+  }
+  @media (max-width: 749px) {
+    .bf-banner__timer {
+      left: 18.5185%;
+      top: 81.6296%;
+      width: 62.9630%;
+      height: 6.3704%;
+    }
+  }
+  @media (min-width: 750px) {
+    .bf-banner__timer {
+      left: 4.5833%;
+      top: 78.625%;
+      width: 32.2917%;
+      height: 9.75%;
+    }
+  }
+  .bf-overlay,
+  .bf-overlay__fallback,
+  .bf-overlay__expired {
+    box-sizing: border-box;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.10), rgba(255, 255, 255, 0.035));
+    border: 1px solid rgba(255, 255, 255, 0.16);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.22), 0 10px 28px rgba(0, 0, 0, 0.35), 0 0 0 1px rgba(39, 214, 255, 0.12);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    color: #FBF4E4;
+    overflow: hidden;
+  }
+  .bf-overlay__fallback,
+  .bf-overlay__expired {
+    margin: 0;
+    justify-content: center;
+    text-align: center;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    padding: 0 2cqw;
+  }
+  /* Desktop design canvas: 1920 x 800, slot 620 x 78 */
+  @media (min-width: 750px) {
+    .bf-overlay {
+      padding: 0 0.8333cqw 0 1.0417cqw;
+      gap: 0.8333cqw;
+      border-radius: 0.7292cqw;
+    }
+    .bf-overlay__fallback,
+    .bf-overlay__expired {
+      border-radius: 0.7292cqw;
+      font-size: 0.7292cqw;
+    }
+    .bf-overlay__kicker { font-size: 0.5729cqw; }
+    .bf-overlay__cells { flex: 1; justify-content: flex-end; gap: 0.4167cqw; }
+    .bf-overlay__cell { width: 4.0625cqw; height: 3.0208cqw; border-radius: 0.4167cqw; }
+    .bf-overlay__num { font-size: 1.3542cqw; }
+    .bf-overlay__unit { font-size: 0.4688cqw; margin-top: 0.1042cqw; }
+    .bf-overlay__colon { font-size: 1.25cqw; padding: 0 0.1042cqw; }
+    .bf-overlay__dot { width: 0.3125cqw; height: 0.3125cqw; }
+  }
+  /* Mobile design canvas: 1080 x 1350, slot 680 x 86 */
+  @media (max-width: 749px) {
+    .bf-overlay {
+      padding: 0 1.4815cqw 0 1.6667cqw;
+      gap: 1.1111cqw;
+      justify-content: center;
+      border-radius: 1.2963cqw;
+    }
+    .bf-overlay__fallback,
+    .bf-overlay__expired {
+      border-radius: 1.2963cqw;
+      font-size: 1.2963cqw;
+    }
+    .bf-overlay__kicker { font-size: 0.9259cqw; }
+    .bf-overlay__cells { gap: 0.5556cqw; }
+    .bf-overlay__cell { width: 7.9630cqw; height: 5.7407cqw; border-radius: 0.7407cqw; }
+    .bf-overlay__num { font-size: 2.5926cqw; }
+    .bf-overlay__unit { font-size: 0.9259cqw; margin-top: 0.1852cqw; }
+    .bf-overlay__colon { font-size: 2.4074cqw; padding: 0 0.0926cqw; }
+    .bf-overlay__dot { width: 0.5556cqw; height: 0.5556cqw; }
+  }
+  .bf-overlay__kicker {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4em;
+    flex: 0 1 auto;
+    min-width: 0;
+    margin: 0;
+    font-weight: 700;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: #FFF915;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .bf-overlay__dot {
+    border-radius: 50%;
+    background: #27D6FF;
+    box-shadow: 0 0 0 0 rgba(39, 214, 255, 0.7);
+    animation: bf-overlay-pulse 1.6s ease-out infinite;
+    flex: 0 0 auto;
+  }
+  .bf-overlay__cells {
+    display: flex;
+    align-items: center;
+    min-width: 0;
+  }
+  .bf-overlay__cell {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    flex: 0 0 auto;
+    box-sizing: border-box;
+    background: rgba(0, 0, 0, 0.5);
+    border: 1px solid rgba(255, 249, 21, 0.22);
+  }
+  .bf-overlay__cell--live {
+    border-color: #27D6FF;
+    box-shadow: 0 0 18px rgba(39, 214, 255, 0.4), inset 0 0 10px rgba(39, 214, 255, 0.08);
+  }
+  .bf-overlay__num {
+    font-family: "Geist Mono", ui-monospace, "Cascadia Mono", "Segoe UI Mono", Menlo, Consolas, monospace;
+    font-weight: 700;
+    font-style: normal;
+    color: #FBF4E4;
+    letter-spacing: 0.02em;
+    line-height: 1;
+    font-variant-numeric: tabular-nums;
+    font-feature-settings: "tnum" 1, "lnum" 1;
+    display: block;
+    transform-origin: center bottom;
+  }
+  .bf-overlay__num.is-tick { animation: bf-tick 0.35s ease; }
+  .bf-overlay__unit {
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    color: rgba(251, 244, 228, 0.55);
+    text-transform: uppercase;
+    line-height: 1;
+  }
+  .bf-overlay__colon {
+    font-family: "Geist Mono", ui-monospace, "Cascadia Mono", "Segoe UI Mono", Menlo, Consolas, monospace;
+    font-weight: 700;
+    color: #FFF915;
+    text-shadow: 0 0 10px rgba(255, 249, 21, 0.55);
+    line-height: 1;
+    transform: translateY(-0.15em);
+    flex: 0 0 auto;
+  }
+
+  @keyframes bf-tick {
+    0% { transform: translateY(-18%) rotateX(-50deg); opacity: 0.45; }
+    100% { transform: none; opacity: 1; }
+  }
+  @keyframes bf-pulse {
+    0% { box-shadow: 0 0 0 0 rgba(249, 98, 221, 0.7); }
+    70% { box-shadow: 0 0 0 0.7rem rgba(249, 98, 221, 0); }
+    100% { box-shadow: 0 0 0 0 rgba(249, 98, 221, 0); }
+  }
+  @keyframes bf-overlay-pulse {
+    0% { box-shadow: 0 0 0 0 rgba(39, 214, 255, 0.7); }
+    70% { box-shadow: 0 0 0 0.45em rgba(39, 214, 255, 0); }
+    100% { box-shadow: 0 0 0 0 rgba(39, 214, 255, 0); }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .bf-live-dot,
+    .bf-overlay__dot { animation: none; }
+    .bf-unit__digits.is-tick,
+    .bf-overlay__num.is-tick { animation: none; }
+    .bf-code { transition: none; }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Black Friday countdown",
+  "tag": "section",
+  "class": "section-bf-countdown",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Countdown"
+    },
+    {
+      "type": "paragraph",
+      "content": "One-click toggle for the Black Friday banner and timer. Set the end date in Atlantic Time (AST, UTC-4). BF30 expires December 1, 2026 at 11:59 PM AST."
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_countdown",
+      "label": "Enable countdown",
+      "default": true
+    },
+    {
+      "type": "select",
+      "id": "layout_mode",
+      "label": "Layout",
+      "options": [
+        { "value": "banner", "label": "Banner + Overlay Timer" },
+        { "value": "bar", "label": "Standalone bar" }
+      ],
+      "default": "banner"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_timer_overlay",
+      "label": "Show timer on banner",
+      "default": true,
+      "info": "Turn the live countdown widget on or off independently of the banner."
+    },
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "Eyebrow / timer label",
+      "default": "SALE ENDS IN",
+      "info": "Optional. Try SALE ENDS IN, ENDS IN, or 24 HOURS ONLY."
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading / promo text",
+      "default": "BLACK FRIDAY: 30% OFF THE ENTIRE STORE",
+      "info": "Used in standalone bar mode and as the banner image alt text."
+    },
+    {
+      "type": "text",
+      "id": "discount_code",
+      "label": "Discount code",
+      "default": "BF30",
+      "info": "Shown with a Copy code button in standalone bar mode. Leave blank to hide."
+    },
+    {
+      "type": "text",
+      "id": "target_datetime",
+      "label": "Countdown end date and time",
+      "default": "2026-12-01T23:59:59-04:00",
+      "info": "Use ISO format with timezone offset. Example for 11:59 PM AST: 2026-12-01T23:59:59-04:00"
+    },
+    {
+      "type": "select",
+      "id": "expired_behavior",
+      "label": "When the countdown ends",
+      "options": [
+        { "value": "hide-section", "label": "Hide this section" },
+        { "value": "message", "label": "Show expired message" }
+      ],
+      "default": "hide-section"
+    },
+    {
+      "type": "text",
+      "id": "expired_text",
+      "label": "Expired message",
+      "default": "Black Friday deal has ended"
+    },
+    {
+      "type": "header",
+      "content": "Banner images"
+    },
+    {
+      "type": "paragraph",
+      "content": "Optional overrides. If empty, the bundled Black Friday v2 banners load automatically (no admin upload needed)."
+    },
+    {
+      "type": "image_picker",
+      "id": "desktop_image",
+      "label": "Desktop banner",
+      "info": "Recommended 1920 x 800 (or 3840 x 1600). Leave empty to use the bundled banner."
+    },
+    {
+      "type": "image_picker",
+      "id": "mobile_image",
+      "label": "Mobile banner",
+      "info": "Recommended 1080 x 1350 (or 2160 x 2700). Leave empty to use the bundled banner."
+    },
+    {
+      "type": "header",
+      "content": "Button"
+    },
+    {
+      "type": "text",
+      "id": "cta_label",
+      "label": "Button label",
+      "default": "Shop 30% Off"
+    },
+    {
+      "type": "url",
+      "id": "cta_url",
+      "label": "Button / banner link",
+      "default": "/collections/all-print-products"
+    },
+    {
+      "type": "header",
+      "content": "Standalone bar style"
+    },
+    {
+      "type": "select",
+      "id": "style_variant",
+      "label": "Color preset",
+      "options": [
+        { "value": "black-yellow", "label": "Black & Yellow (High Contrast)" },
+        { "value": "yellow-black", "label": "Yellow & Black" },
+        { "value": "black-magenta", "label": "Black & Magenta" }
+      ],
+      "default": "black-yellow"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Black Friday countdown"
+    }
+  ]
+}
+{% endschema %}

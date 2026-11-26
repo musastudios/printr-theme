@@ -1,0 +1,34 @@
+{% doc %}
+  Frosted-glass Black Friday overlay timer for the v2 banner reserved slot.
+  Matches Lia's preview: SALE ENDS IN + tabular 00D : 23H : 59M : 42S with a live seconds cell.
+  @param {string} [kicker] Optional label, e.g. SALE ENDS IN.
+{% enddoc %}
+<div class="bf-overlay" data-bf-live hidden role="timer" aria-label="{{ 'general.countdown.remaining' | t | escape }}">
+  {%- if kicker != blank -%}
+    <span class="bf-overlay__kicker">
+      <span class="bf-overlay__dot" aria-hidden="true"></span>
+      {{ kicker | escape }}
+    </span>
+  {%- endif -%}
+  <div class="bf-overlay__cells">
+    <div class="bf-overlay__cell">
+      <span class="bf-overlay__num" data-days>00</span>
+      <span class="bf-overlay__unit">D</span>
+    </div>
+    <span class="bf-overlay__colon" aria-hidden="true">:</span>
+    <div class="bf-overlay__cell">
+      <span class="bf-overlay__num" data-hours>00</span>
+      <span class="bf-overlay__unit">H</span>
+    </div>
+    <span class="bf-overlay__colon" aria-hidden="true">:</span>
+    <div class="bf-overlay__cell">
+      <span class="bf-overlay__num" data-minutes>00</span>
+      <span class="bf-overlay__unit">M</span>
+    </div>
+    <span class="bf-overlay__colon" aria-hidden="true">:</span>
+    <div class="bf-overlay__cell bf-overlay__cell--live">
+      <span class="bf-overlay__num" data-seconds>00</span>
+      <span class="bf-overlay__unit">S</span>
+    </div>
+  </div>
+</div>

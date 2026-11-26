@@ -950,10 +950,28 @@
         "bg_image": "shopify://shop_images/printr-bg-ink-splash.jpg",
         "bg_overlay": 25
       }
+    },
+    "bf_countdown": {
+      "type": "black-friday-countdown",
+      "settings": {
+        "enable_countdown": true,
+        "layout_mode": "banner",
+        "show_timer_overlay": true,
+        "eyebrow": "SALE ENDS IN",
+        "heading": "BLACK FRIDAY: 30% OFF THE ENTIRE STORE",
+        "discount_code": "BF30",
+        "target_datetime": "2026-12-01T23:59:59-04:00",
+        "expired_behavior": "hide-section",
+        "expired_text": "Black Friday deal has ended",
+        "cta_label": "Shop 30% Off",
+        "cta_url": "/collections/all-print-products",
+        "style_variant": "black-yellow"
+      }
     }
   },
   "order": [
     "circles",
+    "bf_countdown",
     "hero",
     "marquee",
     "collections",
