@@ -9,31 +9,6 @@
  */
 {
   "sections": {
-    "circles": {
-      "type": "category-circles",
-      "settings": {
-        "heading": "Find it fast.",
-        "intro": "<p>Pick a category and start building your order in minutes.</p>",
-        "collections": [
-          "business-cards",
-          "postcards",
-          "flyers",
-          "brochures",
-          "stickers-labels",
-          "banners",
-          "flags",
-          "signs",
-          "apparel",
-          "all-print-products"
-        ],
-        "bleed": true,
-        "show_sale": true,
-        "sale_badge": "Sale",
-        "sale_label": "On sale",
-        "sale_link": "/collections/sale",
-        "color_scheme": "scheme-1"
-      }
-    },
     "hero": {
       "type": "slideshow",
       "blocks": {
@@ -351,6 +326,31 @@
         "effect": "slide",
         "autoplay": true,
         "speed": 6
+      }
+    },
+    "circles": {
+      "type": "category-circles",
+      "settings": {
+        "heading": "Find it fast.",
+        "intro": "<p>Pick a category and start building your order in minutes.</p>",
+        "collections": [
+          "business-cards",
+          "postcards",
+          "flyers",
+          "brochures",
+          "stickers-labels",
+          "banners",
+          "flags",
+          "signs",
+          "apparel",
+          "all-print-products"
+        ],
+        "bleed": true,
+        "show_sale": true,
+        "sale_badge": "Sale",
+        "sale_label": "On sale",
+        "sale_link": "/collections/sale",
+        "color_scheme": "scheme-1"
       }
     },
     "marquee": {
@@ -955,8 +955,8 @@
     }
   },
   "order": [
-    "circles",
     "hero",
+    "circles",
     "marquee",
     "collections",
     "features",
