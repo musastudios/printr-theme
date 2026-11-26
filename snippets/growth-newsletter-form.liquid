@@ -1,0 +1,25 @@
+{%- comment -%}
+  Growth funnel newsletter fields. When Theme settings → Growth funnel →
+  Subscribe endpoint is set, growth-funnel.js posts to the Worker with Turnstile.
+  Otherwise the native Shopify {% form 'customer' %} still works.
+{%- endcomment -%}
+<input type="hidden" name="contact[tags]" value="{{ tags | default: 'newsletter' }}">
+<input type="hidden" name="growth-source" value="{{ source | default: 'homepage' }}">
+<div class="{{ field_class | default: 'newsletter__field' }}">
+  <label class="visually-hidden" for="{{ email_id }}">{{ 'general.newsletter.email' | t }}</label>
+  <input
+    id="{{ email_id }}"
+    type="email"
+    name="contact[email]"
+    required
+    autocomplete="email"
+    placeholder="{{ placeholder | default: 'general.newsletter.placeholder' | t }}"
+    data-growth-email
+  >
+  <button type="submit" class="button" data-growth-submit>{{ 'general.newsletter.subscribe' | t }}</button>
+</div>
+{%- if settings.growth_turnstile_site_key != blank and settings.growth_subscribe_url != blank -%}
+  <div class="growth-turnstile" data-growth-turnstile></div>
+{%- endif -%}
+<p class="newsletter__fine" data-growth-fine>{{ 'general.newsletter.fine_print' | t }}</p>
+<p class="newsletter__status" data-growth-status role="status" hidden></p>

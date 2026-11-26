@@ -24,16 +24,11 @@
         {%- when 'newsletter' -%}
           <div class="footer__col footer__newsletter" {{ block.shopify_attributes }}>
             <h2 class="footer__heading">{{ block.settings.heading | escape }}</h2>
-            {%- form 'customer', id: 'FooterNewsletter' -%}
-              <input type="hidden" name="contact[tags]" value="newsletter">
+            {%- form 'customer', id: 'FooterNewsletter', class: 'growth-form' -%}
               {%- if form.posted_successfully? -%}
                 <p role="status">{{ 'general.newsletter.success' | t }}</p>
               {%- else -%}
-                <label class="visually-hidden" for="FooterEmail">{{ 'general.newsletter.email' | t }}</label>
-                <div class="footer__field">
-                  <input id="FooterEmail" type="email" name="contact[email]" required autocomplete="email" placeholder="{{ 'general.newsletter.email' | t }}">
-                  <button type="submit" class="button">{{ 'general.newsletter.subscribe' | t }}</button>
-                </div>
+                {% render 'growth-newsletter-form', form_id: 'footer', source: 'footer', tags: 'newsletter', email_id: 'FooterEmail', field_class: 'footer__field', placeholder: 'general.newsletter.email' %}
                 {{ form.errors | default_errors }}
               {%- endif -%}
             {%- endform -%}

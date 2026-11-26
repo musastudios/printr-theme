@@ -1,0 +1,9 @@
+{
+  "sections": {
+    "main": {
+      "type": "welcome-confirmed",
+      "settings": {}
+    }
+  },
+  "order": ["main"]
+}

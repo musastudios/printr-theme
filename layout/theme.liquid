@@ -34,6 +34,21 @@
     {{ 'base.css' | asset_url | stylesheet_tag }}
     <script src="{{ 'theme.js' | asset_url }}" type="module" defer="defer"></script>
     <script src="{{ 'features.js' | asset_url }}" type="module" defer="defer"></script>
+    <script src="{{ 'growth-funnel.js' | asset_url }}" type="module" defer="defer"></script>
+    <script>
+      window.printrGrowth = {
+        endpoint: {{ settings.growth_subscribe_url | json }},
+        siteKey: {{ settings.growth_turnstile_site_key | json }},
+        locale: {{ request.locale.iso_code | json }},
+        refRedirect: {{ settings.growth_ref_redirect | default: '/collections/all-print-products' | json }},
+        strings: {
+          success: {{ 'general.newsletter.success' | t | json }},
+          error: {{ 'growth_funnel.error' | t | json }},
+          turnstile_required: {{ 'growth_funnel.turnstile_required' | t | json }},
+          turnstile_failed: {{ 'growth_funnel.turnstile_failed' | t | json }}
+        }
+      };
+    </script>
     <script>
       document.documentElement.classList.replace('no-js', 'js');
       window.routes = {

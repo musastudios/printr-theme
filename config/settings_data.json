@@ -36,9 +36,9 @@
           "exit_intent": true,
           "image": "shopify://shop_images/caguas-copy-circle-business-cards.jpg",
           "slug": "First order",
-          "heading": "10% off your first print run",
-          "text": "<p>Join for printing tips, new paper stocks and members-only deals.</p>",
-          "code": "INK10",
+          "heading": "15% off your first print order",
+          "text": "<p>Join the list and confirm your email to get a unique 15% OFF code for your first order.</p>",
+          "code": "",
           "color_scheme": ""
         }
       }

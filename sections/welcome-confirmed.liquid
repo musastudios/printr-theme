@@ -1,0 +1,13 @@
+<div class="section page-width" style="text-align:center;padding-block:8rem;max-width:64rem;margin-inline:auto">
+  <p class="slug">PRINTR</p>
+  <h1 class="h2">{{ 'growth_funnel.welcome_title' | t }}</h1>
+  <p>{{ 'growth_funnel.welcome_body' | t }}</p>
+  <p class="newsletter__fine">{{ 'growth_funnel.terms' | t }}</p>
+  <p><a class="button" href="{{ routes.all_products_collection_url | default: '/collections/all-print-products' }}">{{ 'sections.cart.continue' | t }}</a></p>
+</div>
+{% stylesheet %}
+  .newsletter__fine { margin: 1.6rem 0; font-size: 1.3rem; opacity: .75; }
+{% endstylesheet %}
+{% schema %}
+{ "name": "Welcome confirmed", "settings": [] }
+{% endschema %}

@@ -449,5 +449,32 @@
         "default": "#FFF1D2"
       }
     ]
+  },
+  {
+    "name": "Growth funnel",
+    "settings": [
+      {
+        "type": "paragraph",
+        "content": "Local branch only until approved. Posts newsletter signups to the PRINTR growth Worker (Turnstile-verified). Leave the endpoint blank to keep the native Shopify form."
+      },
+      {
+        "type": "text",
+        "id": "growth_subscribe_url",
+        "label": "Subscribe endpoint",
+        "info": "Example: https://growth.printr.shop/api/subscribe. Leave blank until the Worker is deployed."
+      },
+      {
+        "type": "text",
+        "id": "growth_turnstile_site_key",
+        "label": "Turnstile site key",
+        "default": "0x4AAAAAAGQBm4-y5v-TGkJ8"
+      },
+      {
+        "type": "text",
+        "id": "growth_ref_redirect",
+        "label": "Referral auto-apply redirect",
+        "default": "/collections/all-print-products"
+      }
+    ]
   }
 ]

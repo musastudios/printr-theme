@@ -22,11 +22,12 @@
     "newsletter": {
       "email": "Correo electrónico",
       "subscribe": "Suscribirme",
-      "success": "¡Gracias por suscribirte!",
+      "success": "Revisa tu correo para confirmar tu suscripción. Tu código único de 15% OFF llega después de confirmar.",
       "no_thanks": "No, gracias",
       "use_code": "Usa el código",
       "placeholder": "Tu email",
-      "fine_print": "Puedes darte de baja cuando quieras."
+      "fine_print": "Válido solo en productos; no aplica a envío ni impuestos (IVU). Un solo uso en tu primera orden, no acumulable con otros descuentos. Puedes darte de baja cuando quieras.",
+      "confirm_needed": "Revisa tu correo para confirmar tu suscripción. Te enviaremos tu código único de 15% OFF después de confirmar."
     },
     "countdown": {
       "days": "Días",
@@ -810,5 +811,14 @@
       "line": "Te decimos lo que necesita, y en lo que puede convertirse.",
       "button": "Empieza una solicitud de diseño"
     }
+  },
+  "growth_funnel": {
+    "terms": "Válido solo en productos; no aplica a envío ni impuestos (IVU). Un solo uso en tu primera orden, no acumulable con otros descuentos.",
+    "friend_terms": "Invita a un amigo: debe ser un cliente nuevo con una compra mínima de $50 en productos (no aplica a envío ni impuestos/IVU). Tú recibes $10 OFF cuando complete esa orden.",
+    "welcome_title": "Ya estás en la lista",
+    "welcome_body": "Gracias por confirmar. Revisa tu correo para tu código único de 15% OFF y aplícalo en tu primera orden de productos.",
+    "error": "No pudimos suscribirte. Inténtalo de nuevo.",
+    "turnstile_required": "Completa la verificación para suscribirte.",
+    "turnstile_failed": "La verificación no cargó. Refresca la página e inténtalo de nuevo."
   }
 }
