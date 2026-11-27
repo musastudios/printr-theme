@@ -438,7 +438,7 @@
         "item_UJiqVf": {
           "type": "item",
           "settings": {
-            "text": "30% OFF"
+            "text": "30% OFF (CODE: BF30)"
           }
         },
         "i2": {
@@ -450,7 +450,7 @@
         "item_qpbU7j": {
           "type": "item",
           "settings": {
-            "text": "30% OFF"
+            "text": "30% OFF (CODE: BF30)"
           }
         },
         "i3": {
@@ -462,7 +462,7 @@
         "item_UBHfqF": {
           "type": "item",
           "settings": {
-            "text": "30% OFF"
+            "text": "30% OFF (CODE: BF30)"
           }
         },
         "i4": {
@@ -474,7 +474,13 @@
         "item_3RTL3c": {
           "type": "item",
           "settings": {
-            "text": "30% OFF"
+            "text": "30% OFF (CODE: BF30)"
+          }
+        },
+        "item_cC3kab": {
+          "type": "item",
+          "settings": {
+            "text": "Business cards"
           }
         },
         "i5": {
@@ -486,7 +492,7 @@
         "item_xd7prA": {
           "type": "item",
           "settings": {
-            "text": "30% OFF"
+            "text": "30% OFF (CODE: BF30)"
           }
         }
       },
@@ -499,6 +505,7 @@
         "item_UBHfqF",
         "i4",
         "item_3RTL3c",
+        "item_cC3kab",
         "i5",
         "item_xd7prA"
       ],
