@@ -1,4 +1,4 @@
-<div class="section color-{{ section.settings.color_scheme }}{% if section.settings.bg_image != blank %} has-bg{% endif %}">
+<div id="newsletter" class="section color-{{ section.settings.color_scheme }}{% if section.settings.bg_image != blank %} has-bg{% endif %}">
   {%- render 'section-bg', image: section.settings.bg_image, overlay: section.settings.bg_overlay -%}
   <div class="page-width newsletter" data-reveal>
     {%- if section.settings.heading != blank -%}<h2 class="newsletter__heading">{{ section.settings.heading | escape }}</h2>{%- endif -%}

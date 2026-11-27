@@ -1,0 +1,285 @@
+{
+  "sections": {
+    "hero": {
+      "type": "ad-landing-hero",
+      "settings": {
+        "eyebrow": "Printed in Caguas, Puerto Rico",
+        "heading": "Print you can feel, made in Puerto Rico.",
+        "subcopy": "<p>Business cards, stickers, flyers and more. Upload your file or get design help. Printed in-house in Caguas, checked sheet by sheet.</p>",
+        "show_price_badge": false,
+        "badge_label": "",
+        "primary_label": "Shop now",
+        "primary_link": "shopify://collections/all-print-products",
+        "secondary_label": "Upload artwork or get design help",
+        "secondary_link": "/pages/upload-artwork",
+        "micro_proof": "Printed in Caguas, Puerto Rico · Reprint guarantee · Free file check & design help",
+        "image": "shopify://shop_images/printr-hero-mix-desktop-v2.jpg",
+        "image_position": "right",
+        "image_ratio": "1",
+        "color_scheme": "scheme-1"
+      }
+    },
+    "trust": {
+      "type": "pr-trust-strip",
+      "blocks": {
+        "i1": {
+          "type": "item",
+          "settings": {
+            "icon": "pin",
+            "title": "Printed in Caguas, Puerto Rico",
+            "text": "Island-wide and US shipping."
+          }
+        },
+        "i2": {
+          "type": "item",
+          "settings": {
+            "icon": "check",
+            "title": "100% Reprint Guarantee",
+            "text": "If it's not right, we reprint it."
+          }
+        },
+        "i3": {
+          "type": "item",
+          "settings": {
+            "icon": "chat",
+            "title": "Free File Check & Design Help",
+            "text": "Upload your art or get design help.",
+            "link": "/pages/upload-artwork"
+          }
+        },
+        "i4": {
+          "type": "item",
+          "settings": {
+            "icon": "sparkle",
+            "title": "15% OFF your first print run",
+            "text": "Join the list and confirm your email for a unique 15% OFF code."
+          }
+        },
+        "q1": {
+          "type": "quote",
+          "settings": {
+            "quote": "<p>Our new menus came out sharp and on time. Ordering was easy.</p>",
+            "author": "J.R.",
+            "role": "Restaurant owner"
+          }
+        },
+        "q2": {
+          "type": "quote",
+          "settings": {
+            "quote": "<p>The banners for our grand opening looked incredible. People noticed.</p>",
+            "author": "M.T.",
+            "role": "Gym owner"
+          }
+        },
+        "q3": {
+          "type": "quote",
+          "settings": {
+            "quote": "<p>Fast, simple and the cards feel premium. We'll be back.</p>",
+            "author": "A.L.",
+            "role": "Clinic manager"
+          }
+        }
+      },
+      "block_order": ["i1", "i2", "i3", "i4", "q1", "q2", "q3"],
+      "settings": {
+        "heading": "",
+        "show_quotes": true,
+        "quotes_heading": "Loved by local businesses",
+        "color_scheme": "scheme-5"
+      }
+    },
+    "featured": {
+      "type": "featured-collection",
+      "settings": {
+        "slug": "Shop print",
+        "heading": "Start with a product",
+        "collection": "all-print-products",
+        "limit": 8,
+        "columns": 4,
+        "color_scheme": "scheme-1"
+      }
+    },
+    "how": {
+      "type": "ad-how-it-works",
+      "blocks": {
+        "s1": {
+          "type": "step",
+          "settings": {
+            "title": "Choose your product.",
+            "text": "<p>Pick the size, paper and quantity.</p>"
+          }
+        },
+        "s2": {
+          "type": "step",
+          "settings": {
+            "title": "Upload or get design help.",
+            "text": "<p>Send your file, or let our team help prepare it.</p>"
+          }
+        },
+        "s3": {
+          "type": "step",
+          "settings": {
+            "title": "Review and approve.",
+            "text": "<p>Check your order details and give the green light.</p>"
+          }
+        },
+        "s4": {
+          "type": "step",
+          "settings": {
+            "title": "We print and ship.",
+            "text": "<p>Your order goes to press and ships to your door.</p>"
+          }
+        }
+      },
+      "block_order": ["s1", "s2", "s3", "s4"],
+      "settings": {
+        "slug": "How it works",
+        "heading": "From file to door in four steps.",
+        "intro": "",
+        "color_scheme": "scheme-1"
+      }
+    },
+    "testimonials": {
+      "type": "multicolumn",
+      "blocks": {
+        "q1": {
+          "type": "testimonial",
+          "settings": {
+            "rating": 5,
+            "quote": "<p>Our new menus came out sharp and on time. Ordering was easy.</p>",
+            "author": "J.R.",
+            "role": "Restaurant owner"
+          },
+          "blocks": {}
+        },
+        "q2": {
+          "type": "testimonial",
+          "settings": {
+            "rating": 5,
+            "quote": "<p>The banners for our grand opening looked incredible. People noticed.</p>",
+            "author": "M.T.",
+            "role": "Gym owner"
+          },
+          "blocks": {}
+        },
+        "q3": {
+          "type": "testimonial",
+          "settings": {
+            "rating": 5,
+            "quote": "<p>Fast, simple and the cards feel premium. We'll be back.</p>",
+            "author": "A.L.",
+            "role": "Clinic manager"
+          },
+          "blocks": {}
+        }
+      },
+      "block_order": ["q1", "q2", "q3"],
+      "settings": {
+        "heading": "Loved by local businesses",
+        "columns": 3,
+        "compact": false,
+        "color_scheme": "scheme-1",
+        "bg_image": "shopify://shop_images/printr-bg-paper-texture.jpg",
+        "bg_overlay": 0
+      }
+    },
+    "reprint": {
+      "type": "image-with-text",
+      "blocks": {
+        "h": {
+          "type": "heading",
+          "settings": {
+            "slug": "Reprint guarantee",
+            "heading": "If it's not right, we reprint it.",
+            "tag": "h2",
+            "size": "h2",
+            "alignment": "left"
+          },
+          "blocks": {}
+        },
+        "t": {
+          "type": "text",
+          "settings": {
+            "text": "<p>Not right? We'll reprint it. Printed in-house in Caguas and checked sheet by sheet.</p>",
+            "alignment": "left"
+          },
+          "blocks": {}
+        },
+        "b": {
+          "type": "button",
+          "settings": {
+            "label": "Shop now",
+            "link": "shopify://collections/all-print-products",
+            "style": "primary"
+          },
+          "blocks": {}
+        }
+      },
+      "block_order": ["h", "t", "b"],
+      "settings": {
+        "image": "shopify://shop_images/printr-feat-reprint-guarantee.jpg",
+        "reverse": true,
+        "color_scheme": "scheme-2"
+      }
+    },
+    "cta": {
+      "type": "rich-text",
+      "blocks": {
+        "h": {
+          "type": "heading",
+          "settings": {
+            "slug": "",
+            "heading": "Ready to print something great?",
+            "tag": "h2",
+            "size": "h2",
+            "alignment": "center"
+          },
+          "blocks": {}
+        },
+        "t": {
+          "type": "text",
+          "settings": {
+            "text": "<p>Start your order now. Upload your artwork or get design help.</p>",
+            "alignment": "center"
+          },
+          "blocks": {}
+        },
+        "b": {
+          "type": "button",
+          "settings": {
+            "label": "Shop now",
+            "link": "shopify://collections/all-print-products",
+            "style": "primary"
+          },
+          "blocks": {}
+        }
+      },
+      "block_order": ["h", "t", "b"],
+      "settings": {
+        "color_scheme": "scheme-5",
+        "bg_image": "shopify://shop_images/printr-bg-press-detail.jpg",
+        "bg_overlay": 35
+      }
+    },
+    "newsletter": {
+      "type": "newsletter",
+      "settings": {
+        "heading": "15% off your first print run",
+        "text": "<p>Join our list and confirm your email to get a unique 15% OFF code for your first order. Valid on products only; excludes shipping and taxes.</p>",
+        "color_scheme": "scheme-1",
+        "bg_image": "shopify://shop_images/printr-bg-ink-splash.jpg",
+        "bg_overlay": 25
+      }
+    }
+  },
+  "order": [
+    "hero",
+    "trust",
+    "featured",
+    "how",
+    "testimonials",
+    "reprint",
+    "cta",
+    "newsletter"
+  ]
+}

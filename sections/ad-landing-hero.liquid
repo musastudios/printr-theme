@@ -1,0 +1,144 @@
+{%- comment -%}
+  Focused above-the-fold hero for paid Meta traffic. Configurable
+  eyebrow, headline, price badge, primary Shop now CTA, and a
+  secondary upload / design-help link.
+{%- endcomment -%}
+{%- liquid
+  assign product = section.settings.product
+  assign visual = section.settings.image
+  if visual == blank and product != blank
+    assign visual = product.featured_image
+  endif
+  assign badge_label = section.settings.badge_label
+  if section.settings.show_price_badge and product != blank
+    assign badge_price = product.price_min | money
+    assign badge_label = 'products.product.from_price' | t: price: badge_price
+  endif
+  assign heading = section.settings.heading | default: page.title
+  assign visual_alt = heading
+  if visual != blank and visual.alt != blank
+    assign visual_alt = visual.alt
+  endif
+  assign image_first = false
+  if section.settings.image_position == 'left'
+    assign image_first = true
+  endif
+-%}
+{% style %}
+  @font-face {
+    font-family: "Geist Mono";
+    src: url("{{ 'geist-mono-bf.woff2' | asset_url }}") format("woff2");
+    font-weight: 700;
+    font-style: normal;
+    font-display: swap;
+  }
+{% endstyle %}
+<section class="section alh color-{{ section.settings.color_scheme }}" aria-labelledby="AlhHeading-{{ section.id }}">
+  <div class="page-width alh__grid{% if image_first %} alh__grid--image-first{% endif %}">
+    <div class="alh__copy" data-reveal>
+      {%- if section.settings.eyebrow != blank -%}
+        <p class="slug">{{ section.settings.eyebrow | escape }}</p>
+      {%- endif -%}
+      <h1 id="AlhHeading-{{ section.id }}" class="alh__heading">{{ heading | escape }}</h1>
+      {%- if section.settings.subcopy != blank -%}
+        <div class="alh__sub rte">{{ section.settings.subcopy }}</div>
+      {%- endif -%}
+      {%- if section.settings.show_price_badge and badge_label != blank -%}
+        <p class="alh__badge">{{ badge_label | escape }}</p>
+      {%- endif -%}
+      <div class="alh__actions">
+        {%- if section.settings.primary_label != blank -%}
+          <a class="button" href="{{ section.settings.primary_link | default: routes.all_products_collection_url }}">{{ section.settings.primary_label | escape }}</a>
+        {%- endif -%}
+        {%- if section.settings.secondary_label != blank -%}
+          <a class="link alh__secondary" href="{{ section.settings.secondary_link | default: '/pages/upload-artwork' }}">{{ section.settings.secondary_label | escape }}</a>
+        {%- endif -%}
+      </div>
+      {%- if section.settings.micro_proof != blank -%}
+        <p class="alh__micro">{{ section.settings.micro_proof | escape }}</p>
+      {%- endif -%}
+    </div>
+    <div class="alh__visual" data-reveal>
+      <div class="media crop alh__media" style="--ratio: {{ section.settings.image_ratio }}">
+        {%- if visual != blank -%}
+          {%- assign focal = visual.presentation.focal_point | prepend: 'object-position: ' -%}
+          {{ visual | image_url: width: 1600 | image_tag: loading: 'eager', fetchpriority: 'high', widths: '500, 800, 1200, 1600', sizes: '(min-width: 990px) 46vw, 100vw', alt: visual_alt, style: focal }}
+        {%- elsif product != blank -%}
+          {{ 'product-1' | placeholder_svg_tag: 'placeholder' }}
+        {%- else -%}
+          {{ 'lifestyle-1' | placeholder_svg_tag: 'placeholder' }}
+        {%- endif -%}
+      </div>
+    </div>
+  </div>
+</section>
+{% stylesheet %}
+  .section.alh { padding-block: clamp(2.4rem, 4vw, 4.8rem); }
+  .alh__grid { display: grid; gap: 2.4rem; align-items: center; }
+  .alh__copy { display: flex; flex-direction: column; align-items: flex-start; gap: 1.4rem; }
+  .alh__heading { margin: 0; font-size: calc(var(--font-heading-scale) * clamp(3.2rem, 6vw, 5.6rem)); line-height: 1.02; }
+  .alh__sub { max-width: 48rem; }
+  .alh__sub p { margin: 0; font-size: 1.7rem; line-height: 1.5; }
+  .alh__badge {
+    margin: 0;
+    display: inline-flex;
+    align-items: center;
+    min-height: 3.6rem;
+    padding: .4rem 1.2rem;
+    border-radius: .6rem;
+    background: var(--k);
+    color: var(--y);
+    font-family: "Geist Mono", ui-monospace, Menlo, Consolas, monospace;
+    font-size: 1.4rem;
+    font-weight: 700;
+    letter-spacing: .04em;
+    text-transform: uppercase;
+  }
+  .alh__actions { display: flex; flex-wrap: wrap; align-items: center; gap: 1.2rem 1.8rem; }
+  .alh__secondary { font-weight: 600; }
+  .alh__micro { margin: 0; font-size: 1.35rem; line-height: 1.45; opacity: .8; max-width: 48rem; }
+  .alh__media { width: 100%; }
+  @media (min-width: 750px) {
+    .alh__grid { grid-template-columns: minmax(0, 1.05fr) minmax(0, .95fr); gap: 4rem; }
+    .alh__grid--image-first > .alh__visual { order: -1; }
+  }
+{% endstylesheet %}
+{% schema %}
+{
+  "name": "Ad landing hero",
+  "class": "section-ad-landing-hero",
+  "enabled_on": { "templates": ["page"] },
+  "settings": [
+    { "type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "Printed in Caguas, Puerto Rico" },
+    { "type": "text", "id": "heading", "label": "Heading", "default": "Print you can feel, made in Puerto Rico." },
+    { "type": "richtext", "id": "subcopy", "label": "Subcopy", "default": "<p>Business cards, stickers, flyers and more. Upload your file or get design help. Printed in-house in Caguas, checked sheet by sheet.</p>" },
+    { "type": "header", "content": "Price badge" },
+    { "type": "checkbox", "id": "show_price_badge", "label": "Show entry price badge", "default": false },
+    { "type": "text", "id": "badge_label", "label": "Badge label", "info": "Leave blank to use the selected product's live From price." },
+    { "type": "product", "id": "product", "label": "Featured product", "info": "Used for the live From price and as the visual if no image is set." },
+    { "type": "header", "content": "Calls to action" },
+    { "type": "text", "id": "primary_label", "label": "Primary button", "default": "Shop now" },
+    { "type": "url", "id": "primary_link", "label": "Primary link" },
+    { "type": "text", "id": "secondary_label", "label": "Secondary link", "default": "Upload artwork or get design help" },
+    { "type": "url", "id": "secondary_link", "label": "Secondary URL" },
+    { "type": "text", "id": "micro_proof", "label": "Proof line under CTAs", "default": "Printed in Caguas, Puerto Rico · Reprint guarantee · Free file check & design help" },
+    { "type": "header", "content": "Visual" },
+    { "type": "image_picker", "id": "image", "label": "Product image" },
+    { "type": "select", "id": "image_position", "label": "Image position (desktop)", "options": [
+      { "value": "right", "label": "Right" },
+      { "value": "left", "label": "Left" }
+    ], "default": "right" },
+    { "type": "select", "id": "image_ratio", "label": "Image ratio", "options": [
+      { "value": "1", "label": "Square" },
+      { "value": "4 / 5", "label": "Portrait" },
+      { "value": "5 / 4", "label": "Landscape" }
+    ], "default": "1" },
+    { "type": "color_scheme", "id": "color_scheme", "label": "Color scheme", "default": "scheme-1" }
+  ],
+  "presets": [
+    {
+      "name": "Ad landing hero"
+    }
+  ]
+}
+{% endschema %}

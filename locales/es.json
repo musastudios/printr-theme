@@ -814,6 +814,36 @@
       "button": "Empieza una solicitud de diseño"
     }
   },
+  "trust_strip": {
+    "heading": "Por qué imprimir con PRINTR",
+    "caguas_title": "Impreso en Caguas, Puerto Rico",
+    "caguas_text": "Envío a toda la isla y a EE. UU.",
+    "reprint_title": "Garantía de reimpresión 100%",
+    "reprint_text": "Si no queda bien, lo reimprimimos.",
+    "help_title": "Revisión de archivos y ayuda de diseño",
+    "help_text": "Sube tu arte o pide ayuda de diseño.",
+    "offer_title": "15% OFF en tu primera impresión",
+    "offer_text": "Únete a la lista y confirma tu email para un código único de 15% OFF.",
+    "quotes_heading": "Lo que dicen los negocios locales"
+  },
+  "ad_landing": {
+    "eyebrow": "Impreso en Caguas, Puerto Rico",
+    "shop_now": "Compra ahora",
+    "secondary": "Sube tu arte o pide ayuda de diseño",
+    "micro_proof": "Impreso en Caguas, Puerto Rico · Garantía de reimpresión · Revisión de archivos y ayuda de diseño",
+    "how_it_works": {
+      "slug": "Cómo funciona",
+      "heading": "Del archivo a tu puerta en cuatro pasos.",
+      "step1_title": "Elige tu producto.",
+      "step1_text": "Escoge el tamaño, el papel y la cantidad.",
+      "step2_title": "Sube el archivo o pide ayuda de diseño.",
+      "step2_text": "Envía tu archivo, o deja que nuestro equipo te ayude a prepararlo.",
+      "step3_title": "Revisa y aprueba.",
+      "step3_text": "Verifica los detalles de tu orden y da luz verde.",
+      "step4_title": "Imprimimos y enviamos.",
+      "step4_text": "Tu orden va a prensa y llega a tu puerta."
+    }
+  },
   "growth_funnel": {
     "terms": "Válido solo en productos; no aplica a envío ni impuestos (IVU). Un solo uso en tu primera orden, no acumulable con otros descuentos.",
     "friend_terms": "Invita a un amigo: debe ser un cliente nuevo con una compra mínima de $50 en productos (no aplica a envío ni impuestos/IVU). Tú recibes $10 OFF cuando complete esa orden.",
