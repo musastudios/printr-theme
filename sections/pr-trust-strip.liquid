@@ -1,6 +1,5 @@
 {%- comment -%}
-  Compact boutique trust strip: tactile finishes, designer file review,
-  reprint guarantee, and the first-order 15% offer, plus optional
+  Compact PR/Caguas trust strip: verified guarantees plus optional
   verbatim testimonials. No review counts or invented quotes.
 {%- endcomment -%}
 {%- liquid
@@ -164,7 +163,7 @@
 {% endstylesheet %}
 {% schema %}
 {
-  "name": "Trust strip",
+  "name": "PR trust strip",
   "class": "section-pr-trust-strip",
   "settings": [
     { "type": "text", "id": "heading", "label": "Heading", "info": "Leave blank to hide the visible heading. A screen-reader heading is still output." },
@@ -178,18 +177,17 @@
       "name": "Guarantee",
       "settings": [
         { "type": "select", "id": "icon", "label": "Icon", "options": [
-          { "value": "print", "label": "Print" },
-          { "value": "eye", "label": "Eye" },
-          { "value": "check", "label": "Check" },
-          { "value": "sparkle", "label": "Sparkle" },
-          { "value": "chat", "label": "Chat" },
           { "value": "pin", "label": "Pin" },
+          { "value": "check", "label": "Check" },
+          { "value": "chat", "label": "Chat" },
+          { "value": "sparkle", "label": "Sparkle" },
           { "value": "truck", "label": "Truck" },
+          { "value": "print", "label": "Print" },
           { "value": "clock", "label": "Clock" },
           { "value": "mail", "label": "Mail" }
-        ], "default": "print" },
-        { "type": "text", "id": "title", "label": "Title", "default": "Boutique-grade print & tactile finishes" },
-        { "type": "text", "id": "text", "label": "Text", "default": "Raised Foil, Suede soft-touch, and rich stocks you can feel." },
+        ], "default": "check" },
+        { "type": "text", "id": "title", "label": "Title", "default": "Printed in Caguas, Puerto Rico" },
+        { "type": "text", "id": "text", "label": "Text", "default": "Island-wide and US shipping." },
         { "type": "url", "id": "link", "label": "Optional link" }
       ]
     },
@@ -205,11 +203,11 @@
   ],
   "presets": [
     {
-      "name": "Trust strip",
+      "name": "PR trust strip",
       "blocks": [
-        { "type": "item", "settings": { "icon": "print", "title": "Boutique-grade print & tactile finishes", "text": "Raised Foil, Suede soft-touch, and rich stocks you can feel." } },
-        { "type": "item", "settings": { "icon": "eye", "title": "Expert designer file review", "text": "Real designers check bleed, resolution, and finish alignment before press." } },
+        { "type": "item", "settings": { "icon": "pin", "title": "Printed in Caguas, Puerto Rico", "text": "Island-wide and US shipping." } },
         { "type": "item", "settings": { "icon": "check", "title": "100% Reprint Guarantee", "text": "If it's not right, we reprint it." } },
+        { "type": "item", "settings": { "icon": "chat", "title": "Free File Check & Design Help", "text": "Upload your art or get design help." } },
         { "type": "item", "settings": { "icon": "sparkle", "title": "15% OFF your first print run", "text": "Join the list and confirm your email for a unique 15% OFF code. Products only; excludes shipping & taxes." } }
       ]
     }

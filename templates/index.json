@@ -9,6 +9,26 @@
  */
 {
   "sections": {
+    "bf_countdown": {
+      "type": "black-friday-countdown",
+      "settings": {
+        "enable_countdown": true,
+        "layout_mode": "banner",
+        "show_logo_overlay": true,
+        "show_cta_overlay": true,
+        "show_timer_overlay": true,
+        "eyebrow": "SALE ENDS IN",
+        "heading": "BLACK FRIDAY: 30% OFF THE ENTIRE STORE",
+        "discount_code": "BF30",
+        "target_datetime": "2026-12-01T23:59:59-04:00",
+        "expired_behavior": "hide-section",
+        "expired_text": "Black Friday deal has ended",
+        "use_theme_logo": false,
+        "cta_label": "Shop 30% Off",
+        "cta_url": "/collections/all-print-products",
+        "style_variant": "black-yellow"
+      }
+    },
     "hero": {
       "type": "slideshow",
       "blocks": {
@@ -232,7 +252,7 @@
                 "b1": {
                   "type": "button",
                   "settings": {
-                    "label": "Shop clinic prints",
+                    "label": "Shop Prints",
                     "link": "shopify://collections/business-cards",
                     "style": "primary"
                   },
@@ -334,26 +354,28 @@
         "i1": {
           "type": "item",
           "settings": {
-            "icon": "print",
-            "title": "Boutique-grade print & tactile finishes",
-            "text": "Raised Foil, Suede soft-touch, and rich stocks you can feel."
+            "icon": "pin",
+            "title": "Printed in Caguas, Puerto Rico",
+            "text": "Island-wide and US shipping.",
+            "link": ""
           }
         },
         "i2": {
           "type": "item",
           "settings": {
-            "icon": "eye",
-            "title": "Expert designer file review",
-            "text": "Real designers check bleed, resolution, and finish alignment before press.",
-            "link": "/pages/upload-artwork"
+            "icon": "check",
+            "title": "100% Reprint Guarantee",
+            "text": "If it's not right, we reprint it.",
+            "link": ""
           }
         },
         "i3": {
           "type": "item",
           "settings": {
-            "icon": "check",
-            "title": "100% Reprint Guarantee",
-            "text": "If it's not right, we reprint it."
+            "icon": "chat",
+            "title": "Free File Check & Design Help",
+            "text": "Upload your art or get design help.",
+            "link": "/pages/upload-artwork"
           }
         },
         "i4": {
@@ -361,7 +383,8 @@
           "settings": {
             "icon": "sparkle",
             "title": "15% OFF your first print run",
-            "text": "Join the list and confirm your email for a unique 15% OFF code. Products only; excludes shipping & taxes."
+            "text": "Join the list and confirm your email for a unique 15% OFF code. Products only; excludes shipping & taxes.",
+            "link": ""
           }
         },
         "q1": {
@@ -713,7 +736,7 @@
         "ratio_mobile": "4 / 5",
         "full_width": false,
         "slug": "On press",
-        "heading": "Boutique print, checked sheet by sheet",
+        "heading": "Printed in-house, checked sheet by sheet",
         "text": "<p>Calibrated color and premium stocks on every run.</p>",
         "button": "Shop all print",
         "link": "shopify://collections/all-print-products",
@@ -1028,26 +1051,6 @@
         "color_scheme": "scheme-1",
         "bg_image": "shopify://shop_images/printr-bg-ink-splash.jpg",
         "bg_overlay": 25
-      }
-    },
-    "bf_countdown": {
-      "type": "black-friday-countdown",
-      "settings": {
-        "enable_countdown": true,
-        "layout_mode": "banner",
-        "show_logo_overlay": true,
-        "show_cta_overlay": true,
-        "show_timer_overlay": true,
-        "eyebrow": "SALE ENDS IN",
-        "heading": "BLACK FRIDAY: 30% OFF THE ENTIRE STORE",
-        "discount_code": "BF30",
-        "target_datetime": "2026-12-01T23:59:59-04:00",
-        "expired_behavior": "hide-section",
-        "expired_text": "Black Friday deal has ended",
-        "cta_label": "Shop 30% Off",
-        "cta_url": "/collections/all-print-products",
-        "style_variant": "black-yellow",
-        "use_theme_logo": false
       }
     }
   },
