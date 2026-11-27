@@ -27,7 +27,7 @@
       "use_code": "Use code",
       "placeholder": "Your email",
       "fine_print": "Valid on products only; excludes shipping and taxes. Single-use on first order, cannot be combined with other discounts. You can unsubscribe at any time.",
-      "popup_fine_print": "Valid on products only (excludes shipping & tax). Single-use code expires in 90 days.",
+      "popup_fine_print": "Valid on products only; excludes shipping & taxes.",
       "popup_success": "Check your inbox for your unique 15% OFF code!",
       "confirm_needed": "Check your inbox for your unique 15% OFF code!"
     },
@@ -823,7 +823,7 @@
     "help_title": "Free File Check & Design Help",
     "help_text": "Upload your art or get design help.",
     "offer_title": "15% OFF your first print run",
-    "offer_text": "Join the list and confirm your email for a unique 15% OFF code.",
+    "offer_text": "Join the list and confirm your email for a unique 15% OFF code. Products only; excludes shipping & taxes.",
     "quotes_heading": "Loved by local businesses"
   },
   "ad_landing": {
