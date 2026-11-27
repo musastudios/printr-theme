@@ -3,9 +3,9 @@
     "hero": {
       "type": "ad-landing-hero",
       "settings": {
-        "eyebrow": "Printed in Caguas, Puerto Rico",
+        "eyebrow": "Boutique-grade print",
         "heading": "Stickers and labels for your brand",
-        "subcopy": "<p>Custom stickers and labels in round, rectangle, round-corner and vinyl. Upload your design, pick a size and quantity, and we ship across Puerto Rico.</p>",
+        "subcopy": "<p>Custom stickers and labels in round, rectangle, round-corner and vinyl. Upload your design, pick a size and quantity, and we deliver it to your door.</p>",
         "show_price_badge": false,
         "badge_label": "",
         "product": "sticker",
@@ -13,7 +13,7 @@
         "primary_link": "shopify://collections/stickers-labels",
         "secondary_label": "Upload artwork or get design help",
         "secondary_link": "/pages/upload-artwork",
-        "micro_proof": "Printed in Caguas, Puerto Rico · Reprint guarantee · Free file check & design help",
+        "micro_proof": "Boutique finishes · Designer file review · Reprint guarantee",
         "image": "shopify://shop_images/printr-stickers.jpg",
         "image_position": "right",
         "image_ratio": "1",
@@ -26,26 +26,26 @@
         "i1": {
           "type": "item",
           "settings": {
-            "icon": "pin",
-            "title": "Printed in Caguas, Puerto Rico",
-            "text": "Island-wide and US shipping."
+            "icon": "print",
+            "title": "Boutique-grade print & tactile finishes",
+            "text": "Raised Foil, Suede soft-touch, and rich stocks you can feel."
           }
         },
         "i2": {
           "type": "item",
           "settings": {
-            "icon": "check",
-            "title": "100% Reprint Guarantee",
-            "text": "If it's not right, we reprint it."
+            "icon": "eye",
+            "title": "Expert designer file review",
+            "text": "Real designers check bleed, resolution, and finish alignment before press.",
+            "link": "/pages/upload-artwork"
           }
         },
         "i3": {
           "type": "item",
           "settings": {
-            "icon": "chat",
-            "title": "Free File Check & Design Help",
-            "text": "Upload your art or get design help.",
-            "link": "/pages/upload-artwork"
+            "icon": "check",
+            "title": "100% Reprint Guarantee",
+            "text": "If it's not right, we reprint it."
           }
         },
         "i4": {
@@ -114,7 +114,7 @@
           "type": "step",
           "settings": {
             "title": "Upload or get design help.",
-            "text": "<p>Send your file, or let our team help prepare it.</p>"
+            "text": "<p>Send your file, or let our designers help prepare it. They check bleed, resolution, and finish alignment before press.</p>"
           }
         },
         "s3": {
@@ -201,7 +201,7 @@
         "t": {
           "type": "text",
           "settings": {
-            "text": "<p>Not right? We'll reprint it. Stickers and labels printed in-house in Caguas and checked sheet by sheet.</p>",
+            "text": "<p>Not right? We'll reprint it. Real designers review every sticker and label file for bleed, resolution, and finish alignment before it goes to press.</p>",
             "alignment": "left"
           },
           "blocks": {}
@@ -240,7 +240,7 @@
         "t": {
           "type": "text",
           "settings": {
-            "text": "<p>Custom stickers and labels, printed in Caguas. Upload your artwork or get design help.</p>",
+            "text": "<p>Custom stickers and labels. Upload your artwork or get design help.</p>",
             "alignment": "center"
           },
           "blocks": {}
