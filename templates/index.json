@@ -14,7 +14,7 @@
       "settings": {
         "enable_countdown": true,
         "layout_mode": "banner",
-        "show_logo_overlay": true,
+        "show_logo_overlay": false,
         "show_cta_overlay": true,
         "show_timer_overlay": true,
         "eyebrow": "SALE ENDS IN",
