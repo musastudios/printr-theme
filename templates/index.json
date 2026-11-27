@@ -929,6 +929,7 @@
         "g7",
         "g8"
       ],
+      "disabled": true,
       "settings": {
         "heading": "Printed for businesses like yours",
         "speed": 30,
