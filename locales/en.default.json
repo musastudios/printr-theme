@@ -814,6 +814,36 @@
       "button": "Start a Design Request"
     }
   },
+  "trust_strip": {
+    "heading": "Why print with PRINTR",
+    "caguas_title": "Printed in Caguas, Puerto Rico",
+    "caguas_text": "Island-wide and US shipping.",
+    "reprint_title": "100% Reprint Guarantee",
+    "reprint_text": "If it's not right, we reprint it.",
+    "help_title": "Free File Check & Design Help",
+    "help_text": "Upload your art or get design help.",
+    "offer_title": "15% OFF your first print run",
+    "offer_text": "Join the list and confirm your email for a unique 15% OFF code.",
+    "quotes_heading": "Loved by local businesses"
+  },
+  "ad_landing": {
+    "eyebrow": "Printed in Caguas, Puerto Rico",
+    "shop_now": "Shop now",
+    "secondary": "Upload artwork or get design help",
+    "micro_proof": "Printed in Caguas, Puerto Rico · Reprint guarantee · Free file check & design help",
+    "how_it_works": {
+      "slug": "How it works",
+      "heading": "From file to door in four steps.",
+      "step1_title": "Choose your product.",
+      "step1_text": "Pick the size, paper and quantity.",
+      "step2_title": "Upload or get design help.",
+      "step2_text": "Send your file, or let our team help prepare it.",
+      "step3_title": "Review and approve.",
+      "step3_text": "Check your order details and give the green light.",
+      "step4_title": "We print and ship.",
+      "step4_text": "Your order goes to press and ships to your door."
+    }
+  },
   "growth_funnel": {
     "terms": "Valid on products only; excludes shipping and taxes. Single-use on first order, cannot be combined with other discounts.",
     "friend_terms": "Invite a friend: they must be a new customer with a $50 minimum product purchase (excludes shipping and taxes). You get $10 OFF when they complete that order.",

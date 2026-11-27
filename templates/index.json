@@ -328,6 +328,83 @@
         "speed": 6
       }
     },
+    "trust_strip": {
+      "type": "pr-trust-strip",
+      "blocks": {
+        "i1": {
+          "type": "item",
+          "settings": {
+            "icon": "pin",
+            "title": "Printed in Caguas, Puerto Rico",
+            "text": "Island-wide and US shipping."
+          }
+        },
+        "i2": {
+          "type": "item",
+          "settings": {
+            "icon": "check",
+            "title": "100% Reprint Guarantee",
+            "text": "If it's not right, we reprint it."
+          }
+        },
+        "i3": {
+          "type": "item",
+          "settings": {
+            "icon": "chat",
+            "title": "Free File Check & Design Help",
+            "text": "Upload your art or get design help.",
+            "link": "/pages/upload-artwork"
+          }
+        },
+        "i4": {
+          "type": "item",
+          "settings": {
+            "icon": "sparkle",
+            "title": "15% OFF your first print run",
+            "text": "Join the list and confirm your email for a unique 15% OFF code."
+          }
+        },
+        "q1": {
+          "type": "quote",
+          "settings": {
+            "quote": "<p>Our new menus came out sharp and on time. Ordering was easy.</p>",
+            "author": "J.R.",
+            "role": "Restaurant owner"
+          }
+        },
+        "q2": {
+          "type": "quote",
+          "settings": {
+            "quote": "<p>The banners for our grand opening looked incredible. People noticed.</p>",
+            "author": "M.T.",
+            "role": "Gym owner"
+          }
+        },
+        "q3": {
+          "type": "quote",
+          "settings": {
+            "quote": "<p>Fast, simple and the cards feel premium. We'll be back.</p>",
+            "author": "A.L.",
+            "role": "Clinic manager"
+          }
+        }
+      },
+      "block_order": [
+        "i1",
+        "i2",
+        "i3",
+        "i4",
+        "q1",
+        "q2",
+        "q3"
+      ],
+      "settings": {
+        "heading": "",
+        "show_quotes": true,
+        "quotes_heading": "Loved by local businesses",
+        "color_scheme": "scheme-1"
+      }
+    },
     "circles": {
       "type": "category-circles",
       "settings": {
@@ -977,6 +1054,7 @@
   "order": [
     "bf_countdown",
     "hero",
+    "trust_strip",
     "circles",
     "marquee",
     "collections",
