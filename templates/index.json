@@ -726,6 +726,7 @@
     },
     "video_press": {
       "type": "video-loop",
+      "disabled": true,
       "settings": {
         "video_desktop": "shopify://files/videos/printr-press-loop-1920x1080-v2.mp4",
         "video_mobile": "shopify://files/videos/printr-press-loop-1080x1350-v2.mp4",
@@ -794,6 +795,7 @@
         "t3",
         "t4"
       ],
+      "disabled": true,
       "settings": {
         "heading": "Explore our print range",
         "color_scheme": "scheme-1"
@@ -858,6 +860,7 @@
     },
     "video_cards": {
       "type": "video-loop",
+      "disabled": true,
       "settings": {
         "video_desktop": "shopify://files/videos/printr-cards-loop-1920x1080.mp4",
         "video_mobile": "shopify://files/videos/printr-cards-loop-1080x1350.mp4",
