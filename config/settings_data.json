@@ -33,11 +33,10 @@
       "newsletter-popup": {
         "type": "newsletter-popup",
         "settings": {
-          "enable": true,
+          "enable": false,
           "delay": 15,
           "frequency": 14,
           "exit_intent": true,
-          "image": "",
           "slug": "FIRST ORDER",
           "heading": "15% off your first print run",
           "text": "<p>Join the list and confirm your email to get a unique 15% OFF code.</p>",
