@@ -86,7 +86,14 @@
   {%- endform -%}
 {%- endif -%}
 {% stylesheet %}
-  .newsletter__fine { margin: .4rem 0 0; font-size: 1.2rem; line-height: 1.45; opacity: .72; max-width: 36rem; }
+  .popup .newsletter__fine {
+    margin: .4rem 0 0;
+    font-size: 1.25rem;
+    line-height: 1.45;
+    opacity: .85;
+    max-width: 36rem;
+    color: inherit;
+  }
   .newsletter__status { margin: .4rem 0 0; font-size: 1.3rem; }
   .growth-turnstile { display: flex; justify-content: flex-start; margin-top: .4rem; min-height: 0; }
   .popup { padding: 0; max-width: min(86rem, calc(100vw - 2.4rem)); border: 0; border-radius: 2.4rem; overflow: hidden; background: rgb(var(--color-background)); }

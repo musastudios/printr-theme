@@ -27,7 +27,7 @@
       "use_code": "Usa el código",
       "placeholder": "Tu email",
       "fine_print": "Válido solo en productos; no aplica a envío ni impuestos (IVU). Un solo uso en tu primera orden, no acumulable con otros descuentos. Puedes darte de baja cuando quieras.",
-      "popup_fine_print": "Válido solo en productos (no aplica a envío ni impuestos/IVU). Código de un solo uso, expira en 90 días.",
+      "popup_fine_print": "Válido solo en productos; no incluye envío ni impuestos.",
       "popup_success": "¡Revisa tu bandeja de entrada para tu código único de 15% OFF!",
       "confirm_needed": "¡Revisa tu bandeja de entrada para tu código único de 15% OFF!"
     },
@@ -823,7 +823,7 @@
     "help_title": "Revisión de archivos y ayuda de diseño",
     "help_text": "Sube tu arte o pide ayuda de diseño.",
     "offer_title": "15% OFF en tu primera impresión",
-    "offer_text": "Únete a la lista y confirma tu email para un código único de 15% OFF.",
+    "offer_text": "Únete a la lista y confirma tu email para un código único de 15% OFF. Solo productos; no incluye envío ni impuestos.",
     "quotes_heading": "Lo que dicen los negocios locales"
   },
   "ad_landing": {
