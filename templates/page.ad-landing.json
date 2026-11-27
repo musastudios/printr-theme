@@ -12,16 +12,16 @@
     "hero": {
       "type": "ad-landing-hero",
       "settings": {
-        "eyebrow": "Printed in Caguas, Puerto Rico",
-        "heading": "Print you can feel, made in Puerto Rico.",
-        "subcopy": "<p>Business cards, stickers, flyers and more. Upload your file or get design help. Printed in-house in Caguas, checked sheet by sheet.</p>",
+        "eyebrow": "Boutique-grade print",
+        "heading": "Print you can feel.",
+        "subcopy": "<p>Business cards, stickers, flyers and more with Raised Foil, Suede soft-touch, and rich tactile stocks. Real designers review every file before it goes to press.</p>",
         "show_price_badge": false,
         "badge_label": "",
         "primary_label": "Shop now",
         "primary_link": "shopify://collections/all-print-products",
         "secondary_label": "Upload artwork or get design help",
         "secondary_link": "/pages/upload-artwork",
-        "micro_proof": "Printed in Caguas, Puerto Rico · Reprint guarantee · Free file check & design help",
+        "micro_proof": "Boutique finishes · Designer file review · Reprint guarantee",
         "image": "shopify://shop_images/printr-hero-mix-desktop-v2.jpg",
         "image_position": "right",
         "image_ratio": "1",
@@ -34,26 +34,26 @@
         "i1": {
           "type": "item",
           "settings": {
-            "icon": "pin",
-            "title": "Printed in Caguas, Puerto Rico",
-            "text": "Island-wide and US shipping."
+            "icon": "print",
+            "title": "Boutique-grade print & tactile finishes",
+            "text": "Raised Foil, Suede soft-touch, and rich stocks you can feel."
           }
         },
         "i2": {
           "type": "item",
           "settings": {
-            "icon": "check",
-            "title": "100% Reprint Guarantee",
-            "text": "If it's not right, we reprint it."
+            "icon": "eye",
+            "title": "Expert designer file review",
+            "text": "Real designers check bleed, resolution, and finish alignment before press.",
+            "link": "/pages/upload-artwork"
           }
         },
         "i3": {
           "type": "item",
           "settings": {
-            "icon": "chat",
-            "title": "Free File Check & Design Help",
-            "text": "Upload your art or get design help.",
-            "link": "/pages/upload-artwork"
+            "icon": "check",
+            "title": "100% Reprint Guarantee",
+            "text": "If it's not right, we reprint it."
           }
         },
         "i4": {
@@ -122,7 +122,7 @@
           "type": "step",
           "settings": {
             "title": "Upload or get design help.",
-            "text": "<p>Send your file, or let our team help prepare it.</p>"
+            "text": "<p>Send your file, or let our designers help prepare it. They check bleed, resolution, and finish alignment before press.</p>"
           }
         },
         "s3": {
@@ -209,7 +209,7 @@
         "t": {
           "type": "text",
           "settings": {
-            "text": "<p>Not right? We'll reprint it. Printed in-house in Caguas and checked sheet by sheet.</p>",
+            "text": "<p>Not right? We'll reprint it. Real designers review every file for bleed, resolution, and finish alignment before it goes to press.</p>",
             "alignment": "left"
           },
           "blocks": {}
