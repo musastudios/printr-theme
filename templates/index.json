@@ -386,40 +386,13 @@
             "text": "Join the list and confirm your email for a unique 15% OFF code. Products only; excludes shipping & taxes.",
             "link": ""
           }
-        },
-        "q1": {
-          "type": "quote",
-          "settings": {
-            "quote": "<p>Our new menus came out sharp and on time. Ordering was easy.</p>",
-            "author": "J.R.",
-            "role": "Restaurant owner"
-          }
-        },
-        "q2": {
-          "type": "quote",
-          "settings": {
-            "quote": "<p>The banners for our grand opening looked incredible. People noticed.</p>",
-            "author": "M.T.",
-            "role": "Gym owner"
-          }
-        },
-        "q3": {
-          "type": "quote",
-          "settings": {
-            "quote": "<p>Fast, simple and the cards feel premium. We'll be back.</p>",
-            "author": "A.L.",
-            "role": "Clinic manager"
-          }
         }
       },
       "block_order": [
         "i1",
         "i2",
         "i3",
-        "i4",
-        "q1",
-        "q2",
-        "q3"
+        "i4"
       ],
       "settings": {
         "heading": "",
