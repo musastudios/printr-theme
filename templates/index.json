@@ -514,6 +514,54 @@
         "speed": 30
       }
     },
+    "testimonials": {
+      "type": "multicolumn",
+      "blocks": {
+        "q1": {
+          "type": "testimonial",
+          "settings": {
+            "rating": 5,
+            "quote": "<p>Our new menus came out sharp and on time. Ordering was easy.</p>",
+            "author": "J.R.",
+            "role": "Restaurant owner"
+          },
+          "blocks": {}
+        },
+        "q2": {
+          "type": "testimonial",
+          "settings": {
+            "rating": 5,
+            "quote": "<p>The banners for our grand opening looked incredible. People noticed.</p>",
+            "author": "M.T.",
+            "role": "Gym owner"
+          },
+          "blocks": {}
+        },
+        "q3": {
+          "type": "testimonial",
+          "settings": {
+            "rating": 5,
+            "quote": "<p>Fast, simple and the cards feel premium. We'll be back.</p>",
+            "author": "A.L.",
+            "role": "Clinic manager"
+          },
+          "blocks": {}
+        }
+      },
+      "block_order": [
+        "q1",
+        "q2",
+        "q3"
+      ],
+      "settings": {
+        "heading": "Loved by local businesses",
+        "columns": 3,
+        "compact": false,
+        "color_scheme": "scheme-1",
+        "bg_image": "shopify://shop_images/printr-bg-paper-texture.jpg",
+        "bg_overlay": 0
+      }
+    },
     "collections": {
       "type": "collection-list",
       "blocks": {
@@ -936,54 +984,6 @@
         "color_scheme": "scheme-1"
       }
     },
-    "testimonials": {
-      "type": "multicolumn",
-      "blocks": {
-        "q1": {
-          "type": "testimonial",
-          "settings": {
-            "rating": 5,
-            "quote": "<p>Our new menus came out sharp and on time. Ordering was easy.</p>",
-            "author": "J.R.",
-            "role": "Restaurant owner"
-          },
-          "blocks": {}
-        },
-        "q2": {
-          "type": "testimonial",
-          "settings": {
-            "rating": 5,
-            "quote": "<p>The banners for our grand opening looked incredible. People noticed.</p>",
-            "author": "M.T.",
-            "role": "Gym owner"
-          },
-          "blocks": {}
-        },
-        "q3": {
-          "type": "testimonial",
-          "settings": {
-            "rating": 5,
-            "quote": "<p>Fast, simple and the cards feel premium. We'll be back.</p>",
-            "author": "A.L.",
-            "role": "Clinic manager"
-          },
-          "blocks": {}
-        }
-      },
-      "block_order": [
-        "q1",
-        "q2",
-        "q3"
-      ],
-      "settings": {
-        "heading": "Loved by local businesses",
-        "columns": 3,
-        "compact": false,
-        "color_scheme": "scheme-1",
-        "bg_image": "shopify://shop_images/printr-bg-paper-texture.jpg",
-        "bg_overlay": 0
-      }
-    },
     "cta": {
       "type": "rich-text",
       "blocks": {
@@ -1045,6 +1045,7 @@
     "circles",
     "marquee",
     "collections",
+    "testimonials",
     "features",
     "featured",
     "promo",
@@ -1055,7 +1056,6 @@
     "iwt",
     "video_cards",
     "gallery",
-    "testimonials",
     "cta",
     "newsletter"
   ]
