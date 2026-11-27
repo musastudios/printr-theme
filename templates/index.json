@@ -334,26 +334,26 @@
         "i1": {
           "type": "item",
           "settings": {
-            "icon": "pin",
-            "title": "Printed in Caguas, Puerto Rico",
-            "text": "Island-wide and US shipping."
+            "icon": "print",
+            "title": "Boutique-grade print & tactile finishes",
+            "text": "Raised Foil, Suede soft-touch, and rich stocks you can feel."
           }
         },
         "i2": {
           "type": "item",
           "settings": {
-            "icon": "check",
-            "title": "100% Reprint Guarantee",
-            "text": "If it's not right, we reprint it."
+            "icon": "eye",
+            "title": "Expert designer file review",
+            "text": "Real designers check bleed, resolution, and finish alignment before press.",
+            "link": "/pages/upload-artwork"
           }
         },
         "i3": {
           "type": "item",
           "settings": {
-            "icon": "chat",
-            "title": "Free File Check & Design Help",
-            "text": "Upload your art or get design help.",
-            "link": "/pages/upload-artwork"
+            "icon": "check",
+            "title": "100% Reprint Guarantee",
+            "text": "If it's not right, we reprint it."
           }
         },
         "i4": {
@@ -713,7 +713,7 @@
         "ratio_mobile": "4 / 5",
         "full_width": false,
         "slug": "On press",
-        "heading": "Printed in-house, checked sheet by sheet",
+        "heading": "Boutique print, checked sheet by sheet",
         "text": "<p>Calibrated color and premium stocks on every run.</p>",
         "button": "Shop all print",
         "link": "shopify://collections/all-print-products",
