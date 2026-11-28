@@ -474,6 +474,23 @@
         "id": "growth_ref_redirect",
         "label": "Referral auto-apply redirect",
         "default": "/collections/all-print-products"
+      },
+      {
+        "type": "header",
+        "content": "Custom estimate"
+      },
+      {
+        "type": "checkbox",
+        "id": "quote_enabled",
+        "label": "Show \"Get a Custom Estimate\" on product pages",
+        "default": true
+      },
+      {
+        "type": "text",
+        "id": "growth_quote_url",
+        "label": "Custom estimate endpoint",
+        "default": "https://growth.printr.shop/api/quote-request",
+        "info": "Growth Engine endpoint for quote requests. Uses the Turnstile site key above."
       }
     ]
   }
