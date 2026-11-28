@@ -1,0 +1,365 @@
+{% doc %}
+  "Not finding what you're looking for?" callout + Get a Custom Estimate modal.
+  Prefills the product and the options currently selected on the page (read when the modal opens),
+  lets the customer adjust every option (or type a custom value), and posts a Turnstile-verified
+  request to the PRINTR Growth Engine (Theme settings → Growth funnel → Custom estimate endpoint).
+  @param {product} product - The product being viewed
+  @param {string} section_id - Section id (scopes ids and finds the product form)
+  @param {string} [heading] - Callout heading override
+  @param {string} [subheading] - Callout copy override
+  @param {string} [button_label] - Button label override
+  @example
+  {% render 'custom-estimate', product: product, section_id: section.id %}
+{% enddoc %}
+{%- liquid
+  assign endpoint = settings.growth_quote_url | default: 'https://growth.printr.shop/api/quote-request'
+  assign sitekey = settings.growth_turnstile_site_key
+  assign uid = 'CQ-' | append: section_id
+  assign qty_index = -1
+  for option in product.options_with_values
+    assign oname = option.name | downcase | strip
+    if oname == 'qty' or oname == 'quantity' or oname == 'cantidad'
+      assign qty_index = forloop.index0
+    endif
+  endfor
+  assign c_name = ''
+  assign c_email = ''
+  assign c_phone = ''
+  if customer
+    assign c_name = customer.name
+    assign c_email = customer.email
+    assign c_phone = customer.phone | default: customer.default_address.phone
+  endif
+  assign today = 'now' | date: '%Y-%m-%d'
+-%}
+{%- if settings.quote_enabled != false -%}
+<custom-estimate
+  class="cq"
+  data-endpoint="{{ endpoint | escape }}"
+  data-sitekey="{{ sitekey | escape }}"
+  data-locale="{{ request.locale.iso_code }}"
+  data-section="{{ section_id }}"
+  data-qty-index="{{ qty_index }}"
+  data-logged-in="{% if customer %}true{% else %}false{% endif %}"
+  data-today="{{ today }}"
+>
+  <script type="application/json" data-cq-product>
+    {
+      "handle": {{ product.handle | json }},
+      "title": {{ product.title | json }},
+      "url": {{ product.url | json }},
+      "selected": {{ product.selected_or_first_available_variant.id | json }},
+      "options": [{%- for option in product.options_with_values -%}{"name": {{ option.name | json }}, "values": [{%- for value in option.values -%}{{ value | json }}{%- unless forloop.last -%},{%- endunless -%}{%- endfor -%}]}{%- unless forloop.last -%},{%- endunless -%}{%- endfor -%}],
+      "variants": [{%- for v in product.variants -%}{"id": {{ v.id | json }}, "title": {{ v.title | json }}, "options": {{ v.options | json }}}{%- unless forloop.last -%},{%- endunless -%}{%- endfor -%}]
+    }
+  </script>
+  <script type="application/json" data-cq-i18n>
+    {
+      "required": {{ 'custom_estimate.errors.required' | t | json }},
+      "email": {{ 'custom_estimate.errors.email' | t | json }},
+      "phone": {{ 'custom_estimate.errors.phone' | t | json }},
+      "phone_required": {{ 'custom_estimate.errors.phone_required' | t | json }},
+      "date_past": {{ 'custom_estimate.errors.date_past' | t | json }},
+      "date_far": {{ 'custom_estimate.errors.date_far' | t | json }},
+      "custom_value": {{ 'custom_estimate.errors.custom_value' | t | json }},
+      "turnstile_required": {{ 'custom_estimate.errors.turnstile_required' | t | json }},
+      "turnstile_failed": {{ 'custom_estimate.errors.turnstile_failed' | t | json }},
+      "turnstile_missing": {{ 'custom_estimate.errors.turnstile_missing' | t | json }},
+      "rate_limited": {{ 'custom_estimate.errors.rate_limited' | t | json }},
+      "generic": {{ 'custom_estimate.errors.generic' | t | json }},
+      "fix_fields": {{ 'custom_estimate.errors.fix_fields' | t | json }},
+      "sending": {{ 'custom_estimate.form.sending' | t | json }},
+      "submit": {{ 'custom_estimate.form.submit' | t | json }},
+      "copied": {{ 'custom_estimate.success.copied' | t | json }},
+      "copy": {{ 'custom_estimate.success.copy' | t | json }},
+      "sent_to": {{ 'custom_estimate.success.sent_to' | t | json }},
+      "no_confirmation": {{ 'custom_estimate.success.no_confirmation' | t | json }},
+      "prefilled": {{ 'custom_estimate.modal.prefilled' | t | json }},
+      "chars_left": {{ 'custom_estimate.form.chars_left' | t | json }}
+    }
+  </script>
+
+  <div class="cq__callout">
+    <span class="cq__mark" aria-hidden="true"><i></i><i></i><i></i><i></i></span>
+    <div class="cq__copy">
+      <p class="cq__title">{{ heading | default: 'custom_estimate.callout.heading' | t }}</p>
+      <p class="cq__sub">{{ subheading | default: 'custom_estimate.callout.subheading' | t }}</p>
+    </div>
+    <button type="button" class="cq__open" data-cq-open aria-haspopup="dialog" aria-controls="{{ uid }}">
+      <span>{{ button_label | default: 'custom_estimate.callout.button' | t }}</span>
+      <svg class="cq__arrow" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+    </button>
+  </div>
+
+  <dialog id="{{ uid }}" class="cq__dialog" aria-labelledby="{{ uid }}-title" aria-describedby="{{ uid }}-desc" data-cq-dialog>
+    <div class="cq__panel" data-cq-panel>
+      <header class="cq__head">
+        <div class="cq__head-text">
+          <p class="cq__eyebrow"><span class="cq__dot" aria-hidden="true"></span>{{ 'custom_estimate.modal.eyebrow' | t }}</p>
+          <h2 class="cq__h" id="{{ uid }}-title">{{ 'custom_estimate.modal.title' | t }}</h2>
+          <p class="cq__desc" id="{{ uid }}-desc">{{ 'custom_estimate.modal.description' | t }}</p>
+        </div>
+        <button type="button" class="cq__close" data-cq-close aria-label="{{ 'custom_estimate.modal.close' | t }}">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true" focusable="false"><path d="M6 6l12 12M18 6L6 18"/></svg>
+        </button>
+      </header>
+
+      <div class="cq__body" data-cq-body>
+        <form class="cq__form" id="{{ uid }}-form" data-cq-form novalidate>
+          <div class="cq__product">
+            {%- if product.featured_media -%}
+              <span class="cq__thumb">{{ product.featured_media | image_url: width: 160 | image_tag: loading: 'lazy', alt: '', width: 80, height: 80 }}</span>
+            {%- endif -%}
+            <div>
+              <p class="cq__product-title">{{ product.title | escape }}</p>
+              <p class="cq__chip" data-cq-prefill-note>{{ 'custom_estimate.modal.prefilled' | t }}</p>
+            </div>
+          </div>
+
+          <fieldset class="cq__group">
+            <legend class="cq__legend"><span class="cq__num" aria-hidden="true">01</span>{{ 'custom_estimate.form.specs' | t }}</legend>
+            <div class="cq__grid">
+              {%- for option in product.options_with_values -%}
+                {%- unless product.has_only_default_variant -%}
+                  {%- if forloop.index0 != qty_index -%}
+                    {%- assign oid = uid | append: '-opt-' | append: forloop.index0 -%}
+                    <div class="cq__field" data-cq-option="{{ forloop.index0 }}">
+                      <label for="{{ oid }}">{{ option.name | escape }}</label>
+                      <select id="{{ oid }}" data-cq-option-select data-name="{{ option.name | escape }}">
+                        {%- for value in option.values -%}
+                          <option value="{{ value | escape }}" {% if value.selected %}selected{% endif %}>{{ value | escape }}</option>
+                        {%- endfor -%}
+                        <option value="__custom">{{ 'custom_estimate.form.other' | t }}</option>
+                      </select>
+                      <div class="cq__custom" data-cq-custom hidden>
+                        <label class="visually-hidden" for="{{ oid }}-custom">{{ 'custom_estimate.form.custom_value_label' | t: option: option.name }}</label>
+                        <input id="{{ oid }}-custom" type="text" maxlength="200" data-cq-custom-input placeholder="{{ 'custom_estimate.form.custom_placeholder' | t }}" aria-describedby="{{ oid }}-err">
+                      </div>
+                      <p class="cq__err" id="{{ oid }}-err" data-cq-err hidden></p>
+                    </div>
+                  {%- endif -%}
+                {%- endunless -%}
+              {%- endfor -%}
+
+              <div class="cq__field">
+                <label for="{{ uid }}-qty">{{ 'custom_estimate.form.quantity' | t }} <span class="cq__req" aria-hidden="true">*</span></label>
+                <input id="{{ uid }}-qty" name="quantity" type="text" inputmode="numeric" maxlength="60" required autocomplete="off" list="{{ uid }}-qty-list" data-cq-field="quantity" aria-describedby="{{ uid }}-qty-hint {{ uid }}-qty-err">
+                {%- if qty_index >= 0 -%}
+                  <datalist id="{{ uid }}-qty-list">
+                    {%- for value in product.options_with_values[qty_index].values -%}<option value="{{ value | escape }}"></option>{%- endfor -%}
+                  </datalist>
+                {%- endif -%}
+                <p class="cq__hint" id="{{ uid }}-qty-hint">{{ 'custom_estimate.form.quantity_hint' | t }}</p>
+                <p class="cq__err" id="{{ uid }}-qty-err" data-cq-err hidden></p>
+              </div>
+            </div>
+          </fieldset>
+
+          <fieldset class="cq__group">
+            <legend class="cq__legend"><span class="cq__num" aria-hidden="true">02</span>{{ 'custom_estimate.form.timing' | t }}</legend>
+            <div class="cq__chips" role="radiogroup" aria-label="{{ 'custom_estimate.form.turnaround' | t }}">
+              <label class="cq__chipopt"><input type="radio" name="turnaround" value="standard" checked><span>{{ 'custom_estimate.form.turnaround_standard' | t }}</span></label>
+              <label class="cq__chipopt"><input type="radio" name="turnaround" value="rush"><span>{{ 'custom_estimate.form.turnaround_rush' | t }}</span></label>
+              <label class="cq__chipopt"><input type="radio" name="turnaround" value="flexible"><span>{{ 'custom_estimate.form.turnaround_flexible' | t }}</span></label>
+            </div>
+            <div class="cq__field cq__field--date">
+              <label for="{{ uid }}-date">{{ 'custom_estimate.form.needed_by' | t }}</label>
+              <input id="{{ uid }}-date" name="neededBy" type="date" min="{{ today }}" data-cq-field="neededBy" aria-describedby="{{ uid }}-date-hint {{ uid }}-date-err">
+              <p class="cq__hint" id="{{ uid }}-date-hint">{{ 'custom_estimate.form.needed_by_hint' | t }}</p>
+              <p class="cq__err" id="{{ uid }}-date-err" data-cq-err hidden></p>
+            </div>
+          </fieldset>
+
+          <fieldset class="cq__group">
+            <legend class="cq__legend"><span class="cq__num" aria-hidden="true">03</span>{{ 'custom_estimate.form.details' | t }}</legend>
+            <div class="cq__field">
+              <label for="{{ uid }}-notes">{{ 'custom_estimate.form.notes' | t }}</label>
+              <textarea id="{{ uid }}-notes" name="notes" rows="4" maxlength="3000" data-cq-field="notes" placeholder="{{ 'custom_estimate.form.notes_placeholder' | t }}" aria-describedby="{{ uid }}-notes-count"></textarea>
+              <p class="cq__hint cq__count" id="{{ uid }}-notes-count" data-cq-count aria-live="polite"></p>
+            </div>
+          </fieldset>
+
+          <fieldset class="cq__group">
+            <legend class="cq__legend"><span class="cq__num" aria-hidden="true">04</span>{{ 'custom_estimate.form.contact' | t }}</legend>
+            {%- if customer -%}<p class="cq__hint cq__signed">{{ 'custom_estimate.form.signed_in' | t }}</p>{%- endif -%}
+            <div class="cq__grid">
+              <div class="cq__field">
+                <label for="{{ uid }}-name">{{ 'custom_estimate.form.name' | t }} <span class="cq__req" aria-hidden="true">*</span></label>
+                <input id="{{ uid }}-name" name="name" type="text" required maxlength="100" autocomplete="name" value="{{ c_name | escape }}" data-cq-field="name" aria-describedby="{{ uid }}-name-err">
+                <p class="cq__err" id="{{ uid }}-name-err" data-cq-err hidden></p>
+              </div>
+              <div class="cq__field">
+                <label for="{{ uid }}-email">{{ 'custom_estimate.form.email' | t }} <span class="cq__req" aria-hidden="true">*</span></label>
+                <input id="{{ uid }}-email" name="email" type="email" required maxlength="254" autocomplete="email" inputmode="email" value="{{ c_email | escape }}" data-cq-field="email" aria-describedby="{{ uid }}-email-err">
+                <p class="cq__err" id="{{ uid }}-email-err" data-cq-err hidden></p>
+              </div>
+              <div class="cq__field">
+                <label for="{{ uid }}-phone">{{ 'custom_estimate.form.phone' | t }} <span class="cq__opt" data-cq-phone-opt>{{ 'custom_estimate.form.optional' | t }}</span></label>
+                <input id="{{ uid }}-phone" name="phone" type="tel" maxlength="40" autocomplete="tel" inputmode="tel" value="{{ c_phone | escape }}" data-cq-field="phone" aria-describedby="{{ uid }}-phone-err">
+                <p class="cq__err" id="{{ uid }}-phone-err" data-cq-err hidden></p>
+              </div>
+              <div class="cq__field">
+                <label for="{{ uid }}-company">{{ 'custom_estimate.form.company' | t }} <span class="cq__opt">{{ 'custom_estimate.form.optional' | t }}</span></label>
+                <input id="{{ uid }}-company" name="company" type="text" maxlength="120" autocomplete="organization" data-cq-field="company">
+              </div>
+            </div>
+            <p class="cq__sublabel" id="{{ uid }}-pref-label">{{ 'custom_estimate.form.preference' | t }}</p>
+            <div class="cq__chips" role="radiogroup" aria-labelledby="{{ uid }}-pref-label">
+              <label class="cq__chipopt"><input type="radio" name="contactPreference" value="email" checked><span>{{ 'custom_estimate.form.pref_email' | t }}</span></label>
+              <label class="cq__chipopt"><input type="radio" name="contactPreference" value="phone"><span>{{ 'custom_estimate.form.pref_phone' | t }}</span></label>
+              <label class="cq__chipopt"><input type="radio" name="contactPreference" value="text"><span>{{ 'custom_estimate.form.pref_text' | t }}</span></label>
+              <label class="cq__chipopt"><input type="radio" name="contactPreference" value="whatsapp"><span>WhatsApp</span></label>
+            </div>
+            <label class="cq__check">
+              <input type="checkbox" name="marketingOptIn" data-cq-optin>
+              <span>{{ 'custom_estimate.form.optin' | t }}</span>
+            </label>
+            <div class="cq__hp" aria-hidden="true">
+              <label for="{{ uid }}-website">Website</label>
+              <input id="{{ uid }}-website" name="website" type="text" tabindex="-1" autocomplete="off">
+            </div>
+          </fieldset>
+
+          <div class="cq__turnstile" data-cq-turnstile></div>
+          <p class="cq__alert" role="alert" data-cq-alert hidden></p>
+        </form>
+
+        <div class="cq__success" data-cq-success hidden tabindex="-1" aria-labelledby="{{ uid }}-ok-title">
+          <span class="cq__burst" aria-hidden="true">
+            <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" focusable="false"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>
+          </span>
+          <p class="cq__eyebrow">{{ 'custom_estimate.success.eyebrow' | t }}</p>
+          <h2 class="cq__h" id="{{ uid }}-ok-title">{{ 'custom_estimate.success.title' | t }}</h2>
+          <div class="cq__ticket">
+            <span class="cq__ticket-label">{{ 'custom_estimate.success.reference' | t }}</span>
+            <span class="cq__ticket-ref" data-cq-ref></span>
+            <button type="button" class="cq__copy-btn" data-cq-copy>{{ 'custom_estimate.success.copy' | t }}</button>
+          </div>
+          <p class="cq__success-copy" data-cq-sent></p>
+          <ol class="cq__steps">
+            <li><strong>{{ 'custom_estimate.success.step1_title' | t }}</strong> {{ 'custom_estimate.success.step1' | t }}</li>
+            <li><strong>{{ 'custom_estimate.success.step2_title' | t }}</strong> {{ 'custom_estimate.success.step2' | t }}</li>
+            <li><strong>{{ 'custom_estimate.success.step3_title' | t }}</strong> {{ 'custom_estimate.success.step3' | t }}</li>
+          </ol>
+        </div>
+      </div>
+
+      <footer class="cq__foot" data-cq-foot>
+        <p class="cq__fine">{{ 'custom_estimate.form.fine_print' | t }}</p>
+        <button type="submit" class="cq__submit" data-cq-submit form="{{ uid }}-form">{{ 'custom_estimate.form.submit' | t }}</button>
+      </footer>
+      <footer class="cq__foot cq__foot--done" data-cq-done hidden>
+        <a class="cq__ghost" href="{{ routes.all_products_collection_url }}">{{ 'custom_estimate.success.keep_shopping' | t }}</a>
+        <button type="button" class="cq__submit" data-cq-close>{{ 'custom_estimate.success.close' | t }}</button>
+      </footer>
+    </div>
+  </dialog>
+</custom-estimate>
+<script src="{{ 'custom-estimate.js' | asset_url }}" type="module" defer="defer"></script>
+{%- endif -%}
+{% stylesheet %}
+  .cq { --cq-ink: #000; --cq-paper: #FAF8F3; --cq-accent: #B8167A; --cq-rule: #E4DFD3; --cq-muted: #5F5B53; display: block; font-family: var(--font-body-family, 'Instrument Sans', system-ui, sans-serif); }
+  .cq__callout { display: grid; grid-template-columns: auto 1fr; gap: 1.2rem 1.4rem; align-items: center; padding: 1.6rem 1.8rem; background: var(--cq-paper); border: 1.5px dashed var(--cq-ink); border-radius: 1.6rem; color: var(--cq-ink); }
+  .cq__mark { display: grid; grid-template-columns: 1fr 1fr; gap: 2px; width: 3.2rem; height: 3.2rem; padding: 3px; border-radius: .8rem; background: var(--cq-ink); }
+  .cq__mark i { border-radius: 2px; background: #27D6FF; } .cq__mark i:nth-child(2) { background: #F962DD; } .cq__mark i:nth-child(3) { background: #FFF915; } .cq__mark i:nth-child(4) { background: var(--cq-paper); }
+  .cq__title { margin: 0; font-family: var(--font-heading-family, 'Space Grotesk', sans-serif); font-weight: 700; font-size: 1.7rem; line-height: 1.2; letter-spacing: -.01em; }
+  .cq__sub { margin: .2rem 0 0; font-size: 1.4rem; line-height: 1.45; color: var(--cq-muted); }
+  .cq__open { grid-column: 1 / -1; display: inline-flex; align-items: center; justify-content: center; gap: .8rem; min-height: 4.8rem; padding: 0 2.4rem; border: 2px solid var(--cq-ink); border-radius: 999px; background: #fff; color: var(--cq-ink); font: 700 1.5rem/1 var(--font-heading-family, 'Space Grotesk', sans-serif); letter-spacing: .02em; cursor: pointer; transition: transform .15s, box-shadow .15s, background-color .15s; }
+  .cq__open:hover { transform: translate(-1px, -1px); box-shadow: 2px 2px 0 #27D6FF, 4px 4px 0 #F962DD; }
+  .cq__open:focus-visible, .cq__close:focus-visible, .cq__submit:focus-visible, .cq__ghost:focus-visible, .cq__copy-btn:focus-visible { outline: 2px solid var(--cq-accent); outline-offset: 3px; }
+  .cq__arrow { transition: transform .2s; } .cq__open:hover .cq__arrow { transform: translateX(3px); }
+  @media (min-width: 750px) { .cq__callout { grid-template-columns: auto 1fr auto; } .cq__open { grid-column: auto; } }
+
+  .cq__dialog { padding: 0; border: 0; background: transparent; color: var(--cq-ink); max-width: none; max-height: none; width: 100%; height: 100%; margin: 0; overflow: hidden; }
+  .cq__dialog:not([open]) { display: none; }
+  .cq__dialog[open] { display: flex; align-items: center; justify-content: center; }
+  .cq__dialog::backdrop { background: rgba(10, 10, 12, .55); backdrop-filter: blur(3px); animation: cq-fade .25s ease both; }
+  .cq__dialog.is-closing::backdrop { animation: cq-fade .2s ease reverse both; }
+  .cq__panel { position: relative; display: flex; flex-direction: column; width: min(72rem, calc(100vw - 3.2rem)); max-height: min(92vh, 96rem); background: var(--cq-paper); border: 2px solid var(--cq-ink); border-radius: 2rem; box-shadow: 6px 6px 0 var(--cq-ink); overflow: hidden; animation: cq-pop .32s cubic-bezier(.2, .8, .2, 1) both; }
+  .cq__dialog.is-closing .cq__panel { animation: cq-pop-out .2s ease both; }
+  .cq__panel::before { content: ""; position: absolute; inset: 0 0 auto; height: 5px; background: linear-gradient(90deg, #27D6FF 0 25%, #F962DD 0 50%, #FFF915 0 75%, #000 0); }
+  .cq__head { display: flex; gap: 1.6rem; align-items: flex-start; justify-content: space-between; padding: 2.8rem 2.8rem 1.6rem; border-bottom: 1px solid var(--cq-rule); }
+  .cq__eyebrow { display: inline-flex; align-items: center; gap: .8rem; margin: 0 0 .6rem; font: 600 1.15rem/1.2 ui-monospace, 'Geist Mono', SFMono-Regular, Menlo, monospace; letter-spacing: .18em; text-transform: uppercase; color: var(--cq-accent); }
+  .cq__dot { width: 1rem; height: 1rem; border-radius: 50%; background: conic-gradient(#27D6FF 0 25%, #F962DD 0 50%, #FFF915 0 75%, #000 0); }
+  .cq__h { margin: 0; font-family: var(--font-heading-family, 'Space Grotesk', sans-serif); font-weight: 700; font-size: clamp(2.4rem, 3.4vw, 3.2rem); line-height: 1.05; letter-spacing: -.02em; }
+  .cq__desc { margin: .8rem 0 0; font-size: 1.5rem; line-height: 1.5; color: var(--cq-muted); max-width: 52ch; }
+  .cq__close { flex: none; display: grid; place-items: center; width: 4.4rem; height: 4.4rem; border: 2px solid var(--cq-ink); border-radius: 50%; background: #fff; color: var(--cq-ink); cursor: pointer; transition: transform .15s, background-color .15s; }
+  .cq__close:hover { transform: rotate(90deg); background: #FFF915; }
+  .cq__body { flex: 1; overflow-y: auto; overscroll-behavior: contain; padding: 2rem 2.8rem 2.4rem; -webkit-overflow-scrolling: touch; }
+  .cq__form { display: grid; gap: 2.4rem; }
+  .cq__product { display: flex; gap: 1.4rem; align-items: center; padding: 1.2rem 1.4rem; background: #fff; border: 1px solid var(--cq-rule); border-radius: 1.4rem; }
+  .cq__thumb { flex: none; width: 5.6rem; height: 5.6rem; border-radius: 1rem; overflow: hidden; background: var(--cq-paper); }
+  .cq__thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .cq__product-title { margin: 0; font-family: var(--font-heading-family, 'Space Grotesk', sans-serif); font-weight: 700; font-size: 1.6rem; line-height: 1.25; }
+  .cq__chip { display: inline-flex; margin: .5rem 0 0; padding: .2rem 1rem; border-radius: 99px; background: #FFF915; border: 1px solid var(--cq-ink); font: 600 1.1rem/1.6 ui-monospace, 'Geist Mono', monospace; letter-spacing: .08em; text-transform: uppercase; }
+  .cq__group { margin: 0; padding: 0; border: 0; min-width: 0; display: grid; gap: 1.4rem; }
+  .cq__legend { display: flex; align-items: center; gap: 1rem; padding: 0; margin-bottom: 1.4rem; font-family: var(--font-heading-family, 'Space Grotesk', sans-serif); font-weight: 700; font-size: 1.8rem; }
+  .cq__num { display: inline-grid; place-items: center; width: 3rem; height: 3rem; border-radius: 50%; background: var(--cq-ink); color: #fff; font: 700 1.1rem/1 ui-monospace, 'Geist Mono', monospace; box-shadow: 2px 2px 0 #F962DD; }
+  .cq__grid { display: grid; gap: 1.4rem 1.6rem; }
+  @media (min-width: 750px) { .cq__grid { grid-template-columns: 1fr 1fr; } }
+  .cq__field { display: grid; gap: .6rem; align-content: start; min-width: 0; }
+  .cq__field label, .cq__sublabel { font-weight: 600; font-size: 1.4rem; margin: 0; }
+  .cq__req { color: var(--cq-accent); }
+  .cq__opt { font-weight: 400; color: var(--cq-muted); font-size: 1.2rem; }
+  .cq input[type="text"], .cq input[type="email"], .cq input[type="tel"], .cq input[type="date"], .cq select, .cq textarea { width: 100%; min-height: 4.8rem; padding: 1.1rem 1.4rem; border: 1.5px solid #CFC8B8; border-radius: 1.2rem; background: #fff; color: var(--cq-ink); font: 400 1.6rem/1.4 var(--font-body-family, 'Instrument Sans', sans-serif); transition: border-color .15s, box-shadow .15s; -webkit-appearance: none; appearance: none; box-sizing: border-box; }
+  .cq select { padding-right: 4rem; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 1.4rem center; }
+  .cq textarea { min-height: 11rem; resize: vertical; }
+  .cq input:focus, .cq select:focus, .cq textarea:focus { outline: none; border-color: var(--cq-ink); box-shadow: 0 0 0 3px rgba(184, 22, 122, .22); }
+  .cq [aria-invalid="true"] { border-color: var(--cq-accent) !important; background: #FFF7FB !important; }
+  .cq__custom { animation: cq-slide .2s ease both; }
+  .cq__hint { margin: 0; font-size: 1.25rem; line-height: 1.45; color: var(--cq-muted); }
+  .cq__count { text-align: right; }
+  .cq__err { margin: 0; font-size: 1.3rem; font-weight: 600; color: var(--cq-accent); }
+  .cq__chips { display: flex; flex-wrap: wrap; gap: .8rem; }
+  .cq__chipopt { position: relative; cursor: pointer; }
+  .cq__chipopt input { position: absolute; opacity: 0; width: 1px; height: 1px; }
+  .cq__chipopt span { display: inline-flex; align-items: center; min-height: 4.2rem; padding: 0 1.8rem; border: 1.5px solid #CFC8B8; border-radius: 999px; background: #fff; font-weight: 600; font-size: 1.4rem; transition: all .15s; }
+  .cq__chipopt:hover span { border-color: var(--cq-ink); }
+  .cq__chipopt input:checked + span { background: var(--cq-ink); border-color: var(--cq-ink); color: #fff; box-shadow: 2px 2px 0 #27D6FF; }
+  .cq__chipopt input:focus-visible + span { outline: 2px solid var(--cq-accent); outline-offset: 2px; }
+  .cq__field--date { max-width: 32rem; }
+  .cq__signed { margin-top: -.6rem; }
+  .cq__check { display: flex; gap: 1rem; align-items: flex-start; font-size: 1.4rem; line-height: 1.45; cursor: pointer; }
+  .cq__check input { flex: none; width: 2rem; height: 2rem; margin: .1rem 0 0; accent-color: var(--cq-ink); }
+  .cq__hp { position: absolute !important; left: -9999px; width: 1px; height: 1px; overflow: hidden; }
+  .cq__turnstile:empty { display: none; }
+  .cq__alert { margin: 0; padding: 1.2rem 1.4rem; border-radius: 1.2rem; background: #FFF0F7; border: 1.5px solid var(--cq-accent); color: #6E0D49; font-weight: 600; font-size: 1.4rem; }
+  .cq__foot { display: flex; flex-wrap: wrap; gap: 1.2rem 2rem; align-items: center; justify-content: space-between; padding: 1.6rem 2.8rem calc(1.6rem + env(safe-area-inset-bottom)); border-top: 1px solid var(--cq-rule); background: #fff; }
+  .cq__fine { margin: 0; flex: 1 1 22rem; font-size: 1.25rem; line-height: 1.45; color: var(--cq-muted); }
+  .cq__submit { display: inline-flex; align-items: center; justify-content: center; gap: .8rem; min-height: 5rem; padding: 0 2.8rem; border: 2px solid var(--cq-ink); border-radius: 999px; background: var(--cq-ink); color: #fff; font: 700 1.5rem/1 var(--font-heading-family, 'Space Grotesk', sans-serif); letter-spacing: .03em; cursor: pointer; transition: transform .15s, box-shadow .15s; }
+  .cq__submit:hover { transform: translate(-1px, -1px); box-shadow: 2px 2px 0 #27D6FF, 4px 4px 0 #F962DD; }
+  .cq__submit[aria-busy="true"] { opacity: .75; cursor: progress; transform: none; box-shadow: none; }
+  .cq__submit[aria-busy="true"]::before { content: ""; width: 1.6rem; height: 1.6rem; border: 2px solid rgba(255, 255, 255, .4); border-top-color: #fff; border-radius: 50%; animation: cq-spin .7s linear infinite; }
+  .cq__ghost { color: var(--cq-ink); font-weight: 600; text-decoration: underline; text-underline-offset: 3px; }
+  .cq__success { display: grid; justify-items: center; text-align: center; gap: 1.2rem; padding: 2rem 0 1rem; outline: none; animation: cq-slide .35s ease both; }
+  .cq__burst { display: grid; place-items: center; width: 7.2rem; height: 7.2rem; border-radius: 50%; background: #FFF915; border: 2px solid var(--cq-ink); box-shadow: 3px 3px 0 #27D6FF, 6px 6px 0 #F962DD; color: var(--cq-ink); animation: cq-pop .45s cubic-bezier(.2, 1.4, .3, 1) both; }
+  .cq__ticket { display: grid; grid-template-columns: 1fr auto; align-items: center; gap: .2rem 1.6rem; width: min(100%, 40rem); margin-top: .6rem; padding: 1.4rem 1.8rem; border: 2px dashed var(--cq-ink); border-radius: 1.6rem; background: #fff; text-align: left; }
+  .cq__ticket-label { grid-column: 1; font: 600 1.1rem/1.2 ui-monospace, 'Geist Mono', monospace; letter-spacing: .18em; text-transform: uppercase; color: var(--cq-muted); }
+  .cq__ticket-ref { grid-column: 1; font: 700 2.4rem/1.2 ui-monospace, 'Geist Mono', monospace; letter-spacing: .08em; }
+  .cq__copy-btn { grid-column: 2; grid-row: 1 / span 2; min-height: 4rem; padding: 0 1.6rem; border: 1.5px solid var(--cq-ink); border-radius: 999px; background: var(--cq-paper); font-weight: 600; cursor: pointer; }
+  .cq__success-copy { margin: 0; max-width: 46ch; color: var(--cq-muted); font-size: 1.5rem; }
+  .cq__steps { list-style: none; counter-reset: s; margin: .8rem 0 0; padding: 0; display: grid; gap: 1rem; width: min(100%, 46rem); text-align: left; }
+  .cq__steps li { counter-increment: s; position: relative; padding: 1.2rem 1.4rem 1.2rem 5.4rem; background: #fff; border: 1px solid var(--cq-rule); border-radius: 1.2rem; font-size: 1.4rem; line-height: 1.45; }
+  .cq__steps li::before { content: "0" counter(s); position: absolute; left: 1.2rem; top: 1.1rem; display: grid; place-items: center; width: 3rem; height: 3rem; border-radius: 50%; background: var(--cq-ink); color: #fff; font: 700 1.1rem/1 ui-monospace, 'Geist Mono', monospace; }
+  .cq__steps strong { font-family: var(--font-heading-family, 'Space Grotesk', sans-serif); display: block; }
+  html.cq-lock, html.cq-lock body { overflow: hidden; }
+  @media (max-width: 749px) {
+    .cq__dialog[open] { align-items: flex-end; }
+    .cq__panel { width: 100vw; max-height: none; height: 100%; height: 100dvh; border-radius: 0; border: 0; box-shadow: none; animation-name: cq-sheet; }
+    .cq__dialog.is-closing .cq__panel { animation: cq-sheet-out .22s ease both; }
+    .cq__head { padding: 2.2rem 1.8rem 1.4rem; }
+    .cq__body { padding: 1.6rem 1.8rem 2rem; }
+    .cq__foot { padding: 1.2rem 1.8rem calc(1.2rem + env(safe-area-inset-bottom)); }
+    .cq__submit { width: 100%; }
+    .cq__fine { order: 2; text-align: center; }
+    .cq__field--date { max-width: none; }
+  }
+  @keyframes cq-fade { from { opacity: 0; } to { opacity: 1; } }
+  @keyframes cq-pop { from { opacity: 0; transform: translateY(14px) scale(.97); } to { opacity: 1; transform: none; } }
+  @keyframes cq-pop-out { to { opacity: 0; transform: translateY(10px) scale(.98); } }
+  @keyframes cq-sheet { from { transform: translateY(100%); } to { transform: none; } }
+  @keyframes cq-sheet-out { to { transform: translateY(100%); } }
+  @keyframes cq-slide { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+  @keyframes cq-spin { to { transform: rotate(360deg); } }
+  @media (prefers-reduced-motion: reduce) { .cq__panel, .cq__dialog::backdrop, .cq__success, .cq__burst, .cq__custom { animation: none !important; } .cq__open, .cq__submit, .cq__close, .cq__arrow { transition: none; } }
+{% endstylesheet %}
