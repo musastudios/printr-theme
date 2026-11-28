@@ -176,7 +176,7 @@
         "total": "Total with {option}: {price}",
         "price_note": "Includes {option} rush (+{amount})",
         "note": "Production time only. Shipping is calculated at checkout.",
-        "reset": "{option} isn't available for this option, so we switched you to Standard.",
+        "reset": "{option} isn't available for this option, so we switched you to {to}.",
         "tier_std": "Standard",
         "tier_2bd": "2nd Day",
         "tier_2bd_sub": "2 business days",

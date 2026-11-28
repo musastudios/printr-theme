@@ -176,7 +176,7 @@
         "total": "Total con {option}: {price}",
         "price_note": "Incluye urgencia {option} (+{amount})",
         "note": "Solo tiempo de producción. El envío se calcula al pagar.",
-        "reset": "{option} no está disponible para esta opción, así que cambiamos a Estándar.",
+        "reset": "{option} no está disponible para esta opción, así que cambiamos a {to}.",
         "tier_std": "Estándar",
         "tier_2bd": "Segundo día",
         "tier_2bd_sub": "2 días laborables",

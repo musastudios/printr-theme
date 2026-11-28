@@ -147,5 +147,27 @@ await t('cart: flat fee edited by hand is restored to 1; missing fee re-added wi
   assert.deepEqual(rushPlan({ items: [parentFlat('a', 'L1'), feeLine('f', 'L1', 5)] }).updates, { f: 1 });
   const p = rushPlan({ items: [parentFlat('a', 'L1', 2)] }); assert.equal(p.adds[0].quantity, 1); assert.equal(p.adds[0].id, 903);
 });
-if (n !== 21) { console.error(`expected 21 tests, got ${n}`); process.exit(1); }
+await t('reset string names the tier we switched to, not a hard-coded Standard', async () => {
+  const d = data(await render(product(LAYERED), variant('100')));
+  assert.match(d.strings.reset, /\{to\}/);
+  assert.doesNotMatch(d.strings.reset, /to Standard\./);
+  const es = data(await render(product(LAYERED), variant('100'), { lang: 'es' }));
+  assert.match(es.strings.reset, /\{to\}/);
+  assert.doesNotMatch(es.strings.reset, /Estándar\./);
+});
+await t('variant change: suppress reset when there was no explicit pick; announce only a pick that is gone', () => {
+  const fn = mod.resetAfterVariantChange;
+  // Default / plain-line (no explicit pick) -> new default: no banner
+  assert.deepEqual(fn(undefined, '2bd', ['2bd', 'nbd']), { tier: '2bd', announce: false });
+  assert.deepEqual(fn(null, 'std', ['std', 'nbd']), { tier: 'std', announce: false });
+  // Previous pick is already this variant's default: no banner
+  assert.deepEqual(fn('2bd', '2bd', ['2bd', 'nbd']), { tier: '2bd', announce: false });
+  // Explicit Next Day still offered: keep it, no banner
+  assert.deepEqual(fn('nbd', '2bd', ['2bd', 'nbd']), { tier: 'nbd', announce: false });
+  // Explicit 2nd Day on Tri -> Half (Standard + Next Day): announce and land on Standard
+  assert.deepEqual(fn('2bd', 'std', ['std', 'nbd']), { tier: 'std', announce: true });
+  // Explicit Standard on Half -> Tri: announce and land on 2nd Day (not a hard-coded Standard)
+  assert.deepEqual(fn('std', '2bd', ['2bd', 'nbd']), { tier: '2bd', announce: true });
+});
+if (n !== 23) { console.error(`expected 23 tests, got ${n}`); process.exit(1); }
 console.log(`${n} passed`);

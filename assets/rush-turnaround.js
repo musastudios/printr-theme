@@ -47,8 +47,19 @@ export const TURNAROUND_VALUE = {
 export const TURNAROUND_PROP = 'Turnaround';
 export const canonicalValue = (tier, days, mode) => (TURNAROUND_VALUE[tier] || TURNAROUND_VALUE.std)(days, mode);
 
-/** Section id -> last tier the customer picked, so the choice survives the section re-render on variant change. */
+/** Section id -> last tier the customer explicitly picked, so the choice survives the section re-render on variant change.
+ * Auto-applied defaults are not stored; otherwise switching folds would treat "Standard" as a sticky pick and announce a reset. */
 const picked = new Map();
+
+/** After a variant change: keep an explicit pick if this variant still offers it; otherwise fall back to the new default.
+ * Returns { tier, announce } — announce only when a real customer pick is no longer offered (not when the previous
+ * variant's default / plain line just doesn't exist on the new one). */
+export function resetAfterVariantChange(prev, def, offered) {
+  const keys = offered || [];
+  if (!prev || prev === def) return { tier: def, announce: false };
+  if (keys.includes(prev)) return { tier: prev, announce: false };
+  return { tier: def, announce: true };
+}
 
 /**
  * Add the turnaround choice to a product FormData. Pure function (exported for tests).
@@ -114,14 +125,19 @@ class RushTurnaround extends HTMLElement {
       else this.paint();
     };
     document.addEventListener('variant:change', this.onVariant);
-    // Restore the previous choice after a re-render; fall back to Standard (and say so) when it isn't offered now.
+    // Restore an explicit previous choice after a re-render; if it isn't offered now, fall back to this variant's default and say which tier we switched to.
     const prev = picked.get(this.dataset.section);
     const def = this.data.defaultTier || 'standard';
-    if (prev && prev !== def) {
-      const r = this.radios.find((x) => x.value === prev);
-      if (r) { r.checked = true; this.choose(prev, false); }
-      else { this.choose(def, false); this.announceReset(prev); }
-    } else this.choose(def, false);
+    const next = resetAfterVariantChange(prev, def, this.radios.map((x) => x.value));
+    if (next.tier !== def) {
+      const r = this.radios.find((x) => x.value === next.tier);
+      if (r) r.checked = true;
+    }
+    this.choose(next.tier, false);
+    if (next.announce) {
+      picked.set(this.dataset.section, next.tier);
+      this.announceReset(prev, next.tier);
+    }
   }
   disconnectedCallback() {
     document.removeEventListener('formdata', this.onFd, true);
@@ -137,7 +153,7 @@ class RushTurnaround extends HTMLElement {
   get qty() { const f = document.getElementById(this.dataset.formId); const q = parseInt(f && f.querySelector('[name="quantity"]')?.value, 10); return q > 0 ? q : 1; }
   money(c) { return formatMoney(c, this.data.money); }
   choose(tier, user) {
-    picked.set(this.dataset.section, tier);
+    if (user) picked.set(this.dataset.section, tier);
     if (user) {
       const reset = this.querySelector('[data-rush-reset]'); if (reset) reset.hidden = true;
       try { window.Shopify?.analytics?.publish?.('rush_turnaround_selected', { tier, variant: this.data.variant }); } catch (e) { /* noop */ }
@@ -164,9 +180,9 @@ class RushTurnaround extends HTMLElement {
       } else if (note) note.remove();
     });
   }
-  announceReset(prev) {
+  announceReset(prev, to) {
     const el = this.querySelector('[data-rush-reset]'); if (!el) return;
-    el.textContent = fmt(this.t.reset, { option: this.label(prev) }); el.hidden = false;
+    el.textContent = fmt(this.t.reset, { option: this.label(prev), to: this.label(to) }); el.hidden = false;
   }
   async reload(variantId) {
     if (!variantId || this.loading === variantId) return;
