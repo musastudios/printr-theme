@@ -155,7 +155,11 @@
     turnaround() { const tl = this.schema.turnarounds; return tl && tl.length ? tl.find((x) => x.v === this.turn) || tl[0] : this.schema.turnaround; }
     renderExtras() {
       const uid = this.dataset.section || 'bc'; const tl = this.schema.turnarounds; const tbox = this.querySelector('[data-bc-turn]');
-      if (tl && tl.length && tbox) tbox.innerHTML = tl.map((x) => `<label class="bc-turn"><input type="radio" name="bc-${uid}-turn" value="${esc(x.v)}" data-bc-turn-opt ${x.v === this.turn ? 'checked' : ''}><span>${esc(this.L(x.label))}</span></label>`).join(' ');
+      const tsec = tbox && tbox.closest('.bc-sec');
+      if (tl && tl.length && tbox) {
+        tbox.innerHTML = tl.map((x) => `<label class="bc-turn"><input type="radio" name="bc-${uid}-turn" value="${esc(x.v)}" data-bc-turn-opt ${x.v === this.turn ? 'checked' : ''}><span>${esc(this.L(x.label))}</span></label>`).join(' ');
+        if (tsec) tsec.hidden = false;
+      } else if (tsec) tsec.hidden = true;
       const abox = this.querySelector('[data-bc-addons]'); if (!abox) return;
       const on = new Set([...abox.querySelectorAll('[data-bc-addon]:checked')].map((i) => i.value)); const list = this.addons();
       abox.innerHTML = list.length ? `<h3 class="bc-sec__title bc-sec__title--sm">${esc(this.t.options || '')}</h3>` + list.map((a) => `<label class="bc-check"><input type="checkbox" data-bc-addon value="${esc(a.key)}" ${on.has(a.key) ? 'checked' : ''}><span>${esc(this.L(a.label))}</span></label>`).join('') : '';

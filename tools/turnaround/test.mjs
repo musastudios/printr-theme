@@ -88,6 +88,7 @@ await t('theme fallback: flag is a plain 4 business days line, no Next Day', asy
   assert.doesNotMatch(h, /<rush-turnaround/);
   assert.match(h, /Production time:<\/strong> 4 business days/);
   assert.doesNotMatch(h, /Next Day/);
+  assert.match(h, /name="properties\[Turnaround\]" value="Standard \(4 business days\)"/);
 });
 await t('theme fallback: brochures Half-Fold defaults to 2nd Day; Flat is 4 days + Next Day', async () => {
   const p = product(null); p.handle = 'brochures';

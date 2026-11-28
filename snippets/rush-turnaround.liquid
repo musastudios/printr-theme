@@ -371,12 +371,19 @@
 {%- else -%}
   {%- if mode == 'product' -%}
     {%- assign only_days = d_arr[0] | plus: 0 -%}
-    {%- if only_days == 1 -%}
+    {%- assign only_key = k_arr[0] -%}
+    {%- if only_key == 'nbd' -%}
       {%- assign only_text = 'products.product.rush.tier_nbd_sub' | t -%}
+      {%- assign only_prop = 'Next Day (next business day)' -%}
+    {%- elsif only_key == '2bd' -%}
+      {%- assign only_text = 'products.product.rush.standard_days' | t: days: only_days -%}
+      {%- assign only_prop = '2nd Day (2 business days)' -%}
     {%- else -%}
       {%- assign only_text = 'products.product.rush.standard_days' | t: days: only_days -%}
+      {%- assign only_prop = 'Standard (' | append: only_days | append: ' business days)' -%}
     {%- endif -%}
     <p class="product__turnaround">{% render 'icon', name: 'clock' %}<span><strong>{{ 'products.product.turnaround' | t }}:</strong> {{ only_text }}</span></p>
+    <input type="hidden" form="{{ form_id }}" name="properties[Turnaround]" value="{{ only_prop }}">
   {%- else -%}
     {%- assign static_text = product.metafields.custom.turnaround | default: block.settings.text -%}
     {%- if static_text != blank -%}
@@ -416,7 +423,7 @@
   .rush__reset { margin: 1rem 0 0; padding: .8rem 1.2rem; border: 2px solid #000; border-radius: 1rem; background: #FFF915; font-size: 1.3rem; }
   .rush__editor-note { margin: .8rem 0 0; padding: .8rem 1.2rem; border: 2px dashed #000; border-radius: 1rem; font-size: 1.3rem; }
   .price__rush { display: block; font-size: 1.3rem; font-weight: 600; opacity: .75; margin-top: .2rem; }
-  .product:has(rush-turnaround) brochure-configurator .bc-sec:has([data-bc-turn]) { display: none; }
+  .product:has(.product__turnaround-block) brochure-configurator .bc-sec:has([data-bc-turn]) { display: none; }
   @media (max-width: 749px) {
     .rush { padding: 1.6rem 1.4rem 1.2rem; }
     .rush__opt { grid-template-columns: 2rem 1fr auto; padding: 1rem 1.2rem; }

@@ -157,11 +157,9 @@
         <fieldset class="bc-run__set" aria-labelledby="BcRun-{{ section_id }}" data-bc-tiers></fieldset>
       </div>
     </div>
-    <div class="bc-sec">
+    <div class="bc-sec" hidden>
       <h3 class="bc-sec__title" id="BcTurn-{{ section_id }}">{% render 'au-icon', name: 'clock', size: 18 %}{{ 'products.product.configurator.turnaround' | t }}<span class="bc-req" aria-hidden="true">*</span></h3>
-      <div role="radiogroup" aria-labelledby="BcTurn-{{ section_id }}" data-bc-turn>
-        <label class="bc-turn"><input type="radio" name="bc-{{ section_id }}-turn" value="NBD" checked><span>{{ 'products.product.configurator.next_day' | t }}</span></label>
-      </div>
+      <div role="radiogroup" aria-labelledby="BcTurn-{{ section_id }}" data-bc-turn></div>
     </div>
     <div class="bc-sec" data-bc-addons hidden></div>
     <div class="bc-sec bc-sec--checks">

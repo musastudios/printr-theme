@@ -77,7 +77,7 @@ Hidden: `_rush_link`, `_rush_tier`, `_rush_cents`, `_rush_flat`, `_rush_units`, 
 ## Templates
 
 `templates/product.brochures.json` (all configurator products) and `product.flat-flyers.json` now include a `turn` block after the configurator, with empty fallback text
-so a product without the metafield shows nothing new. `snippets/turnaround-tier-ok.liquid` evaluates the per-spec conditions.
+so a product without the metafield shows nothing new. `snippets/turnaround-tier-ok.liquid` evaluates the per-spec conditions. The brochure configurator's leftover "Next business day" radio is hidden unless the product schema actually lists turnaround options, so it cannot contradict the Production time block.
 
 ## Tests
 
