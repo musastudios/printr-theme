@@ -123,7 +123,7 @@
       "share": "Share",
       "each": "each",
       "configurator": {
-        "heading": "Build your brochure",
+        "heading": "Build your {{ product }}",
         "loading": "Loading options…",
         "quantity": "Quantity",
         "turnaround": "Turnaround",
@@ -176,8 +176,14 @@
         "total": "Total with {option}: {price}",
         "price_note": "Includes {option} rush (+{amount})",
         "note": "Production time only. Shipping is calculated at checkout.",
-        "reset": "{option} isn't available for this option, so we switched you to Standard.",
-        "cart_note": "Rush production charge. Removed automatically with its print item.",
+        "reset": "{option} isn't available for this option, so we switched you to {to}.",
+        "tier_std": "Standard",
+        "tier_2bd": "2nd Day",
+        "tier_2bd_sub": "2 business days",
+        "tier_nbd": "Next Day",
+        "tier_nbd_sub": "Next business day",
+        "flat_note": "Includes {option} (+{amount})",
+        "cart_note": "Turnaround charge. Removed automatically with its print item.",
         "editor_missing_fee": "Rush options are hidden: create the Rush Production fee product and select it in Theme settings → Production turnaround."
       }
     },

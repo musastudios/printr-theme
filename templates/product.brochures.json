@@ -61,12 +61,19 @@
           "settings": {
             "quote_url": "/pages/contact"
           }
+        },
+        "turn": {
+          "type": "turnaround",
+          "settings": {
+            "text": ""
+          }
         }
       },
       "block_order": [
         "title",
         "price",
         "bc",
+        "turn",
         "artwork",
         "ds",
         "buy",

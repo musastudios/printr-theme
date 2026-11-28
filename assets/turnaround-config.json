@@ -1,0 +1,152 @@
+{
+  "_comment": "Theme fallback used when the product metafield printr.turnaround is blank. Next Day +$5 only on verified families. Unverified products show the real production time and no Next Day. 2nd Day cost is absorbed (no price change). Safe to keep after metafields are written: the metafield wins.",
+  "products": {
+    "ap-mens-ss-tee-front": {
+      "profile": "std4"
+    },
+    "ap-mens-ss-tee-front-back": {
+      "profile": "std4"
+    },
+    "ap-mens-ls-tee-front": {
+      "profile": "std4"
+    },
+    "ap-mens-ls-tee-front-back": {
+      "profile": "std4"
+    },
+    "ap-mens-premium-tee-front": {
+      "profile": "std4"
+    },
+    "ap-mens-premium-tee-front-back": {
+      "profile": "std4"
+    },
+    "ap-mens-tank-front": {
+      "profile": "std4"
+    },
+    "ap-mens-tank-front-back": {
+      "profile": "std4"
+    },
+    "ap-womens-premium-tee-front": {
+      "profile": "std4"
+    },
+    "ap-womens-premium-tee-front-back": {
+      "profile": "std4"
+    },
+    "retractable-banner-stand": {
+      "profile": "std4"
+    },
+    "bn-ret-dlx-ds-33x80": {
+      "profile": "std4"
+    },
+    "bn-ret-dlx-ss-33x80": {
+      "profile": "std4"
+    },
+    "pole-flag": {
+      "profile": "std4"
+    },
+    "teardrop-flag": {
+      "profile": "std4"
+    },
+    "feather-flag": {
+      "profile": "std4"
+    },
+    "aluminum-sign": {
+      "profile": "std4"
+    },
+    "pvc-sign": {
+      "profile": "std4"
+    },
+    "foam-core-sign": {
+      "profile": "std4"
+    },
+    "10mm-coroplast-sign": {
+      "profile": "std4"
+    },
+    "coroplast-yard-sign": {
+      "profile": "std4"
+    },
+    "vinyl-banner": {
+      "profile": "std4"
+    },
+    "mesh-banner": {
+      "profile": "std4"
+    },
+    "blockout-vinyl-banner": {
+      "profile": "std4"
+    },
+    "silk-business-card": {
+      "profile": "std4"
+    },
+    "suede-business-card": {
+      "profile": "std4"
+    },
+    "black-edge-business-card": {
+      "profile": "std4"
+    },
+    "painted-edge-business-card": {
+      "profile": "std4"
+    },
+    "fold-over-business-card": {
+      "profile": "std4"
+    },
+    "linen-business-card": {
+      "profile": "std4"
+    },
+    "plastic-business-card": {
+      "profile": "std4"
+    },
+    "brown-kraft-business-card": {
+      "profile": "std4"
+    },
+    "silk-postcard": {
+      "profile": "std4"
+    },
+    "sticker": {
+      "profile": "std4"
+    },
+    "bumper-stickers": {
+      "profile": "std4"
+    },
+    "16pt-postcard": {
+      "profile": "std4"
+    },
+    "18pt-postcard": {
+      "profile": "std4"
+    },
+    "bc-raised-spot-uv-2-x-3-5-us-standard": {
+      "profile": "std4"
+    },
+    "bc-raised-foil-2-x-3-5-us-standard": {
+      "profile": "std4"
+    },
+    "specialty-business-card": {
+      "profile": "std4"
+    },
+    "foil-business-card": {
+      "profile": "std7"
+    },
+    "tear-resistant-business-card": {
+      "profile": "std7"
+    },
+    "flyers-brochures-shipping-included": {
+      "profile": "nbd_only"
+    },
+    "business-card": {
+      "profile": "2bd_nbd5"
+    },
+    "natural-business-card": {
+      "profile": "2bd_nbd5"
+    },
+    "pearl-business-card": {
+      "profile": "2bd_nbd5"
+    },
+    "14pt-postcard": {
+      "profile": "2bd_nbd5"
+    },
+    "100lb-gloss-postcard": {
+      "profile": "2bd_nbd5"
+    },
+    "brochures": {
+      "profile": "brochures"
+    }
+  }
+}

@@ -123,7 +123,7 @@
       "share": "Compartir",
       "each": "c/u",
       "configurator": {
-        "heading": "Arma tu folleto",
+        "heading": "Arma tu {{ product }}",
         "loading": "Cargando opciones…",
         "quantity": "Cantidad",
         "turnaround": "Tiempo de producción",
@@ -176,8 +176,14 @@
         "total": "Total con {option}: {price}",
         "price_note": "Incluye urgencia {option} (+{amount})",
         "note": "Solo tiempo de producción. El envío se calcula al pagar.",
-        "reset": "{option} no está disponible para esta opción, así que cambiamos a Estándar.",
-        "cart_note": "Cargo por producción urgente. Se elimina automáticamente con su artículo impreso.",
+        "reset": "{option} no está disponible para esta opción, así que cambiamos a {to}.",
+        "tier_std": "Estándar",
+        "tier_2bd": "Segundo día",
+        "tier_2bd_sub": "2 días laborables",
+        "tier_nbd": "Próximo día",
+        "tier_nbd_sub": "Próximo día laborable",
+        "flat_note": "Incluye {option} (+{amount})",
+        "cart_note": "Cargo por tiempo de entrega. Se elimina automáticamente con su artículo impreso.",
         "editor_missing_fee": "Las opciones urgentes están ocultas: crea el producto de cargo Rush Production y selecciónalo en Configuración del tema → Production turnaround."
       }
     },

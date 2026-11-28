@@ -1,0 +1,51 @@
+{% doc %}
+  Does a turnaround tier from the product metafield printr.turnaround apply to the selected variant?
+  Prints exactly "yes" or "no" (capture it). A tier may carry optional conditions on the variant's option values:
+    "only":   [{ "o": "Qty",    "v": ["25", "50"] }]        every listed option must have one of the values
+    "not":    [{ "o": "Config", "v": ["16PTSUEDE-SQ"] }]   none of the listed options may have one of the values
+    "prefix": [{ "o": "Config", "v": ["16PTSUEDE"] }]       the option value must start with one of the prefixes
+  Option names are the product's own option names (Size / Qty / Config on configurator products).
+  @param {object} tier - One entry of printr.turnaround .tiers
+  @param {product} product - The product
+  @param {variant} variant - The selected variant
+{% enddoc %}
+{%- liquid
+  assign ok = true
+  for o in product.options_with_values
+    assign oi = forloop.index0
+    assign ov = variant.options[oi] | append: ''
+    for c in tier.only
+      if c.o == o.name
+        unless c.v contains ov
+          assign ok = false
+        endunless
+      endif
+    endfor
+    for c in tier.not
+      if c.o == o.name
+        if c.v contains ov
+          assign ok = false
+        endif
+      endif
+    endfor
+    for c in tier.prefix
+      if c.o == o.name
+        assign hit = false
+        for p in c.v
+          assign head = ov | slice: 0, p.size
+          if head == p
+            assign hit = true
+          endif
+        endfor
+        unless hit
+          assign ok = false
+        endunless
+      endif
+    endfor
+  endfor
+  if ok
+    echo 'yes'
+  else
+    echo 'no'
+  endif
+-%}
