@@ -898,7 +898,8 @@
       "optin": "Sí, envíenme ofertas y noticias de PRINTR por email. Puedo darme de baja en cualquier momento.",
       "fine_print": "Sin pago ni compromiso. Te enviaremos tu estimado personalizado pronto.",
       "submit": "Enviar solicitud",
-      "sending": "Enviando…"
+      "sending": "Enviando…",
+      "rush_fee_note": "Aplica cargo de rush a esta solicitud."
     },
     "errors": {
       "required": "Este campo es requerido.",

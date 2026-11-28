@@ -31,6 +31,24 @@
     assign c_phone = customer.phone | default: customer.default_address.phone
   endif
   assign today = 'now' | date: '%Y-%m-%d'
+  comment
+    Rush fee product: the product picked in Theme settings → Production turnaround, else handle rush-production
+    (same fallback the rush-turnaround snippet uses), or a variant SKU starting with RUSH-.
+  endcomment
+  assign is_rush_fee = false
+  if settings.rush_product != blank and settings.rush_product.id == product.id
+    assign is_rush_fee = true
+  elsif product.handle == 'rush-production'
+    assign is_rush_fee = true
+  else
+    for v in product.variants
+      assign sku_prefix = v.sku | upcase | slice: 0, 5
+      if sku_prefix == 'RUSH-'
+        assign is_rush_fee = true
+        break
+      endif
+    endfor
+  endif
 -%}
 {%- if settings.quote_enabled != false -%}
 <custom-estimate
@@ -42,6 +60,7 @@
   data-qty-index="{{ qty_index }}"
   data-logged-in="{% if customer %}true{% else %}false{% endif %}"
   data-today="{{ today }}"
+  data-rush-fee="{{ is_rush_fee }}"
 >
   <script type="application/json" data-cq-product>
     {
@@ -160,10 +179,13 @@
           <fieldset class="cq__group">
             <legend class="cq__legend"><span class="cq__num" aria-hidden="true">02</span>{{ 'custom_estimate.form.timing' | t }}</legend>
             <div class="cq__chips" role="radiogroup" aria-label="{{ 'custom_estimate.form.turnaround' | t }}">
-              <label class="cq__chipopt"><input type="radio" name="turnaround" value="standard" checked><span>{{ 'custom_estimate.form.turnaround_standard' | t }}</span></label>
-              <label class="cq__chipopt"><input type="radio" name="turnaround" value="rush"><span>{{ 'custom_estimate.form.turnaround_rush' | t }}</span></label>
+              <label class="cq__chipopt"><input type="radio" name="turnaround" value="standard" {% unless is_rush_fee %}checked{% endunless %}><span>{{ 'custom_estimate.form.turnaround_standard' | t }}</span></label>
+              <label class="cq__chipopt"><input type="radio" name="turnaround" value="rush" {% if is_rush_fee %}checked{% endif %}><span>{{ 'custom_estimate.form.turnaround_rush' | t }}</span></label>
               <label class="cq__chipopt"><input type="radio" name="turnaround" value="flexible"><span>{{ 'custom_estimate.form.turnaround_flexible' | t }}</span></label>
             </div>
+            {%- if is_rush_fee -%}
+              <p class="cq__rush" data-cq-rush-note><span class="cq__rush-ic" aria-hidden="true">⚡</span>{{ 'custom_estimate.form.rush_fee_note' | t }}</p>
+            {%- endif -%}
             <div class="cq__field cq__field--date">
               <label for="{{ uid }}-date">{{ 'custom_estimate.form.needed_by' | t }}</label>
               <input id="{{ uid }}-date" name="neededBy" type="date" min="{{ today }}" data-cq-field="neededBy" aria-describedby="{{ uid }}-date-hint {{ uid }}-date-err">
@@ -323,6 +345,8 @@
   .cq__chipopt input:checked + span { background: var(--cq-ink); border-color: var(--cq-ink); color: #fff; box-shadow: 2px 2px 0 #27D6FF; }
   .cq__chipopt input:focus-visible + span { outline: 2px solid var(--cq-accent); outline-offset: 2px; }
   .cq__field--date { max-width: 32rem; }
+  .cq__rush { display: flex; gap: .8rem; align-items: center; margin: 0; padding: 1rem 1.4rem; background: #FFF915; border: 1.5px solid var(--cq-ink); border-radius: 1.2rem; box-shadow: 3px 3px 0 #F962DD; font-weight: 600; font-size: 1.4rem; line-height: 1.4; }
+  .cq__rush-ic { flex: none; font-size: 1.6rem; }
   .cq__signed { margin-top: -.6rem; }
   .cq__check { display: flex; gap: 1rem; align-items: flex-start; font-size: 1.4rem; line-height: 1.45; cursor: pointer; }
   .cq__check input { flex: none; width: 2rem; height: 2rem; margin: .1rem 0 0; accent-color: var(--cq-ink); }
