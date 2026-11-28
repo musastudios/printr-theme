@@ -123,7 +123,7 @@
       "share": "Compartir",
       "each": "c/u",
       "configurator": {
-        "heading": "Arma tu folleto",
+        "heading": "Arma tu {{ product }}",
         "loading": "Cargando opciones…",
         "quantity": "Cantidad",
         "turnaround": "Tiempo de producción",

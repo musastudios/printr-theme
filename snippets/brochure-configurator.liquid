@@ -135,7 +135,7 @@
     if bc_heading != blank
       assign bc_heading_src = 'metafield'
     else
-      assign bc_heading = 'products.product.configurator.heading' | t
+      assign bc_heading = 'products.product.configurator.heading' | t: product: product.title
     endif
   -%}
   <h2 class="bc__heading slug" data-heading-source="{{ bc_heading_src }}">{{ bc_heading | escape }}</h2>
