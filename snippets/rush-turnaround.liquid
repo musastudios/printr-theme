@@ -388,6 +388,8 @@
     {%- endif -%}
     <p class="product__turnaround">{% render 'icon', name: 'clock' %}<span><strong>{{ 'products.product.turnaround' | t }}:</strong> {{ only_text }}</span></p>
     <input type="hidden" form="{{ form_id }}" name="properties[Turnaround]" value="{{ only_prop }}">
+    <span hidden data-turnaround-host data-product-url="{{ product.url }}" data-section="{{ section_id }}"></span>
+    <script src="{{ 'rush-turnaround.js' | asset_url }}" type="module" defer="defer"></script>
   {%- else -%}
     {%- assign static_text = product.metafields.custom.turnaround | default: block.settings.text -%}
     {%- if static_text != blank -%}

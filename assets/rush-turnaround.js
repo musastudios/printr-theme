@@ -172,12 +172,13 @@ class RushTurnaround extends HTMLElement {
     if (!variantId || this.loading === variantId) return;
     this.loading = variantId; this.setAttribute('aria-busy', 'true');
     try {
-      const u = new URL(this.dataset.productUrl || location.pathname, location.href);
-      u.searchParams.set('variant', variantId); u.searchParams.set('section_id', this.dataset.section);
-      const html = await (await fetch(u)).text();
-      const fresh = new DOMParser().parseFromString(html, 'text/html').querySelector('[data-swap="turnaround"]');
       const mine = this.closest('[data-swap="turnaround"]');
-      if (fresh && mine && this.loading === variantId) mine.replaceWith(fresh);
+      await reloadTurnaroundSwap({
+        productUrl: this.dataset.productUrl,
+        sectionId: this.dataset.section,
+        variantId,
+        current: mine,
+      });
     } catch (err) { console.error(err); } finally { if (this.isConnected) { this.removeAttribute('aria-busy'); this.loading = null; } }
   }
   onFormData(fd) {
@@ -189,3 +190,45 @@ class RushTurnaround extends HTMLElement {
   }
 }
 if (!customElements.get('rush-turnaround')) customElements.define('rush-turnaround', RushTurnaround);
+
+/** Fetch the production-time block for a variant and swap it in. Also used when the
+ *  current variant only has a plain line (no <rush-turnaround>), so a later option
+ *  change that unlocks the selector still reloads the block. */
+let swapLoading = null;
+async function reloadTurnaroundSwap({ productUrl, sectionId, variantId, current }) {
+  if (!variantId || swapLoading === variantId) return;
+  swapLoading = variantId;
+  try {
+    const u = new URL(productUrl || location.pathname, location.href);
+    const preview = new URLSearchParams(location.search).get('preview_theme_id');
+    if (preview) u.searchParams.set('preview_theme_id', preview);
+    u.searchParams.set('variant', String(variantId));
+    if (sectionId) u.searchParams.set('section_id', sectionId);
+    const html = await (await fetch(u)).text();
+    const fresh = new DOMParser().parseFromString(html, 'text/html').querySelector('[data-swap="turnaround"]');
+    const mine = current || document.querySelector('[data-swap="turnaround"]');
+    if (fresh && mine && swapLoading === variantId) mine.replaceWith(fresh);
+  } finally {
+    if (swapLoading === variantId) swapLoading = null;
+  }
+}
+
+if (!window.__printrTurnaroundSwapBound) {
+  window.__printrTurnaroundSwapBound = true;
+  document.addEventListener('variant:change', (e) => {
+    const d = e.detail || {};
+    if (!d.variantId) return;
+    const root = (d.sectionId && document.getElementById(`shopify-section-${d.sectionId}`)) || document;
+    // <rush-turnaround> reloads itself; this is only for the plain production-time line.
+    if (root.querySelector('rush-turnaround')) return;
+    const host = root.querySelector('[data-turnaround-host]');
+    const mine = root.querySelector('[data-swap="turnaround"]');
+    if (!mine) return;
+    reloadTurnaroundSwap({
+      productUrl: (host && host.dataset.productUrl) || location.pathname,
+      sectionId: (host && host.dataset.section) || d.sectionId,
+      variantId: d.variantId,
+      current: mine,
+    }).catch((err) => console.error(err));
+  });
+}
