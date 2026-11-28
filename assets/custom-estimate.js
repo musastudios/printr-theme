@@ -96,10 +96,80 @@ class CustomEstimate extends HTMLElement {
     return Number(fromSection || this.product.selected || 0);
   }
 
+  configurator() {
+    const scope = document.getElementById(`shopify-section-${this.dataset.section}`) || this.closest('.product') || document;
+    const bc = scope.querySelector('brochure-configurator');
+    return bc && bc.querySelector('select') ? bc : null;
+  }
+
+  /* Step-by-step configurator products: mirror its human-readable steps (Size / Stock / Finish…)
+     instead of the composite variant options, so the modal matches exactly what the customer sees. */
+  prefillFromConfigurator(bc) {
+    const selects = [...bc.querySelectorAll('select')];
+    const qtyRadio = bc.querySelector('input[type="radio"][name$="-qty"]:checked');
+    const signature = JSON.stringify([selects.map((s) => s.value), qtyRadio?.value || '']);
+    if (signature === this.lastSignature) return;
+    this.lastSignature = signature;
+    const grid = this.form.querySelector('[data-cq-options]');
+    if (!grid) return;
+    grid.querySelectorAll('[data-cq-option]').forEach((el) => el.remove());
+    const anchor = grid.firstElementChild;
+    const uid = this.dialog.id;
+    selects.forEach((src, i) => {
+      const name = (src.labels?.[0]?.textContent || src.getAttribute('aria-label') || `Option ${i + 1}`).replace(/\*/g, '').replace(/\s+/g, ' ').trim();
+      const id = `${uid}-bc-${i}`;
+      const wrap = document.createElement('div');
+      wrap.className = 'cq__field';
+      wrap.dataset.cqOption = String(i);
+      const label = document.createElement('label');
+      label.htmlFor = id;
+      label.textContent = name;
+      const select = document.createElement('select');
+      select.id = id;
+      select.dataset.cqOptionSelect = '';
+      select.dataset.name = name;
+      [...src.options].forEach((o) => {
+        const opt = document.createElement('option');
+        opt.value = o.textContent.trim();
+        opt.textContent = o.textContent.trim();
+        if (o.selected) opt.selected = true;
+        select.appendChild(opt);
+      });
+      const other = document.createElement('option');
+      other.value = '__custom';
+      other.textContent = this.t.other || 'Other / custom…';
+      select.appendChild(other);
+      const box = document.createElement('div');
+      box.className = 'cq__custom';
+      box.dataset.cqCustom = '';
+      box.hidden = true;
+      const input = document.createElement('input');
+      input.type = 'text';
+      input.maxLength = 200;
+      input.id = `${id}-custom`;
+      input.dataset.cqCustomInput = '';
+      input.placeholder = this.t.custom_placeholder || '';
+      input.setAttribute('aria-label', `${name} — ${this.t.other || 'custom'}`);
+      input.setAttribute('aria-describedby', `${id}-err`);
+      box.appendChild(input);
+      const err = document.createElement('p');
+      err.className = 'cq__err';
+      err.id = `${id}-err`;
+      err.dataset.cqErr = '';
+      err.hidden = true;
+      wrap.append(label, select, box, err);
+      grid.insertBefore(wrap, anchor);
+    });
+    const qty = this.field('quantity');
+    if (qty && qtyRadio) qty.value = qtyRadio.value;
+  }
+
   prefill() {
     const id = this.currentVariantId();
     const variant = (this.product.variants || []).find((v) => Number(v.id) === id);
     this.variant = variant || null;
+    const bc = this.configurator();
+    if (bc) return this.prefillFromConfigurator(bc);
     if (id && id === this.lastVariant) return;
     this.lastVariant = id;
     if (variant) {
@@ -143,6 +213,7 @@ class CustomEstimate extends HTMLElement {
     requestAnimationFrame(() => {
       const first = this.done ? this.success : (this.form.querySelector('[data-cq-option-select], [data-cq-field="quantity"]') || this.field('name'));
       first?.focus({ preventScroll: true });
+      if (this.done) this.dialog.querySelector('[data-cq-body]').scrollTop = 0;
     });
     if (this.dataset.sitekey && !this.widgetId) this.initTurnstile();
   }
@@ -380,18 +451,21 @@ class CustomEstimate extends HTMLElement {
     this.dialog.querySelector('[data-cq-done]').hidden = false;
     this.dialog.querySelector('[data-cq-prefill-note]')?.setAttribute('hidden', '');
     this.success.hidden = false;
+    this.dialog.classList.add('is-done');
+    this.success.focus({ preventScroll: true });
     this.dialog.querySelector('[data-cq-body]').scrollTop = 0;
-    this.success.focus();
   }
 
   resetForm() {
     this.done = false;
+    this.dialog.classList.remove('is-done');
     const keep = ['name', 'email', 'phone', 'company'].map((n) => [n, this.field(n)?.value]);
     this.form.reset();
     keep.forEach(([n, v]) => { if (this.field(n)) this.field(n).value = v || ''; });
     this.form.querySelectorAll('[data-cq-option]').forEach((wrap) => this.toggleCustom(wrap, false));
     this.form.querySelectorAll('[aria-invalid]').forEach((el) => this.setError(el, ''));
     this.lastVariant = null;
+    this.lastSignature = null;
     this.form.hidden = false;
     this.success.hidden = true;
     this.dialog.querySelector('[data-cq-foot]').hidden = false;

@@ -75,6 +75,8 @@
       "sent_to": {{ 'custom_estimate.success.sent_to' | t | json }},
       "no_confirmation": {{ 'custom_estimate.success.no_confirmation' | t | json }},
       "prefilled": {{ 'custom_estimate.modal.prefilled' | t | json }},
+      "other": {{ 'custom_estimate.form.other' | t | json }},
+      "custom_placeholder": {{ 'custom_estimate.form.custom_placeholder' | t | json }},
       "chars_left": {{ 'custom_estimate.form.chars_left' | t | json }}
     }
   </script>
@@ -118,7 +120,7 @@
 
           <fieldset class="cq__group">
             <legend class="cq__legend"><span class="cq__num" aria-hidden="true">01</span>{{ 'custom_estimate.form.specs' | t }}</legend>
-            <div class="cq__grid">
+            <div class="cq__grid" data-cq-options>
               {%- for option in product.options_with_values -%}
                 {%- unless product.has_only_default_variant -%}
                   {%- if forloop.index0 != qty_index -%}
@@ -259,6 +261,7 @@
 {%- endif -%}
 {% stylesheet %}
   .cq { --cq-ink: #000; --cq-paper: #FAF8F3; --cq-accent: #B8167A; --cq-rule: #E4DFD3; --cq-muted: #5F5B53; display: block; font-family: var(--font-body-family, 'Instrument Sans', system-ui, sans-serif); }
+  .cq [hidden], .cq__dialog [hidden] { display: none !important; }
   .cq__callout { display: grid; grid-template-columns: auto 1fr; gap: 1.2rem 1.4rem; align-items: center; padding: 1.6rem 1.8rem; background: var(--cq-paper); border: 1.5px dashed var(--cq-ink); border-radius: 1.6rem; color: var(--cq-ink); }
   .cq__mark { display: grid; grid-template-columns: 1fr 1fr; gap: 2px; width: 3.2rem; height: 3.2rem; padding: 3px; border-radius: .8rem; background: var(--cq-ink); }
   .cq__mark i { border-radius: 2px; background: #27D6FF; } .cq__mark i:nth-child(2) { background: #F962DD; } .cq__mark i:nth-child(3) { background: #FFF915; } .cq__mark i:nth-child(4) { background: var(--cq-paper); }
@@ -283,6 +286,8 @@
   .cq__dot { width: 1rem; height: 1rem; border-radius: 50%; background: conic-gradient(#27D6FF 0 25%, #F962DD 0 50%, #FFF915 0 75%, #000 0); }
   .cq__h { margin: 0; font-family: var(--font-heading-family, 'Space Grotesk', sans-serif); font-weight: 700; font-size: clamp(2.4rem, 3.4vw, 3.2rem); line-height: 1.05; letter-spacing: -.02em; }
   .cq__desc { margin: .8rem 0 0; font-size: 1.5rem; line-height: 1.5; color: var(--cq-muted); max-width: 52ch; }
+  .cq__dialog.is-done .cq__head { border-bottom: 0; padding-bottom: 0; justify-content: flex-end; }
+  .cq__dialog.is-done .cq__head-text { display: none; }
   .cq__close { flex: none; display: grid; place-items: center; width: 4.4rem; height: 4.4rem; border: 2px solid var(--cq-ink); border-radius: 50%; background: #fff; color: var(--cq-ink); cursor: pointer; transition: transform .15s, background-color .15s; }
   .cq__close:hover { transform: rotate(90deg); background: #FFF915; }
   .cq__body { flex: 1; overflow-y: auto; overscroll-behavior: contain; padding: 2rem 2.8rem 2.4rem; -webkit-overflow-scrolling: touch; }
