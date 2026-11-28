@@ -15,7 +15,7 @@
         {%- when 'menu' -%}
           {%- if block.settings.menu != blank and block.settings.menu.links.size > 0 -%}
             <nav class="footer__col" aria-label="{{ block.settings.heading | escape }}" {{ block.shopify_attributes }}>
-              <details class="footer__disclosure">
+              <details class="footer__disclosure" open>
                 <summary class="footer__heading"><span>{{ block.settings.heading | escape }}</span></summary>
                 <ul role="list">
                   {%- for link in block.settings.menu.links -%}
@@ -53,6 +53,30 @@
     </ul>
   </div>
 </footer>
+<script>
+  (function () {
+    var mq = window.matchMedia('(max-width: 749px)');
+    var items = function () { return document.querySelectorAll('footer.footer .footer__disclosure'); };
+    var sync = function () {
+      items().forEach(function (el) {
+        if (mq.matches) {
+          if (!el.hasAttribute('data-user-toggled')) el.open = false;
+        } else {
+          el.open = true;
+        }
+      });
+    };
+    document.addEventListener('toggle', function (event) {
+      var el = event.target;
+      if (el && el.matches && el.matches('footer.footer .footer__disclosure') && mq.matches) {
+        el.setAttribute('data-user-toggled', '');
+      }
+    }, true);
+    sync();
+    if (mq.addEventListener) mq.addEventListener('change', sync);
+    else mq.addListener(sync);
+  })();
+</script>
 {% stylesheet %}
   .footer { padding-bottom: 2rem; color: rgb(var(--color-foreground)); background-color: rgb(var(--color-background)); }
   .footer__logo { width: 13.5rem; height: auto; display: block; margin-bottom: 1.4rem; }
