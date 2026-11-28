@@ -110,14 +110,18 @@
       assign l_flat = l_flat | append: ',0'
     endif
   else
-    assign tmeta = product.metafields.printr.turnaround.value
-    if tmeta != blank and tmeta.tiers != blank
+    comment
+      Do not assign the JSON metafield .value to a variable: Shopify Liquid
+      stringifies it, .tiers goes blank, and the theme fallback wrongly wins.
+    endcomment
+    if product.metafields.printr.turnaround.value.tiers != blank
       assign n_ok = 0
       assign n_free = 0
-      for t in tmeta.tiers
+      for t in product.metafields.printr.turnaround.value.tiers
         capture ok
           render 'turnaround-tier-ok', tier: t, product: product, variant: variant
         endcapture
+        assign ok = ok | strip
         if ok == 'yes'
           assign t_cents = t.fee | default: 0 | times: 100 | round
           assign t_fee = 0
