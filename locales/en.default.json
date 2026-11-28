@@ -898,7 +898,8 @@
       "optin": "Yes, email me PRINTR offers and news. You can unsubscribe at any time.",
       "fine_print": "No payment or commitment. We’ll reply soon with your custom estimate.",
       "submit": "Send estimate request",
-      "sending": "Sending…"
+      "sending": "Sending…",
+      "rush_fee_note": "Rush fee applies to this request."
     },
     "errors": {
       "required": "This field is required.",

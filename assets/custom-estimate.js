@@ -352,6 +352,7 @@ class CustomEstimate extends HTMLElement {
       neededBy: val('neededBy'),
       notes: val('notes'),
       marketingOptIn: !!this.form.querySelector('[data-cq-optin]')?.checked,
+      rushFee: this.dataset.rushFee === 'true',
       loggedIn: this.dataset.loggedIn === 'true',
       pageUrl: window.location.href,
       website: this.form.querySelector('input[name="website"]')?.value || '',
