@@ -213,7 +213,7 @@ async function reloadTurnaroundSwap({ productUrl, sectionId, variantId, current 
   }
 }
 
-if (!window.__printrTurnaroundSwapBound) {
+if (typeof window !== 'undefined' && !window.__printrTurnaroundSwapBound) {
   window.__printrTurnaroundSwapBound = true;
   document.addEventListener('variant:change', (e) => {
     const d = e.detail || {};
