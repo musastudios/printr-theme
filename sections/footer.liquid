@@ -26,16 +26,19 @@
             </nav>
           {%- endif -%}
         {%- when 'newsletter' -%}
-          <div class="footer__col footer__newsletter" {{ block.shopify_attributes }}>
-            <h2 class="footer__heading">{{ block.settings.heading | escape }}</h2>
-            {%- form 'customer', id: 'FooterNewsletter', class: 'growth-form' -%}
-              {%- if form.posted_successfully? -%}
-                <p role="status">{{ 'general.newsletter.success' | t }}</p>
-              {%- else -%}
-                {% render 'growth-newsletter-form', form_id: 'footer', source: 'footer', tags: 'newsletter', email_id: 'FooterEmail', field_class: 'footer__field', placeholder: 'general.newsletter.email' %}
-                {{ form.errors | default_errors }}
-              {%- endif -%}
-            {%- endform -%}
+          <div class="footer__newsletter" {{ block.shopify_attributes }}>
+            <div class="footer__signup">
+              <div class="cmyk-bar" aria-hidden="true"><span></span><span></span><span></span><span></span></div>
+              <h2 class="footer__signup-title">{{ block.settings.heading | escape }}</h2>
+              {%- form 'customer', id: 'FooterNewsletter', class: 'growth-form footer__signup-form' -%}
+                {%- if form.posted_successfully? -%}
+                  <p role="status">{{ 'general.newsletter.success' | t }}</p>
+                {%- else -%}
+                  {% render 'growth-newsletter-form', form_id: 'footer', source: 'footer', tags: 'newsletter', email_id: 'FooterEmail', field_class: 'footer__field', placeholder: 'general.newsletter.email' %}
+                  {{ form.errors | default_errors }}
+                {%- endif -%}
+              {%- endform -%}
+            </div>
           </div>
       {%- endcase -%}
     {%- endfor -%}
@@ -52,26 +55,20 @@
 </footer>
 {% stylesheet %}
   .footer { padding-bottom: 2rem; color: rgb(var(--color-foreground)); background-color: rgb(var(--color-background)); }
-  .footer__logo { width: 18rem; height: auto; display: block; margin-bottom: 1.6rem; }
-  .footer__grid { display: grid; gap: 2.4rem 4rem; padding-block: 6rem 4rem; grid-template-columns: 1fr; align-items: start; }
-  .footer__wordmark { font-family: var(--font-heading-family); font-weight: 800; font-size: 4.8rem; letter-spacing: -.04em; margin: 0 0 1rem; }
-  .footer__brand-text { max-width: 36rem; }
+  .footer__logo { width: 13.5rem; height: auto; display: block; margin-bottom: 1.4rem; }
+  .footer__grid { display: grid; gap: 1.6rem 2.4rem; padding-block: 5.6rem 3.2rem; grid-template-columns: 1fr; align-items: start; }
+  .footer__wordmark { font-family: var(--font-heading-family); font-weight: 800; font-size: 3.6rem; letter-spacing: -.04em; margin: 0 0 1rem; }
+  .footer__brand-text { max-width: 36rem; font-size: 1.4rem; line-height: 1.5; }
   .footer__brand-text,
   .footer__brand-text p { color: rgb(var(--color-foreground)); }
   .footer__heading { margin: 0; font-family: var(--font-heading-family); font-weight: 700; font-size: 1.3rem; line-height: 1.3; text-transform: uppercase; letter-spacing: .14em; color: rgb(var(--color-foreground)); }
-  .footer__col > .footer__heading { margin-bottom: 1.2rem; }
   .footer ul { list-style: none; padding: 0; margin: 0; display: grid; gap: .8rem; }
   .footer a { color: rgb(var(--color-foreground)); text-decoration: none; }
   .footer a:hover { text-decoration: underline; text-underline-offset: .2em; }
   .footer a:focus-visible { outline: 2px solid rgb(var(--color-accent)); outline-offset: 3px; }
   .footer__col a { font-size: 1.5rem; line-height: 1.4; }
-  .footer__social { display: flex !important; gap: 1.6rem !important; margin-top: 2rem !important; }
+  .footer__social { display: flex !important; gap: 1.2rem !important; margin-top: 1.6rem !important; }
   .footer__social-link { display: inline-flex; align-items: center; justify-content: center; width: 4.4rem; height: 4.4rem; color: rgb(var(--color-foreground)); }
-  .footer__field { display: flex; flex-wrap: wrap; gap: .8rem; }
-  .footer__field input { flex: 1 1 16rem; min-height: 4.8rem; width: auto; color: rgb(var(--color-foreground)); background: rgba(var(--color-foreground), .06); border: 1px solid rgba(var(--color-foreground), .55); }
-  .footer__field input::placeholder { color: rgba(var(--color-foreground), .75); }
-  .footer__field input:focus-visible { outline: 2px solid rgb(var(--color-accent)); outline-offset: 2px; border-color: rgb(var(--color-accent)); }
-  .footer__newsletter .newsletter__fine { margin: 1rem 0 0; font-size: 1.2rem; line-height: 1.45; color: rgba(var(--color-foreground), .85); }
   .footer__bottom { display: flex; flex-wrap: wrap; gap: 2rem; justify-content: space-between; align-items: center; border-top: 1px solid rgba(var(--color-foreground), .28); padding-top: 2rem; color: rgb(var(--color-foreground)); }
   .footer__payments { display: flex !important; gap: .6rem !important; }
   .payment-icon { width: 3.8rem; height: auto; }
@@ -83,14 +80,52 @@
   .footer__disclosure[open] > summary::after { transform: rotate(225deg) translate(1px, 1px); }
   .footer__disclosure > ul { margin-top: .4rem; padding-bottom: .8rem; }
 
+  .footer__newsletter { grid-column: 1 / -1; margin-top: 1.2rem; }
+  .footer__signup { position: relative; overflow: hidden; padding: 2.4rem 2rem 2rem; background: #141414; border: 1px solid rgba(var(--color-foreground), .28); border-radius: var(--radius); }
+  .footer__signup > .cmyk-bar { position: absolute; top: 0; left: 0; right: 0; width: 100%; height: .6rem; margin: 0; }
+  .footer__signup-title { margin: 1rem 0 1.6rem; font-family: var(--font-heading-family); font-weight: 700; font-size: clamp(2.2rem, 3.2vw, 3.2rem); line-height: 1.15; letter-spacing: -.02em; text-transform: none; color: rgb(var(--color-foreground)); }
+  .footer__signup-form { display: grid; grid-template-columns: 1fr; gap: 1.2rem 1.6rem; align-items: center; }
+  .footer__signup-form > input[type="hidden"] { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
+  .footer__field { display: flex; flex-wrap: wrap; gap: .8rem; min-width: 0; }
+  .footer__field input { flex: 1 1 16rem; min-height: 5.6rem; width: auto; padding: 0 1.8rem; color: rgb(var(--color-foreground)); background: #000; border: 2px solid rgba(var(--color-foreground), .55); border-radius: var(--radius-button); font-size: 1.6rem; }
+  .footer__field input::placeholder { color: rgba(var(--color-foreground), .75); }
+  .footer__field input:focus-visible { outline: 2px solid rgb(var(--color-accent)); outline-offset: 2px; border-color: rgb(var(--color-accent)); }
+  .footer__field .button { flex: 0 0 auto; min-height: 5.6rem; padding: 0 3.2rem; font-family: var(--font-heading-family); font-weight: 700; }
+  .footer__newsletter .growth-turnstile { display: flex; justify-content: flex-start; margin: 0; min-height: 6.5rem; }
+  .footer__newsletter .newsletter__fine { margin: 0; max-width: 72rem; font-size: 1.2rem; line-height: 1.45; color: rgba(var(--color-foreground), .85); }
+  .footer__newsletter .newsletter__status { margin: 0; font-size: 1.4rem; }
+  .footer__newsletter .errors,
+  .footer__newsletter .form__message { margin: 0; }
+
   @media (min-width: 750px) {
-    .footer__grid { grid-template-columns: minmax(16rem, 1.3fr) repeat(2, minmax(0, 1fr)); gap: 4rem 3.2rem; }
+    .footer__grid { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 3.2rem 2.4rem; }
+    .footer__brand { grid-column: 1 / -1; display: grid; grid-template-columns: auto minmax(0, 1fr); grid-template-rows: auto auto; column-gap: 2.4rem; align-items: start; }
+    .footer__logo,
+    .footer__wordmark { grid-row: 1 / span 2; margin-bottom: 0; }
+    .footer__brand-text { max-width: 52rem; }
+    .footer__social { grid-column: 2; margin-top: 1.2rem !important; }
+    .footer__newsletter { grid-column: 1 / -1; margin-top: 0; }
+    .footer__signup { padding: 3.2rem 3.2rem 2.4rem; }
     .footer__disclosure > summary { min-height: 0; cursor: default; pointer-events: none; }
     .footer__disclosure > summary::after { display: none; }
     .footer__disclosure > ul { display: grid !important; margin-top: 1.2rem; padding-bottom: 0; }
   }
+  @media (min-width: 990px) {
+    .footer__signup-form { grid-template-columns: minmax(0, 1fr) auto; }
+    .footer__field { grid-column: 1; flex-wrap: nowrap; }
+    .footer__field input { flex: 1 1 auto; min-width: 0; }
+    .footer__newsletter .growth-turnstile { grid-column: 2; grid-row: 1; align-self: center; min-height: 0; }
+    .footer__newsletter .newsletter__fine,
+    .footer__newsletter .newsletter__status,
+    .footer__newsletter .errors,
+    .footer__newsletter .form__message { grid-column: 1 / -1; }
+  }
   @media (min-width: 1100px) {
-    .footer__grid { grid-template-columns: minmax(20rem, 1.7fr) repeat(4, minmax(0, 1fr)) minmax(18rem, 1.5fr); }
+    .footer__grid { grid-template-columns: minmax(13rem, 16.5rem) repeat(4, minmax(0, 1fr)); }
+    .footer__brand { grid-column: auto; display: block; }
+    .footer__logo { width: 14rem; margin-bottom: 1.4rem; }
+    .footer__brand-text { max-width: none; }
+    .footer__social { margin-top: 1.6rem !important; }
   }
 {% endstylesheet %}
 {% schema %}
