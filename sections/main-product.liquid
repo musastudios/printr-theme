@@ -169,7 +169,7 @@
       { "type": "product", "id": "qa_product", "label": "Pre-flight & QA product ($5)", "info": "Used for Digital proof when the Artwork uploader block has no QA product. If empty, the request is saved as a line property to invoice." }
     ] },
     { "type": "turnaround", "name": "Production time", "limit": 1, "settings": [
-      { "type": "paragraph", "content": "Shows a Standard / 2 Business Days / Next Business Day selector when the selected variant has rush surcharges (variant metafields printr.rush_2bd / printr.rush_nbd) and the Rush Production fee product is set in Theme settings → Production turnaround. Otherwise shows the production time below." },
+      { "type": "paragraph", "content": "Shows the product's turnaround from the product metafield printr.turnaround (2nd Day / Next Day +$5, or a plain production time), or the legacy per-variant selector (variant metafields printr.rush_2bd / printr.rush_nbd). Paid options need the Rush Production fee product set in Theme settings → Production turnaround. With no metafield, shows the text below (leave it empty to show nothing)." },
       { "type": "text", "id": "text", "label": "Default production time", "default": "5–7 business days" }
     ] },
     { "type": "buy_buttons", "name": "Buy buttons", "limit": 1, "settings": [

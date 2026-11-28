@@ -112,13 +112,15 @@ customElements.define('cart-items', CartItems);
  * - Artwork QA fee: child has _artwork_fee, linked by _artwork_link.
  * - Design Service: child has "Design tier", linked by _parent_key.
  * - Rush production fee: child has _rush_fee, linked by _rush_link (also a Shopify nested line under the print item).
- *   Its quantity must equal the print line's _rush_cents x the print line's quantity ($0.01 per unit). */
+ *   Its quantity must equal the print line's _rush_cents x the print line's quantity ($0.01 per unit),
+ *   or, for a flat fee (_rush_flat), the fixed _rush_units (cart line fee, independent of the print quantity). */
 const isDesignChild = (i) => i.properties && i.properties._parent_key && i.properties['Design tier'];
 const isFeeChild = (i) => i.properties && i.properties._artwork_fee;
 // RUSH-PLAN-START (pure; mirrored in tests)
 const isRushChild = (i) => !!(i && i.properties && i.properties._rush_fee);
 const isRushParent = (i) => !!(i && i.properties && i.properties._rush_link && !isRushChild(i));
-const rushWant = (p) => Math.max(0, parseInt(p.properties._rush_cents, 10) || 0) * p.quantity;
+/** Per-unit surcharges (variant mode) scale with the print quantity; flat fees (product turnaround, e.g. Next Day +$5) are fixed units per line. */
+const rushWant = (p) => (p.properties._rush_flat ? Math.max(0, parseInt(p.properties._rush_units, 10) || 0) : Math.max(0, parseInt(p.properties._rush_cents, 10) || 0) * p.quantity);
 /** Fee lines are money, not units: leave them out of the cart count. */
 const visibleItemCount = (cart) => (cart && cart.items ? cart.items.reduce((n, i) => n + (isRushChild(i) ? 0 : i.quantity), 0) : 0);
 /** What to change so every rush parent has exactly one fee line of the right quantity. Returns { updates, adds }. */

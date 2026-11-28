@@ -1,10 +1,14 @@
 {% doc %}
-  Production time block. When the selected variant has rush surcharges (variant metafields printr.rush_2bd and
-  printr.rush_nbd, store-currency amounts already marked up; blank = not offered) AND the hidden Rush Production
-  fee product is set up, renders a turnaround selector: Standard (included) / 2 Business Days / Next Business Day.
-  The chosen rush is charged as a nested cart line of the fee product's $0.01 variant (quantity = surcharge in cents),
-  added in the same /cart/add call as the print item (see assets/rush-turnaround.js and docs/rush-turnaround.md).
-  Otherwise renders the static production-time note, so nothing changes until the fee product exists.
+  Production time block. Two data sources, in this order:
+  1) Legacy per-variant surcharges (variant metafields printr.rush_2bd / printr.rush_nbd, store-currency amounts already
+     marked up; blank = not offered): Standard (included) / 2 Business Days / Next Business Day, charged per unit.
+  2) Product metafield printr.turnaround (JSON, see docs/turnaround.md): an included default tier (2nd Day where it exists,
+     else the real minimum, e.g. 4 business days) plus optional paid tiers (Next Day +$5, a flat fee per cart line).
+     With one tier left after the per-spec conditions, a plain "Production time: N business days" line is shown instead.
+  A paid tier is charged as a nested cart line of the hidden Rush Production fee product, added in the same /cart/add call
+  as the print item (see assets/rush-turnaround.js and docs/rush-turnaround.md). Without the fee product, paid tiers are
+  hidden. With neither metafield, the static production-time note (custom.turnaround / block setting) is shown, or nothing
+  when that text is blank.
   @param {product} product - The product
   @param {variant} variant - The selected variant
   @param {string} section_id - Section id
@@ -20,16 +24,24 @@
   assign fee_2bd = nil
   assign fee_nbd = nil
   assign fee_any = nil
+  assign flat_2bd = nil
+  assign flat_nbd = nil
   if rush_product != blank and rush_product.id != blank
     for fv in rush_product.variants
-      if fv.price == 1 and fv.available
+      if fv.available
         assign fsku = fv.sku | upcase
-        if fsku == 'RUSH-2BD'
-          assign fee_2bd = fv
-        elsif fsku == 'RUSH-NBD'
-          assign fee_nbd = fv
-        elsif fee_any == nil
-          assign fee_any = fv
+        if fsku == 'RUSH-2BD-FLAT'
+          assign flat_2bd = fv
+        elsif fsku == 'RUSH-NBD-FLAT'
+          assign flat_nbd = fv
+        elsif fv.price == 1
+          if fsku == 'RUSH-2BD'
+            assign fee_2bd = fv
+          elsif fsku == 'RUSH-NBD'
+            assign fee_nbd = fv
+          elsif fee_any == nil
+            assign fee_any = fv
+          endif
         endif
       endif
     endfor
@@ -41,6 +53,22 @@
     assign fee_nbd = fee_any
   endif
 
+  assign std_days = variant.metafields.printr.standard_days.value | default: settings.rush_standard_days | default: 4
+
+  comment
+    Tier lists are built as parallel comma lists (key, business days, fee in cents, fee variant id, fee units, flat).
+    mode "variant": legacy per-variant surcharges (printr.rush_2bd / rush_nbd), charged per unit.
+    mode "product": product metafield printr.turnaround (tiers, flat fee per cart line).
+  endcomment
+  assign mode = 'none'
+  assign l_key = ''
+  assign l_days = ''
+  assign l_cents = ''
+  assign l_fee = ''
+  assign l_units = ''
+  assign l_flat = ''
+  assign default_key = ''
+
   assign c2 = 0
   assign cn = 0
   assign m2 = variant.metafields.printr.rush_2bd.value
@@ -51,12 +79,113 @@
   if mn != blank and mn > 0 and fee_nbd != nil
     assign cn = mn | times: 100 | round
   endif
-  assign has_rush = false
+
   if c2 > 0 or cn > 0
+    assign mode = 'variant'
+    assign default_key = 'standard'
+    assign l_key = 'standard'
+    assign l_days = std_days
+    assign l_cents = '0'
+    assign l_fee = '0'
+    assign l_units = '0'
+    assign l_flat = '0'
+    if c2 > 0
+      assign l_key = l_key | append: ',2bd'
+      assign l_days = l_days | append: ',2'
+      assign l_cents = l_cents | append: ',' | append: c2
+      assign l_fee = l_fee | append: ',' | append: fee_2bd.id
+      assign l_units = l_units | append: ',' | append: c2
+      assign l_flat = l_flat | append: ',0'
+    endif
+    if cn > 0
+      assign l_key = l_key | append: ',nbd'
+      assign l_days = l_days | append: ',1'
+      assign l_cents = l_cents | append: ',' | append: cn
+      assign l_fee = l_fee | append: ',' | append: fee_nbd.id
+      assign l_units = l_units | append: ',' | append: cn
+      assign l_flat = l_flat | append: ',0'
+    endif
+  else
+    assign tmeta = product.metafields.printr.turnaround.value
+    if tmeta != blank and tmeta.tiers != blank
+      assign n_ok = 0
+      assign n_free = 0
+      for t in tmeta.tiers
+        capture ok
+          render 'turnaround-tier-ok', tier: t, product: product, variant: variant
+        endcapture
+        if ok == 'yes'
+          assign t_cents = t.fee | default: 0 | times: 100 | round
+          assign t_fee = 0
+          assign t_units = 0
+          assign usable = true
+          if t_cents > 0
+            assign usable = false
+            if t.k == 'nbd'
+              assign flat_v = flat_nbd
+              assign unit_v = fee_nbd
+            else
+              assign flat_v = flat_2bd
+              assign unit_v = fee_2bd
+            endif
+            if flat_v != nil
+              assign rem = t_cents | modulo: flat_v.price
+              if rem == 0
+                assign usable = true
+                assign t_fee = flat_v.id
+                assign t_units = t_cents | divided_by: flat_v.price
+              endif
+            endif
+            if usable == false and unit_v != nil
+              assign usable = true
+              assign t_fee = unit_v.id
+              assign t_units = t_cents
+            endif
+          else
+            assign n_free = n_free | plus: 1
+          endif
+          if usable
+            if n_ok > 0
+              assign sep = ','
+            else
+              assign sep = ''
+            endif
+            assign l_key = l_key | append: sep | append: t.k
+            assign l_days = l_days | append: sep | append: t.days
+            assign l_cents = l_cents | append: sep | append: t_cents
+            assign l_fee = l_fee | append: sep | append: t_fee
+            assign l_units = l_units | append: sep | append: t_units
+            assign l_flat = l_flat | append: sep | append: '1'
+            if t.default and t_cents == 0
+              assign default_key = t.k
+            endif
+            if default_key == '' and t_cents == 0 and first_free == blank
+              assign first_free = t.k
+            endif
+            assign n_ok = n_ok | plus: 1
+          endif
+        endif
+      endfor
+      if n_free > 0
+        assign mode = 'product'
+        if default_key == ''
+          assign default_key = first_free
+        endif
+      endif
+    endif
+  endif
+
+  assign k_arr = l_key | split: ','
+  assign d_arr = l_days | split: ','
+  assign c_arr = l_cents | split: ','
+  assign f_arr = l_fee | split: ','
+  assign u_arr = l_units | split: ','
+  assign fl_arr = l_flat | split: ','
+  assign has_rush = false
+  if mode != 'none' and k_arr.size > 1
     assign has_rush = true
   endif
 
-  assign std_days = variant.metafields.printr.standard_days.value | default: settings.rush_standard_days | default: 4
   assign uid = 'Rush-' | append: section_id
   assign form_id = 'ProductForm-' | append: section_id
   assign v_title = variant.title
@@ -65,7 +194,7 @@
   endif
 -%}
 {%- if has_rush -%}
-  <rush-turnaround class="rush" data-section="{{ section_id }}" data-form-id="{{ form_id }}" data-variant="{{ variant.id }}" data-product-url="{{ product.url }}">
+  <rush-turnaround class="rush" data-section="{{ section_id }}" data-form-id="{{ form_id }}" data-variant="{{ variant.id }}" data-product-url="{{ product.url }}" data-mode="{{ mode }}">
     <script type="application/json" data-rush-data>
       {
         "variant": {{ variant.id | json }},
@@ -74,16 +203,24 @@
         "variantTitle": {{ v_title | json }},
         "standardDays": {{ std_days | json }},
         "money": {{ shop.money_format | json }},
-        "options": {
-          "2bd": {% if c2 > 0 %}{ "cents": {{ c2 }}, "fee": {{ fee_2bd.id | json }} }{% else %}null{% endif %},
-          "nbd": {% if cn > 0 %}{ "cents": {{ cn }}, "fee": {{ fee_nbd.id | json }} }{% else %}null{% endif %}
-        },
+        "mode": {{ mode | json }},
+        "defaultTier": {{ default_key | json }},
+        "tiers": [
+          {%- for k in k_arr -%}
+            {%- assign i = forloop.index0 -%}
+            { "k": {{ k | json }}, "days": {{ d_arr[i] | plus: 0 | json }}, "cents": {{ c_arr[i] | plus: 0 | json }}, "fee": {{ f_arr[i] | plus: 0 | json }}, "units": {{ u_arr[i] | plus: 0 | json }}, "flat": {% if fl_arr[i] == '1' %}true{% else %}false{% endif %} }{% unless forloop.last %},{% endunless %}
+          {%- endfor -%}
+        ],
         "strings": {
           "standard": {{ 'products.product.rush.standard' | t | json }},
           "two_day": {{ 'products.product.rush.two_day' | t | json }},
           "next_day": {{ 'products.product.rush.next_day' | t | json }},
+          "tier_std": {{ 'products.product.rush.tier_std' | t | json }},
+          "tier_2bd": {{ 'products.product.rush.tier_2bd' | t | json }},
+          "tier_nbd": {{ 'products.product.rush.tier_nbd' | t | json }},
           "total": {{ 'products.product.rush.total' | t | json }},
           "price_note": {{ 'products.product.rush.price_note' | t | json }},
+          "flat_note": {{ 'products.product.rush.flat_note' | t | json }},
           "reset": {{ 'products.product.rush.reset' | t | json }},
           "configurator_turnaround": {{ 'products.product.configurator.turnaround' | t | json }}
         }
@@ -94,40 +231,60 @@
         {%- render 'au-icon', name: 'clock', size: 18 -%}
         <span>{{ 'products.product.rush.heading' | t }}</span>
       </legend>
-      <label class="rush__opt">
-        <input type="radio" name="{{ uid }}" value="standard" data-rush-opt checked>
-        <span class="rush__radio" aria-hidden="true"></span>
-        <span class="rush__ic" aria-hidden="true">{% render 'au-icon', name: 'calendar-days', size: 20 %}</span>
-        <span class="rush__txt">
-          <span class="rush__name">{{ 'products.product.rush.standard' | t }}</span>
-          <span class="rush__sub">{{ 'products.product.rush.standard_days' | t: days: std_days }}</span>
-        </span>
-        <span class="rush__price rush__price--incl">{{ 'products.product.rush.included' | t }}</span>
-      </label>
-      {%- if c2 > 0 -%}
+      {%- for k in k_arr -%}
+        {%- assign i = forloop.index0 -%}
+        {%- assign cents = c_arr[i] | plus: 0 -%}
+        {%- assign days = d_arr[i] | plus: 0 -%}
+        {%- if mode == 'variant' -%}
+          {%- if k == 'standard' -%}
+            {%- assign name = 'products.product.rush.standard' | t -%}
+            {%- assign sub = 'products.product.rush.standard_days' | t: days: std_days -%}
+            {%- assign icon = 'calendar-days' -%}
+            {%- assign icon_cls = '' -%}
+          {%- elsif k == '2bd' -%}
+            {%- assign name = 'products.product.rush.two_day' | t -%}
+            {%- assign sub = 'products.product.rush.rush_label' | t -%}
+            {%- assign icon = 'zap' -%}
+            {%- assign icon_cls = ' rush__ic--zap' -%}
+          {%- else -%}
+            {%- assign name = 'products.product.rush.next_day' | t -%}
+            {%- assign sub = 'products.product.rush.fastest_label' | t -%}
+            {%- assign icon = 'rocket' -%}
+            {%- assign icon_cls = ' rush__ic--rocket' -%}
+          {%- endif -%}
+        {%- else -%}
+          {%- if k == 'nbd' -%}
+            {%- assign name = 'products.product.rush.tier_nbd' | t -%}
+            {%- assign sub = 'products.product.rush.tier_nbd_sub' | t -%}
+            {%- assign icon = 'rocket' -%}
+            {%- assign icon_cls = ' rush__ic--rocket' -%}
+          {%- elsif k == '2bd' -%}
+            {%- assign name = 'products.product.rush.tier_2bd' | t -%}
+            {%- assign sub = 'products.product.rush.tier_2bd_sub' | t -%}
+            {%- assign icon = 'zap' -%}
+            {%- assign icon_cls = ' rush__ic--zap' -%}
+          {%- else -%}
+            {%- assign name = 'products.product.rush.tier_std' | t -%}
+            {%- assign sub = 'products.product.rush.standard_days' | t: days: days -%}
+            {%- assign icon = 'calendar-days' -%}
+            {%- assign icon_cls = '' -%}
+          {%- endif -%}
+        {%- endif -%}
         <label class="rush__opt">
-          <input type="radio" name="{{ uid }}" value="2bd" data-rush-opt>
+          <input type="radio" name="{{ uid }}" value="{{ k }}" data-rush-opt{% if k == default_key %} checked{% endif %}>
           <span class="rush__radio" aria-hidden="true"></span>
-          <span class="rush__ic rush__ic--zap" aria-hidden="true">{% render 'au-icon', name: 'zap', size: 20 %}</span>
+          <span class="rush__ic{{ icon_cls }}" aria-hidden="true">{% render 'au-icon', name: icon, size: 20 %}</span>
           <span class="rush__txt">
-            <span class="rush__name">{{ 'products.product.rush.two_day' | t }}</span>
-            <span class="rush__sub">{{ 'products.product.rush.rush_label' | t }}</span>
+            <span class="rush__name">{{ name }}</span>
+            <span class="rush__sub">{{ sub }}</span>
           </span>
-          <span class="rush__price">+{{ c2 | money }}</span>
+          {%- if cents > 0 -%}
+            <span class="rush__price">+{{ cents | money }}</span>
+          {%- else -%}
+            <span class="rush__price rush__price--incl">{{ 'products.product.rush.included' | t }}</span>
+          {%- endif -%}
         </label>
-      {%- endif -%}
-      {%- if cn > 0 -%}
-        <label class="rush__opt">
-          <input type="radio" name="{{ uid }}" value="nbd" data-rush-opt>
-          <span class="rush__radio" aria-hidden="true"></span>
-          <span class="rush__ic rush__ic--rocket" aria-hidden="true">{% render 'au-icon', name: 'rocket', size: 20 %}</span>
-          <span class="rush__txt">
-            <span class="rush__name">{{ 'products.product.rush.next_day' | t }}</span>
-            <span class="rush__sub">{{ 'products.product.rush.fastest_label' | t }}</span>
-          </span>
-          <span class="rush__price">+{{ cn | money }}</span>
-        </label>
-      {%- endif -%}
+      {%- endfor -%}
     </fieldset>
     <p class="rush__total" data-rush-total aria-live="polite"></p>
     <p class="rush__note">{{ 'products.product.rush.note' | t }}</p>
@@ -135,10 +292,23 @@
   </rush-turnaround>
   <script src="{{ 'rush-turnaround.js' | asset_url }}" type="module" defer="defer"></script>
 {%- else -%}
-  <p class="product__turnaround">{% render 'icon', name: 'clock' %}<span><strong>{{ 'products.product.turnaround' | t }}:</strong> {{ product.metafields.custom.turnaround | default: block.settings.text }}</span></p>
-  {%- if request.design_mode and rush_product == blank -%}
-    {%- if variant.metafields.printr.rush_2bd != blank or variant.metafields.printr.rush_nbd != blank -%}
-      <p class="rush__editor-note">{{ 'products.product.rush.editor_missing_fee' | t }}</p>
+  {%- if mode == 'product' -%}
+    {%- assign only_days = d_arr[0] | plus: 0 -%}
+    {%- if only_days == 1 -%}
+      {%- assign only_text = 'products.product.rush.tier_nbd_sub' | t -%}
+    {%- else -%}
+      {%- assign only_text = 'products.product.rush.standard_days' | t: days: only_days -%}
+    {%- endif -%}
+    <p class="product__turnaround">{% render 'icon', name: 'clock' %}<span><strong>{{ 'products.product.turnaround' | t }}:</strong> {{ only_text }}</span></p>
+  {%- else -%}
+    {%- assign static_text = product.metafields.custom.turnaround | default: block.settings.text -%}
+    {%- if static_text != blank -%}
+      <p class="product__turnaround">{% render 'icon', name: 'clock' %}<span><strong>{{ 'products.product.turnaround' | t }}:</strong> {{ static_text }}</span></p>
+    {%- endif -%}
+    {%- if request.design_mode and rush_product == blank -%}
+      {%- if variant.metafields.printr.rush_2bd != blank or variant.metafields.printr.rush_nbd != blank or product.metafields.printr.turnaround != blank -%}
+        <p class="rush__editor-note">{{ 'products.product.rush.editor_missing_fee' | t }}</p>
+      {%- endif -%}
     {%- endif -%}
   {%- endif -%}
 {%- endif -%}
