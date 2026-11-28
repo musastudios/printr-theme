@@ -1,0 +1,57 @@
+{% doc %}
+  Theme-side turnaround fallback when the product metafield printr.turnaround is blank.
+  Prints one compact line (no extra whitespace): keys|days|fees_usd|default
+  e.g. 2bd,nbd|2,1|0,5|2bd    or   std|4|0|std
+  Empty output = no fallback for this product (LED frames, tablecloths, fee product).
+  Source of truth for which handle maps to which profile: assets/turnaround-config.json (keep in sync).
+  Next Day +$5 only on verified families. Unverified products get their real production time and no Next Day.
+  @param {product} product
+  @param {variant} variant
+{% enddoc %}
+{%- liquid
+  assign h = product.handle
+  assign profile = ''
+  case h
+    when 'business-card', 'natural-business-card', 'pearl-business-card', '14pt-postcard', '100lb-gloss-postcard'
+      assign profile = '2bd_nbd5'
+    when 'brochures'
+      assign profile = 'brochures'
+    when 'flyers-brochures-shipping-included'
+      assign profile = 'nbd_only'
+    when 'foil-business-card', 'tear-resistant-business-card'
+      assign profile = 'std7'
+    when 'ap-mens-ss-tee-front', 'ap-mens-ss-tee-front-back', 'ap-mens-ls-tee-front', 'ap-mens-ls-tee-front-back', 'ap-mens-premium-tee-front', 'ap-mens-premium-tee-front-back', 'ap-mens-tank-front', 'ap-mens-tank-front-back', 'ap-womens-premium-tee-front', 'ap-womens-premium-tee-front-back', 'retractable-banner-stand', 'bn-ret-dlx-ds-33x80', 'bn-ret-dlx-ss-33x80', 'pole-flag', 'teardrop-flag', 'feather-flag', 'aluminum-sign', 'pvc-sign', 'foam-core-sign', '10mm-coroplast-sign', 'coroplast-yard-sign', 'vinyl-banner', 'mesh-banner', 'blockout-vinyl-banner', 'silk-business-card', 'suede-business-card', 'black-edge-business-card', 'painted-edge-business-card', 'fold-over-business-card', 'linen-business-card', 'plastic-business-card', 'brown-kraft-business-card', 'silk-postcard', 'sticker', 'bumper-stickers', '16pt-postcard', '18pt-postcard', 'bc-raised-spot-uv-2-x-3-5-us-standard', 'bc-raised-foil-2-x-3-5-us-standard', 'specialty-business-card'
+      assign profile = 'std4'
+  endcase
+
+  if profile == 'brochures'
+    assign is_half = false
+    for o in product.options_with_values
+      assign oi = forloop.index0
+      assign ov = variant.options[oi] | append: '' | upcase
+      if o.name == 'Config'
+        if ov contains 'HALF'
+          assign is_half = true
+        endif
+      endif
+    endfor
+    if is_half
+      assign profile = '2bd_nbd5'
+    else
+      assign profile = 'std4_nbd5'
+    endif
+  endif
+
+  case profile
+    when '2bd_nbd5'
+echo '2bd,nbd|2,1|0,5|2bd'
+    when 'std4_nbd5'
+echo 'std,nbd|4,1|0,5|std'
+    when 'nbd_only'
+echo 'nbd|1|0|nbd'
+    when 'std7'
+echo 'std|7|0|std'
+    when 'std4'
+echo 'std|4|0|std'
+  endcase
+-%}

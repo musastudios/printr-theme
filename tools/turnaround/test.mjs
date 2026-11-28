@@ -9,7 +9,7 @@ const FEE_FLAT = { id: 900, title: 'Rush Production', handle: 'rush-production',
   { id: 901, sku: 'RUSH-2BD', price: 1, available: true }, { id: 902, sku: 'RUSH-NBD', price: 1, available: true }, { id: 903, sku: 'RUSH-NBD-FLAT', price: 500, available: true }] };
 const FEE_PENNY = { id: 900, title: 'Rush Production', handle: 'rush-production', variants: [
   { id: 901, sku: 'RUSH-2BD', price: 1, available: true }, { id: 902, sku: 'RUSH-NBD', price: 1, available: true }] };
-const product = (tmeta, extra = {}) => ({ id: 1, title: 'Brochures', handle: 'brochures', url: '/products/brochures', has_only_default_variant: false,
+const product = (tmeta, extra = {}) => ({ id: 1, title: 'Brochures', handle: 'led-frame-displays', url: '/products/brochures', has_only_default_variant: false,
   options_with_values: [{ name: 'Size', values: ['8.5x11'] }, { name: 'Qty', values: ['100', '1000'] }, { name: 'Config', values: ['GB100-44-AQ-HALF', 'GB100-44-AQ-TRI'] }],
   metafields: { printr: { turnaround: tmeta ? { value: tmeta } : null }, custom: {} }, ...extra });
 const variant = (qty = '100', cfg = 'GB100-44-AQ-HALF', mf = {}) => ({ id: 777, title: `8.5x11 / ${qty} / ${cfg}`, price: 16900, options: ['8.5x11', qty, cfg], metafields: { printr: { rush_2bd: mf.r2 ? { value: mf.r2 } : null, rush_nbd: mf.rn ? { value: mf.rn } : null, standard_days: null } } });
@@ -72,6 +72,43 @@ await t('no metafields, blank text: renders nothing; with text: static line', as
   assert.match(await render(product(null), variant(), { blockText: '5–7 business days' }), /5–7 business days/);
 });
 
+
+await t('theme fallback: business card (no metafield) is 2nd Day default + Next Day +$5', async () => {
+  const p = product(null); p.handle = 'business-card'; p.title = 'Business Card';
+  const h = await render(p, variant('100'));
+  const d = data(h);
+  assert.equal(d.mode, 'product'); assert.equal(d.defaultTier, '2bd');
+  assert.deepEqual(d.tiers.map((x) => x.k), ['2bd', 'nbd']);
+  assert.equal(d.tiers[1].cents, 500); assert.equal(d.tiers[1].flat, true);
+  assert.match(h, /value="2bd" data-rush-opt checked/);
+});
+await t('theme fallback: flag is a plain 4 business days line, no Next Day', async () => {
+  const p = product(null); p.handle = 'pole-flag'; p.title = 'Pole Flag';
+  const h = await render(p, variant());
+  assert.doesNotMatch(h, /<rush-turnaround/);
+  assert.match(h, /Production time:<\/strong> 4 business days/);
+  assert.doesNotMatch(h, /Next Day/);
+});
+await t('theme fallback: brochures Half-Fold defaults to 2nd Day; Flat is 4 days + Next Day', async () => {
+  const p = product(null); p.handle = 'brochures';
+  const half = data(await render(p, variant('100', 'GB100-44-AQ-HALF')));
+  assert.deepEqual(half.tiers.map((x) => x.k), ['2bd', 'nbd']); assert.equal(half.defaultTier, '2bd');
+  const flat = data(await render(p, variant('100', 'GB100-44-AQ-FLAT')));
+  assert.deepEqual(flat.tiers.map((x) => x.k), ['std', 'nbd']); assert.equal(flat.defaultTier, 'std');
+});
+await t('theme fallback: foil card is 7 business days, no Next Day; flyers are Next Day only', async () => {
+  const foil = product(null); foil.handle = 'foil-business-card';
+  assert.match(await render(foil, variant()), /Production time:<\/strong> 7 business days/);
+  const fly = product(null); fly.handle = 'flyers-brochures-shipping-included';
+  assert.match(await render(fly, variant()), /Production time:<\/strong> Next business day/);
+});
+await t('product metafield still wins over the theme fallback', async () => {
+  const p = product({ v: 1, tiers: [{ k: 'std', days: 4, fee: 0 }] }); p.handle = 'business-card';
+  const h = await render(p, variant('100'));
+  assert.doesNotMatch(h, /<rush-turnaround/);
+  assert.match(h, /Production time:<\/strong> 4 business days/);
+});
+
 // ---- pure JS: formdata + cart reconciliation ----
 globalThis.HTMLElement = class {}; globalThis.customElements = { get: () => null, define: () => {} };
 const mod = await import(`${REPO}/assets/rush-turnaround.js`);
@@ -109,4 +146,5 @@ await t('cart: flat fee edited by hand is restored to 1; missing fee re-added wi
   assert.deepEqual(rushPlan({ items: [parentFlat('a', 'L1'), feeLine('f', 'L1', 5)] }).updates, { f: 1 });
   const p = rushPlan({ items: [parentFlat('a', 'L1', 2)] }); assert.equal(p.adds[0].quantity, 1); assert.equal(p.adds[0].id, 903);
 });
+if (n !== 21) { console.error(`expected 21 tests, got ${n}`); process.exit(1); }
 console.log(`${n} passed`);

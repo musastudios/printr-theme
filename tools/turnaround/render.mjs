@@ -11,6 +11,17 @@ export function makeEngine(lang = 'en') {
   class Style extends Tag { constructor(t, r, l) { super(t, r, l); this.raw = ''; while (r.length) { const tok = r.shift(); if (tok.name === 'endstylesheet') return; this.raw += tok.getText(); } } *render(ctx, emitter) { emitter.write(`<style>${this.raw}</style>`); } }
   engine.registerTag('doc', Skip);
   engine.registerTag('stylesheet', Style);
+  // Shopify `echo` inside {% liquid %} (liquidjs has it in later versions; register a tiny one either way)
+  class Echo extends Tag {
+    constructor(t, r, l) { super(t, r, l); this.val = t.args ? String(t.args).trim() : ''; }
+    *render(ctx, emitter) {
+      let v = this.val;
+      const m = v.match(/^['"]([\s\S]*)['"]$/);
+      emitter.write(m ? m[1] : (yield this.liquid.evalValue(v, ctx)));
+    }
+  }
+  if (!engine.tags.echo) engine.registerTag('echo', Echo);
+
   engine.registerFilter('t', (key, ...args) => {
     let s = key.split('.').reduce((o, k) => (o ? o[k] : undefined), locales[lang]);
     if (s == null) return `translation missing: ${key}`;

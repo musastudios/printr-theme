@@ -5,10 +5,14 @@
   2) Product metafield printr.turnaround (JSON, see docs/turnaround.md): an included default tier (2nd Day where it exists,
      else the real minimum, e.g. 4 business days) plus optional paid tiers (Next Day +$5, a flat fee per cart line).
      With one tier left after the per-spec conditions, a plain "Production time: N business days" line is shown instead.
+  3) If that metafield is blank, a theme-side fallback (snippets/turnaround-theme-config.liquid, sourced from
+     assets/turnaround-config.json) applies the same rules so the selector works before any store metafield is written.
+     Next Day +$5 is only listed on verified families; unverified products show their real production time and no Next Day.
   A paid tier is charged as a nested cart line of the hidden Rush Production fee product, added in the same /cart/add call
-  as the print item (see assets/rush-turnaround.js and docs/rush-turnaround.md). Without the fee product, paid tiers are
-  hidden. With neither metafield, the static production-time note (custom.turnaround / block setting) is shown, or nothing
-  when that text is blank.
+  as the print item (see assets/rush-turnaround.js and docs/rush-turnaround.md). Preferred fee variant is RUSH-NBD-FLAT at
+  $5.00 (qty 1); if it does not exist, the existing $0.01 RUSH-NBD variant is used at quantity 500. Without a usable fee
+  variant, paid tiers are hidden. With no metafield and no theme fallback, the static production-time note
+  (custom.turnaround / block setting) is shown, or nothing when that text is blank.
   @param {product} product - The product
   @param {variant} variant - The selected variant
   @param {string} section_id - Section id
@@ -170,6 +174,79 @@
         assign mode = 'product'
         if default_key == ''
           assign default_key = first_free
+        endif
+      endif
+    endif
+
+    if mode == 'none'
+      capture tcfg
+        render 'turnaround-theme-config', product: product, variant: variant
+      endcapture
+      assign tcfg = tcfg | strip
+      if tcfg != blank
+        assign t_parts = tcfg | split: '|'
+        assign t_keys = t_parts[0] | split: ','
+        assign t_daysl = t_parts[1] | split: ','
+        assign t_fees = t_parts[2] | split: ','
+        assign n_ok = 0
+        assign n_free = 0
+        for k in t_keys
+          assign i = forloop.index0
+          assign t_cents = t_fees[i] | times: 100 | round
+          assign t_fee = 0
+          assign t_units = 0
+          assign usable = true
+          if t_cents > 0
+            assign usable = false
+            if k == 'nbd'
+              assign flat_v = flat_nbd
+              assign unit_v = fee_nbd
+            else
+              assign flat_v = flat_2bd
+              assign unit_v = fee_2bd
+            endif
+            if flat_v != nil
+              assign rem = t_cents | modulo: flat_v.price
+              if rem == 0
+                assign usable = true
+                assign t_fee = flat_v.id
+                assign t_units = t_cents | divided_by: flat_v.price
+              endif
+            endif
+            if usable == false and unit_v != nil
+              assign usable = true
+              assign t_fee = unit_v.id
+              assign t_units = t_cents
+            endif
+          else
+            assign n_free = n_free | plus: 1
+          endif
+          if usable
+            if n_ok > 0
+              assign sep = ','
+            else
+              assign sep = ''
+            endif
+            assign l_key = l_key | append: sep | append: k
+            assign l_days = l_days | append: sep | append: t_daysl[i]
+            assign l_cents = l_cents | append: sep | append: t_cents
+            assign l_fee = l_fee | append: sep | append: t_fee
+            assign l_units = l_units | append: sep | append: t_units
+            assign l_flat = l_flat | append: sep | append: '1'
+            if k == t_parts[3] and t_cents == 0
+              assign default_key = k
+            endif
+            if default_key == '' and t_cents == 0 and first_free == blank
+              assign first_free = k
+            endif
+            assign n_ok = n_ok | plus: 1
+          endif
+        endfor
+        if n_free > 0
+          assign mode = 'product'
+          if default_key == ''
+            assign default_key = first_free
+          endif
         endif
       endif
     endif
